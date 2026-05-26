@@ -104,7 +104,7 @@ export default function SignalCard({ signal }: { signal: Signal }) {
       </div>
 
       <div className="rounded-lg p-3" style={{ backgroundColor: 'var(--bg-surface-3)', border: '1px solid var(--border)' }}>
-        <p className="text-xs font-semibold mb-1" style={{ color: '#009BFF' }}>AI Summary</p>
+        <p className="text-xs font-semibold mb-1" style={{ color: '#009BFF' }}>Summary</p>
         <p className="text-sm leading-relaxed text-white">{signal.aiSummary}</p>
       </div>
 

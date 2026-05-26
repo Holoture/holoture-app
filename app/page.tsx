@@ -6,8 +6,8 @@ import Header from '@/components/Header'
 const FEATURES = [
   {
     icon: Zap,
-    title: 'AI-Generated Signals',
-    desc: 'Every pick is powered by our AI engine analyzing fundamentals, technicals, and market sentiment.',
+    title: 'Data-Driven Signals',
+    desc: 'Every pick is powered by our engine analyzing fundamentals, technicals, and market sentiment.',
   },
   {
     icon: BarChart3,
@@ -57,11 +57,11 @@ export default function LandingPage() {
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight">
             Trade Smarter with
             <br />
-            <span style={{ color: '#009BFF' }}>AI-Curated Signals</span>
+            <span style={{ color: '#009BFF' }}>Expert-Curated Signals</span>
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl max-w-2xl mx-auto text-white">
-            Holoture delivers daily AI-generated stock signals with precise entry zones,
+            Holoture delivers daily curated stock signals with precise entry zones,
             confidence scores, and clear time horizons — so you always know what to watch.
           </p>
 

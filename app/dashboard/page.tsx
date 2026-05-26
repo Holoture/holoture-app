@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { getOrCreateUser } from '@/lib/user'
 import Header from '@/components/Header'
 import SignalCard from '@/components/SignalCard'
+import ProDashboardClient from '@/components/ProDashboardClient'
 import FreeSignalCard, { UpgradeBanner } from '@/components/FreeSignalCard'
 import { TrendingUp, Crown, Zap } from 'lucide-react'
 
@@ -84,7 +85,7 @@ export default async function DashboardPage() {
               </p>
               <p className="text-xs text-white">
                 {lastLog
-                  ? `Generated ${lastLog.generatedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}`
+                  ? `Generated ${lastLog.generatedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York', timeZoneName: 'short' })}`
                   : isPro ? 'Full curated board' : 'Free daily pick'}
               </p>
             </div>
@@ -104,31 +105,11 @@ export default async function DashboardPage() {
 }
 
 function ProDashboard({ signals }: { signals: Awaited<ReturnType<typeof getSignals>> }) {
-  const byType = {
-    BUY: signals.filter((s) => s.signalType === 'BUY'),
-    WATCH: signals.filter((s) => s.signalType === 'WATCH' || s.signalType === 'HOLD'),
-    SHORT: signals.filter((s) => s.signalType === 'SHORT' || s.signalType === 'SELL'),
-  }
-
-  return (
-    <div className="space-y-10">
-      {byType.BUY.length > 0 && (
-        <Section title="Buy Signals" color="#4ade80" count={byType.BUY.length}>
-          {byType.BUY.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate instanceof Date ? s.signalDate.toISOString() : String(s.signalDate) }} />)}
-        </Section>
-      )}
-      {byType.WATCH.length > 0 && (
-        <Section title="Watch / Hold" color="#fbbf24" count={byType.WATCH.length}>
-          {byType.WATCH.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate instanceof Date ? s.signalDate.toISOString() : String(s.signalDate) }} />)}
-        </Section>
-      )}
-      {byType.SHORT.length > 0 && (
-        <Section title="Short / Avoid" color="#f87171" count={byType.SHORT.length}>
-          {byType.SHORT.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate instanceof Date ? s.signalDate.toISOString() : String(s.signalDate) }} />)}
-        </Section>
-      )}
-    </div>
-  )
+  const serialized = signals.map((s) => ({
+    ...s,
+    signalDate: s.signalDate instanceof Date ? s.signalDate.toISOString() : String(s.signalDate),
+  }))
+  return <ProDashboardClient signals={serialized} />
 }
 
 function FreeDashboard({
@@ -171,22 +152,6 @@ function FreeDashboard({
   )
 }
 
-function Section({ title, color, count, children }: {
-  title: string; color: string; count: number; children: React.ReactNode
-}) {
-  return (
-    <div>
-      <div className="flex items-center gap-3 mb-5">
-        <div className="w-1 h-6 rounded-full" style={{ backgroundColor: color }} />
-        <h2 className="text-lg font-bold text-white">{title}</h2>
-        <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: `${color}20`, color }}>
-          {count}
-        </span>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">{children}</div>
-    </div>
-  )
-}
 
 function EmptyState() {
   return (

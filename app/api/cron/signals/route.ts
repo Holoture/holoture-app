@@ -140,7 +140,22 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: true, count: 0 })
     }
 
-    const signals = await generateSignals(withData)
+    const rawSignals = await generateSignals(withData)
+    if (rawSignals.length === 0) {
+      await prisma.signalGenerationLog.create({ data: { signalCount: 0, status: 'no_signals' } })
+      return NextResponse.json({ ok: true, count: 0 })
+    }
+
+    // Deduplicate by ticker and validate prices
+    const seenTickers = new Set<string>()
+    const signals = rawSignals.filter((s) => {
+      if (seenTickers.has(s.ticker)) return false
+      seenTickers.add(s.ticker)
+      if (!s.entryZoneLow || !s.entryZoneHigh || !s.targetPrice || !s.stopLoss) return false
+      if (s.entryZoneLow <= 0 || s.entryZoneHigh <= 0 || s.targetPrice <= 0 || s.stopLoss <= 0) return false
+      return true
+    })
+
     if (signals.length === 0) {
       await prisma.signalGenerationLog.create({ data: { signalCount: 0, status: 'no_signals' } })
       return NextResponse.json({ ok: true, count: 0 })

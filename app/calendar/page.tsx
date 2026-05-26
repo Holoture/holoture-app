@@ -59,7 +59,7 @@ export default async function CalendarPage() {
             <CalendarDays className="w-6 h-6" style={{ color: '#009BFF' }} />
             <h1 className="text-2xl font-black text-white">Earnings Calendar</h1>
           </div>
-          <p className="text-sm text-white">Upcoming earnings dates with Claude AI impact ratings — updates daily at midnight</p>
+          <p className="text-sm text-white">Upcoming earnings dates with impact ratings — updates daily at midnight</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

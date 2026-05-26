@@ -44,18 +44,18 @@ export default async function TrendsPage() {
               <BarChart3 className="w-6 h-6" style={{ color: '#009BFF' }} />
               <h1 className="text-2xl font-black text-white">Sector Trends</h1>
             </div>
-            <p className="text-sm text-white">ETF heat map with Claude AI market summary — refreshes every 5 min</p>
+            <p className="text-sm text-white">ETF heat map with market summary — refreshes every 5 min</p>
           </div>
           {updatedAt && (
             <p className="text-xs shrink-0" style={{ color: 'var(--text-primary)', opacity: 0.5 }}>
-              Updated {new Date(updatedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+              Updated {new Date(updatedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York', timeZoneName: 'short' })}
             </p>
           )}
         </div>
 
         {/* AI Market Summary */}
         <div className="rounded-xl p-6 mb-8" style={{ background: 'linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-surface-2) 100%)', border: '1px solid rgba(0,155,255,0.3)' }}>
-          <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#009BFF' }}>AI Market Summary</p>
+          <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#009BFF' }}>Market Summary</p>
           <div className="flex items-start gap-4">
             <div className="flex-1">
               {sorted.length > 0 && (

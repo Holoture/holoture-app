@@ -10,7 +10,7 @@ async function getArticles() {
   try {
     return await prisma.newsArticle.findMany({
       orderBy: { publishedAt: 'desc' },
-      take: 30,
+      take: 50,
     })
   } catch { return [] }
 }
@@ -43,7 +43,7 @@ export default async function NewsPage() {
             <Newspaper className="w-6 h-6" style={{ color: '#009BFF' }} />
             <h1 className="text-2xl font-black text-white">Market News</h1>
           </div>
-          <p className="text-sm text-white">AI-curated headlines with Claude sentiment analysis — refreshes every 15 min</p>
+          <p className="text-sm text-white">Curated headlines with market sentiment analysis — refreshes every 15 min</p>
         </div>
 
         {serialized.length === 0 ? (

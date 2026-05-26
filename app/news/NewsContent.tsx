@@ -46,7 +46,7 @@ export default function NewsContent({
     { key: 'all', label: 'All', color: '#009BFF' },
     { key: 'bullish', label: 'Bullish', color: '#4ade80' },
     { key: 'bearish', label: 'Bearish', color: '#f87171' },
-    { key: 'neutral', label: 'Neutral', color: '#fbbf24' },
+    { key: 'neutral', label: 'Neutral', color: '#378ADD' },
   ]
 
   return (
@@ -140,7 +140,7 @@ function SentimentBadge({ sentiment, confidence }: { sentiment: string; confiden
       </span>
     )
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: 'rgba(245,158,11,0.15)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.3)' }}>
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: 'rgba(55,138,221,0.15)', color: '#378ADD', border: '1px solid rgba(55,138,221,0.3)' }}>
       <Minus className="w-3 h-3" /> Neutral
     </span>
   )
