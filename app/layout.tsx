@@ -6,6 +6,15 @@ export const metadata: Metadata = {
   title: 'Holoture — AI Stock Signals',
   description: 'AI-powered stock signal and investment insight platform. Get curated buy/sell signals with entry zones, confidence scores, and time horizons.',
   keywords: 'stock signals, AI investing, stock picks, investment insights',
+  icons: {
+    icon: [
+      { url: '/logo.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo.png', sizes: '64x64', type: 'image/png' },
+      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/logo.png',
+    shortcut: '/logo.png',
+  },
 }
 
 export default function RootLayout({

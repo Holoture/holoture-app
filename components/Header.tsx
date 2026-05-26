@@ -34,7 +34,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <Image src="/logo.png" alt="Holoture" height={36} width={36} />
+            <Image src="/logo.png" alt="Holoture" height={52} width={52} />
             <span className="text-xl font-bold text-white tracking-tight">
               Holo<span style={{ color: '#009BFF' }}>ture</span>
             </span>
