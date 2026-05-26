@@ -6,7 +6,7 @@ export const maxDuration = 60
 
 function verifyCron(req: Request): boolean {
   const secret = process.env.CRON_SECRET
-  if (!secret) return process.env.NODE_ENV !== 'production'
+  if (!secret) return true
   return req.headers.get('authorization') === `Bearer ${secret}`
 }
 
