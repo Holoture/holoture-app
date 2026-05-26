@@ -9,16 +9,16 @@ export default function FreeSignalCard({ signal }: { signal: Signal }) {
       <div
         className="absolute inset-0 rounded-xl flex flex-col items-center justify-center gap-3"
         style={{
-          backgroundColor: 'rgba(10, 22, 40, 0.75)',
+          backgroundColor: 'rgba(53, 53, 53, 0.85)',
           backdropFilter: 'blur(4px)',
-          border: '1px solid #1d3a72',
+          border: '1px solid #4a4a4a',
         }}
       >
         <div
           className="w-12 h-12 rounded-full flex items-center justify-center"
-          style={{ backgroundColor: 'rgba(20, 184, 166, 0.15)', border: '1px solid rgba(20,184,166,0.3)' }}
+          style={{ backgroundColor: 'rgba(0,155,255,0.15)', border: '1px solid rgba(0,155,255,0.3)' }}
         >
-          <Lock className="w-6 h-6" style={{ color: '#14b8a6' }} />
+          <Lock className="w-6 h-6" style={{ color: '#009BFF' }} />
         </div>
         <div className="text-center px-4">
           <p className="font-semibold text-white text-sm">Pro Signal</p>
@@ -36,15 +36,15 @@ export function UpgradeBanner() {
     <div
       className="rounded-xl p-6 flex flex-col sm:flex-row items-center gap-4"
       style={{
-        background: 'linear-gradient(135deg, #0f2040 0%, #152c58 100%)',
-        border: '1px solid rgba(20,184,166,0.3)',
+        background: 'linear-gradient(135deg, #404040 0%, #3a3a3a 100%)',
+        border: '1px solid rgba(0,155,255,0.3)',
       }}
     >
       <div
         className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-        style={{ backgroundColor: 'rgba(20,184,166,0.2)' }}
+        style={{ backgroundColor: 'rgba(0,155,255,0.2)' }}
       >
-        <TrendingUp className="w-6 h-6" style={{ color: '#14b8a6' }} />
+        <TrendingUp className="w-6 h-6" style={{ color: '#009BFF' }} />
       </div>
       <div className="text-center sm:text-left flex-1">
         <h3 className="font-bold text-white">Unlock the Full Signal Board</h3>
@@ -56,7 +56,7 @@ export function UpgradeBanner() {
       <Link
         href="/pricing"
         className="px-5 py-2.5 rounded-lg font-semibold text-sm text-white shrink-0 hover:opacity-90 transition-opacity"
-        style={{ backgroundColor: '#14b8a6' }}
+        style={{ backgroundColor: '#009BFF' }}
       >
         Upgrade to Pro — $15/mo
       </Link>

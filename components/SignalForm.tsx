@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 type SignalFormData = {
   ticker: string
   companyName: string
-  signalType: 'BUY' | 'SELL' | 'HOLD'
+  signalType: 'BUY' | 'SELL' | 'HOLD' | 'WATCH' | 'SHORT'
   entryZoneLow: string
   entryZoneHigh: string
   targetPrice: string
@@ -36,10 +36,10 @@ const defaultData: SignalFormData = {
 const inputClass =
   'w-full rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 outline-none focus:ring-2 transition-shadow'
 const inputStyle = {
-  backgroundColor: '#060d1a',
-  border: '1px solid #1d3a72',
+  backgroundColor: '#2a2a2a',
+  border: '1px solid #4a4a4a',
 }
-const focusStyle = { '--tw-ring-color': '#14b8a6' } as React.CSSProperties
+const focusStyle = { '--tw-ring-color': '#009BFF' } as React.CSSProperties
 
 const labelClass = 'block text-xs font-medium mb-1'
 const labelStyle = { color: '#94a3b8' }
@@ -136,6 +136,8 @@ export default function SignalForm({ signalId }: { signalId?: string }) {
             style={{ ...inputStyle, ...focusStyle }}
           >
             <option value="BUY">BUY</option>
+            <option value="WATCH">WATCH</option>
+            <option value="SHORT">SHORT</option>
             <option value="SELL">SELL</option>
             <option value="HOLD">HOLD</option>
           </select>
@@ -282,7 +284,7 @@ export default function SignalForm({ signalId }: { signalId?: string }) {
           type="button"
           onClick={() => router.back()}
           className="px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
-          style={{ backgroundColor: '#152c58', color: '#94a3b8', border: '1px solid #1d3a72' }}
+          style={{ backgroundColor: '#3a3a3a', color: '#94a3b8', border: '1px solid #4a4a4a' }}
         >
           Cancel
         </button>
@@ -290,7 +292,7 @@ export default function SignalForm({ signalId }: { signalId?: string }) {
           type="submit"
           disabled={loading}
           className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity disabled:opacity-50"
-          style={{ backgroundColor: '#14b8a6' }}
+          style={{ backgroundColor: '#009BFF' }}
         >
           {loading ? 'Saving…' : 'Save Signal'}
         </button>

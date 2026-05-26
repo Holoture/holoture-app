@@ -29,7 +29,7 @@ const SAMPLE_TICKERS = ['NVDA', 'MSFT', 'AAPL', 'META', 'AMZN', 'TSLA']
 
 export default function LandingPage() {
   return (
-    <div className="min-h-full" style={{ backgroundColor: '#0a1628' }}>
+    <div className="min-h-full" style={{ backgroundColor: '#353535' }}>
       <Header />
 
       {/* Hero */}
@@ -38,16 +38,16 @@ export default function LandingPage() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(20,184,166,0.12) 0%, transparent 60%)',
+              'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,155,255,0.12) 0%, transparent 60%)',
           }}
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center">
           <div
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-8"
             style={{
-              backgroundColor: 'rgba(20,184,166,0.12)',
-              border: '1px solid rgba(20,184,166,0.3)',
-              color: '#14b8a6',
+              backgroundColor: 'rgba(0,155,255,0.12)',
+              border: '1px solid rgba(0,155,255,0.3)',
+              color: '#009BFF',
             }}
           >
             <Zap className="w-3 h-3" />
@@ -57,7 +57,7 @@ export default function LandingPage() {
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight">
             Trade Smarter with
             <br />
-            <span style={{ color: '#14b8a6' }}>AI-Curated Signals</span>
+            <span style={{ color: '#009BFF' }}>AI-Curated Signals</span>
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl max-w-2xl mx-auto" style={{ color: '#94a3b8' }}>
@@ -69,7 +69,7 @@ export default function LandingPage() {
             <Link
               href="/sign-up"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-white text-lg hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#14b8a6' }}
+              style={{ backgroundColor: '#009BFF' }}
             >
               Start Free Today
               <ChevronRight className="w-5 h-5" />
@@ -78,8 +78,8 @@ export default function LandingPage() {
               href="/pricing"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
               style={{
-                backgroundColor: '#0f2040',
-                border: '1px solid #1d3a72',
+                backgroundColor: '#404040',
+                border: '1px solid #4a4a4a',
                 color: '#e2e8f0',
               }}
             >
@@ -93,9 +93,9 @@ export default function LandingPage() {
               <div
                 key={ticker}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg"
-                style={{ backgroundColor: '#0f2040', border: '1px solid #1d3a72' }}
+                style={{ backgroundColor: '#404040', border: '1px solid #4a4a4a' }}
               >
-                <TrendingUp className="w-4 h-4" style={{ color: '#14b8a6' }} />
+                <TrendingUp className="w-4 h-4" style={{ color: '#009BFF' }} />
                 <span className="font-bold text-white text-sm">{ticker}</span>
               </div>
             ))}
@@ -104,7 +104,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20" style={{ backgroundColor: '#0f2040' }}>
+      <section className="py-20" style={{ backgroundColor: '#404040' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-black text-white">
@@ -120,13 +120,13 @@ export default function LandingPage() {
               <div
                 key={title}
                 className="rounded-xl p-6"
-                style={{ backgroundColor: '#0a1628', border: '1px solid #1d3a72' }}
+                style={{ backgroundColor: '#353535', border: '1px solid #4a4a4a' }}
               >
                 <div
                   className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-                  style={{ backgroundColor: 'rgba(20,184,166,0.15)' }}
+                  style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}
                 >
-                  <Icon className="w-5 h-5" style={{ color: '#14b8a6' }} />
+                  <Icon className="w-5 h-5" style={{ color: '#009BFF' }} />
                 </div>
                 <h3 className="font-bold text-white mb-2">{title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>{desc}</p>
@@ -150,7 +150,7 @@ export default function LandingPage() {
             {/* Free */}
             <div
               className="rounded-2xl p-8"
-              style={{ backgroundColor: '#0f2040', border: '1px solid #1d3a72' }}
+              style={{ backgroundColor: '#404040', border: '1px solid #4a4a4a' }}
             >
               <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: '#94a3b8' }}>
                 Free
@@ -163,8 +163,8 @@ export default function LandingPage() {
                 {['1 randomized AI signal per day', 'Basic signal info', 'No credit card required'].map(
                   (item) => (
                     <li key={item} className="flex items-center gap-2 text-sm" style={{ color: '#94a3b8' }}>
-                      <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: '#1d3a72' }}>
-                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#14b8a6' }} />
+                      <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: '#4a4a4a' }}>
+                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#009BFF' }} />
                       </div>
                       {item}
                     </li>
@@ -174,7 +174,7 @@ export default function LandingPage() {
               <Link
                 href="/sign-up"
                 className="block w-full text-center py-3 rounded-xl font-semibold transition-colors"
-                style={{ backgroundColor: '#152c58', color: '#e2e8f0', border: '1px solid #1d3a72' }}
+                style={{ backgroundColor: '#3a3a3a', color: '#e2e8f0', border: '1px solid #4a4a4a' }}
               >
                 Get Started Free
               </Link>
@@ -184,18 +184,18 @@ export default function LandingPage() {
             <div
               className="rounded-2xl p-8 relative"
               style={{
-                background: 'linear-gradient(135deg, #0f2040 0%, #152c58 100%)',
-                border: '2px solid rgba(20,184,166,0.5)',
+                background: 'linear-gradient(135deg, #404040 0%, #3a3a3a 100%)',
+                border: '2px solid rgba(0,155,255,0.5)',
               }}
             >
               <div
                 className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold"
-                style={{ backgroundColor: '#14b8a6', color: 'white' }}
+                style={{ backgroundColor: '#009BFF', color: 'white' }}
               >
                 <Star className="w-3 h-3" />
                 MOST POPULAR
               </div>
-              <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: '#14b8a6' }}>
+              <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: '#009BFF' }}>
                 Pro
               </p>
               <div className="mt-3 mb-6">
@@ -214,9 +214,9 @@ export default function LandingPage() {
                   <li key={item} className="flex items-center gap-2 text-sm text-white">
                     <div
                       className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: 'rgba(20,184,166,0.2)' }}
+                      style={{ backgroundColor: 'rgba(0,155,255,0.2)' }}
                     >
-                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#14b8a6' }} />
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#009BFF' }} />
                     </div>
                     {item}
                   </li>
@@ -225,7 +225,7 @@ export default function LandingPage() {
               <Link
                 href="/sign-up"
                 className="block w-full text-center py-3 rounded-xl font-bold text-white hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#14b8a6' }}
+                style={{ backgroundColor: '#009BFF' }}
               >
                 Start Pro — $15/month
               </Link>
@@ -235,12 +235,12 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer style={{ borderTop: '1px solid #1d3a72', backgroundColor: '#0f2040' }}>
+      <footer style={{ borderTop: '1px solid #4a4a4a', backgroundColor: '#404040' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" style={{ color: '#14b8a6' }} />
+            <TrendingUp className="w-5 h-5" style={{ color: '#009BFF' }} />
             <span className="font-bold text-white">
-              Holo<span style={{ color: '#14b8a6' }}>ture</span>
+              Holo<span style={{ color: '#009BFF' }}>ture</span>
             </span>
           </div>
           <p className="text-sm" style={{ color: '#94a3b8' }}>

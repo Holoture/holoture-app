@@ -6,18 +6,18 @@ export default function SignUpPage() {
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center px-4"
-      style={{ backgroundColor: '#0a1628' }}
+      style={{ backgroundColor: '#353535' }}
     >
       <div className="mb-8 flex flex-col items-center gap-3">
         <Link href="/" className="flex items-center gap-2">
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ backgroundColor: '#14b8a6' }}
+            style={{ backgroundColor: '#009BFF' }}
           >
             <TrendingUp className="w-6 h-6 text-white" />
           </div>
           <span className="text-2xl font-black text-white">
-            Holo<span style={{ color: '#14b8a6' }}>ture</span>
+            Holo<span style={{ color: '#009BFF' }}>ture</span>
           </span>
         </Link>
         <p className="text-sm" style={{ color: '#94a3b8' }}>
@@ -41,10 +41,10 @@ export default function SignUpPage() {
             footerActionLink: 'text-teal-400 hover:text-teal-300',
           },
           variables: {
-            colorBackground: '#0f2040',
+            colorBackground: '#404040',
             colorText: '#e2e8f0',
-            colorPrimary: '#14b8a6',
-            colorInputBackground: '#060d1a',
+            colorPrimary: '#009BFF',
+            colorInputBackground: '#2a2a2a',
             colorInputText: '#e2e8f0',
             borderRadius: '12px',
           },

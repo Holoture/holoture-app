@@ -12,20 +12,20 @@ export default function Header() {
 
   return (
     <header
-      style={{ borderBottom: '1px solid #1d3a72', backgroundColor: '#0f2040' }}
+      style={{ borderBottom: '1px solid #4a4a4a', backgroundColor: '#404040' }}
       className="sticky top-0 z-50"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 group">
             <div
-              style={{ backgroundColor: '#14b8a6' }}
+              style={{ backgroundColor: '#009BFF' }}
               className="w-8 h-8 rounded-lg flex items-center justify-center"
             >
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold text-white tracking-tight">
-              Holo<span style={{ color: '#14b8a6' }}>ture</span>
+              Holo<span style={{ color: '#009BFF' }}>ture</span>
             </span>
           </Link>
 
@@ -50,7 +50,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/sign-up"
-                  style={{ backgroundColor: '#14b8a6' }}
+                  style={{ backgroundColor: '#009BFF' }}
                   className="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                 >
                   Get Started
@@ -89,7 +89,7 @@ function NavLink({
         'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
         active ? 'text-white' : 'text-slate-400 hover:text-white'
       )}
-      style={active ? { backgroundColor: '#152c58', color: '#14b8a6' } : {}}
+      style={active ? { backgroundColor: '#3a3a3a', color: '#009BFF' } : {}}
     >
       {children}
     </Link>

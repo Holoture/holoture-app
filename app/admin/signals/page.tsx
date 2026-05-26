@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import Header from '@/components/Header'
-import { Plus, ToggleLeft, ToggleRight, Trash2, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { Plus, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import SignalDeleteButton from './SignalDeleteButton'
 import SignalToggleButton from './SignalToggleButton'
@@ -21,7 +21,7 @@ export default async function AdminSignalsPage() {
   const signals = await getSignals()
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0a1628' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -36,7 +36,7 @@ export default async function AdminSignalsPage() {
           <Link
             href="/admin/signals/new"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm text-white hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: '#14b8a6' }}
+            style={{ backgroundColor: '#009BFF' }}
           >
             <Plus className="w-4 h-4" />
             Add Signal
@@ -46,7 +46,7 @@ export default async function AdminSignalsPage() {
         {signals.length === 0 ? (
           <div
             className="rounded-2xl p-16 text-center"
-            style={{ backgroundColor: '#0f2040', border: '1px solid #1d3a72' }}
+            style={{ backgroundColor: '#404040', border: '1px solid #4a4a4a' }}
           >
             <p className="text-white font-semibold mb-2">No signals yet</p>
             <p className="text-sm" style={{ color: '#94a3b8' }}>
@@ -56,10 +56,10 @@ export default async function AdminSignalsPage() {
         ) : (
           <div
             className="rounded-2xl overflow-hidden"
-            style={{ border: '1px solid #1d3a72' }}
+            style={{ border: '1px solid #4a4a4a' }}
           >
             <table className="w-full text-sm">
-              <thead style={{ backgroundColor: '#0f2040', borderBottom: '1px solid #1d3a72' }}>
+              <thead style={{ backgroundColor: '#404040', borderBottom: '1px solid #4a4a4a' }}>
                 <tr>
                   {['Ticker', 'Type', 'Entry Zone', 'Target', 'Confidence', 'Horizon', 'Status', ''].map(
                     (h) => (
@@ -79,8 +79,8 @@ export default async function AdminSignalsPage() {
                   <tr
                     key={signal.id}
                     style={{
-                      backgroundColor: i % 2 === 0 ? '#0a1628' : '#0f2040',
-                      borderBottom: '1px solid #152c58',
+                      backgroundColor: i % 2 === 0 ? '#353535' : '#404040',
+                      borderBottom: '1px solid #3a3a3a',
                     }}
                   >
                     <td className="px-4 py-3">
@@ -134,14 +134,14 @@ function SignalTypeBadge({ type }: { type: string }) {
         BUY
       </span>
     )
-  if (type === 'SELL')
+  if (type === 'SHORT' || type === 'SELL')
     return (
       <span
         className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold"
         style={{ backgroundColor: 'rgba(239,68,68,0.15)', color: '#f87171' }}
       >
         <TrendingDown className="w-3 h-3" />
-        SELL
+        {type}
       </span>
     )
   return (
@@ -150,7 +150,7 @@ function SignalTypeBadge({ type }: { type: string }) {
       style={{ backgroundColor: 'rgba(245,158,11,0.15)', color: '#fbbf24' }}
     >
       <Minus className="w-3 h-3" />
-      HOLD
+      {type}
     </span>
   )
 }

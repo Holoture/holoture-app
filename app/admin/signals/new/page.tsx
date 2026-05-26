@@ -10,7 +10,7 @@ export default async function NewSignalPage() {
   if (!userId || userId !== process.env.ADMIN_USER_ID) redirect('/dashboard')
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0a1628' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
       <Header />
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -31,7 +31,7 @@ export default async function NewSignalPage() {
 
         <div
           className="rounded-2xl p-6 sm:p-8"
-          style={{ backgroundColor: '#0f2040', border: '1px solid #1d3a72' }}
+          style={{ backgroundColor: '#404040', border: '1px solid #4a4a4a' }}
         >
           <SignalForm />
         </div>

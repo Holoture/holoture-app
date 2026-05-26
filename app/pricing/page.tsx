@@ -24,7 +24,7 @@ const PRO_FEATURES = [
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0a1628' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -41,7 +41,7 @@ export default function PricingPage() {
           {/* Free Tier */}
           <div
             className="rounded-2xl p-8 flex flex-col"
-            style={{ backgroundColor: '#0f2040', border: '1px solid #1d3a72' }}
+            style={{ backgroundColor: '#404040', border: '1px solid #4a4a4a' }}
           >
             <div>
               <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#94a3b8' }}>
@@ -56,7 +56,7 @@ export default function PricingPage() {
             <ul className="mt-8 space-y-4 flex-1">
               {FREE_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-3 text-sm" style={{ color: '#94a3b8' }}>
-                  <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: '#14b8a6' }} />
+                  <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: '#009BFF' }} />
                   {f}
                 </li>
               ))}
@@ -65,7 +65,7 @@ export default function PricingPage() {
             <Link
               href="/sign-up"
               className="mt-8 block w-full text-center py-3.5 rounded-xl font-semibold transition-colors"
-              style={{ backgroundColor: '#152c58', color: '#e2e8f0', border: '1px solid #1d3a72' }}
+              style={{ backgroundColor: '#3a3a3a', color: '#e2e8f0', border: '1px solid #4a4a4a' }}
             >
               Get Started Free
             </Link>
@@ -75,20 +75,20 @@ export default function PricingPage() {
           <div
             className="rounded-2xl p-8 flex flex-col relative"
             style={{
-              background: 'linear-gradient(160deg, #0f2040 0%, #152c58 100%)',
-              border: '2px solid rgba(20,184,166,0.5)',
+              background: 'linear-gradient(160deg, #404040 0%, #3a3a3a 100%)',
+              border: '2px solid rgba(0,155,255,0.5)',
             }}
           >
             <div
               className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1 rounded-full text-xs font-bold"
-              style={{ backgroundColor: '#14b8a6', color: 'white' }}
+              style={{ backgroundColor: '#009BFF', color: 'white' }}
             >
               <Star className="w-3 h-3" />
               RECOMMENDED
             </div>
 
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#14b8a6' }}>
+              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#009BFF' }}>
                 Pro
               </p>
               <div className="mt-4 mb-2 flex items-end gap-2">
@@ -103,9 +103,9 @@ export default function PricingPage() {
                 <li key={f} className="flex items-start gap-3 text-sm text-white">
                   <div
                     className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                    style={{ backgroundColor: 'rgba(20,184,166,0.2)' }}
+                    style={{ backgroundColor: 'rgba(0,155,255,0.2)' }}
                   >
-                    <Check className="w-3 h-3" style={{ color: '#14b8a6' }} />
+                    <Check className="w-3 h-3" style={{ color: '#009BFF' }} />
                   </div>
                   {f}
                 </li>
@@ -119,15 +119,15 @@ export default function PricingPage() {
         <p className="text-center mt-10 text-sm" style={{ color: '#94a3b8' }}>
           Payments processed securely by Stripe. Holoture does not store your card details.
           <br />
-          <span className="font-medium" style={{ color: '#14b8a6' }}>Not financial advice.</span> Always do your own research.
+          <span className="font-medium" style={{ color: '#009BFF' }}>Not financial advice.</span> Always do your own research.
         </p>
       </div>
 
-      <footer style={{ borderTop: '1px solid #1d3a72', backgroundColor: '#0f2040' }}>
+      <footer style={{ borderTop: '1px solid #4a4a4a', backgroundColor: '#404040' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center gap-2">
-          <TrendingUp className="w-4 h-4" style={{ color: '#14b8a6' }} />
+          <TrendingUp className="w-4 h-4" style={{ color: '#009BFF' }} />
           <span className="text-sm font-bold text-white">
-            Holo<span style={{ color: '#14b8a6' }}>ture</span>
+            Holo<span style={{ color: '#009BFF' }}>ture</span>
           </span>
           <span className="text-sm" style={{ color: '#94a3b8' }}>— AI Stock Signals</span>
         </div>
@@ -135,4 +135,3 @@ export default function PricingPage() {
     </div>
   )
 }
-

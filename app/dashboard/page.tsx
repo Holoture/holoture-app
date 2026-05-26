@@ -42,7 +42,7 @@ export default async function DashboardPage() {
   const proSignals = signals
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0a1628' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -55,9 +55,9 @@ export default async function DashboardPage() {
                 <span
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold"
                   style={{
-                    backgroundColor: 'rgba(20,184,166,0.15)',
-                    color: '#14b8a6',
-                    border: '1px solid rgba(20,184,166,0.3)',
+                    backgroundColor: 'rgba(0,155,255,0.15)',
+                    color: '#009BFF',
+                    border: '1px solid rgba(0,155,255,0.3)',
                   }}
                 >
                   <Crown className="w-3 h-3" />
@@ -70,9 +70,9 @@ export default async function DashboardPage() {
 
           <div
             className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
-            style={{ backgroundColor: '#0f2040', border: '1px solid #1d3a72' }}
+            style={{ backgroundColor: '#404040', border: '1px solid #4a4a4a' }}
           >
-            <Zap className="w-4 h-4" style={{ color: '#14b8a6' }} />
+            <Zap className="w-4 h-4" style={{ color: '#009BFF' }} />
             <div>
               <p className="text-xs font-semibold text-white">
                 {isPro ? `${proSignals.length} Active Signals` : '1 Signal Today'}
@@ -146,7 +146,7 @@ function FreeDashboard({
       {signal && (
         <div>
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" style={{ color: '#14b8a6' }} />
+            <TrendingUp className="w-5 h-5" style={{ color: '#009BFF' }} />
             Today&apos;s Free Signal
           </h2>
           <div className="max-w-lg">
@@ -206,13 +206,13 @@ function EmptyState() {
   return (
     <div
       className="rounded-2xl p-16 flex flex-col items-center justify-center text-center"
-      style={{ backgroundColor: '#0f2040', border: '1px solid #1d3a72' }}
+      style={{ backgroundColor: '#404040', border: '1px solid #4a4a4a' }}
     >
       <div
         className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-        style={{ backgroundColor: 'rgba(20,184,166,0.15)' }}
+        style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}
       >
-        <TrendingUp className="w-8 h-8" style={{ color: '#14b8a6' }} />
+        <TrendingUp className="w-8 h-8" style={{ color: '#009BFF' }} />
       </div>
       <h3 className="text-xl font-bold text-white mb-2">No signals yet</h3>
       <p className="text-sm max-w-sm" style={{ color: '#94a3b8' }}>

@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-950: #060d1a;
-  --color-navy-900: #0a1628;
-  --color-navy-800: #0f2040;
-  --color-navy-700: #152c58;
-  --color-navy-600: #1d3a72;
-  --color-navy-500: #254a8e;
-  --color-teal-300: #5eead4;
-  --color-teal-400: #2dd4bf;
-  --color-teal-500: #14b8a6;
-  --color-teal-600: #0d9488;
-  --color-teal-700: #0f766e;
+  --color-navy-950: #2a2a2a;
+  --color-navy-900: #353535;
+  --color-navy-800: #404040;
+  --color-navy-700: #3a3a3a;
+  --color-navy-600: #4a4a4a;
+  --color-navy-500: #555555;
+  --color-teal-300: #66baff;
+  --color-teal-400: #33a8ff;
+  --color-teal-500: #009BFF;
+  --color-teal-600: #0080e0;
+  --color-teal-700: #0066bb;
   --color-slate-400: #94a3b8;
   --color-slate-300: #cbd5e1;
   --color-green-400: #4ade80;
@@ -23,14 +23,14 @@
 }
 
 :root {
-  --background: #0a1628;
-  --surface: #0f2040;
-  --surface-hover: #152c58;
-  --border: #1d3a72;
+  --background: #353535;
+  --surface: #404040;
+  --surface-hover: #3a3a3a;
+  --border: #4a4a4a;
   --foreground: #e2e8f0;
   --muted: #94a3b8;
-  --primary: #14b8a6;
-  --primary-hover: #0d9488;
+  --primary: #009BFF;
+  --primary-hover: #0080e0;
 }
 
 body {

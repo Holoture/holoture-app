@@ -14,7 +14,13 @@
       "PowerShell(Get-Content \"node_modules\\\\@clerk\\\\nextjs\\\\package.json\" | ConvertFrom-Json | Select-Object -ExpandProperty exports | Get-Member -MemberType NoteProperty | Where-Object { $_.Name -match \"proxy|middleware\" } | Select-Object Name)",
       "PowerShell(Stop-Process *)",
       "PowerShell(gh *)",
-      "PowerShell(winget *)"
+      "PowerShell(winget *)",
+      "PowerShell(vercel logs *)",
+      "PowerShell(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(32\\).toString\\('base64url'\\)\\)\")",
+      "PowerShell(vercel *)",
+      "PowerShell(vercel ls *)",
+      "PowerShell(vercel env *)",
+      "PowerShell(git *)"
     ]
   }
 }
