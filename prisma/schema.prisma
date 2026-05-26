@@ -38,3 +38,16 @@ model Signal {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+model AlertPreferences {
+  id                  String   @id @default(cuid())
+  clerkId             String   @unique
+  newSignalAlert      Boolean  @default(true)
+  highConfidenceAlert Boolean  @default(true)
+  confidenceThreshold Int      @default(75)
+  dailyDigest         Boolean  @default(false)
+  earningsWarning     Boolean  @default(true)
+  emailAlerts         Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}

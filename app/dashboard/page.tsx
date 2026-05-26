@@ -18,35 +18,22 @@ export default async function DashboardPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
-  const [user, signals] = await Promise.all([
-    getOrCreateUser(),
-    getSignals(),
-  ])
-
+  const [user, signals] = await Promise.all([getOrCreateUser(), getSignals()])
   if (!user) redirect('/sign-in')
 
   const isPro = user.tier === 'pro' && user.subscriptionStatus === 'active'
   const today = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   })
 
-  // Free users get 1 deterministic signal for the day (based on date seed)
-  const freeSignal =
-    signals.length > 0
-      ? signals[Math.floor(Date.now() / 86400000) % signals.length]
-      : null
-
-  const proSignals = signals
+  const freeSignal = signals.length > 0
+    ? signals[Math.floor(Date.now() / 86400000) % signals.length]
+    : null
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
       <Header />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Page header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -54,32 +41,25 @@ export default async function DashboardPage() {
               {isPro && (
                 <span
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold"
-                  style={{
-                    backgroundColor: 'rgba(0,155,255,0.15)',
-                    color: '#009BFF',
-                    border: '1px solid rgba(0,155,255,0.3)',
-                  }}
+                  style={{ backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.3)' }}
                 >
-                  <Crown className="w-3 h-3" />
-                  PRO
+                  <Crown className="w-3 h-3" /> PRO
                 </span>
               )}
             </div>
-            <p className="text-sm" style={{ color: '#94a3b8' }}>{today}</p>
+            <p className="text-sm text-white">{today}</p>
           </div>
 
           <div
             className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
-            style={{ backgroundColor: '#404040', border: '1px solid #4a4a4a' }}
+            style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
           >
             <Zap className="w-4 h-4" style={{ color: '#009BFF' }} />
             <div>
               <p className="text-xs font-semibold text-white">
-                {isPro ? `${proSignals.length} Active Signals` : '1 Signal Today'}
+                {isPro ? `${signals.length} Active Signals` : '1 Signal Today'}
               </p>
-              <p className="text-xs" style={{ color: '#94a3b8' }}>
-                {isPro ? 'Full curated board' : 'Free daily pick'}
-              </p>
+              <p className="text-xs text-white">{isPro ? 'Full curated board' : 'Free daily pick'}</p>
             </div>
           </div>
         </div>
@@ -87,7 +67,7 @@ export default async function DashboardPage() {
         {signals.length === 0 ? (
           <EmptyState />
         ) : isPro ? (
-          <ProDashboard signals={proSignals} />
+          <ProDashboard signals={signals} />
         ) : (
           <FreeDashboard signal={freeSignal} allSignals={signals} />
         )}
@@ -107,23 +87,17 @@ function ProDashboard({ signals }: { signals: Awaited<ReturnType<typeof getSigna
     <div className="space-y-10">
       {byType.BUY.length > 0 && (
         <Section title="Buy Signals" color="#4ade80" count={byType.BUY.length}>
-          {byType.BUY.map((s) => (
-            <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />
-          ))}
+          {byType.BUY.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />)}
         </Section>
       )}
       {byType.WATCH.length > 0 && (
         <Section title="Watch / Hold" color="#fbbf24" count={byType.WATCH.length}>
-          {byType.WATCH.map((s) => (
-            <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />
-          ))}
+          {byType.WATCH.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />)}
         </Section>
       )}
       {byType.SHORT.length > 0 && (
         <Section title="Short / Avoid" color="#f87171" count={byType.SHORT.length}>
-          {byType.SHORT.map((s) => (
-            <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />
-          ))}
+          {byType.SHORT.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />)}
         </Section>
       )}
     </div>
@@ -142,7 +116,6 @@ function FreeDashboard({
   return (
     <div className="space-y-8">
       <UpgradeBanner />
-
       {signal && (
         <div>
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
@@ -154,14 +127,11 @@ function FreeDashboard({
           </div>
         </div>
       )}
-
       {lockedSignals.length > 0 && (
         <div>
           <h2 className="text-lg font-bold text-white mb-4">
             More Signals{' '}
-            <span className="text-sm font-normal" style={{ color: '#94a3b8' }}>
-              — Unlock with Pro
-            </span>
+            <span className="text-sm font-normal text-white">— Unlock with Pro</span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {lockedSignals.map((s) => (
@@ -174,26 +144,15 @@ function FreeDashboard({
   )
 }
 
-function Section({
-  title,
-  color,
-  count,
-  children,
-}: {
-  title: string
-  color: string
-  count: number
-  children: React.ReactNode
+function Section({ title, color, count, children }: {
+  title: string; color: string; count: number; children: React.ReactNode
 }) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-5">
         <div className="w-1 h-6 rounded-full" style={{ backgroundColor: color }} />
         <h2 className="text-lg font-bold text-white">{title}</h2>
-        <span
-          className="px-2 py-0.5 rounded-full text-xs font-bold"
-          style={{ backgroundColor: `${color}20`, color }}
-        >
+        <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: `${color}20`, color }}>
           {count}
         </span>
       </div>
@@ -206,18 +165,13 @@ function EmptyState() {
   return (
     <div
       className="rounded-2xl p-16 flex flex-col items-center justify-center text-center"
-      style={{ backgroundColor: '#404040', border: '1px solid #4a4a4a' }}
+      style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
     >
-      <div
-        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-        style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}
-      >
+      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}>
         <TrendingUp className="w-8 h-8" style={{ color: '#009BFF' }} />
       </div>
       <h3 className="text-xl font-bold text-white mb-2">No signals yet</h3>
-      <p className="text-sm max-w-sm" style={{ color: '#94a3b8' }}>
-        Signals will appear here once they&apos;ve been added to the board. Check back soon.
-      </p>
+      <p className="text-sm text-white max-w-sm">Signals will appear here once they&apos;ve been added to the board. Check back soon.</p>
     </div>
   )
 }

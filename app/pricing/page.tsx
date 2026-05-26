@@ -29,24 +29,18 @@ export default function PricingPage() {
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
-          <h1 className="text-4xl sm:text-5xl font-black text-white">
-            Choose Your Plan
-          </h1>
-          <p className="mt-4 text-lg" style={{ color: '#94a3b8' }}>
-            Start free. Upgrade to Pro when you want the full picture.
-          </p>
+          <h1 className="text-4xl sm:text-5xl font-black text-white">Choose Your Plan</h1>
+          <p className="mt-4 text-lg text-white">Start free. Upgrade to Pro when you want the full picture.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          {/* Free Tier */}
+          {/* Free Tier — text colors deliberately kept muted per design spec */}
           <div
             className="rounded-2xl p-8 flex flex-col"
-            style={{ backgroundColor: '#404040', border: '1px solid #4a4a4a' }}
+            style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
           >
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#94a3b8' }}>
-                Free
-              </p>
+              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#94a3b8' }}>Free</p>
               <div className="mt-4 mb-2">
                 <span className="text-5xl font-black text-white">$0</span>
               </div>
@@ -64,8 +58,8 @@ export default function PricingPage() {
 
             <Link
               href="/sign-up"
-              className="mt-8 block w-full text-center py-3.5 rounded-xl font-semibold transition-colors"
-              style={{ backgroundColor: '#3a3a3a', color: '#e2e8f0', border: '1px solid #4a4a4a' }}
+              className="mt-8 block w-full text-center py-3.5 rounded-xl font-semibold transition-colors text-white"
+              style={{ backgroundColor: '#3a3a3a', border: '1px solid rgba(255,255,255,0.2)' }}
             >
               Get Started Free
             </Link>
@@ -88,14 +82,12 @@ export default function PricingPage() {
             </div>
 
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#009BFF' }}>
-                Pro
-              </p>
+              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#009BFF' }}>Pro</p>
               <div className="mt-4 mb-2 flex items-end gap-2">
                 <span className="text-5xl font-black text-white">$15</span>
-                <span className="mb-2" style={{ color: '#94a3b8' }}>/month</span>
+                <span className="mb-2 text-white">/month</span>
               </div>
-              <p className="text-sm" style={{ color: '#94a3b8' }}>Billed monthly, cancel anytime</p>
+              <p className="text-sm text-white">Billed monthly, cancel anytime</p>
             </div>
 
             <ul className="mt-8 space-y-4 flex-1">
@@ -116,20 +108,15 @@ export default function PricingPage() {
           </div>
         </div>
 
-        <p className="text-center mt-10 text-sm" style={{ color: '#94a3b8' }}>
-          Payments processed securely by Stripe. Holoture does not store your card details.
-          <br />
-          <span className="font-medium" style={{ color: '#009BFF' }}>Not financial advice.</span> Always do your own research.
+        <p className="text-center mt-10 text-sm text-white">
+          Payments processed securely by Stripe. Holoture does not store your card details. Not financial advice. Always do your own research.
         </p>
       </div>
 
-      <footer style={{ borderTop: '1px solid #4a4a4a', backgroundColor: '#404040' }}>
+      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.2)', backgroundColor: '#404040' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center gap-2">
           <TrendingUp className="w-4 h-4" style={{ color: '#009BFF' }} />
-          <span className="text-sm font-bold text-white">
-            Holo<span style={{ color: '#009BFF' }}>ture</span>
-          </span>
-          <span className="text-sm" style={{ color: '#94a3b8' }}>— AI Stock Signals</span>
+          <span className="text-sm font-bold text-white">Holo<span style={{ color: '#009BFF' }}>ture</span></span>
         </div>
       </footer>
     </div>

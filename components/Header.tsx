@@ -1,23 +1,36 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useUser, UserButton } from '@clerk/nextjs'
-import { TrendingUp } from 'lucide-react'
+import { TrendingUp, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+const NAV_LINKS = [
+  { href: '/dashboard', label: 'Dashboard' },
+  { href: '/news', label: 'News' },
+  { href: '/trends', label: 'Trends' },
+  { href: '/calendar', label: 'Calendar' },
+  { href: '/learn', label: 'Learn' },
+  { href: '/alerts', label: 'Alerts' },
+  { href: '/support', label: 'Support' },
+  { href: '/pricing', label: 'Pricing' },
+]
 
 export default function Header() {
   const pathname = usePathname()
   const { isSignedIn, isLoaded } = useUser()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
     <header
-      style={{ borderBottom: '1px solid #4a4a4a', backgroundColor: '#404040' }}
+      style={{ borderBottom: '1px solid rgba(255,255,255,0.2)', backgroundColor: '#404040' }}
       className="sticky top-0 z-50"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2 group">
+        <div className="flex items-center justify-between h-16 gap-4">
+          <Link href="/" className="flex items-center gap-2 shrink-0">
             <div
               style={{ backgroundColor: '#009BFF' }}
               className="w-8 h-8 rounded-lg flex items-center justify-center"
@@ -29,22 +42,20 @@ export default function Header() {
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
-            <NavLink href="/dashboard" active={pathname === '/dashboard'}>
-              Dashboard
-            </NavLink>
-            <NavLink href="/pricing" active={pathname === '/pricing'}>
-              Pricing
-            </NavLink>
+          <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
+            {NAV_LINKS.map(({ href, label }) => (
+              <NavLink key={href} href={href} active={pathname === href}>
+                {label}
+              </NavLink>
+            ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             {isLoaded && !isSignedIn && (
               <>
                 <Link
                   href="/sign-in"
-                  style={{ color: '#94a3b8' }}
-                  className="text-sm font-medium hover:text-white transition-colors"
+                  className="text-sm font-medium text-white hover:opacity-70 transition-opacity hidden sm:block"
                 >
                   Sign in
                 </Link>
@@ -58,17 +69,42 @@ export default function Header() {
               </>
             )}
             {isLoaded && isSignedIn && (
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: 'w-9 h-9',
-                  },
-                }}
-              />
+              <UserButton appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
             )}
+            <button
+              className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
       </div>
+
+      {mobileOpen && (
+        <div
+          className="lg:hidden border-t"
+          style={{ backgroundColor: '#404040', borderColor: 'rgba(255,255,255,0.2)' }}
+        >
+          <nav className="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-1">
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMobileOpen(false)}
+                className={cn(
+                  'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                  pathname === href
+                    ? 'text-white bg-white/10'
+                    : 'text-white/70 hover:text-white hover:bg-white/5'
+                )}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
     </header>
   )
 }
@@ -86,10 +122,9 @@ function NavLink({
     <Link
       href={href}
       className={cn(
-        'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-        active ? 'text-white' : 'text-slate-400 hover:text-white'
+        'px-3 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap',
+        active ? 'text-white bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5'
       )}
-      style={active ? { backgroundColor: '#3a3a3a', color: '#009BFF' } : {}}
     >
       {children}
     </Link>

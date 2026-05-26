@@ -9,9 +9,9 @@ export default function FreeSignalCard({ signal }: { signal: Signal }) {
       <div
         className="absolute inset-0 rounded-xl flex flex-col items-center justify-center gap-3"
         style={{
-          backgroundColor: 'rgba(53, 53, 53, 0.85)',
+          backgroundColor: 'rgba(53,53,53,0.85)',
           backdropFilter: 'blur(4px)',
-          border: '1px solid #4a4a4a',
+          border: '1px solid rgba(255,255,255,0.2)',
         }}
       >
         <div
@@ -21,10 +21,14 @@ export default function FreeSignalCard({ signal }: { signal: Signal }) {
           <Lock className="w-6 h-6" style={{ color: '#009BFF' }} />
         </div>
         <div className="text-center px-4">
-          <p className="font-semibold text-white text-sm">Pro Signal</p>
-          <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>
+          <p className="font-semibold text-sm" style={{ color: '#009BFF' }}>Pro Signal</p>
+          <Link
+            href="/pricing"
+            className="inline-block mt-2 px-4 py-1.5 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-opacity"
+            style={{ backgroundColor: '#009BFF' }}
+          >
             Upgrade to see full details
-          </p>
+          </Link>
         </div>
       </div>
     </div>
@@ -37,7 +41,7 @@ export function UpgradeBanner() {
       className="rounded-xl p-6 flex flex-col sm:flex-row items-center gap-4"
       style={{
         background: 'linear-gradient(135deg, #404040 0%, #3a3a3a 100%)',
-        border: '1px solid rgba(0,155,255,0.3)',
+        border: '1px solid rgba(255,255,255,0.2)',
       }}
     >
       <div
@@ -48,7 +52,7 @@ export function UpgradeBanner() {
       </div>
       <div className="text-center sm:text-left flex-1">
         <h3 className="font-bold text-white">Unlock the Full Signal Board</h3>
-        <p className="text-sm mt-1" style={{ color: '#94a3b8' }}>
+        <p className="text-sm mt-1 text-white">
           Pro members get access to all curated signals with entry zones, confidence scores,
           AI summaries, and time horizons — updated daily.
         </p>
