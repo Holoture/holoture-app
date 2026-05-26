@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import Header from '@/components/Header'
-import { Plus, TrendingUp, TrendingDown, Minus, Gift, Infinity } from 'lucide-react'
+import { Plus, TrendingUp, TrendingDown, Minus, Gift, Infinity, Zap } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import SignalDeleteButton from './SignalDeleteButton'
 import SignalToggleButton from './SignalToggleButton'
@@ -114,7 +114,7 @@ export default async function AdminSignalsPage() {
               <table className="w-full text-sm">
                 <thead style={{ backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid var(--border)' }}>
                   <tr>
-                    {['Code', 'Type', 'Uses', 'Status', ''].map((h) => (
+                    {['Code', 'Tier', 'Duration', 'Uses', 'Status', ''].map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white">{h}</th>
                     ))}
                   </tr>
@@ -129,12 +129,8 @@ export default async function AdminSignalsPage() {
                       }}
                     >
                       <td className="px-4 py-3 font-mono font-bold text-white tracking-wider">{promo.code}</td>
-                      <td className="px-4 py-3">
-                        {promo.type === 'lifetime'
-                          ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.3)' }}><Infinity className="w-3 h-3" />Lifetime</span>
-                          : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: 'rgba(245,158,11,0.15)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.3)' }}>1 Month</span>
-                        }
-                      </td>
+                      <td className="px-4 py-3"><PromoTierBadge type={promo.type} /></td>
+                      <td className="px-4 py-3"><PromoDurationBadge type={promo.type} /></td>
                       <td className="px-4 py-3 text-white">
                         <span className="font-semibold">{promo.usedCount}</span>
                         <span className="text-white"> / {promo.maxUses}</span>
@@ -168,4 +164,40 @@ function SignalTypeBadge({ type }: { type: string }) {
 function ConfidencePill({ value }: { value: number }) {
   const color = value >= 80 ? '#4ade80' : value >= 60 ? '#fbbf24' : '#f87171'
   return <span className="text-sm font-bold" style={{ color }}>{value}%</span>
+}
+
+function PromoTierBadge({ type }: { type: string }) {
+  const isMax = type === 'max_lifetime' || type === 'max_1month'
+  if (isMax) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold"
+        style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.25), rgba(79,70,229,0.2))', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.4)' }}>
+        <Zap className="w-3 h-3" />Max
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold"
+      style={{ backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.3)' }}>
+      Pro
+    </span>
+  )
+}
+
+function PromoDurationBadge({ type }: { type: string }) {
+  const isLifetime = type === 'pro_lifetime' || type === 'max_lifetime' || type === 'lifetime'
+  if (isLifetime) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold"
+        style={{ backgroundColor: 'rgba(74,222,128,0.15)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)' }}>
+        <Infinity className="w-3 h-3" />Lifetime
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold"
+      style={{ backgroundColor: 'rgba(245,158,11,0.15)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.3)' }}>
+      1 Month
+    </span>
+  )
 }

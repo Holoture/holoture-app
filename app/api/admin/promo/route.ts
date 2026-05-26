@@ -2,6 +2,8 @@ import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+const VALID_TYPES = ['pro_1month', 'pro_lifetime', 'max_1month', 'max_lifetime']
+
 async function adminGuard() {
   const { userId } = await auth()
   return userId && userId === process.env.ADMIN_USER_ID ? userId : null
@@ -18,7 +20,7 @@ export async function POST(request: Request) {
 
   const body = await request.json()
   const code = typeof body.code === 'string' ? body.code.trim().toUpperCase() : ''
-  const type = body.type === 'lifetime' || body.type === '1month' ? body.type : null
+  const type = VALID_TYPES.includes(body.type) ? body.type : null
   const maxUses = parseInt(body.maxUses)
 
   if (!code || !type || isNaN(maxUses) || maxUses < 1) {
