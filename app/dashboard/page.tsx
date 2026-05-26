@@ -27,7 +27,17 @@ export default async function DashboardPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
-  const [user, signals, lastLog] = await Promise.all([getOrCreateUser(), getSignals(), getLastGenerationLog()])
+  let user: Awaited<ReturnType<typeof getOrCreateUser>> = null
+  let signals: Awaited<ReturnType<typeof getSignals>> = []
+  let lastLog: Awaited<ReturnType<typeof getLastGenerationLog>> = null
+
+  try {
+    ;[user, signals, lastLog] = await Promise.all([getOrCreateUser(), getSignals(), getLastGenerationLog()])
+  } catch (e) {
+    console.error('[dashboard] data fetch error:', e)
+    throw e
+  }
+
   if (!user) redirect('/sign-in')
 
   const now = new Date()
@@ -104,17 +114,17 @@ function ProDashboard({ signals }: { signals: Awaited<ReturnType<typeof getSigna
     <div className="space-y-10">
       {byType.BUY.length > 0 && (
         <Section title="Buy Signals" color="#4ade80" count={byType.BUY.length}>
-          {byType.BUY.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />)}
+          {byType.BUY.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate instanceof Date ? s.signalDate.toISOString() : String(s.signalDate) }} />)}
         </Section>
       )}
       {byType.WATCH.length > 0 && (
         <Section title="Watch / Hold" color="#fbbf24" count={byType.WATCH.length}>
-          {byType.WATCH.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />)}
+          {byType.WATCH.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate instanceof Date ? s.signalDate.toISOString() : String(s.signalDate) }} />)}
         </Section>
       )}
       {byType.SHORT.length > 0 && (
         <Section title="Short / Avoid" color="#f87171" count={byType.SHORT.length}>
-          {byType.SHORT.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />)}
+          {byType.SHORT.map((s) => <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate instanceof Date ? s.signalDate.toISOString() : String(s.signalDate) }} />)}
         </Section>
       )}
     </div>
@@ -152,7 +162,7 @@ function FreeDashboard({
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {lockedSignals.map((s) => (
-              <FreeSignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />
+              <FreeSignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate instanceof Date ? s.signalDate.toISOString() : String(s.signalDate) }} />
             ))}
           </div>
         </div>

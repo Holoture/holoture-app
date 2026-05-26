@@ -10,13 +10,21 @@ export async function getOrCreateUser() {
 
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? ''
 
-  const user = await prisma.user.upsert({
-    where: { clerkId: userId },
-    update: {},
-    create: { clerkId: userId, email },
-  })
-
-  return user
+  try {
+    const user = await prisma.user.upsert({
+      where: { clerkId: userId },
+      update: {},
+      create: { clerkId: userId, email },
+    })
+    return user
+  } catch (e) {
+    // Upsert create can fail on unique email constraint if another row has the same email.
+    // Fall back to finding the existing record by clerkId.
+    const existing = await prisma.user.findUnique({ where: { clerkId: userId } })
+    if (existing) return existing
+    console.error('[getOrCreateUser] failed to upsert and no existing user found', e)
+    return null
+  }
 }
 
 export async function getUserTier(clerkId: string): Promise<'free' | 'pro'> {
