@@ -15,7 +15,11 @@ async function getSignals() {
 }
 
 async function getPromoCodes() {
-  return prisma.promoCode.findMany({ orderBy: { createdAt: 'desc' } })
+  try {
+    return await prisma.promoCode.findMany({ orderBy: { createdAt: 'desc' } })
+  } catch {
+    return []
+  }
 }
 
 export default async function AdminSignalsPage() {

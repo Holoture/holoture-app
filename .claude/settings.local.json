@@ -22,7 +22,9 @@
       "PowerShell(vercel env *)",
       "PowerShell(git *)",
       "PowerShell(Test-Path *)",
-      "PowerShell($git = 'C:\\\\Program Files\\\\Git\\\\bin\\\\git.exe'; & $git -C \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\" status --short)"
+      "PowerShell($git = 'C:\\\\Program Files\\\\Git\\\\bin\\\\git.exe'; & $git -C \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\" status --short)",
+      "PowerShell($git = 'C:\\\\Program Files\\\\Git\\\\bin\\\\git.exe'; & $git -C \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\" push origin master 2>&1)",
+      "PowerShell($git = 'C:\\\\Program Files\\\\Git\\\\bin\\\\git.exe'; & $git -C \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\" ls-files app/generated 2>&1 | Select-Object -First 5)"
     ]
   }
 }

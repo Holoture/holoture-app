@@ -10,7 +10,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/stripe/webhook',
 ])
 
-export default clerkMiddleware(
+export const proxy = clerkMiddleware(
   async (auth, request) => {
     if (!isPublicRoute(request)) {
       await auth.protect()
@@ -21,6 +21,8 @@ export default clerkMiddleware(
     secretKey: process.env.CLERK_SECRET_KEY,
   }
 )
+
+export default proxy
 
 export const config = {
   matcher: [
