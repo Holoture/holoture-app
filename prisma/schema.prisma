@@ -8,15 +8,38 @@ datasource db {
 }
 
 model User {
-  id                   String   @id @default(cuid())
-  clerkId              String   @unique
-  email                String   @unique
-  stripeCustomerId     String?  @unique
+  id                   String          @id @default(cuid())
+  clerkId              String          @unique
+  email                String          @unique
+  stripeCustomerId     String?         @unique
   stripeSubscriptionId String?
   subscriptionStatus   String?
-  tier                 String   @default("free")
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  tier                 String          @default("free")
+  isLifetimePro        Boolean         @default(false)
+  proExpiresAt         DateTime?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  redemptions          RedemptionLog[]
+}
+
+model PromoCode {
+  id          String          @id @default(cuid())
+  code        String          @unique
+  type        String
+  maxUses     Int
+  usedCount   Int             @default(0)
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  redemptions RedemptionLog[]
+}
+
+model RedemptionLog {
+  id          String    @id @default(cuid())
+  userId      String
+  promoCodeId String
+  redeemedAt  DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [clerkId])
+  promoCode   PromoCode @relation(fields: [promoCodeId], references: [id])
 }
 
 model Signal {

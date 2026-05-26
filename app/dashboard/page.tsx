@@ -21,7 +21,11 @@ export default async function DashboardPage() {
   const [user, signals] = await Promise.all([getOrCreateUser(), getSignals()])
   if (!user) redirect('/sign-in')
 
-  const isPro = user.tier === 'pro' && user.subscriptionStatus === 'active'
+  const now = new Date()
+  const isPro =
+    (user.tier === 'pro' && user.subscriptionStatus === 'active') ||
+    user.isLifetimePro ||
+    (user.proExpiresAt !== null && user.proExpiresAt > now)
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   })

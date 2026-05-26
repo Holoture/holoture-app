@@ -4,8 +4,9 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useUser, UserButton } from '@clerk/nextjs'
-import { TrendingUp, Menu, X } from 'lucide-react'
+import { TrendingUp, Menu, X, Gift } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import PromoModal from './PromoModal'
 
 const NAV_LINKS = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -22,6 +23,7 @@ export default function Header() {
   const pathname = usePathname()
   const { isSignedIn, isLoaded } = useUser()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [promoOpen, setPromoOpen] = useState(false)
 
   return (
     <header
@@ -69,7 +71,16 @@ export default function Header() {
               </>
             )}
             {isLoaded && isSignedIn && (
-              <UserButton appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
+              <>
+                <button
+                  onClick={() => setPromoOpen(true)}
+                  className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white"
+                  title="Redeem promo code"
+                >
+                  <Gift className="w-5 h-5" />
+                </button>
+                <UserButton appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
+              </>
             )}
             <button
               className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
@@ -80,6 +91,8 @@ export default function Header() {
           </div>
         </div>
       </div>
+
+      <PromoModal isOpen={promoOpen} onClose={() => setPromoOpen(false)} />
 
       {mobileOpen && (
         <div

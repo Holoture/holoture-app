@@ -20,7 +20,9 @@
       "PowerShell(vercel *)",
       "PowerShell(vercel ls *)",
       "PowerShell(vercel env *)",
-      "PowerShell(git *)"
+      "PowerShell(git *)",
+      "PowerShell(Test-Path *)",
+      "PowerShell($git = 'C:\\\\Program Files\\\\Git\\\\bin\\\\git.exe'; & $git -C \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\" status --short)"
     ]
   }
 }

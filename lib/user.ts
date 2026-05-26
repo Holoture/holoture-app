@@ -22,10 +22,12 @@ export async function getOrCreateUser() {
 export async function getUserTier(clerkId: string): Promise<'free' | 'pro'> {
   const user = await prisma.user.findUnique({
     where: { clerkId },
-    select: { tier: true, subscriptionStatus: true },
+    select: { tier: true, subscriptionStatus: true, isLifetimePro: true, proExpiresAt: true },
   })
 
   if (!user) return 'free'
   if (user.tier === 'pro' && user.subscriptionStatus === 'active') return 'pro'
+  if (user.isLifetimePro) return 'pro'
+  if (user.proExpiresAt && user.proExpiresAt > new Date()) return 'pro'
   return 'free'
 }
