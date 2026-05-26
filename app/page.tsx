@@ -30,7 +30,7 @@ const SAMPLE_TICKERS = ['NVDA', 'MSFT', 'AAPL', 'META', 'AMZN', 'TSLA']
 
 export default function LandingPage() {
   return (
-    <div className="min-h-full" style={{ backgroundColor: '#353535' }}>
+    <div className="min-h-full" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
 
       {/* Hero */}
@@ -68,8 +68,8 @@ export default function LandingPage() {
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/sign-up"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-white text-lg hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#009BFF' }}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: '#009BFF', color: 'white' }}
             >
               Start Free Today
               <ChevronRight className="w-5 h-5" />
@@ -77,7 +77,7 @@ export default function LandingPage() {
             <Link
               href="/pricing"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-colors text-white"
-              style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
+              style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
             >
               View Pricing
             </Link>
@@ -88,7 +88,7 @@ export default function LandingPage() {
               <div
                 key={ticker}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg"
-                style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
+                style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
               >
                 <TrendingUp className="w-4 h-4" style={{ color: '#009BFF' }} />
                 <span className="font-bold text-white text-sm">{ticker}</span>
@@ -99,7 +99,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20" style={{ backgroundColor: '#404040' }}>
+      <section className="py-20" style={{ backgroundColor: 'var(--bg-surface)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-black text-white">
@@ -113,7 +113,7 @@ export default function LandingPage() {
               <div
                 key={title}
                 className="rounded-xl p-6"
-                style={{ backgroundColor: '#353535', border: '1px solid rgba(255,255,255,0.2)' }}
+                style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}
               >
                 <div
                   className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
@@ -134,14 +134,14 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-black text-white">Simple, Transparent Pricing</h2>
-            <p className="mt-4 text-white">Start free. Upgrade when you're ready.</p>
+            <p className="mt-4 text-white">Start free. Upgrade when you&apos;re ready.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Free */}
             <div
               className="rounded-2xl p-8"
-              style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
+              style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
             >
               <p className="text-sm font-semibold uppercase tracking-wider text-white">Free</p>
               <div className="mt-3 mb-6">
@@ -151,7 +151,7 @@ export default function LandingPage() {
               <ul className="space-y-3 mb-8">
                 {['1 randomized AI signal per day', 'Basic signal info', 'No credit card required'].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-white">
-                    <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}>
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--border)' }}>
                       <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#009BFF' }} />
                     </div>
                     {item}
@@ -161,7 +161,7 @@ export default function LandingPage() {
               <Link
                 href="/sign-up"
                 className="block w-full text-center py-3 rounded-xl font-semibold transition-colors text-white"
-                style={{ backgroundColor: '#3a3a3a', border: '1px solid rgba(255,255,255,0.2)' }}
+                style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
               >
                 Get Started Free
               </Link>
@@ -171,7 +171,7 @@ export default function LandingPage() {
             <div
               className="rounded-2xl p-8 relative"
               style={{
-                background: 'linear-gradient(135deg, #404040 0%, #3a3a3a 100%)',
+                background: 'linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-surface-2) 100%)',
                 border: '2px solid rgba(0,155,255,0.5)',
               }}
             >
@@ -206,8 +206,8 @@ export default function LandingPage() {
               </ul>
               <Link
                 href="/sign-up"
-                className="block w-full text-center py-3 rounded-xl font-bold text-white hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#009BFF' }}
+                className="block w-full text-center py-3 rounded-xl font-bold hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#009BFF', color: 'white' }}
               >
                 Start Pro — $15/month
               </Link>
@@ -216,7 +216,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.2)', backgroundColor: '#404040' }}>
+      <footer style={{ borderTop: '1px solid var(--border)', backgroundColor: 'var(--bg-surface)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Image src="/logo.png" alt="Holoture" height={52} width={52} />

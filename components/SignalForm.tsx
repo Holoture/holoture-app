@@ -24,13 +24,16 @@ const defaultData: SignalFormData = {
   confidence: '75', timeHorizon: '2-4 weeks', thesis: '', aiSummary: '', sector: '',
 }
 
-const inputStyle = {
-  backgroundColor: '#2a2a2a',
-  border: '1px solid rgba(255,255,255,0.2)',
-}
 const inputClass = 'w-full rounded-lg px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:ring-2 transition-shadow'
-const focusStyle = { '--tw-ring-color': '#009BFF' } as React.CSSProperties
 const labelClass = 'block text-xs font-medium mb-1 text-white'
+
+function getInputStyle() {
+  return {
+    backgroundColor: 'var(--bg-surface-3)',
+    border: '1px solid var(--border)',
+    '--tw-ring-color': '#009BFF',
+  } as React.CSSProperties
+}
 
 export default function SignalForm({ signalId }: { signalId?: string }) {
   const router = useRouter()
@@ -83,18 +86,18 @@ export default function SignalForm({ signalId }: { signalId?: string }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>Ticker *</label>
-          <input name="ticker" value={form.ticker} onChange={handleChange} placeholder="e.g. NVDA" required className={inputClass} style={{ ...inputStyle, ...focusStyle }} />
+          <input name="ticker" value={form.ticker} onChange={handleChange} placeholder="e.g. NVDA" required className={inputClass} style={getInputStyle()} />
         </div>
         <div>
           <label className={labelClass}>Company Name *</label>
-          <input name="companyName" value={form.companyName} onChange={handleChange} placeholder="e.g. NVIDIA Corporation" required className={inputClass} style={{ ...inputStyle, ...focusStyle }} />
+          <input name="companyName" value={form.companyName} onChange={handleChange} placeholder="e.g. NVIDIA Corporation" required className={inputClass} style={getInputStyle()} />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
           <label className={labelClass}>Signal Type *</label>
-          <select name="signalType" value={form.signalType} onChange={handleChange} required className={inputClass} style={{ ...inputStyle, ...focusStyle }}>
+          <select name="signalType" value={form.signalType} onChange={handleChange} required className={inputClass} style={getInputStyle()}>
             <option value="BUY">BUY</option>
             <option value="WATCH">WATCH</option>
             <option value="SHORT">SHORT</option>
@@ -104,11 +107,11 @@ export default function SignalForm({ signalId }: { signalId?: string }) {
         </div>
         <div>
           <label className={labelClass}>Sector *</label>
-          <input name="sector" value={form.sector} onChange={handleChange} placeholder="e.g. Technology" required className={inputClass} style={{ ...inputStyle, ...focusStyle }} />
+          <input name="sector" value={form.sector} onChange={handleChange} placeholder="e.g. Technology" required className={inputClass} style={getInputStyle()} />
         </div>
         <div>
           <label className={labelClass}>Time Horizon *</label>
-          <select name="timeHorizon" value={form.timeHorizon} onChange={handleChange} className={inputClass} style={{ ...inputStyle, ...focusStyle }}>
+          <select name="timeHorizon" value={form.timeHorizon} onChange={handleChange} className={inputClass} style={getInputStyle()}>
             <option value="1-3 days">1-3 days</option>
             <option value="1-2 weeks">1-2 weeks</option>
             <option value="2-4 weeks">2-4 weeks</option>
@@ -128,7 +131,7 @@ export default function SignalForm({ signalId }: { signalId?: string }) {
         ].map(({ name, label }) => (
           <div key={name}>
             <label className={labelClass}>{label}</label>
-            <input name={name} type="number" step="0.01" value={form[name as keyof SignalFormData]} onChange={handleChange} placeholder="0.00" required className={inputClass} style={{ ...inputStyle, ...focusStyle }} />
+            <input name={name} type="number" step="0.01" value={form[name as keyof SignalFormData]} onChange={handleChange} placeholder="0.00" required className={inputClass} style={getInputStyle()} />
           </div>
         ))}
       </div>
@@ -141,19 +144,19 @@ export default function SignalForm({ signalId }: { signalId?: string }) {
 
       <div>
         <label className={labelClass}>AI Summary * (shown on card)</label>
-        <textarea name="aiSummary" value={form.aiSummary} onChange={handleChange} placeholder="Brief AI-generated summary (2-3 sentences)..." required rows={3} className={inputClass} style={{ ...inputStyle, ...focusStyle, resize: 'vertical' }} />
+        <textarea name="aiSummary" value={form.aiSummary} onChange={handleChange} placeholder="Brief AI-generated summary (2-3 sentences)..." required rows={3} className={inputClass} style={{ ...getInputStyle(), resize: 'vertical' }} />
       </div>
 
       <div>
         <label className={labelClass}>Full Thesis * (shown on expand)</label>
-        <textarea name="thesis" value={form.thesis} onChange={handleChange} placeholder="Detailed investment thesis, catalysts, and supporting analysis..." required rows={5} className={inputClass} style={{ ...inputStyle, ...focusStyle, resize: 'vertical' }} />
+        <textarea name="thesis" value={form.thesis} onChange={handleChange} placeholder="Detailed investment thesis, catalysts, and supporting analysis..." required rows={5} className={inputClass} style={{ ...getInputStyle(), resize: 'vertical' }} />
       </div>
 
       <div className="flex justify-end gap-3 pt-2">
-        <button type="button" onClick={() => router.back()} className="px-5 py-2.5 rounded-lg text-sm font-medium transition-colors text-white" style={{ backgroundColor: '#3a3a3a', border: '1px solid rgba(255,255,255,0.2)' }}>
+        <button type="button" onClick={() => router.back()} className="px-5 py-2.5 rounded-lg text-sm font-medium transition-colors text-white" style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}>
           Cancel
         </button>
-        <button type="submit" disabled={loading} className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity disabled:opacity-50" style={{ backgroundColor: '#009BFF' }}>
+        <button type="submit" disabled={loading} className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-opacity disabled:opacity-50" style={{ backgroundColor: '#009BFF', color: 'white' }}>
           {loading ? 'Saving…' : 'Save Signal'}
         </button>
       </div>

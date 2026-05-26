@@ -10,7 +10,7 @@ export default async function NewSignalPage() {
   if (!userId || userId !== process.env.ADMIN_USER_ID) redirect('/dashboard')
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-8">
@@ -20,7 +20,7 @@ export default async function NewSignalPage() {
           <h1 className="text-2xl font-black text-white">Add New Signal</h1>
           <p className="text-sm mt-1 text-white">Create a new stock signal. It will be visible to users immediately upon saving.</p>
         </div>
-        <div className="rounded-2xl p-6 sm:p-8" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
+        <div className="rounded-2xl p-6 sm:p-8" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
           <SignalForm />
         </div>
       </div>

@@ -6,7 +6,7 @@ export default function SignUpPage() {
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center px-4"
-      style={{ backgroundColor: '#353535' }}
+      style={{ backgroundColor: 'var(--bg-primary)' }}
     >
       <div className="mb-8 flex flex-col items-center gap-3">
         <Link href="/" className="flex items-center gap-2">
@@ -14,7 +14,7 @@ export default function SignUpPage() {
             className="w-10 h-10 rounded-xl flex items-center justify-center"
             style={{ backgroundColor: '#009BFF' }}
           >
-            <TrendingUp className="w-6 h-6 text-white" />
+            <TrendingUp className="w-6 h-6" style={{ color: 'white' }} />
           </div>
           <span className="text-2xl font-black text-white">
             Holo<span style={{ color: '#009BFF' }}>ture</span>

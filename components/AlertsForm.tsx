@@ -57,7 +57,7 @@ export default function AlertsForm({ initial }: { initial: Prefs | null }) {
     <div className="space-y-6">
       <div className="space-y-3">
         {SETTINGS.map(({ key, icon: Icon, label, description }) => (
-          <div key={key} className="flex items-start gap-4 p-4 rounded-xl" style={{ backgroundColor: '#3a3a3a', border: '1px solid rgba(255,255,255,0.15)' }}>
+          <div key={key} className="flex items-start gap-4 p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-15)' }}>
             <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}>
               <Icon className="w-4 h-4" style={{ color: '#009BFF' }} />
             </div>
@@ -68,7 +68,7 @@ export default function AlertsForm({ initial }: { initial: Prefs | null }) {
             <button
               onClick={() => toggle(key as keyof Prefs)}
               className="relative shrink-0 w-11 h-6 rounded-full transition-colors"
-              style={{ backgroundColor: prefs[key as keyof Prefs] ? '#009BFF' : 'rgba(255,255,255,0.15)' }}
+              style={{ backgroundColor: prefs[key as keyof Prefs] ? '#009BFF' : 'var(--border-15)' }}
               aria-label={`Toggle ${label}`}
             >
               <span
@@ -82,7 +82,7 @@ export default function AlertsForm({ initial }: { initial: Prefs | null }) {
 
       {/* Confidence Threshold */}
       {prefs.highConfidenceAlert && (
-        <div className="p-4 rounded-xl" style={{ backgroundColor: '#3a3a3a', border: '1px solid rgba(255,255,255,0.15)' }}>
+        <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-15)' }}>
           <div className="flex items-center gap-2 mb-3">
             <BarChart3 className="w-4 h-4" style={{ color: '#009BFF' }} />
             <p className="font-semibold text-sm text-white">Confidence Threshold: {prefs.confidenceThreshold}%</p>
@@ -107,13 +107,13 @@ export default function AlertsForm({ initial }: { initial: Prefs | null }) {
         <button
           onClick={save}
           disabled={saving}
-          className="px-6 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-          style={{ backgroundColor: '#009BFF' }}
+          className="px-6 py-2.5 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
+          style={{ backgroundColor: '#009BFF', color: 'white' }}
         >
           {saving ? 'Saving…' : 'Save Preferences'}
         </button>
         {saved && (
-          <p className="text-sm text-white" style={{ color: '#4ade80' }}>Preferences saved!</p>
+          <p className="text-sm font-medium" style={{ color: '#4ade80' }}>Preferences saved!</p>
         )}
       </div>
     </div>

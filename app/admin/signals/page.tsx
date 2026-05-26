@@ -29,7 +29,7 @@ export default async function AdminSignalsPage() {
   const [signals, promoCodes] = await Promise.all([getSignals(), getPromoCodes()])
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex items-center justify-between mb-8">
@@ -41,22 +41,22 @@ export default async function AdminSignalsPage() {
           </div>
           <Link
             href="/admin/signals/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm text-white hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: '#009BFF' }}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
+            style={{ backgroundColor: '#009BFF', color: 'white' }}
           >
             <Plus className="w-4 h-4" /> Add Signal
           </Link>
         </div>
 
         {signals.length === 0 ? (
-          <div className="rounded-2xl p-16 text-center" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
+          <div className="rounded-2xl p-16 text-center" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
             <p className="text-white font-semibold mb-2">No signals yet</p>
             <p className="text-sm text-white">Click &quot;Add Signal&quot; to create your first signal.</p>
           </div>
         ) : (
-          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
+          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
             <table className="w-full text-sm">
-              <thead style={{ backgroundColor: '#404040', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
+              <thead style={{ backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid var(--border)' }}>
                 <tr>
                   {['Ticker', 'Type', 'Entry Zone', 'Target', 'Confidence', 'Horizon', 'Status', ''].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white">{h}</th>
@@ -68,8 +68,8 @@ export default async function AdminSignalsPage() {
                   <tr
                     key={signal.id}
                     style={{
-                      backgroundColor: i % 2 === 0 ? '#353535' : '#404040',
-                      borderBottom: '1px solid rgba(255,255,255,0.1)',
+                      backgroundColor: i % 2 === 0 ? 'var(--bg-primary)' : 'var(--bg-surface)',
+                      borderBottom: '1px solid var(--border-subtle)',
                     }}
                   >
                     <td className="px-4 py-3">
@@ -105,14 +105,14 @@ export default async function AdminSignalsPage() {
           </div>
 
           {promoCodes.length === 0 ? (
-            <div className="rounded-2xl p-10 text-center" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div className="rounded-2xl p-10 text-center" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
               <p className="text-white font-semibold">No promo codes yet</p>
               <p className="text-sm text-white mt-1">Create your first code above.</p>
             </div>
           ) : (
-            <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
               <table className="w-full text-sm">
-                <thead style={{ backgroundColor: '#404040', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
+                <thead style={{ backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid var(--border)' }}>
                   <tr>
                     {['Code', 'Type', 'Uses', 'Status', ''].map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white">{h}</th>
@@ -124,8 +124,8 @@ export default async function AdminSignalsPage() {
                     <tr
                       key={promo.id}
                       style={{
-                        backgroundColor: i % 2 === 0 ? '#353535' : '#404040',
-                        borderBottom: '1px solid rgba(255,255,255,0.1)',
+                        backgroundColor: i % 2 === 0 ? 'var(--bg-primary)' : 'var(--bg-surface)',
+                        borderBottom: '1px solid var(--border-subtle)',
                       }}
                     >
                       <td className="px-4 py-3 font-mono font-bold text-white tracking-wider">{promo.code}</td>
@@ -141,7 +141,7 @@ export default async function AdminSignalsPage() {
                       </td>
                       <td className="px-4 py-3"><PromoCodeToggle id={promo.id} isActive={promo.isActive} /></td>
                       <td className="px-4 py-3">
-                        <div className="h-1.5 w-20 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
+                        <div className="h-1.5 w-20 rounded-full" style={{ backgroundColor: 'var(--border-subtle)' }}>
                           <div className="h-1.5 rounded-full" style={{ width: `${Math.min((promo.usedCount / promo.maxUses) * 100, 100)}%`, backgroundColor: promo.usedCount >= promo.maxUses ? '#f87171' : '#009BFF' }} />
                         </div>
                       </td>

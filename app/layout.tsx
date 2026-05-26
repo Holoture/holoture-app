@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
+import Script from 'next/script'
+import ThemeProvider from '@/components/ThemeProvider'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -25,7 +27,16 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className="h-full">
-        <body className="min-h-full flex flex-col antialiased">{children}</body>
+        <body className="min-h-full flex flex-col antialiased">
+          <Script
+            id="theme-init"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `(function(){try{var t=localStorage.getItem('theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark')}catch(e){}})()`,
+            }}
+          />
+          <ThemeProvider>{children}</ThemeProvider>
+        </body>
       </html>
     </ClerkProvider>
   )

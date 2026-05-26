@@ -5,9 +5,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useUser, UserButton } from '@clerk/nextjs'
-import { Menu, X, Gift } from 'lucide-react'
+import { Menu, X, Gift, Sun, Moon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import PromoModal from './PromoModal'
+import { useTheme } from './ThemeProvider'
 
 const NAV_LINKS = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -25,10 +26,11 @@ export default function Header() {
   const { isSignedIn, isLoaded } = useUser()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [promoOpen, setPromoOpen] = useState(false)
+  const { theme, toggle } = useTheme()
 
   return (
     <header
-      style={{ borderBottom: '1px solid rgba(255,255,255,0.2)', backgroundColor: '#404040' }}
+      style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--bg-surface)' }}
       className="sticky top-0 z-50"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,8 +61,8 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/sign-up"
-                  style={{ backgroundColor: '#009BFF' }}
-                  className="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                  style={{ backgroundColor: '#009BFF', color: 'white' }}
+                  className="px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
                 >
                   Get Started
                 </Link>
@@ -68,6 +70,13 @@ export default function Header() {
             )}
             {isLoaded && isSignedIn && (
               <>
+                <button
+                  onClick={toggle}
+                  className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white"
+                  title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                >
+                  {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </button>
                 <button
                   onClick={() => setPromoOpen(true)}
                   className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white"
@@ -93,7 +102,7 @@ export default function Header() {
       {mobileOpen && (
         <div
           className="lg:hidden border-t"
-          style={{ backgroundColor: '#404040', borderColor: 'rgba(255,255,255,0.2)' }}
+          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}
         >
           <nav className="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-1">
             {NAV_LINKS.map(({ href, label }) => (

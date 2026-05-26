@@ -47,7 +47,7 @@ const FAQS = [
 
 export default function SupportPage() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-10">
@@ -63,7 +63,7 @@ export default function SupportPage() {
           <h2 className="text-lg font-bold text-white mb-5">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {FAQS.map((faq) => (
-              <details key={faq.q} className="group rounded-xl overflow-hidden" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <details key={faq.q} className="group rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
                 <summary className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none hover:bg-white/5 transition-colors">
                   <span className="font-semibold text-sm text-white">{faq.q}</span>
                   <ChevronDown className="w-4 h-4 text-white shrink-0 transition-transform group-open:rotate-180" />
@@ -77,7 +77,7 @@ export default function SupportPage() {
         </div>
 
         {/* Contact */}
-        <div className="rounded-2xl p-8" style={{ background: 'linear-gradient(135deg, #404040 0%, #3a3a3a 100%)', border: '1px solid rgba(0,155,255,0.3)' }}>
+        <div className="rounded-2xl p-8" style={{ background: 'linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-surface-2) 100%)', border: '1px solid rgba(0,155,255,0.3)' }}>
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}>
               <MessageCircle className="w-6 h-6" style={{ color: '#009BFF' }} />
@@ -89,8 +89,8 @@ export default function SupportPage() {
               </p>
               <a
                 href="mailto:support@holoture.com"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#009BFF' }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#009BFF', color: 'white' }}
               >
                 <Mail className="w-4 h-4" />
                 support@holoture.com

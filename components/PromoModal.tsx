@@ -67,7 +67,7 @@ export default function PromoModal({ isOpen, onClose }: { isOpen: boolean; onClo
     >
       <div
         className="w-full max-w-md rounded-2xl p-6 shadow-2xl"
-        style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
+        style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -99,8 +99,8 @@ export default function PromoModal({ isOpen, onClose }: { isOpen: boolean; onClo
                 disabled={result?.type === 'success'}
                 className="w-full rounded-lg px-3 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:ring-2 transition-shadow tracking-widest font-mono uppercase"
                 style={{
-                  backgroundColor: '#2a2a2a',
-                  border: '1px solid rgba(255,255,255,0.2)',
+                  backgroundColor: 'var(--bg-surface-3)',
+                  border: '1px solid var(--border)',
                   '--tw-ring-color': '#009BFF',
                 } as React.CSSProperties}
               />
@@ -122,8 +122,8 @@ export default function PromoModal({ isOpen, onClose }: { isOpen: boolean; onClo
             <button
               onClick={handleRedeem}
               disabled={loading || !code.trim() || result?.type === 'success'}
-              className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#009BFF' }}
+              className="w-full py-2.5 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
+              style={{ backgroundColor: '#009BFF', color: 'white' }}
             >
               {loading ? 'Redeeming…' : 'Redeem'}
             </button>

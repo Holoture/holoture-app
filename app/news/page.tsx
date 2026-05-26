@@ -40,7 +40,7 @@ export default async function NewsPage() {
   const moodColor = marketMood === 'Risk-On' ? '#4ade80' : marketMood === 'Risk-Off' ? '#f87171' : '#fbbf24'
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -52,7 +52,7 @@ export default async function NewsPage() {
             <p className="text-sm text-white">AI-curated headlines with bullish/bearish sentiment analysis</p>
           </div>
           {top.length > 0 && (
-            <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl shrink-0" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl shrink-0" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
               <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: moodColor }} />
               <div>
                 <p className="text-xs font-semibold text-white">Market Mood</p>
@@ -63,7 +63,7 @@ export default async function NewsPage() {
         </div>
 
         {top.length === 0 ? (
-          <div className="rounded-2xl p-16 flex flex-col items-center justify-center text-center" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
+          <div className="rounded-2xl p-16 flex flex-col items-center justify-center text-center" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
             <Newspaper className="w-10 h-10 mb-4" style={{ color: '#009BFF' }} />
             <h3 className="text-lg font-bold text-white mb-2">No headlines available</h3>
             <p className="text-sm text-white">Market news will appear here. Check back soon or add a FINNHUB_API_KEY.</p>
@@ -76,7 +76,7 @@ export default async function NewsPage() {
                 month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
               })
               return (
-                <div key={article.id} className="rounded-xl p-5" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
+                <div key={article.id} className="rounded-xl p-5" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
                   <div className="flex items-start gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2 flex-wrap">

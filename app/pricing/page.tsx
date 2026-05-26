@@ -24,7 +24,7 @@ const PRO_FEATURES = [
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -37,7 +37,7 @@ export default function PricingPage() {
           {/* Free Tier — text colors deliberately kept muted per design spec */}
           <div
             className="rounded-2xl p-8 flex flex-col"
-            style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
+            style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
           >
             <div>
               <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#94a3b8' }}>Free</p>
@@ -59,7 +59,7 @@ export default function PricingPage() {
             <Link
               href="/sign-up"
               className="mt-8 block w-full text-center py-3.5 rounded-xl font-semibold transition-colors text-white"
-              style={{ backgroundColor: '#3a3a3a', border: '1px solid rgba(255,255,255,0.2)' }}
+              style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
             >
               Get Started Free
             </Link>
@@ -69,7 +69,7 @@ export default function PricingPage() {
           <div
             className="rounded-2xl p-8 flex flex-col relative"
             style={{
-              background: 'linear-gradient(160deg, #404040 0%, #3a3a3a 100%)',
+              background: 'linear-gradient(160deg, var(--bg-surface) 0%, var(--bg-surface-2) 100%)',
               border: '2px solid rgba(0,155,255,0.5)',
             }}
           >
@@ -113,7 +113,7 @@ export default function PricingPage() {
         </p>
       </div>
 
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.2)', backgroundColor: '#404040' }}>
+      <footer style={{ borderTop: '1px solid var(--border)', backgroundColor: 'var(--bg-surface)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center gap-2">
           <TrendingUp className="w-4 h-4" style={{ color: '#009BFF' }} />
           <span className="text-sm font-bold text-white">Holo<span style={{ color: '#009BFF' }}>ture</span></span>

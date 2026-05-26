@@ -35,7 +35,7 @@ export default async function DashboardPage() {
     : null
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -56,7 +56,7 @@ export default async function DashboardPage() {
 
           <div
             className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
-            style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
+            style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
           >
             <Zap className="w-4 h-4" style={{ color: '#009BFF' }} />
             <div>
@@ -169,7 +169,7 @@ function EmptyState() {
   return (
     <div
       className="rounded-2xl p-16 flex flex-col items-center justify-center text-center"
-      style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
+      style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
     >
       <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}>
         <TrendingUp className="w-8 h-8" style={{ color: '#009BFF' }} />

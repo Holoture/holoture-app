@@ -27,7 +27,8 @@
       "PowerShell($git = 'C:\\\\Program Files\\\\Git\\\\bin\\\\git.exe'; & $git -C \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\" ls-files app/generated 2>&1 | Select-Object -First 5)",
       "PowerShell($git = 'C:\\\\Program Files\\\\Git\\\\bin\\\\git.exe'; & $git -C \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\" log --oneline -3 2>&1)",
       "PowerShell(Rename-Item *)",
-      "PowerShell(Remove-Item *)"
+      "PowerShell(Remove-Item *)",
+      "PowerShell(git add *)"
     ]
   }
 }

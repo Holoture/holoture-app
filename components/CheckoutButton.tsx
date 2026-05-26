@@ -22,8 +22,8 @@ export default function CheckoutButton() {
     <button
       onClick={handleClick}
       disabled={loading}
-      className="mt-8 block w-full text-center py-3.5 rounded-xl font-bold text-white hover:opacity-90 transition-opacity disabled:opacity-60"
-      style={{ backgroundColor: '#009BFF' }}
+      className="mt-8 block w-full text-center py-3.5 rounded-xl font-bold hover:opacity-90 transition-opacity disabled:opacity-60"
+      style={{ backgroundColor: '#009BFF', color: 'white' }}
     >
       {loading ? 'Redirecting…' : 'Upgrade to Pro — $15/month'}
     </button>

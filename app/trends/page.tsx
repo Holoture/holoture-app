@@ -73,7 +73,7 @@ export default async function TrendsPage() {
   const overallColor = positiveCount >= 3 ? '#4ade80' : positiveCount >= 2 ? '#fbbf24' : '#f87171'
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-8">
@@ -85,13 +85,13 @@ export default async function TrendsPage() {
         </div>
 
         {/* AI Market Summary */}
-        <div className="rounded-xl p-6 mb-8" style={{ background: 'linear-gradient(135deg, #404040 0%, #3a3a3a 100%)', border: '1px solid rgba(0,155,255,0.3)' }}>
+        <div className="rounded-xl p-6 mb-8" style={{ background: 'linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-surface-2) 100%)', border: '1px solid rgba(0,155,255,0.3)' }}>
           <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#009BFF' }}>AI Market Summary</p>
           <div className="flex items-start gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-lg font-black text-white">{overallTrend}</span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-bold text-white" style={{ backgroundColor: overallColor + '30', color: overallColor, border: `1px solid ${overallColor}50` }}>
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: overallColor + '30', color: overallColor, border: `1px solid ${overallColor}50` }}>
                   {positiveCount}/5 sectors positive
                 </span>
               </div>
@@ -138,7 +138,7 @@ export default async function TrendsPage() {
                   </div>
                 </div>
 
-                <div className="h-1.5 rounded-full mb-3" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
+                <div className="h-1.5 rounded-full mb-3" style={{ backgroundColor: 'var(--border-subtle)' }}>
                   <div
                     className="h-1.5 rounded-full transition-all"
                     style={{ width: `${Math.min(Math.abs(change) * 20 + 10, 100)}%`, backgroundColor: displayColor }}
@@ -147,7 +147,7 @@ export default async function TrendsPage() {
 
                 <div className="flex flex-wrap gap-1.5">
                   {(sectorData[sector.name] ?? []).map((q) => (
-                    <span key={q.symbol} className="text-xs px-2 py-0.5 rounded font-mono font-semibold text-white" style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}>
+                    <span key={q.symbol} className="text-xs px-2 py-0.5 rounded font-mono font-semibold text-white" style={{ backgroundColor: 'var(--border)' }}>
                       {q.symbol}
                     </span>
                   ))}
@@ -158,8 +158,8 @@ export default async function TrendsPage() {
         </div>
 
         {!sectorSummary.some((s) => s.hasData) && (
-          <div className="rounded-xl p-4 text-center text-sm text-white" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
-            Add a <code className="px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: '#2a2a2a' }}>FINNHUB_API_KEY</code> to your environment to see live sector performance data.
+          <div className="rounded-xl p-4 text-center text-sm text-white" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+            Add a <code className="px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: 'var(--bg-surface-3)' }}>FINNHUB_API_KEY</code> to your environment to see live sector performance data.
           </div>
         )}
       </div>

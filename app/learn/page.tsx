@@ -116,7 +116,7 @@ export default function LearnPage() {
   const progress = Math.round((completed.size / ARTICLES.length) * 100)
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -128,14 +128,14 @@ export default function LearnPage() {
             <p className="text-sm text-white">Master the fundamentals of signal-based trading</p>
           </div>
           <div className="shrink-0">
-            <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
               <div>
                 <p className="text-xs font-semibold text-white">Progress</p>
                 <p className="text-xs text-white">{completed.size}/{ARTICLES.length} completed</p>
               </div>
               <div className="relative w-10 h-10">
                 <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="3" />
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--border-subtle)" strokeWidth="3" />
                   <circle
                     cx="18" cy="18" r="15.5" fill="none" stroke="#009BFF" strokeWidth="3"
                     strokeDasharray={`${progress} 100`} strokeLinecap="round"
@@ -154,13 +154,13 @@ export default function LearnPage() {
             const isDone = completed.has(article.id)
 
             return (
-              <div key={article.id} className="rounded-xl overflow-hidden" style={{ backgroundColor: '#404040', border: `1px solid ${isDone ? 'rgba(0,155,255,0.4)' : 'rgba(255,255,255,0.2)'}` }}>
+              <div key={article.id} className="rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--bg-surface)', border: `1px solid ${isDone ? 'rgba(0,155,255,0.4)' : 'var(--border)'}` }}>
                 <button
                   onClick={() => setExpanded(isOpen ? null : article.id)}
                   className="w-full flex items-center gap-4 p-5 text-left hover:bg-white/5 transition-colors"
                 >
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: isDone ? 'rgba(0,155,255,0.2)' : 'rgba(255,255,255,0.08)' }}>
-                    <Icon className="w-5 h-5" style={{ color: isDone ? '#009BFF' : 'white' }} />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: isDone ? 'rgba(0,155,255,0.2)' : 'var(--border-faint)' }}>
+                    <Icon className="w-5 h-5" style={{ color: isDone ? '#009BFF' : 'var(--text-primary)' }} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-white">{article.title}</h3>
@@ -187,8 +187,12 @@ export default function LearnPage() {
                     </div>
                     <button
                       onClick={() => toggleComplete(article.id)}
-                      className="mt-6 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                      style={{ backgroundColor: isDone ? '#3a3a3a' : '#009BFF', border: isDone ? '1px solid rgba(255,255,255,0.2)' : 'none' }}
+                      className="mt-6 px-5 py-2.5 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
+                      style={{
+                        backgroundColor: isDone ? 'var(--bg-surface-2)' : '#009BFF',
+                        color: isDone ? 'var(--text-primary)' : 'white',
+                        border: isDone ? '1px solid var(--border)' : 'none',
+                      }}
                     >
                       {isDone ? 'Mark as Incomplete' : 'Mark as Complete'}
                     </button>

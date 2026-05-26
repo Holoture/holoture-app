@@ -57,7 +57,7 @@ function ConfidenceBar({ value }: { value: number }) {
         <span className="text-xs text-white">Confidence</span>
         <span className="text-sm font-bold" style={{ color }}>{value}%</span>
       </div>
-      <div className="h-1.5 rounded-full" style={{ backgroundColor: '#4a4a4a' }}>
+      <div className="h-1.5 rounded-full" style={{ backgroundColor: 'var(--bg-surface-2)' }}>
         <div className="h-1.5 rounded-full transition-all" style={{ width: `${value}%`, backgroundColor: color }} />
       </div>
     </div>
@@ -68,7 +68,7 @@ export default function SignalCard({ signal }: { signal: Signal }) {
   return (
     <div
       className="rounded-xl p-5 flex flex-col gap-4 hover:translate-y-[-2px] transition-transform"
-      style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}
+      style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
@@ -89,11 +89,11 @@ export default function SignalCard({ signal }: { signal: Signal }) {
 
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Entry Zone', value: `${formatCurrency(signal.entryZoneLow)}–${formatCurrency(signal.entryZoneHigh)}`, icon: null, color: 'white' },
+          { label: 'Entry Zone', value: `${formatCurrency(signal.entryZoneLow)}–${formatCurrency(signal.entryZoneHigh)}`, icon: null, color: 'var(--text-primary)' },
           { label: 'Target', value: formatCurrency(signal.targetPrice), icon: <Target className="w-3 h-3" style={{ color: '#4ade80' }} />, color: '#4ade80' },
           { label: 'Stop Loss', value: formatCurrency(signal.stopLoss), icon: <Shield className="w-3 h-3" style={{ color: '#f87171' }} />, color: '#f87171' },
         ].map(({ label, value, icon, color }) => (
-          <div key={label} className="rounded-lg p-3 text-center" style={{ backgroundColor: '#3a3a3a' }}>
+          <div key={label} className="rounded-lg p-3 text-center" style={{ backgroundColor: 'var(--bg-surface-2)' }}>
             <div className="flex items-center justify-center gap-1 mb-1">
               {icon}
               <p className="text-xs text-white">{label}</p>
@@ -103,7 +103,7 @@ export default function SignalCard({ signal }: { signal: Signal }) {
         ))}
       </div>
 
-      <div className="rounded-lg p-3" style={{ backgroundColor: '#2a2a2a', border: '1px solid rgba(255,255,255,0.2)' }}>
+      <div className="rounded-lg p-3" style={{ backgroundColor: 'var(--bg-surface-3)', border: '1px solid var(--border)' }}>
         <p className="text-xs font-semibold mb-1" style={{ color: '#009BFF' }}>AI Summary</p>
         <p className="text-sm leading-relaxed text-white">{signal.aiSummary}</p>
       </div>

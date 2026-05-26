@@ -60,7 +60,7 @@ export default async function CalendarPage() {
   const sortedDates = Object.keys(byDate).sort()
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#353535' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-8">
@@ -76,7 +76,7 @@ export default async function CalendarPage() {
           <div className="lg:col-span-2">
             <h2 className="text-lg font-bold text-white mb-4">Earnings — Next 30 Days</h2>
             {earnings.length === 0 ? (
-              <div className="rounded-xl p-10 text-center" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <div className="rounded-xl p-10 text-center" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
                 <CalendarDays className="w-8 h-8 mx-auto mb-3" style={{ color: '#009BFF' }} />
                 <p className="font-semibold text-white">No earnings data</p>
                 <p className="text-sm text-white mt-1">Add a FINNHUB_API_KEY to see upcoming earnings.</p>
@@ -90,7 +90,7 @@ export default async function CalendarPage() {
                   return (
                     <div key={date}>
                       <p className="text-xs font-bold uppercase tracking-widest mb-2 text-white">{label}</p>
-                      <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
+                      <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
                         {items.map((item, i) => {
                           const impact = getImpactRating(item.symbol)
                           const hasEps = item.epsEstimate !== null
@@ -99,8 +99,8 @@ export default async function CalendarPage() {
                               key={item.symbol + i}
                               className="flex items-center gap-4 px-4 py-3"
                               style={{
-                                backgroundColor: i % 2 === 0 ? '#404040' : '#3a3a3a',
-                                borderBottom: i < items.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                                backgroundColor: i % 2 === 0 ? 'var(--bg-surface)' : 'var(--bg-surface-2)',
+                                borderBottom: i < items.length - 1 ? '1px solid var(--border-faint)' : 'none',
                               }}
                             >
                               <div className="w-16 shrink-0">
@@ -133,7 +133,7 @@ export default async function CalendarPage() {
             <h2 className="text-lg font-bold text-white mb-4">Macro Events</h2>
             <div className="space-y-3">
               {MACRO_EVENTS.map((evt) => (
-                <div key={evt.event} className="rounded-xl p-4" style={{ backgroundColor: '#404040', border: '1px solid rgba(255,255,255,0.2)' }}>
+                <div key={evt.event} className="rounded-xl p-4" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <p className="font-semibold text-sm text-white leading-snug">{evt.event}</p>
                     <span className="text-xs font-bold px-2 py-0.5 rounded-full shrink-0" style={{ backgroundColor: evt.color + '20', color: evt.color, border: `1px solid ${evt.color}40` }}>

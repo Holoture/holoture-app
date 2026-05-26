@@ -11,8 +11,14 @@ export default function PromoCodeCreateForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const inputStyle = { backgroundColor: '#2a2a2a', border: '1px solid rgba(255,255,255,0.2)' }
   const inputClass = 'w-full rounded-lg px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:ring-2 transition-shadow'
+
+  function getInputStyle() {
+    return {
+      backgroundColor: 'var(--bg-surface-3)',
+      border: '1px solid var(--border)',
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -39,7 +45,7 @@ export default function PromoCodeCreateForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl p-5" style={{ backgroundColor: '#3a3a3a', border: '1px solid rgba(255,255,255,0.2)' }}>
+    <form onSubmit={handleSubmit} className="rounded-xl p-5" style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}>
       <h3 className="text-sm font-bold text-white mb-4">Create New Code</h3>
       {error && (
         <div className="mb-3 rounded-lg p-2.5 text-xs" style={{ backgroundColor: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }}>
@@ -55,7 +61,7 @@ export default function PromoCodeCreateForm() {
             placeholder="HOLOTURE2025"
             required
             className={inputClass + ' font-mono tracking-wider uppercase'}
-            style={inputStyle}
+            style={getInputStyle()}
           />
         </div>
         <div>
@@ -64,7 +70,7 @@ export default function PromoCodeCreateForm() {
             value={type}
             onChange={(e) => setType(e.target.value as 'lifetime' | '1month')}
             className={inputClass}
-            style={inputStyle}
+            style={getInputStyle()}
           >
             <option value="1month">1 Month Pro</option>
             <option value="lifetime">Lifetime Pro</option>
@@ -79,15 +85,15 @@ export default function PromoCodeCreateForm() {
             onChange={(e) => setMaxUses(e.target.value)}
             required
             className={inputClass}
-            style={inputStyle}
+            style={getInputStyle()}
           />
         </div>
       </div>
       <button
         type="submit"
         disabled={loading}
-        className="px-5 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-        style={{ backgroundColor: '#009BFF' }}
+        className="px-5 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
+        style={{ backgroundColor: '#009BFF', color: 'white' }}
       >
         {loading ? 'Creating…' : 'Create Code'}
       </button>

@@ -9,9 +9,9 @@ export default function FreeSignalCard({ signal }: { signal: Signal }) {
       <div
         className="absolute inset-0 rounded-xl flex flex-col items-center justify-center gap-3"
         style={{
-          backgroundColor: 'rgba(53,53,53,0.85)',
+          backgroundColor: 'var(--overlay)',
           backdropFilter: 'blur(4px)',
-          border: '1px solid rgba(255,255,255,0.2)',
+          border: '1px solid var(--border)',
         }}
       >
         <div
@@ -24,8 +24,8 @@ export default function FreeSignalCard({ signal }: { signal: Signal }) {
           <p className="font-semibold text-sm" style={{ color: '#009BFF' }}>Pro Signal</p>
           <Link
             href="/pricing"
-            className="inline-block mt-2 px-4 py-1.5 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: '#009BFF' }}
+            className="inline-block mt-2 px-4 py-1.5 rounded-lg text-xs font-semibold hover:opacity-90 transition-opacity"
+            style={{ backgroundColor: '#009BFF', color: 'white' }}
           >
             Upgrade to see full details
           </Link>
@@ -40,8 +40,8 @@ export function UpgradeBanner() {
     <div
       className="rounded-xl p-6 flex flex-col sm:flex-row items-center gap-4"
       style={{
-        background: 'linear-gradient(135deg, #404040 0%, #3a3a3a 100%)',
-        border: '1px solid rgba(255,255,255,0.2)',
+        background: 'linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-surface-2) 100%)',
+        border: '1px solid var(--border)',
       }}
     >
       <div
@@ -59,8 +59,8 @@ export function UpgradeBanner() {
       </div>
       <Link
         href="/pricing"
-        className="px-5 py-2.5 rounded-lg font-semibold text-sm text-white shrink-0 hover:opacity-90 transition-opacity"
-        style={{ backgroundColor: '#009BFF' }}
+        className="px-5 py-2.5 rounded-lg font-semibold text-sm shrink-0 hover:opacity-90 transition-opacity"
+        style={{ backgroundColor: '#009BFF', color: 'white' }}
       >
         Upgrade to Pro — $15/mo
       </Link>
