@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useUser, UserButton } from '@clerk/nextjs'
-import { TrendingUp, Menu, X, Gift } from 'lucide-react'
+import { Menu, X, Gift } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import PromoModal from './PromoModal'
 
@@ -32,16 +33,15 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div
-              style={{ backgroundColor: '#009BFF' }}
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
-            >
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-bold text-white tracking-tight">
-              Holo<span style={{ color: '#009BFF' }}>ture</span>
-            </span>
+          <Link href="/" className="flex items-center shrink-0">
+            <Image
+              src="/logo.png"
+              alt="Holoture"
+              height={36}
+              width={120}
+              style={{ height: '36px', width: 'auto' }}
+              priority
+            />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
