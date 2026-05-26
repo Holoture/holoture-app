@@ -53,8 +53,8 @@ export function UpgradeBanner() {
       <div className="text-center sm:text-left flex-1">
         <h3 className="font-bold text-white">Unlock the Full Signal Board</h3>
         <p className="text-sm mt-1 text-white">
-          Pro members get access to all curated signals with entry zones, confidence scores,
-          AI summaries, and time horizons — updated daily.
+          Pro unlocks 15–50 daily signals with entry zones, targets, and confidence scores.
+          Max adds options signals and the politician stock scanner.
         </p>
       </div>
       <Link
@@ -62,7 +62,7 @@ export function UpgradeBanner() {
         className="px-5 py-2.5 rounded-lg font-semibold text-sm shrink-0 hover:opacity-90 transition-opacity"
         style={{ backgroundColor: '#009BFF', color: 'white' }}
       >
-        Upgrade to Pro — $15/mo
+        View Plans
       </Link>
     </div>
   )

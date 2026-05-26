@@ -3,6 +3,11 @@ import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
 import type Stripe from 'stripe'
 
+function tierFromPriceId(priceId: string | undefined): 'pro' | 'max' {
+  if (priceId && priceId === process.env.STRIPE_MAX_PRICE_ID) return 'max'
+  return 'pro'
+}
+
 async function updateUserSubscription(
   customerId: string,
   subscriptionId: string,
@@ -11,11 +16,7 @@ async function updateUserSubscription(
 ) {
   await prisma.user.updateMany({
     where: { stripeCustomerId: customerId },
-    data: {
-      stripeSubscriptionId: subscriptionId,
-      subscriptionStatus: status,
-      tier,
-    },
+    data: { stripeSubscriptionId: subscriptionId, subscriptionStatus: status, tier },
   })
 }
 
@@ -41,8 +42,8 @@ export async function POST(req: NextRequest) {
         const subscription = event.data.object as Stripe.Subscription
         const customerId = subscription.customer as string
         const status = subscription.status
-        const tier = status === 'active' ? 'pro' : 'free'
-
+        const priceId = subscription.items.data[0]?.price.id
+        const tier = status === 'active' ? tierFromPriceId(priceId) : 'free'
         await updateUserSubscription(customerId, subscription.id, status, tier)
         break
       }
@@ -50,7 +51,6 @@ export async function POST(req: NextRequest) {
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription
         const customerId = subscription.customer as string
-
         await updateUserSubscription(customerId, subscription.id, 'canceled', 'free')
         break
       }
@@ -58,7 +58,6 @@ export async function POST(req: NextRequest) {
       case 'invoice.payment_failed': {
         const invoice = event.data.object as Stripe.Invoice
         const customerId = invoice.customer as string
-
         await prisma.user.updateMany({
           where: { stripeCustomerId: customerId },
           data: { subscriptionStatus: 'past_due', tier: 'free' },

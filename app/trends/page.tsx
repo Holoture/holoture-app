@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Header from '@/components/Header'
 import AutoRefresh from '@/components/AutoRefresh'
+import RefreshBanner from '@/components/RefreshBanner'
 import { prisma } from '@/lib/prisma'
 import { BarChart3, TrendingUp, TrendingDown } from 'lucide-react'
 
@@ -36,8 +37,9 @@ export default async function TrendsPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
-      <AutoRefresh intervalMs={5 * 60 * 1000} />
+      <AutoRefresh intervalMs={30 * 60 * 1000} />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <RefreshBanner lastUpdatedAt={updatedAt ? updatedAt.toISOString() : null} intervalLabel="30 minutes" />
         <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
           <div>
             <div className="flex items-center gap-3 mb-1">

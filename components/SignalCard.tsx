@@ -15,6 +15,8 @@ export type Signal = {
   thesis: string
   aiSummary: string
   sector: string
+  signalCategory?: string
+  marketCap?: number
   signalDate: Date | string
 }
 

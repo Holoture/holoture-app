@@ -1,6 +1,8 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { prisma } from './prisma'
 
+export type UserTier = 'free' | 'pro' | 'max'
+
 export async function getOrCreateUser() {
   const { userId } = await auth()
   if (!userId) return null
@@ -18,8 +20,6 @@ export async function getOrCreateUser() {
     })
     return user
   } catch (e) {
-    // Upsert create can fail on unique email constraint if another row has the same email.
-    // Fall back to finding the existing record by clerkId.
     const existing = await prisma.user.findUnique({ where: { clerkId: userId } })
     if (existing) return existing
     console.error('[getOrCreateUser] failed to upsert and no existing user found', e)
@@ -27,15 +27,36 @@ export async function getOrCreateUser() {
   }
 }
 
-export async function getUserTier(clerkId: string): Promise<'free' | 'pro'> {
+export function computeTier(user: {
+  tier: string
+  subscriptionStatus: string | null
+  isLifetimePro: boolean
+  proExpiresAt: Date | null
+  isLifetimeMax: boolean
+  maxExpiresAt: Date | null
+}): UserTier {
+  const now = new Date()
+  if (user.isLifetimeMax) return 'max'
+  if (user.maxExpiresAt && user.maxExpiresAt > now) return 'max'
+  if (user.tier === 'max' && user.subscriptionStatus === 'active') return 'max'
+  if (user.isLifetimePro) return 'pro'
+  if (user.proExpiresAt && user.proExpiresAt > now) return 'pro'
+  if (user.tier === 'pro' && user.subscriptionStatus === 'active') return 'pro'
+  return 'free'
+}
+
+export async function getUserTier(clerkId: string): Promise<UserTier> {
   const user = await prisma.user.findUnique({
     where: { clerkId },
-    select: { tier: true, subscriptionStatus: true, isLifetimePro: true, proExpiresAt: true },
+    select: {
+      tier: true,
+      subscriptionStatus: true,
+      isLifetimePro: true,
+      proExpiresAt: true,
+      isLifetimeMax: true,
+      maxExpiresAt: true,
+    },
   })
-
   if (!user) return 'free'
-  if (user.tier === 'pro' && user.subscriptionStatus === 'active') return 'pro'
-  if (user.isLifetimePro) return 'pro'
-  if (user.proExpiresAt && user.proExpiresAt > new Date()) return 'pro'
-  return 'free'
+  return computeTier(user)
 }

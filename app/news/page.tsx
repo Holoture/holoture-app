@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Header from '@/components/Header'
 import AutoRefresh from '@/components/AutoRefresh'
+import RefreshBanner from '@/components/RefreshBanner'
 import { prisma } from '@/lib/prisma'
 import { Newspaper } from 'lucide-react'
 import NewsContent from './NewsContent'
@@ -36,21 +37,23 @@ export default async function NewsPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
-      <AutoRefresh intervalMs={15 * 60 * 1000} />
+      <AutoRefresh intervalMs={30 * 60 * 1000} />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <RefreshBanner lastUpdatedAt={lastFetchedAt} intervalLabel="30 minutes" />
+
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-1">
             <Newspaper className="w-6 h-6" style={{ color: '#009BFF' }} />
             <h1 className="text-2xl font-black text-white">Market News</h1>
           </div>
-          <p className="text-sm text-white">Curated headlines with market sentiment analysis — refreshes every 15 min</p>
+          <p className="text-sm text-white">Curated headlines with market sentiment analysis — refreshes every 30 min</p>
         </div>
 
         {serialized.length === 0 ? (
           <div className="rounded-2xl p-16 flex flex-col items-center justify-center text-center" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
             <Newspaper className="w-10 h-10 mb-4" style={{ color: '#009BFF' }} />
             <h3 className="text-lg font-bold text-white mb-2">No headlines yet</h3>
-            <p className="text-sm text-white">The news cron runs every 15 minutes. Check back shortly or ensure FINNHUB_API_KEY and ANTHROPIC_API_KEY are set.</p>
+            <p className="text-sm text-white">The news cron runs every 30 minutes. Check back shortly or ensure FINNHUB_API_KEY and ANTHROPIC_API_KEY are set.</p>
           </div>
         ) : (
           <NewsContent articles={serialized} lastFetchedAt={lastFetchedAt} />

@@ -1,24 +1,36 @@
 import Link from 'next/link'
-import { Check, Star, TrendingUp } from 'lucide-react'
+import { Check, Star, TrendingUp, Zap } from 'lucide-react'
 import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 
 const FREE_FEATURES = [
-  '1 randomized AI signal per day',
+  '1 curated signal per day',
+  'Large Cap & Small Cap signals only',
   'Basic ticker and signal type',
   'No credit card required',
-  'Cancel anytime',
 ]
 
 const PRO_FEATURES = [
-  'Full curated signal board (10+ signals daily)',
-  'Precise entry zones (low & high)',
-  'AI confidence scores (0–100)',
-  'Price targets & stop-loss levels',
-  'Time horizons (days to months)',
-  'Full AI thesis & summary',
+  'Full signal board (15–50 signals/day)',
+  'Large Cap & Small Cap signals',
+  'Swing Trade & Long Term signals',
+  'Up to 5 Momentum signals/day',
+  'Entry zones, targets & stop-loss',
+  'Confidence scores & full thesis',
   'Sector tagging & filtering',
-  'Daily signal refreshes',
+  'Market news feed',
+  'Sector trends & heat map',
+  'Earnings calendar',
+  'Cancel anytime',
+]
+
+const MAX_FEATURES = [
+  'Everything in Pro',
+  'Unlimited Momentum signals',
+  'Options signals (CALL & PUT)',
+  'Politician stock scanner',
+  'Earliest access to new features',
+  'Priority data refresh',
   'Cancel anytime',
 ]
 
@@ -27,14 +39,14 @@ export default function PricingPage() {
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-black text-white">Choose Your Plan</h1>
-          <p className="mt-4 text-lg text-white">Start free. Upgrade to Pro when you want the full picture.</p>
+          <p className="mt-4 text-lg text-white">Start free. Unlock the full edge when you&apos;re ready.</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          {/* Free Tier — text colors deliberately kept muted per design spec */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Free */}
           <div
             className="rounded-2xl p-8 flex flex-col"
             style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
@@ -65,7 +77,7 @@ export default function PricingPage() {
             </Link>
           </div>
 
-          {/* Pro Tier */}
+          {/* Pro */}
           <div
             className="rounded-2xl p-8 flex flex-col relative"
             style={{
@@ -74,11 +86,11 @@ export default function PricingPage() {
             }}
           >
             <div
-              className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1 rounded-full text-xs font-bold"
+              className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1 rounded-full text-xs font-bold whitespace-nowrap"
               style={{ backgroundColor: '#009BFF', color: 'white' }}
             >
               <Star className="w-3 h-3" />
-              RECOMMENDED
+              MOST POPULAR
             </div>
 
             <div>
@@ -104,7 +116,51 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            <CheckoutButton />
+            <CheckoutButton tier="pro" />
+          </div>
+
+          {/* Max */}
+          <div
+            className="rounded-2xl p-8 flex flex-col relative"
+            style={{
+              background: 'linear-gradient(160deg, rgba(124,58,237,0.15) 0%, rgba(79,70,229,0.1) 100%)',
+              border: '2px solid rgba(124,58,237,0.5)',
+            }}
+          >
+            <div
+              className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+              style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
+            >
+              <Zap className="w-3 h-3" />
+              BEST VALUE
+            </div>
+
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#a78bfa' }}>
+                Holoture Max
+              </p>
+              <div className="mt-4 mb-2 flex items-end gap-2">
+                <span className="text-5xl font-black text-white">$25</span>
+                <span className="mb-2 text-white">/month</span>
+              </div>
+              <p className="text-sm text-white">Full access to every feature</p>
+            </div>
+
+            <ul className="mt-8 space-y-4 flex-1">
+              {MAX_FEATURES.map((f) => (
+                <li key={f} className="flex items-start gap-3 text-sm text-white">
+                  <div
+                    className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                    style={{ backgroundColor: 'rgba(124,58,237,0.25)' }}
+                  >
+                    <Check className="w-3 h-3" style={{ color: '#a78bfa' }} />
+                  </div>
+                  {f}
+                </li>
+              ))}
+            </ul>
+
+            <CheckoutButton tier="max" />
           </div>
         </div>
 

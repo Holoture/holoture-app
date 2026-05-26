@@ -4,12 +4,19 @@ import { useState } from 'react'
 import SignalCard, { Signal } from './SignalCard'
 
 const LARGE_CAP = new Set([
-  'AAPL', 'MSFT', 'NVDA', 'GOOGL', 'META', 'AMZN', 'TSLA', 'AVGO', 'QCOM', 'AMD',
-  'JPM', 'BAC', 'GS', 'V', 'MA', 'JNJ', 'UNH', 'LLY', 'PFE', 'XOM',
-  'CVX', 'WMT', 'MCD', 'NFLX', 'CRM', 'CAT', 'BA', 'UBER',
+  'AAPL', 'MSFT', 'NVDA', 'GOOGL', 'META', 'AMZN', 'TSLA', 'AVGO', 'AMD', 'QCOM',
+  'INTC', 'TXN', 'MU', 'AMAT', 'ADBE', 'CRM', 'ORCL', 'JPM', 'BAC', 'GS',
+  'V', 'MA', 'C', 'WFC', 'MS', 'BLK', 'AXP', 'SCHW', 'JNJ', 'UNH',
+  'LLY', 'PFE', 'ABT', 'TMO', 'ISRG', 'MDT', 'AMGN', 'GILD', 'XOM', 'CVX',
+  'COP', 'EOG', 'SLB', 'WMT', 'COST', 'MCD', 'SBUX', 'TGT', 'KO', 'PEP',
+  'NKE', 'CAT', 'HON', 'RTX', 'LMT', 'GE', 'NFLX', 'DIS', 'CMCSA', 'T', 'VZ',
 ])
 
 type FilterKey = 'all' | 'large-cap' | 'small-cap' | 'long-term' | 'swing-trade' | 'momentum'
+
+function isLargeCapTicker(s: Signal): boolean {
+  return s.signalCategory === 'large_cap' || LARGE_CAP.has(s.ticker)
+}
 
 function isLongTerm(h: string): boolean {
   const lower = h.toLowerCase()
@@ -22,17 +29,20 @@ function isLongTerm(h: string): boolean {
 }
 
 function isSwingTrade(h: string): boolean {
-  const lower = h.toLowerCase()
-  return lower.includes('day') || lower.includes('week')
+  return h.toLowerCase().includes('day') || h.toLowerCase().includes('week')
+}
+
+function isMomentum(s: Signal): boolean {
+  return s.signalType === 'BUY' && s.confidence >= 75
 }
 
 function matchesFilter(s: Signal, f: FilterKey): boolean {
   if (f === 'all') return true
-  if (f === 'large-cap') return LARGE_CAP.has(s.ticker)
-  if (f === 'small-cap') return !LARGE_CAP.has(s.ticker)
+  if (f === 'large-cap') return isLargeCapTicker(s)
+  if (f === 'small-cap') return !isLargeCapTicker(s)
   if (f === 'long-term') return isLongTerm(String(s.timeHorizon))
   if (f === 'swing-trade') return isSwingTrade(String(s.timeHorizon))
-  if (f === 'momentum') return s.signalType === 'BUY' && s.confidence >= 75
+  if (f === 'momentum') return isMomentum(s)
   return true
 }
 
@@ -45,9 +55,27 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: 'momentum', label: 'Momentum' },
 ]
 
-export default function ProDashboardClient({ signals }: { signals: Signal[] }) {
+const PRO_MOMENTUM_LIMIT = 5
+
+export default function ProDashboardClient({
+  signals,
+  tier,
+}: {
+  signals: Signal[]
+  tier: 'pro' | 'max'
+}) {
   const [filter, setFilter] = useState<FilterKey>('all')
+
   const filtered = signals.filter((s) => matchesFilter(s, filter))
+
+  // Pro users see only first 5 Momentum signals
+  const displayed =
+    filter === 'momentum' && tier === 'pro'
+      ? filtered.slice(0, PRO_MOMENTUM_LIMIT)
+      : filtered
+
+  const momentumTotal = signals.filter(isMomentum).length
+  const showMomentumLimit = filter === 'momentum' && tier === 'pro' && momentumTotal > PRO_MOMENTUM_LIMIT
 
   return (
     <div className="space-y-6">
@@ -73,7 +101,25 @@ export default function ProDashboardClient({ signals }: { signals: Signal[] }) {
         })}
       </div>
 
-      {filtered.length === 0 ? (
+      {showMomentumLimit && (
+        <div
+          className="rounded-lg px-4 py-3 text-sm flex items-center justify-between gap-4"
+          style={{ backgroundColor: 'rgba(0,155,255,0.08)', border: '1px solid rgba(0,155,255,0.25)' }}
+        >
+          <span className="text-white">
+            Showing 5 of {momentumTotal} Momentum signals. Upgrade to Max for unlimited access.
+          </span>
+          <a
+            href="/pricing"
+            className="shrink-0 text-xs font-semibold px-3 py-1 rounded-lg hover:opacity-90"
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
+          >
+            Upgrade to Max
+          </a>
+        </div>
+      )}
+
+      {displayed.length === 0 ? (
         <div
           className="rounded-xl p-10 text-center"
           style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
@@ -82,7 +128,7 @@ export default function ProDashboardClient({ signals }: { signals: Signal[] }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((s) => (
+          {displayed.map((s) => (
             <SignalCard key={s.id} signal={s} />
           ))}
         </div>

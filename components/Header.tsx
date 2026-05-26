@@ -15,6 +15,7 @@ const NAV_LINKS = [
   { href: '/news', label: 'News' },
   { href: '/trends', label: 'Trends' },
   { href: '/calendar', label: 'Calendar' },
+  { href: '/politician-scanner', label: 'Politician Scanner' },
   { href: '/learn', label: 'Learn' },
   { href: '/alerts', label: 'Alerts' },
   { href: '/support', label: 'Support' },
