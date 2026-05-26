@@ -99,8 +99,8 @@ export default async function DashboardPage() {
 function ProDashboard({ signals }: { signals: Awaited<ReturnType<typeof getSignals>> }) {
   const byType = {
     BUY: signals.filter((s) => s.signalType === 'BUY'),
-    HOLD: signals.filter((s) => s.signalType === 'HOLD'),
-    SELL: signals.filter((s) => s.signalType === 'SELL'),
+    WATCH: signals.filter((s) => s.signalType === 'WATCH' || s.signalType === 'HOLD'),
+    SHORT: signals.filter((s) => s.signalType === 'SHORT' || s.signalType === 'SELL'),
   }
 
   return (
@@ -112,16 +112,16 @@ function ProDashboard({ signals }: { signals: Awaited<ReturnType<typeof getSigna
           ))}
         </Section>
       )}
-      {byType.HOLD.length > 0 && (
-        <Section title="Hold / Watch" color="#fbbf24" count={byType.HOLD.length}>
-          {byType.HOLD.map((s) => (
+      {byType.WATCH.length > 0 && (
+        <Section title="Watch / Hold" color="#fbbf24" count={byType.WATCH.length}>
+          {byType.WATCH.map((s) => (
             <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />
           ))}
         </Section>
       )}
-      {byType.SELL.length > 0 && (
-        <Section title="Sell / Avoid" color="#f87171" count={byType.SELL.length}>
-          {byType.SELL.map((s) => (
+      {byType.SHORT.length > 0 && (
+        <Section title="Short / Avoid" color="#f87171" count={byType.SHORT.length}>
+          {byType.SHORT.map((s) => (
             <SignalCard key={s.id} signal={{ ...s, signalDate: s.signalDate.toISOString() }} />
           ))}
         </Section>

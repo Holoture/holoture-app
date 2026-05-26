@@ -10,16 +10,11 @@ export async function getOrCreateUser() {
 
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? ''
 
-  let user = await prisma.user.findUnique({ where: { clerkId: userId } })
-
-  if (!user) {
-    user = await prisma.user.create({
-      data: {
-        clerkId: userId,
-        email,
-      },
-    })
-  }
+  const user = await prisma.user.upsert({
+    where: { clerkId: userId },
+    update: {},
+    create: { clerkId: userId, email },
+  })
 
   return user
 }
