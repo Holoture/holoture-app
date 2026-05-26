@@ -14,11 +14,20 @@ async function getSignals() {
   })
 }
 
+async function getLastGenerationLog() {
+  try {
+    return await prisma.signalGenerationLog.findFirst({
+      where: { status: 'success' },
+      orderBy: { generatedAt: 'desc' },
+    })
+  } catch { return null }
+}
+
 export default async function DashboardPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
-  const [user, signals] = await Promise.all([getOrCreateUser(), getSignals()])
+  const [user, signals, lastLog] = await Promise.all([getOrCreateUser(), getSignals(), getLastGenerationLog()])
   if (!user) redirect('/sign-in')
 
   const now = new Date()
@@ -63,7 +72,11 @@ export default async function DashboardPage() {
               <p className="text-xs font-semibold text-white">
                 {isPro ? `${signals.length} Active Signals` : '1 Signal Today'}
               </p>
-              <p className="text-xs text-white">{isPro ? 'Full curated board' : 'Free daily pick'}</p>
+              <p className="text-xs text-white">
+                {lastLog
+                  ? `Generated ${lastLog.generatedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}`
+                  : isPro ? 'Full curated board' : 'Free daily pick'}
+              </p>
             </div>
           </div>
         </div>

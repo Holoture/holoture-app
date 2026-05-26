@@ -28,7 +28,9 @@
       "PowerShell($git = 'C:\\\\Program Files\\\\Git\\\\bin\\\\git.exe'; & $git -C \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\" log --oneline -3 2>&1)",
       "PowerShell(Rename-Item *)",
       "PowerShell(Remove-Item *)",
-      "PowerShell(git add *)"
+      "PowerShell(git add *)",
+      "PowerShell(git push *)",
+      "PowerShell($env:PATH = $env:PATH + \";C:\\\\Program Files\\\\Git\\\\cmd;C:\\\\Program Files\\\\Git\\\\bin\"; cd \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\"; git status --short)"
     ]
   }
 }

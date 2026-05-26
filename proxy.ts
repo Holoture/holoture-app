@@ -8,6 +8,7 @@ const isPublicRoute = createRouteMatcher([
   '/learn(.*)',
   '/support(.*)',
   '/api/stripe/webhook',
+  '/api/cron/(.*)',
 ])
 
 export const proxy = clerkMiddleware(
