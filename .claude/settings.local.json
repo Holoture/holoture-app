@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npm install *)",
+      "PowerShell(npx prisma generate 2>&1)",
+      "PowerShell(node -e \"const Stripe = require\\('stripe'\\); const s = new Stripe\\('sk_test_x'\\); console.log\\(s.VERSION\\)\" 2>&1)",
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 60)",
+      "PowerShell(node -e \"const clerk = require\\('@clerk/nextjs'\\); console.log\\(Object.keys\\(clerk\\).filter\\(k => k.includes\\('Sign'\\) || k.includes\\('User'\\)\\).join\\(', '\\)\\)\" 2>&1)",
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 40)",
+      "PowerShell(npx tsc --noEmit; if \\($LASTEXITCODE -eq 0\\) { \"✓ No TypeScript errors\" } else { \"✗ TypeScript errors found\" })",
+      "PowerShell(npx tsc --noEmit; \"Exit code: $LASTEXITCODE\")",
+      "PowerShell(npm run *)",
+      "PowerShell(node -e \"const n = require\\('next/package.json'\\); console.log\\(n.version\\)\" 2>&1)",
+      "PowerShell(Get-Content \"node_modules\\\\@clerk\\\\nextjs\\\\package.json\" | ConvertFrom-Json | Select-Object -ExpandProperty exports | Get-Member -MemberType NoteProperty | Where-Object { $_.Name -match \"proxy|middleware\" } | Select-Object Name)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(gh *)",
+      "PowerShell(winget *)"
+    ]
+  }
+}
