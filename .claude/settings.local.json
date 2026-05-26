@@ -30,7 +30,9 @@
       "PowerShell(Remove-Item *)",
       "PowerShell(git add *)",
       "PowerShell(git push *)",
-      "PowerShell($env:PATH = $env:PATH + \";C:\\\\Program Files\\\\Git\\\\cmd;C:\\\\Program Files\\\\Git\\\\bin\"; cd \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\"; git status --short)"
+      "PowerShell($env:PATH = $env:PATH + \";C:\\\\Program Files\\\\Git\\\\cmd;C:\\\\Program Files\\\\Git\\\\bin\"; cd \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\"; git status --short)",
+      "PowerShell(git commit *)",
+      "WebFetch(domain:holoture.com)"
     ]
   }
 }
