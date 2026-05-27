@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Shield, Zap, BarChart3, Clock, Star, ChevronRight } from 'lucide-react'
 import Header from '@/components/Header'
+import CheckoutButton from '@/components/CheckoutButton'
 
 const FEATURES = [
   {
@@ -118,13 +119,13 @@ export default function LandingPage() {
 
       {/* Pricing Preview */}
       <section className="py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-black text-white">Simple, Transparent Pricing</h2>
             <p className="mt-4 text-white">Start free. Upgrade when you&apos;re ready.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {/* Free */}
             <div
               className="rounded-2xl p-8"
@@ -136,7 +137,12 @@ export default function LandingPage() {
                 <span className="ml-1 text-white">/month</span>
               </div>
               <ul className="space-y-3 mb-8">
-                {['1 randomized AI signal per day', 'Basic signal info', 'No credit card required'].map((item) => (
+                {[
+                  '1 signal per day',
+                  'Large cap & small cap signals',
+                  'Basic signal info',
+                  'No credit card required',
+                ].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-white">
                     <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--border)' }}>
                       <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#009BFF' }} />
@@ -176,11 +182,11 @@ export default function LandingPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 {[
-                  'Full curated signal board (10+ signals)',
-                  'Entry zones & price targets',
-                  'AI confidence scores',
-                  'Time horizons & full thesis',
-                  'Daily signal updates',
+                  'Full signal board (15–50 signals/day)',
+                  'Large cap, small cap, swing & long term signals',
+                  '5 momentum signals per day',
+                  'Entry zones, targets & stop losses',
+                  'Confidence scores & full summary',
                   'Cancel anytime',
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-white">
@@ -191,13 +197,57 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/sign-up"
+              <CheckoutButton
+                tier="pro"
+                label="Start Pro — $15/month"
                 className="block w-full text-center py-3 rounded-xl font-bold hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: '#009BFF', color: 'white' }}
+              />
+            </div>
+
+            {/* Max */}
+            <div
+              className="rounded-2xl p-8 relative"
+              style={{
+                background: 'linear-gradient(135deg, var(--bg-surface) 0%, rgba(124,58,237,0.08) 100%)',
+                border: '2px solid rgba(124,58,237,0.6)',
+              }}
+            >
+              <div
+                className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold"
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
               >
-                Start Pro — $15/month
-              </Link>
+                <Zap className="w-3 h-3" />
+                BEST VALUE
+              </div>
+              <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: '#a78bfa' }}>Max</p>
+              <div className="mt-3 mb-6">
+                <span className="text-5xl font-black text-white">$25</span>
+                <span className="ml-1 text-white">/month</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {[
+                  'Everything in Pro',
+                  'Unlimited momentum signals',
+                  'Options signals & analysis',
+                  'Politician stock scanner',
+                  'All signal categories unlocked',
+                  'Cancel anytime',
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-sm text-white">
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(124,58,237,0.25)' }}>
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#a78bfa' }} />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <CheckoutButton
+                tier="max"
+                label="Start Max — $25/month"
+                className="block w-full text-center py-3 rounded-xl font-bold hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#009BFF', color: 'white' }}
+              />
             </div>
           </div>
         </div>
