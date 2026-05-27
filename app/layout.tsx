@@ -11,12 +11,10 @@ export const metadata: Metadata = {
   keywords: 'stock signals, data investing, stock picks, investment insights',
   icons: {
     icon: [
-      { url: '/logo.png', sizes: '32x32', type: 'image/png' },
-      { url: '/logo.png', sizes: '64x64', type: 'image/png' },
-      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
+      { url: '/logo.png', type: 'image/png' },
     ],
-    apple: '/logo.png',
     shortcut: '/logo.png',
+    apple: '/logo.png',
   },
 }
 
@@ -28,6 +26,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className="h-full">
+        <head>
+          <link rel="icon" href="/logo.png" type="image/png" />
+          <link rel="shortcut icon" href="/logo.png" type="image/png" />
+          <link rel="apple-touch-icon" href="/logo.png" />
+        </head>
         <body className="min-h-full flex flex-col antialiased">
           <Script
             id="theme-init"
