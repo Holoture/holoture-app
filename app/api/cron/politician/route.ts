@@ -150,6 +150,17 @@ ${JSON.stringify(input)}`,
 
 // ─── Route handler ─────────────────────────────────────────────────────────
 
+export async function DELETE(req: Request) {
+  if (!verifyCron(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  try {
+    const { count } = await prisma.politicianTrade.deleteMany({})
+    return NextResponse.json({ ok: true, deleted: count })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
+}
+
 export async function GET(req: Request) {
   if (!verifyCron(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 

@@ -2,10 +2,14 @@
 Congressional stock trade scraper.
 
 Sources:
-  - House: disclosures-clerk.house.gov PTR (Periodic Transaction Report) PDFs
+  - House: disclosures-clerk.house.gov PTR PDFs (text extraction + regex)
   - Senate: efts.senate.gov STFA search API (electronic filings)
 
-Output: data/all_trades.json — fetched daily by the Vercel politician cron.
+Tickers are ONLY extracted from the "(TICKER) [ST]" pattern in asset
+descriptions — the format required by the House eFD system. Any trade
+without a parenthesized ticker is discarded.
+
+Output: data/all_trades.json — committed to master, fetched by Vercel cron.
 """
 
 import io
@@ -24,228 +28,306 @@ SESSION = requests.Session()
 SESSION.headers.update({"User-Agent": UA})
 
 # ---------------------------------------------------------------------------
-# Ticker lookup — covers the most-traded names found in congressional filings
+# Static blocklist — words that appear inside parentheses but are not tickers
 # ---------------------------------------------------------------------------
 
-COMPANY_TO_TICKER: dict[str, str] = {
-    "apple": "AAPL", "microsoft": "MSFT", "nvidia": "NVDA",
-    "alphabet": "GOOGL", "google": "GOOGL", "amazon": "AMZN",
-    "meta platforms": "META", "meta ": "META", "facebook": "META",
-    "tesla": "TSLA", "berkshire": "BRK.B", "visa": "V",
-    "mastercard": "MA", "jpmorgan": "JPM", "j.p. morgan": "JPM",
-    "johnson & johnson": "JNJ", "j&j": "JNJ",
-    "unitedhealth": "UNH", "exxon": "XOM", "chevron": "CVX",
-    "pfizer": "PFE", "abbott": "ABT", "walmart": "WMT",
-    "costco": "COST", "netflix": "NFLX", "disney": "DIS",
-    "boeing": "BA", "caterpillar": "CAT", "intel": "INTC",
-    "advanced micro": "AMD", "qualcomm": "QCOM", "broadcom": "AVGO",
-    "bank of america": "BAC", "wells fargo": "WFC",
-    "goldman sachs": "GS", "morgan stanley": "MS",
-    "citigroup": "C", "citi ": "C",
-    "palantir": "PLTR", "lockheed": "LMT", "raytheon": "RTX",
-    "general dynamics": "GD", "northrop": "NOC", "l3harris": "LHX",
-    "crowdstrike": "CRWD", "palo alto": "PANW", "cloudflare": "NET",
-    "datadog": "DDOG", "servicenow": "NOW", "salesforce": "CRM",
-    "oracle": "ORCL", "adobe": "ADBE", "intuit": "INTU",
-    "paypal": "PYPL", "block ": "SQ", "square": "SQ",
-    "shopify": "SHOP", "uber": "UBER", "lyft": "LYFT",
-    "airbnb": "ABNB", "coinbase": "COIN", "robinhood": "HOOD",
-    "sofi": "SOFI", "eli lilly": "LLY", "merck": "MRK",
-    "moderna": "MRNA", "biogen": "BIIB", "amgen": "AMGN",
-    "gilead": "GILD", "novo nordisk": "NVO", "abbvie": "ABBV",
-    "deere": "DE", "honeywell": "HON", "general electric": "GE",
-    "3m": "MMM", "union pacific": "UNP", "norfolk southern": "NSC",
-    "home depot": "HD", "lowe": "LOW", "target": "TGT",
-    "mcdonald": "MCD", "starbucks": "SBUX", "nike": "NKE",
-    "pepsico": "PEP", "coca-cola": "KO", "procter & gamble": "PG",
-    "procter": "PG", "at&t": "T", "verizon": "VZ",
-    "comcast": "CMCSA", "energy transfer": "ET",
-    "kinder morgan": "KMI", "nextera": "NEE",
-    "american express": "AXP", "charles schwab": "SCHW",
-    "blackrock": "BLK", "s&p 500": "SPY", "nasdaq": "QQQ",
-    "taiwan semiconductor": "TSM", "tsmc": "TSM",
-    "arm holdings": "ARM", "arm ": "ARM",
-    "super micro": "SMCI", "applied materials": "AMAT",
-    "lam research": "LRCX", "kla": "KLAC",
-    "micron": "MU", "western digital": "WDC",
-    "seagate": "STX", "on semiconductor": "ON",
-    "marvell": "MRVL", "skyworks": "SWKS",
-    "monolithic power": "MPWR", "lattice semiconductor": "LSCC",
-    "axcelis": "ACLS", "asml": "ASML",
-    "pepsico": "PEP", "abbott laboratories": "ABT",
-    "regeneron": "REGN", "vertex pharmaceuticals": "VRTX",
-    "illumina": "ILMN", "intuitive surgical": "ISRG",
-    "medtronic": "MDT", "stryker": "SYK", "zimmer biomet": "ZBH",
-    "danaher": "DHR", "thermo fisher": "TMO",
-    "waste management": "WM", "republic services": "RSG",
-    "american tower": "AMT", "crown castle": "CCI",
-    "prologis": "PLD", "equinix": "EQIX",
-    "simon property": "SPG", "realty income": "O",
-    "digital realty": "DLR",
+BAD_TICKERS = {
+    "STOCK", "NEW", "GROUP", "CLASS", "LILLY", "TERM", "DEBT",
+    "FUND", "REAL", "TRADE", "CORP", "PAPER", "HENRY", "INTL",
+    "PLC", "INC", "OF", "FSV", "THE", "AND", "FOR", "NOT", "ORD",
+    "ADR", "COM", "PAR", "CLA", "CLB", "SP", "DC", "JT",
+    "SELF", "REV", "NOTE", "TOOL", "ONE", "TSY", "TSM",
+    "ISAAC", "STATE", "NV",
 }
 
+# ---------------------------------------------------------------------------
+# Party lookup — 119th Congress (2025-2027)
+# Keys are cleaned "First Last" names after name normalization.
+# ---------------------------------------------------------------------------
 
-def guess_ticker(text: str) -> str:
-    """Extract or guess a stock ticker from an asset description."""
-    if not text:
-        return ""
+PARTY_LOOKUP: dict[str, str] = {
+    # User-specified
+    "Mark Alford": "Republican",
+    "Gilbert Cisneros": "Democrat",
+    "April McClain Delaney": "Democrat",
+    "Brian Babin": "Republican",
+    "Debbie Dingell": "Democrat",
+    "Sheri Biggs": "Republican",
+    "Byron Donalds": "Republican",
+    "Suzan DelBene": "Democrat",
+    # House Republicans
+    "Andy Barr": "Republican",
+    "Austin Scott": "Republican",
+    "Barry Loudermilk": "Republican",
+    "Bill Huizenga": "Republican",
+    "Blaine Luetkemeyer": "Republican",
+    "Brad Wenstrup": "Republican",
+    "Brian Mast": "Republican",
+    "Carlos Gimenez": "Republican",
+    "Chuck Fleischmann": "Republican",
+    "Claudia Tenney": "Republican",
+    "Dan Crenshaw": "Republican",
+    "David Kustoff": "Republican",
+    "David Rouzer": "Republican",
+    "Doug Collins": "Republican",
+    "Drew Ferguson": "Republican",
+    "Dusty Johnson": "Republican",
+    "Earl Carter": "Republican",
+    "Eric Burlison": "Republican",
+    "French Hill": "Republican",
+    "Garret Graves": "Republican",
+    "Glenn Thompson": "Republican",
+    "Greg Steube": "Republican",
+    "Greg Murphy": "Republican",
+    "Guy Reschenthaler": "Republican",
+    "Jake Ellzey": "Republican",
+    "Jason Smith": "Republican",
+    "Jeff Duncan": "Republican",
+    "Jeff Van Drew": "Republican",
+    "John Curtis": "Republican",
+    "John Joyce": "Republican",
+    "John Moolenaar": "Republican",
+    "Kevin Cramer": "Republican",
+    "Kevin Hern": "Republican",
+    "Lance Gooden": "Republican",
+    "Lloyd Smucker": "Republican",
+    "Marjorie Taylor Greene": "Republican",
+    "Michael Cloud": "Republican",
+    "Michael McCaul": "Republican",
+    "Mike Collins": "Republican",
+    "Mike Garcia": "Republican",
+    "Mike Kelly": "Republican",
+    "Mike Waltz": "Republican",
+    "Morgan Griffith": "Republican",
+    "Pat Fallon": "Republican",
+    "Patrick McHenry": "Republican",
+    "Pete Sessions": "Republican",
+    "Ralph Norman": "Republican",
+    "Randy Weber": "Republican",
+    "Rich McCormick": "Republican",
+    "Rob Wittman": "Republican",
+    "Roger Williams": "Republican",
+    "Ron Estes": "Republican",
+    "Scott Perry": "Republican",
+    "Tom Cole": "Republican",
+    "Tom Emmer": "Republican",
+    "Troy Nehls": "Republican",
+    "Virginia Foxx": "Republican",
+    "Warren Davidson": "Republican",
+    "Wesley Hunt": "Republican",
+    "Zach Nunn": "Republican",
+    # House Democrats
+    "Adam Schiff": "Democrat",
+    "Bill Foster": "Democrat",
+    "Brad Sherman": "Democrat",
+    "Dan Goldman": "Democrat",
+    "Daniel Kildee": "Democrat",
+    "David Trone": "Democrat",
+    "Dean Phillips": "Democrat",
+    "Gerry Connolly": "Democrat",
+    "Greg Stanton": "Democrat",
+    "Jake Auchincloss": "Democrat",
+    "Jim Himes": "Democrat",
+    "Josh Gottheimer": "Democrat",
+    "Kathy Manning": "Democrat",
+    "Lois Frankel": "Democrat",
+    "Mike Quigley": "Democrat",
+    "Mikie Sherrill": "Democrat",
+    "Nancy Pelosi": "Democrat",
+    "Ro Khanna": "Democrat",
+    "Scott Peters": "Democrat",
+    "Seth Moulton": "Democrat",
+    "Tom Suozzi": "Democrat",
+    # Senate Republicans
+    "Dan Sullivan": "Republican",
+    "John Hoeven": "Republican",
+    "Rand Paul": "Republican",
+    "Rick Scott": "Republican",
+    "Roger Marshall": "Republican",
+    "Shelley Moore Capito": "Republican",
+    "Thom Tillis": "Republican",
+    "Tim Scott": "Republican",
+    "Tommy Tuberville": "Republican",
+    # Senate Democrats
+    "Gary Peters": "Democrat",
+    "Jack Reed": "Democrat",
+    "Jacky Rosen": "Democrat",
+    "John Hickenlooper": "Democrat",
+    "Mark Warner": "Democrat",
+    "Ron Wyden": "Democrat",
+    "Sheldon Whitehouse": "Democrat",
+}
 
-    # Explicit patterns: (AAPL), [AAPL], 'AAPL', AAPL:, Stock: AAPL
-    explicit = re.search(
-        r"[\(\[\s']([A-Z]{1,5})[\)\]\s']|"
-        r"\b([A-Z]{2,5}):\s|"
-        r"(?:ticker|symbol|nasdaq|nyse)[:\s]+([A-Z]{1,5})",
-        text,
-        re.IGNORECASE,
-    )
-    if explicit:
-        for g in explicit.groups():
-            if g and g not in {
-                "THE", "INC", "LLC", "LTD", "ETF", "AND", "FOR", "NOT",
-                "ORD", "PLC", "ADR", "COM", "PAR", "CLA", "CLB",
-                "SP", "DC", "JT",  # ownership codes on PTR forms
-            }:
-                return g.upper()
+# ---------------------------------------------------------------------------
+# Name normalization: "Alford, . Mark" -> "Mark Alford"
+# ---------------------------------------------------------------------------
 
-    # Company name fragment match (longest match wins)
-    lower = text.lower()
-    best = ("", "")
-    for frag, ticker in COMPANY_TO_TICKER.items():
-        if frag in lower and len(frag) > len(best[0]):
-            best = (frag, ticker)
-    if best[1]:
-        return best[1]
+def clean_name(raw: str) -> str:
+    raw = raw.strip()
+    if "," not in raw:
+        return raw
+    last, _, rest = raw.partition(",")
+    last = last.strip()
+    # Strip leading periods, spaces, "Hon.", etc.
+    first = re.sub(r"^[\s\.\-]+", "", rest).strip()
+    first = re.sub(r"^Hon\.?\s*", "", first, flags=re.IGNORECASE).strip()
+    return f"{first} {last}".strip()
 
-    return ""
+
+def lookup_party(name: str) -> str:
+    return PARTY_LOOKUP.get(name, "Unknown")
 
 
 # ---------------------------------------------------------------------------
-# Normalization helpers
+# Date helpers
 # ---------------------------------------------------------------------------
-
-def norm_trade_type(raw: str) -> str:
-    raw = (raw or "").lower().strip()
-    if "purchase" in raw or raw == "p":
-        return "BUY"
-    if "sale" in raw or raw in ("s", "sell"):
-        return "SELL"
-    return raw.upper() or "UNKNOWN"
-
-
-def norm_party(raw: str) -> str:
-    lower = (raw or "").lower()
-    if "democrat" in lower or lower == "d":
-        return "Democrat"
-    if "republican" in lower or lower == "r":
-        return "Republican"
-    if "independent" in lower or lower == "i":
-        return "Independent"
-    return "Unknown"
-
 
 def safe_iso(raw: str) -> str:
-    """Convert various date formats to YYYY-MM-DD."""
-    if not raw:
-        return date.today().isoformat()
-    raw = raw.strip()
-    # MM/DD/YYYY
+    raw = (raw or "").strip()
     m = re.match(r"^(\d{1,2})/(\d{1,2})/(\d{4})$", raw)
     if m:
         return f"{m.group(3)}-{m.group(1).zfill(2)}-{m.group(2).zfill(2)}"
-    # YYYY-MM-DD already
     if re.match(r"^\d{4}-\d{2}-\d{2}", raw):
         return raw[:10]
     return date.today().isoformat()
 
 
 # ---------------------------------------------------------------------------
-# House PTR PDF parsing
+# Trade-type normalization
 # ---------------------------------------------------------------------------
 
-_AMOUNT_RE = re.compile(r"\$[\d,]+\s*[-–]\s*\$[\d,]+|\$[\d,]+")
-_DATE_RE = re.compile(r"\d{1,2}/\d{1,2}/\d{4}")
-_TYPE_TOKENS = {"p", "s", "purchase", "sale", "sale_full", "sale_partial", "sell"}
+def norm_trade_type(raw: str) -> str:
+    raw = (raw or "").strip().upper()
+    if raw in ("P", "PURCHASE"):
+        return "BUY"
+    if raw in ("S", "SALE", "SELL", "SALE_FULL", "SALE_PARTIAL"):
+        return "SELL"
+    return "SELL"  # default to SELL if ambiguous (common for PTR filings)
+
+
+# ---------------------------------------------------------------------------
+# House PTR PDF -> trades
+# The real data format (confirmed from live PDFs):
+#
+#   COMPANY NAME   [P|S]   MM/DD/YYYY   MM/DD/YYYY   $X - $Y
+#   ASSET DESCRIPTION (TICKER) [ST]
+#
+# or on one line:
+#   COMPANY NAME - COMMON STOCK (TICKER) [ST]   [P|S]   MM/DD/YYYY ...
+# ---------------------------------------------------------------------------
+
+_TICKER_RE = re.compile(r"\(([A-Z]{1,5})\)\s*\[ST\]", re.IGNORECASE)
+_DATE_RE   = re.compile(r"\b(\d{2}/\d{2}/\d{4})\b")
+_AMOUNT_RE = re.compile(r"\$[\d,]+\s*[-–]\s*\$[\d,]+")
+_TYPE_RE   = re.compile(r"\b([PS])\s+\d{2}/\d{2}/\d{4}")  # P or S before a date
+
+# Matches strings that are stock-type descriptors, not real company names
+_GENERIC_DESC_RE = re.compile(
+    r"^(?:common\s+stock|ordinary\s+shares?|class\s+[a-z]|depositary\s+shares?|"
+    r"representing\s+|shares?\s+of\b|common\s+shares?|^shares?$|^stock$|"
+    r"beneficial\s+interest|series\s+[a-z]\b|[a-z]\s+common|"
+    r"\$[\d,]+|\?\s*$)",
+    re.IGNORECASE,
+)
+
+
+def _is_generic(text: str) -> bool:
+    """Return True if text is a stock type descriptor rather than a real company name."""
+    text = text.strip()
+    return not text or bool(_GENERIC_DESC_RE.match(text))
+
+
+def extract_company_from_line(line: str, ticker_start: int) -> str:
+    """Get the company name from a line ending with (TICKER) [ST]."""
+    raw = line[:ticker_start].strip()
+    # Strip asset-type suffixes: "- Common Stock", "- Ordinary Shares Class A", etc.
+    raw = re.sub(
+        r"\s*[-–]\s*(common\s+stock|ordinary\s+shares.*|class\s+[a-z]\s+(?:shares?|ordinary)?)\s*$",
+        "",
+        raw,
+        flags=re.IGNORECASE,
+    ).strip()
+    return "" if _is_generic(raw) else raw
 
 
 def parse_ptr_pdf(pdf_bytes: bytes, member_name: str) -> list[dict]:
-    """Extract transactions from a single House PTR PDF using pdfplumber."""
-    trades = []
+    trades: list[dict] = []
     try:
         with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
             for page in pdf.pages:
-                tables = page.extract_tables(
-                    table_settings={
-                        "vertical_strategy": "lines",
-                        "horizontal_strategy": "lines",
-                    }
-                )
-                for table in (tables or []):
-                    for row in (table or []):
-                        row = [str(c or "").strip() for c in row]
-                        if len(row) < 3:
-                            continue
+                text = page.extract_text(x_tolerance=3, y_tolerance=3) or ""
+                # Null bytes appear from some font encodings -- strip them
+                text = text.replace("\x00", "")
+                lines = text.splitlines()
 
-                        # Identify cell roles by content pattern
-                        asset_name = ""
-                        tx_type = ""
-                        tx_date = ""
-                        amount = ""
+                for i, line in enumerate(lines):
+                    m = _TICKER_RE.search(line)
+                    if not m:
+                        continue
 
-                        for cell in row:
-                            cl = cell.lower()
-                            if not tx_type and cl in _TYPE_TOKENS:
-                                tx_type = cell
-                            elif not tx_type and any(
-                                w in cl for w in ("purchase", "sale", "sell")
-                            ):
-                                tx_type = cell
-                            elif not tx_date and _DATE_RE.match(cell):
-                                tx_date = cell
-                            elif not amount and _AMOUNT_RE.search(cell):
-                                amount = cell
-                            elif (
-                                not asset_name
-                                and len(cell) > 3
-                                and not _DATE_RE.match(cell)
-                                and not _AMOUNT_RE.search(cell)
-                                and cl not in _TYPE_TOKENS
-                                # skip ownership codes
-                                and cl not in {"sp", "dc", "jt", "self", "child", "spouse"}
-                            ):
-                                asset_name = cell
+                    ticker = m.group(1).upper()
+                    if ticker in BAD_TICKERS or len(ticker) < 1 or len(ticker) > 5:
+                        continue
 
-                        if not tx_type:
-                            continue
-
-                        # Use full row text as fallback asset name
-                        if not asset_name:
-                            for cell in row:
-                                if len(cell) > 5 and cell != tx_type and cell != tx_date:
-                                    asset_name = cell
-                                    break
-
-                        ticker = guess_ticker(asset_name) if asset_name else ""
-                        if not ticker:
-                            # Try full row text
-                            ticker = guess_ticker(" ".join(row))
-                        if not ticker:
-                            continue  # skip non-identifiable assets
-
-                        trades.append(
-                            {
-                                "politician_name": member_name,
-                                "party": "Unknown",
-                                "chamber": "House",
-                                "ticker": ticker,
-                                "company_name": asset_name,
-                                "trade_type": norm_trade_type(tx_type),
-                                "amount_range": amount or "Unknown",
-                                "traded_at": safe_iso(tx_date),
-                                "filed_at": date.today().isoformat(),
-                            }
+                    # -- Company name -----------------------------------------
+                    company = extract_company_from_line(line, m.start())
+                    if not company and i > 0:
+                        # Ticker is on a continuation line; company is on the previous line
+                        prev = lines[i - 1].strip()
+                        # Remove "P DATE DATE $AMOUNT" suffix to get bare company name
+                        comp_m = re.match(
+                            r"^([A-Z][A-Z0-9\s,\.&\-\'/]+?)\s+[PS]\s+\d{2}/\d{2}/\d{4}",
+                            prev,
+                            re.IGNORECASE,
                         )
+                        if comp_m:
+                            candidate = comp_m.group(1).strip()
+                            if not _is_generic(candidate):
+                                company = candidate
+                        elif not _DATE_RE.search(prev) and not _is_generic(prev):
+                            # Whole line is company name
+                            company = prev
+
+                    if not company:
+                        company = ticker  # last resort
+
+                    # -- Context window for amount / dates / type -------------
+                    context = "\n".join(lines[max(0, i - 2) : i + 3])
+
+                    # Amount
+                    amt_m = _AMOUNT_RE.search(context)
+                    amount = amt_m.group(0) if amt_m else "Unknown"
+
+                    # Trade type: look for P or S immediately before a date
+                    type_m = _TYPE_RE.search(context)
+                    if type_m:
+                        trade_type = norm_trade_type(type_m.group(1))
+                    else:
+                        # Fallback: look for P/S after the [ST] tag on the same line
+                        post = line[m.end():]
+                        post_m = re.search(r"\b([PS])\b", post, re.IGNORECASE)
+                        trade_type = norm_trade_type(post_m.group(1)) if post_m else "SELL"
+
+                    # Dates: first = transaction date, second = filing/notification date
+                    dates = _DATE_RE.findall(context)
+                    traded_at = safe_iso(dates[0]) if dates else date.today().isoformat()
+                    filed_at  = safe_iso(dates[1]) if len(dates) > 1 else traded_at
+
+                    trades.append(
+                        {
+                            "politician_name": member_name,
+                            "party": lookup_party(member_name),
+                            "chamber": "House",
+                            "ticker": ticker,
+                            "company_name": company,
+                            "trade_type": trade_type,
+                            "amount_range": amount,
+                            "traded_at": traded_at,
+                            "filed_at": filed_at,
+                        }
+                    )
     except Exception as exc:
-        print(f"  PDF parse error ({member_name}): {exc}")
+        print(f"  PDF error ({member_name}): {exc}")
     return trades
 
 
@@ -253,7 +335,7 @@ def parse_ptr_pdf(pdf_bytes: bytes, member_name: str) -> list[dict]:
 # House scraper
 # ---------------------------------------------------------------------------
 
-def scrape_house(max_filings: int = 80) -> list[dict]:
+def scrape_house(max_filings: int = 100) -> list[dict]:
     print("=== House PTR filings ===")
     trades: list[dict] = []
 
@@ -275,46 +357,48 @@ def scrape_house(max_filings: int = 80) -> list[dict]:
         return []
 
     soup = BeautifulSoup(resp.text, "lxml")
-    filing_rows = []
+    filings: list[dict] = []
     for row in soup.find_all("tr", role="row"):
-        link = row.find("a", href=re.compile(r"ptr-pdfs/\d{4}/(\d+)\.pdf"))
+        link = row.find("a", href=re.compile(r"ptr-pdfs/\d{4}/\d+\.pdf"))
         if not link:
             continue
         href = link["href"]
-        m = re.search(r"ptr-pdfs/(\d{4})/(\d+)\.pdf", href)
-        if not m:
+        mm = re.search(r"ptr-pdfs/(\d{4})/(\d+)\.pdf", href)
+        if not mm:
             continue
-        year, fid = m.group(1), m.group(2)
-        name = re.sub(r"\bHon\.?\b\.?\s*", "", link.text).strip()
-        filing_rows.append(
+        year, fid = mm.group(1), mm.group(2)
+        # Clean name: "Alford, . Mark" -> "Mark Alford"
+        raw_name = re.sub(r"\bHon\.?\b\.?\s*", "", link.text).strip()
+        cleaned = clean_name(raw_name)
+        filings.append(
             {
-                "name": name,
+                "name": cleaned,
                 "url": f"https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/{year}/{fid}.pdf",
                 "id": fid,
             }
         )
 
-    print(f"Found {len(filing_rows)} PTR filings; processing up to {max_filings}")
+    print(f"Found {len(filings)} PTR filings; processing up to {max_filings}")
 
-    for i, entry in enumerate(filing_rows[:max_filings]):
-        print(f"  [{i+1}/{min(len(filing_rows), max_filings)}] {entry['name']} ({entry['id']})")
+    for idx, entry in enumerate(filings[:max_filings]):
+        print(f"  [{idx+1}/{min(len(filings), max_filings)}] {entry['name']} ({entry['id']})")
         try:
             r = SESSION.get(entry["url"], timeout=30)
             r.raise_for_status()
             found = parse_ptr_pdf(r.content, entry["name"])
             trades.extend(found)
             if found:
-                print(f"    → {len(found)} trades")
+                print(f"    -> {len(found)} trade(s): {[t['ticker'] for t in found]}")
         except Exception as exc:
-            print(f"    → error: {exc}")
-        time.sleep(0.4)  # be polite to the server
+            print(f"    -> error: {exc}")
+        time.sleep(0.4)
 
-    print(f"House total: {len(trades)} trades with identified tickers")
+    print(f"House total: {len(trades)} trades\n")
     return trades
 
 
 # ---------------------------------------------------------------------------
-# Senate scraper — tries the eFD full-text search API
+# Senate scraper -- tries efts.senate.gov STFA search (accessible from Linux)
 # ---------------------------------------------------------------------------
 
 def scrape_senate() -> list[dict]:
@@ -322,9 +406,9 @@ def scrape_senate() -> list[dict]:
     trades: list[dict] = []
 
     from_date = (date.today() - timedelta(days=90)).isoformat()
-    to_date = date.today().isoformat()
+    to_date   = date.today().isoformat()
     url = (
-        f"https://efts.senate.gov/LATEST/search-index"
+        "https://efts.senate.gov/LATEST/search-index"
         f"?q=&type=STFA&dateRange=custom&fromDate={from_date}&toDate={to_date}"
     )
 
@@ -333,7 +417,7 @@ def scrape_senate() -> list[dict]:
         resp.raise_for_status()
         data = resp.json()
     except Exception as exc:
-        print(f"Senate eFD unavailable: {exc}")
+        print(f"Senate eFD unavailable: {exc}\n")
         return []
 
     hits = data.get("hits", {}).get("hits", [])
@@ -349,40 +433,41 @@ def scrape_senate() -> list[dict]:
             continue
 
         filed = safe_iso(str(src.get("date_filed", "")))
-        party = norm_party(str(src.get("party", "")))
+        party = PARTY_LOOKUP.get(senator, "Unknown")
 
-        # Electronic STFA filings may embed transactions directly
         for tx in src.get("transactions", []) or src.get("trade_data", []) or []:
             if not isinstance(tx, dict):
                 continue
+            # Prefer explicit ticker; then try parenthesized extraction
             raw_ticker = str(tx.get("ticker", tx.get("asset_ticker", ""))).upper().strip()
-            ticker = raw_ticker if raw_ticker and raw_ticker != "--" else guess_ticker(
-                str(tx.get("asset_name", tx.get("asset_description", "")))
-            )
-            if not ticker:
+            if not raw_ticker or raw_ticker == "--":
+                asset_text = str(tx.get("asset_name", tx.get("asset_description", "")))
+                tm = _TICKER_RE.search(asset_text)
+                raw_ticker = tm.group(1).upper() if tm else ""
+            if not raw_ticker or raw_ticker in BAD_TICKERS:
                 continue
+
+            tx_type = norm_trade_type(str(tx.get("type", tx.get("transaction_type", "S"))))
+            tx_date = safe_iso(str(tx.get("transaction_date", tx.get("date", filed))))
+            asset_name = str(tx.get("asset_name", tx.get("asset_description", "")))
+            # Strip ticker suffix from company name display
+            clean_asset = _TICKER_RE.sub("", asset_name).strip().rstrip(" -–")
 
             trades.append(
                 {
                     "politician_name": senator,
                     "party": party,
                     "chamber": "Senate",
-                    "ticker": ticker,
-                    "company_name": str(
-                        tx.get("asset_name", tx.get("asset_description", ""))
-                    ),
-                    "trade_type": norm_trade_type(
-                        str(tx.get("type", tx.get("transaction_type", "")))
-                    ),
+                    "ticker": raw_ticker,
+                    "company_name": clean_asset,
+                    "trade_type": tx_type,
                     "amount_range": str(tx.get("amount", "Unknown")),
-                    "traded_at": safe_iso(
-                        str(tx.get("transaction_date", tx.get("date", filed)))
-                    ),
+                    "traded_at": tx_date,
                     "filed_at": filed,
                 }
             )
 
-    print(f"Senate total: {len(trades)} trades with identified tickers")
+    print(f"Senate total: {len(trades)} trades\n")
     return trades
 
 
@@ -395,7 +480,7 @@ def main() -> None:
 
     all_trades = scrape_house() + scrape_senate()
 
-    # Deduplicate by (politician, ticker, traded_at, trade_type)
+    # Deduplicate by (name, ticker, traded_at, trade_type)
     seen: set[tuple] = set()
     unique: list[dict] = []
     for t in all_trades:
@@ -404,15 +489,13 @@ def main() -> None:
             seen.add(key)
             unique.append(t)
 
-    # Sort newest-first
     unique.sort(key=lambda t: t["traded_at"], reverse=True)
-
-    print(f"\nTotal unique trades: {len(unique)}")
+    print(f"Total unique trades: {len(unique)}")
 
     with open("data/all_trades.json", "w", encoding="utf-8") as fh:
         json.dump(unique, fh, indent=2)
 
-    print("Saved → data/all_trades.json")
+    print("Saved -> data/all_trades.json")
 
 
 if __name__ == "__main__":
