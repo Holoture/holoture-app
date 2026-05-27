@@ -39,13 +39,22 @@ export default async function AdminSignalsPage() {
               {signals.length} total signal{signals.length !== 1 ? 's' : ''} · {signals.filter((s) => s.isActive).length} active
             </p>
           </div>
-          <Link
-            href="/admin/signals/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: '#009BFF', color: 'white' }}
-          >
-            <Plus className="w-4 h-4" /> Add Signal
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin/content"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: 'var(--bg-surface)', color: 'white', border: '1px solid var(--border)' }}
+            >
+              Content
+            </Link>
+            <Link
+              href="/admin/signals/new"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: '#009BFF', color: 'white' }}
+            >
+              <Plus className="w-4 h-4" /> Add Signal
+            </Link>
+          </div>
         </div>
 
         {signals.length === 0 ? (
