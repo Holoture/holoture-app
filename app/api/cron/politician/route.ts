@@ -10,7 +10,7 @@ function verifyCron(req: Request): boolean {
   return req.headers.get('authorization') === `Bearer ${secret}`
 }
 
-// ─── Capitol Trades API ────────────────────────────────────────────────────
+// ─── Types ─────────────────────────────────────────────────────────────────
 
 type NormalizedTrade = {
   externalId: string
@@ -25,18 +25,14 @@ type NormalizedTrade = {
   filedAt: Date
 }
 
+// ─── Normalization helpers ─────────────────────────────────────────────────
+
 function normalizeParty(raw: string): string {
   const lower = (raw ?? '').toLowerCase()
   if (lower.includes('democrat') || lower === 'd') return 'Democrat'
   if (lower.includes('republican') || lower === 'r') return 'Republican'
   if (lower.includes('independent') || lower === 'i') return 'Independent'
   return raw || 'Unknown'
-}
-
-function normalizeChamber(raw: string): string {
-  const lower = (raw ?? '').toLowerCase()
-  if (lower.includes('senate') || lower === 's') return 'Senate'
-  return 'House'
 }
 
 function normalizeTradeType(raw: string): string {
@@ -48,106 +44,147 @@ function normalizeTradeType(raw: string): string {
 
 function safeDate(raw: string | undefined | null): Date {
   if (!raw) return new Date()
+  // Handle MM/DD/YYYY format
+  if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(raw)) {
+    const [m, d, y] = raw.split('/')
+    const parsed = new Date(`${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`)
+    if (!isNaN(parsed.getTime())) return parsed
+  }
   const d = new Date(raw)
   return isNaN(d.getTime()) ? new Date() : d
 }
 
-function parseCapitolTrades(data: unknown): NormalizedTrade[] {
-  if (!data || typeof data !== 'object') return []
-  const obj = data as Record<string, unknown>
+// ─── Senate parser ─────────────────────────────────────────────────────────
+// Source: senate-stock-watcher-data.s3-us-west-2.amazonaws.com
 
-  // Try top-level array first
-  const rawArray: unknown[] = Array.isArray(obj) ? obj
-    : Array.isArray(obj['data']) ? (obj['data'] as unknown[])
-    : Array.isArray(obj['trades']) ? (obj['trades'] as unknown[])
-    : []
-
+function parseSenate(data: unknown): NormalizedTrade[] {
+  if (!Array.isArray(data)) return []
   const trades: NormalizedTrade[] = []
 
-  for (const item of rawArray) {
+  for (const item of data) {
     if (!item || typeof item !== 'object') continue
     const t = item as Record<string, unknown>
 
-    // Determine external ID (handle _id, id, uuid)
-    const externalId = String(t['_id'] ?? t['id'] ?? t['uuid'] ?? '')
-    if (!externalId) continue
+    const ticker = String(t['ticker'] ?? '').toUpperCase().trim()
+    if (!ticker || ticker === '--' || ticker === 'N/A' || ticker === '') continue
 
-    // Handle flat format: { politician: {...}, asset: {...}, txType, txDate, filingDate }
-    // Handle JSON:API format: { attributes: { politician: {...}, asset: {...}, ... } }
-    const attrs = (t['attributes'] && typeof t['attributes'] === 'object')
-      ? (t['attributes'] as Record<string, unknown>)
-      : t
+    const senator = String(t['senator'] ?? '').trim()
+    if (!senator) continue
 
-    const politician = (attrs['politician'] && typeof attrs['politician'] === 'object')
-      ? attrs['politician'] as Record<string, unknown>
-      : {}
-    const asset = (attrs['asset'] && typeof attrs['asset'] === 'object')
-      ? attrs['asset'] as Record<string, unknown>
-      : {}
+    const txDate = String(t['transaction_date'] ?? '')
+    const filingDate = String(t['date'] ?? t['transaction_date'] ?? '')
 
-    const politicianName = String(politician['name'] ?? attrs['politicianName'] ?? t['politicianName'] ?? '')
-    const party = normalizeParty(String(politician['party'] ?? attrs['party'] ?? t['party'] ?? ''))
-    const chamber = normalizeChamber(String(politician['chamber'] ?? attrs['chamber'] ?? t['chamber'] ?? 'house'))
+    const externalId = `senate-${senator}-${ticker}-${txDate}`
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '-')
+      .replace(/-+/g, '-')
 
-    const ticker = String(asset['ticker'] ?? asset['assetTicker'] ?? attrs['ticker'] ?? t['ticker'] ?? '').toUpperCase()
-    const companyName = String(asset['name'] ?? asset['assetName'] ?? attrs['companyName'] ?? attrs['assetName'] ?? '')
-
-    const tradeType = normalizeTradeType(String(
-      attrs['txType'] ?? attrs['type'] ?? attrs['tradeType'] ?? t['txType'] ?? t['type'] ?? ''
-    ))
-
-    const amountRange = String(
-      attrs['amount'] ?? attrs['amountRange'] ?? t['amount'] ?? 'Unknown'
-    )
-
-    const tradedAt = safeDate(String(
-      attrs['txDate'] ?? attrs['tradeDate'] ?? attrs['transactionDate'] ?? t['txDate'] ?? ''
-    ))
-    const filedAt = safeDate(String(
-      attrs['filingDate'] ?? attrs['pubDate'] ?? attrs['filedDate'] ?? t['filingDate'] ?? t['pubDate'] ?? ''
-    ))
-
-    if (!politicianName || !ticker) continue
-
-    trades.push({ externalId, politicianName, party, chamber, ticker, companyName, tradeType, amountRange, tradedAt, filedAt })
+    trades.push({
+      externalId,
+      politicianName: senator,
+      party: normalizeParty(String(t['party'] ?? '')),
+      chamber: 'Senate',
+      ticker,
+      companyName: String(t['asset_description'] ?? ''),
+      tradeType: normalizeTradeType(String(t['type'] ?? '')),
+      amountRange: String(t['amount'] ?? 'Unknown'),
+      tradedAt: safeDate(txDate),
+      filedAt: safeDate(filingDate),
+    })
   }
 
   return trades
 }
 
-let fetchDiagnostic = ''
+// ─── House parser ──────────────────────────────────────────────────────────
+// Source: house-stock-watcher-data.s3-us-west-2.amazonaws.com
 
-async function fetchFromCapitolTrades(): Promise<NormalizedTrade[]> {
-  const urls = [
-    'https://api.capitoltrades.com/trades?page[size]=50&sort=-pubDate',
-    'https://api.capitoltrades.com/trades?pageSize=50&sort=-filingDate',
-    'https://api.capitoltrades.com/trades?limit=50',
-    'https://api.capitoltrades.com/trades',
+function parseHouse(data: unknown): NormalizedTrade[] {
+  if (!Array.isArray(data)) return []
+  const trades: NormalizedTrade[] = []
+
+  for (const item of data) {
+    if (!item || typeof item !== 'object') continue
+    const t = item as Record<string, unknown>
+
+    const ticker = String(t['ticker'] ?? '').toUpperCase().trim()
+    if (!ticker || ticker === '--' || ticker === 'N/A' || ticker === '') continue
+
+    const rep = String(t['representative'] ?? '').trim()
+    if (!rep) continue
+
+    const txDate = String(t['transaction_date'] ?? '')
+    const filingDate = String(t['disclosure_date'] ?? t['transaction_date'] ?? '')
+
+    const externalId = `house-${rep}-${ticker}-${txDate}`
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '-')
+      .replace(/-+/g, '-')
+
+    trades.push({
+      externalId,
+      politicianName: rep,
+      party: normalizeParty(String(t['party'] ?? '')),
+      chamber: 'House',
+      ticker,
+      companyName: String(t['asset_description'] ?? ''),
+      tradeType: normalizeTradeType(String(t['type'] ?? '')),
+      amountRange: String(t['amount'] ?? 'Unknown'),
+      tradedAt: safeDate(txDate),
+      filedAt: safeDate(filingDate),
+    })
+  }
+
+  return trades
+}
+
+// ─── Fetch from public S3 sources ─────────────────────────────────────────
+
+async function fetchTrades(): Promise<{ trades: NormalizedTrade[]; diagnostic: string }> {
+  let diagnostic = ''
+  const allTrades: NormalizedTrade[] = []
+
+  const sources = [
+    {
+      url: 'https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json',
+      parser: parseSenate,
+      name: 'Senate',
+    },
+    {
+      url: 'https://house-stock-watcher-data.s3-us-west-2.amazonaws.com/data/all_transactions.json',
+      parser: parseHouse,
+      name: 'House',
+    },
   ]
 
-  for (const url of urls) {
+  for (const source of sources) {
     try {
-      const res = await fetch(url, {
+      const res = await fetch(source.url, {
         cache: 'no-store',
-        headers: { Accept: 'application/json', 'User-Agent': 'Mozilla/5.0 Holoture/1.0' },
+        headers: { Accept: 'application/json' },
       })
-      const status = res.status
-      if (!res.ok) {
-        fetchDiagnostic += `[${url}] HTTP ${status}; `
-        continue
-      }
+      diagnostic += `[${source.name}] HTTP ${res.status}; `
+      if (!res.ok) continue
+
       const raw = await res.text()
-      fetchDiagnostic += `[${url}] HTTP ${status} body_len=${raw.length} preview=${raw.slice(0, 200)}; `
+      diagnostic += `body_len=${raw.length}; `
+
       let data: unknown
-      try { data = JSON.parse(raw) } catch { fetchDiagnostic += 'invalid JSON; '; continue }
-      const trades = parseCapitolTrades(data)
-      if (trades.length > 0) return trades
-      fetchDiagnostic += `parsed=0 trades; `
+      try { data = JSON.parse(raw) } catch { diagnostic += 'invalid JSON; '; continue }
+
+      const parsed = source.parser(data)
+      diagnostic += `parsed=${parsed.length}; `
+      allTrades.push(...parsed)
     } catch (e) {
-      fetchDiagnostic += `[${url}] error=${String(e).slice(0, 80)}; `
+      diagnostic += `[${source.name}] error=${String(e).slice(0, 100)}; `
     }
   }
-  return []
+
+  // Sort by tradedAt descending, take the 50 most recent
+  allTrades.sort((a, b) => b.tradedAt.getTime() - a.tradedAt.getTime())
+  const recent = allTrades.slice(0, 50)
+
+  return { trades: recent, diagnostic }
 }
 
 // ─── Commentary generation ─────────────────────────────────────────────────
@@ -221,10 +258,10 @@ export async function GET(req: Request) {
   if (!verifyCron(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
-    const trades = await fetchFromCapitolTrades()
+    const { trades, diagnostic } = await fetchTrades()
 
     if (trades.length === 0) {
-      return NextResponse.json({ ok: true, count: 0, note: 'Capitol Trades API returned no data', diagnostic: fetchDiagnostic })
+      return NextResponse.json({ ok: true, count: 0, note: 'No trades fetched', diagnostic })
     }
 
     // Generate commentary in batches of 25 to stay under token limits
@@ -263,10 +300,10 @@ export async function GET(req: Request) {
           },
         })
         upserted++
-      } catch { /* skip duplicate constraint */ }
+      } catch { /* skip on constraint error */ }
     }
 
-    return NextResponse.json({ ok: true, count: upserted, total: trades.length, diagnostic: fetchDiagnostic })
+    return NextResponse.json({ ok: true, count: upserted, total: trades.length, diagnostic })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('[cron/politician]', msg)
