@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { TrendingUp, Shield, Zap, BarChart3, Clock, Star, ChevronRight } from 'lucide-react'
+import { Shield, Zap, BarChart3, Clock, Star, ChevronRight } from 'lucide-react'
 import Header from '@/components/Header'
 
 const FEATURES = [
@@ -26,7 +26,6 @@ const FEATURES = [
   },
 ]
 
-const SAMPLE_TICKERS = ['NVDA', 'MSFT', 'AAPL', 'META', 'AMZN', 'TSLA']
 
 export default function LandingPage() {
   return (
@@ -83,18 +82,6 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          <div className="mt-14 flex flex-wrap justify-center gap-3">
-            {SAMPLE_TICKERS.map((ticker) => (
-              <div
-                key={ticker}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg"
-                style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
-              >
-                <TrendingUp className="w-4 h-4" style={{ color: '#009BFF' }} />
-                <span className="font-bold text-white text-sm">{ticker}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
