@@ -42,18 +42,6 @@ export default function LandingPage() {
           }}
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-8"
-            style={{
-              backgroundColor: 'rgba(0,155,255,0.12)',
-              border: '1px solid rgba(0,155,255,0.3)',
-              color: '#009BFF',
-            }}
-          >
-            <Zap className="w-3 h-3" />
-            AI-Powered Investment Signals
-          </div>
-
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight">
             Trade Smarter with
             <br />
@@ -93,7 +81,7 @@ export default function LandingPage() {
             <h2 className="text-3xl sm:text-4xl font-black text-white">
               Everything You Need to Invest with Confidence
             </h2>
-            <p className="mt-4 text-lg text-white">Stop guessing. Start trading with AI-backed conviction.</p>
+            <p className="mt-4 text-lg text-white">Stop guessing. Start trading with Data-backed conviction.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

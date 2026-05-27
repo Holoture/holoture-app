@@ -5,7 +5,7 @@ import { HelpCircle, ChevronDown, Mail, MessageCircle } from 'lucide-react'
 const FAQS = [
   {
     q: 'What is Holoture?',
-    a: 'Holoture is an AI-powered investment signal platform. We publish daily curated stock signals with entry zones, confidence scores, price targets, stop-losses, and full investment theses — so you can trade with structure and conviction.',
+    a: 'Holoture is a data-powered investment signal platform. We publish daily curated stock signals with entry zones, confidence scores, price targets, stop-losses, and full investment theses — so you can trade with structure and conviction.',
   },
   {
     q: 'Are these signals financial advice?',
@@ -17,7 +17,7 @@ const FAQS = [
   },
   {
     q: 'What is the difference between Free and Pro?',
-    a: 'Free members get one randomized signal per day with basic info. Pro members get the full curated board — 10+ signals with entry zones, AI confidence scores, price targets, stop-losses, time horizons, and full thesis.',
+    a: 'Free members get one randomized signal per day with basic info. Pro members get the full curated board — 10+ signals with entry zones, Data confidence scores, price targets, stop-losses, time horizons, and full thesis.',
   },
   {
     q: 'How do I upgrade to Pro?',
@@ -33,7 +33,7 @@ const FAQS = [
   },
   {
     q: 'What do the signal types mean?',
-    a: 'BUY: AI expects price appreciation over the stated horizon. SELL/SHORT: AI anticipates a decline. HOLD: maintain existing positions. WATCH: worth monitoring — no action yet.',
+    a: 'BUY: signals expect price appreciation over the stated horizon. SELL/SHORT: signals anticipate a decline. HOLD: maintain existing positions. WATCH: worth monitoring — no action yet.',
   },
   {
     q: 'Is my payment information secure?',

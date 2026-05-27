@@ -23,7 +23,7 @@ const ARTICLES: Article[] = [
     sections: [
       {
         heading: 'What is a Signal?',
-        body: 'A signal is a curated trade idea with a clear setup: ticker, direction (BUY/SELL/HOLD/SHORT), entry price range, a target, and a stop-loss. Think of it as a structured hypothesis — not a guarantee, but a high-probability setup identified by our AI engine.',
+        body: 'A signal is a curated trade idea with a clear setup: ticker, direction (BUY/SELL/HOLD/SHORT), entry price range, a target, and a stop-loss. Think of it as a structured hypothesis — not a guarantee, but a high-probability setup identified by our data engine.',
       },
       {
         heading: 'Signal Types',
@@ -39,7 +39,7 @@ const ARTICLES: Article[] = [
     id: 'confidence-scores',
     icon: BarChart3,
     title: 'Understanding Confidence Scores',
-    summary: 'Confidence scores tell you how strongly the AI model backs a signal. Here is what each range means in practice.',
+    summary: 'Confidence scores tell you how strongly the data model backs a signal. Here is what each range means in practice.',
     readTime: '3 min',
     sections: [
       {
