@@ -115,24 +115,37 @@ function parseCapitolTrades(data: unknown): NormalizedTrade[] {
   return trades
 }
 
+let fetchDiagnostic = ''
+
 async function fetchFromCapitolTrades(): Promise<NormalizedTrade[]> {
   const urls = [
     'https://api.capitoltrades.com/trades?page[size]=50&sort=-pubDate',
     'https://api.capitoltrades.com/trades?pageSize=50&sort=-filingDate',
     'https://api.capitoltrades.com/trades?limit=50',
+    'https://api.capitoltrades.com/trades',
   ]
 
   for (const url of urls) {
     try {
       const res = await fetch(url, {
         cache: 'no-store',
-        headers: { Accept: 'application/json', 'User-Agent': 'Holoture/1.0' },
+        headers: { Accept: 'application/json', 'User-Agent': 'Mozilla/5.0 Holoture/1.0' },
       })
-      if (!res.ok) continue
-      const data = await res.json()
+      const status = res.status
+      if (!res.ok) {
+        fetchDiagnostic += `[${url}] HTTP ${status}; `
+        continue
+      }
+      const raw = await res.text()
+      fetchDiagnostic += `[${url}] HTTP ${status} body_len=${raw.length} preview=${raw.slice(0, 200)}; `
+      let data: unknown
+      try { data = JSON.parse(raw) } catch { fetchDiagnostic += 'invalid JSON; '; continue }
       const trades = parseCapitolTrades(data)
       if (trades.length > 0) return trades
-    } catch { continue }
+      fetchDiagnostic += `parsed=0 trades; `
+    } catch (e) {
+      fetchDiagnostic += `[${url}] error=${String(e).slice(0, 80)}; `
+    }
   }
   return []
 }
@@ -211,7 +224,7 @@ export async function GET(req: Request) {
     const trades = await fetchFromCapitolTrades()
 
     if (trades.length === 0) {
-      return NextResponse.json({ ok: true, count: 0, note: 'Capitol Trades API returned no data' })
+      return NextResponse.json({ ok: true, count: 0, note: 'Capitol Trades API returned no data', diagnostic: fetchDiagnostic })
     }
 
     // Generate commentary in batches of 25 to stay under token limits
@@ -253,7 +266,7 @@ export async function GET(req: Request) {
       } catch { /* skip duplicate constraint */ }
     }
 
-    return NextResponse.json({ ok: true, count: upserted, total: trades.length })
+    return NextResponse.json({ ok: true, count: upserted, total: trades.length, diagnostic: fetchDiagnostic })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('[cron/politician]', msg)
