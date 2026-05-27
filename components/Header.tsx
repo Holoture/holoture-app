@@ -141,7 +141,7 @@ function NavLink({
     <Link
       href={href}
       className={cn(
-        'px-3 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap',
+        'px-4 py-2.5 rounded-lg text-[15px] font-medium transition-colors whitespace-nowrap',
         active ? 'text-white bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5'
       )}
     >
