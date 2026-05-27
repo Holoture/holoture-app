@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { Shield, Zap, BarChart3, Clock, Star, ChevronRight } from 'lucide-react'
 import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
@@ -241,15 +240,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer style={{ borderTop: '1px solid var(--border)', backgroundColor: 'var(--bg-surface)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Image src="/logo.png" alt="Holoture" height={52} width={52} />
-            <span className="font-bold text-white">Holo<span style={{ color: '#009BFF' }}>ture</span></span>
-          </div>
-          <p className="text-sm text-white">© {new Date().getFullYear()} Holoture. Not financial advice.</p>
-        </div>
-      </footer>
     </div>
   )
 }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import Script from 'next/script'
 import ThemeProvider from '@/components/ThemeProvider'
+import Footer from '@/components/Footer'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default function RootLayout({
             }}
           />
           <ThemeProvider>{children}</ThemeProvider>
+          <Footer />
         </body>
       </html>
     </ClerkProvider>
