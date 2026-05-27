@@ -48,17 +48,16 @@ function normalizeTradeType(raw: string): string {
   return (raw ?? 'UNKNOWN').toUpperCase()
 }
 
-function safeDate(raw: string | number | undefined | null): Date {
+function safeDate(raw: string | undefined | null): Date {
   if (!raw) return new Date()
   const d = new Date(raw)
   return isNaN(d.getTime()) ? new Date() : d
 }
 
-// ─── Quiver Quantitative parser ────────────────────────────────────────────
-// Docs: https://api.quiverquant.com  (free tier, register at quiverquant.com)
-// Add QUIVER_API_KEY to Vercel env vars
+// ─── House parser ──────────────────────────────────────────────────────────
+// Source: https://house-stock-watcher-data.s3-us-west-2.amazonaws.com/data/all_transactions.json
 
-function parseQuiver(data: unknown): NormalizedTrade[] {
+function parseHouse(data: unknown): NormalizedTrade[] {
   if (!Array.isArray(data)) return []
   const trades: NormalizedTrade[] = []
 
@@ -66,14 +65,16 @@ function parseQuiver(data: unknown): NormalizedTrade[] {
     if (!item || typeof item !== 'object') continue
     const t = item as Record<string, unknown>
 
-    const ticker = String(t['Ticker'] ?? '').toUpperCase().trim()
-    if (!ticker || ticker === '--') continue
+    const ticker = String(t['ticker'] ?? '').toUpperCase().trim()
+    if (!ticker || ticker === '--' || ticker === 'N/A') continue
 
-    const rep = String(t['Representative'] ?? '').trim()
+    const rep = String(t['representative'] ?? '').trim()
     if (!rep) continue
 
-    const txDate = String(t['Date'] ?? t['TransactionDate'] ?? '')
-    const externalId = `quiver-${rep}-${ticker}-${txDate}`
+    const txDate = String(t['transaction_date'] ?? '')
+    const filedDate = String(t['disclosure_date'] ?? t['transaction_date'] ?? '')
+
+    const externalId = `house-${rep}-${ticker}-${txDate}`
       .toLowerCase()
       .replace(/[^a-z0-9-]/g, '-')
       .replace(/-+/g, '-')
@@ -81,69 +82,110 @@ function parseQuiver(data: unknown): NormalizedTrade[] {
     trades.push({
       externalId,
       politicianName: rep,
-      party: normalizeParty(String(t['Party'] ?? '')),
-      chamber: normalizeChamber(String(t['House'] ?? t['Chamber'] ?? 'House')),
+      party: normalizeParty(String(t['party'] ?? '')),
+      chamber: 'House',
       ticker,
-      companyName: String(t['Description'] ?? t['Company'] ?? ''),
-      tradeType: normalizeTradeType(String(t['Transaction'] ?? t['Type'] ?? '')),
-      amountRange: String(t['Range'] ?? t['Amount'] ?? 'Unknown'),
+      companyName: String(t['asset_description'] ?? ''),
+      tradeType: normalizeTradeType(String(t['type'] ?? '')),
+      amountRange: String(t['amount'] ?? 'Unknown'),
       tradedAt: safeDate(txDate),
-      filedAt: safeDate(String(t['FilingDate'] ?? t['Date'] ?? '')),
+      filedAt: safeDate(filedDate),
     })
   }
 
   return trades
 }
 
-// ─── Fetch from available sources ─────────────────────────────────────────
+// ─── Senate parser ─────────────────────────────────────────────────────────
+// Source: https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json
+
+function parseSenate(data: unknown): NormalizedTrade[] {
+  if (!Array.isArray(data)) return []
+  const trades: NormalizedTrade[] = []
+
+  for (const item of data) {
+    if (!item || typeof item !== 'object') continue
+    const t = item as Record<string, unknown>
+
+    const ticker = String(t['ticker'] ?? '').toUpperCase().trim()
+    if (!ticker || ticker === '--' || ticker === 'N/A') continue
+
+    const senator = String(t['senator'] ?? '').trim()
+    if (!senator) continue
+
+    const txDate = String(t['transaction_date'] ?? '')
+    const filedDate = String(t['date'] ?? t['transaction_date'] ?? '')
+
+    const externalId = `senate-${senator}-${ticker}-${txDate}`
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '-')
+      .replace(/-+/g, '-')
+
+    trades.push({
+      externalId,
+      politicianName: senator,
+      party: normalizeParty(String(t['party'] ?? '')),
+      chamber: 'Senate',
+      ticker,
+      companyName: String(t['asset_description'] ?? ''),
+      tradeType: normalizeTradeType(String(t['type'] ?? '')),
+      amountRange: String(t['amount'] ?? 'Unknown'),
+      tradedAt: safeDate(txDate),
+      filedAt: safeDate(filedDate),
+    })
+  }
+
+  return trades
+}
+
+// ─── Fetch from House and Senate stock watcher datasets ───────────────────
 
 async function fetchTrades(): Promise<{ trades: NormalizedTrade[]; diagnostic: string }> {
   let diagnostic = ''
-  const quiverKey = process.env.QUIVER_API_KEY
+  const allTrades: NormalizedTrade[] = []
 
-  if (!quiverKey) {
-    diagnostic = 'QUIVER_API_KEY not set — add it to Vercel env vars (free at quiverquant.com)'
-    return { trades: [], diagnostic }
-  }
-
-  // Quiver Quantitative congressional trading endpoint
   const sources = [
-    'https://api.quiverquant.com/beta/live/congresstrading',
-    'https://api.quiverquant.com/beta/bulk/congresstrading',
+    {
+      url: 'https://house-stock-watcher-data.s3-us-west-2.amazonaws.com/data/all_transactions.json',
+      parser: parseHouse,
+      name: 'House',
+    },
+    {
+      url: 'https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json',
+      parser: parseSenate,
+      name: 'Senate',
+    },
   ]
 
-  for (const url of sources) {
+  for (const source of sources) {
     try {
-      const res = await fetch(url, {
+      const res = await fetch(source.url, {
         cache: 'no-store',
         headers: {
           Accept: 'application/json',
-          Authorization: `Token ${quiverKey}`,
-          'X-CSRFToken': 'null',
+          'User-Agent': 'Mozilla/5.0 Holoture/1.0',
         },
       })
-      diagnostic += `[${url}] HTTP ${res.status}; `
+      diagnostic += `[${source.name}] HTTP ${res.status}; `
       if (!res.ok) continue
 
       const raw = await res.text()
-      diagnostic += `body_len=${raw.length} preview=${raw.slice(0, 150)}; `
+      diagnostic += `body_len=${raw.length}; `
 
       let data: unknown
       try { data = JSON.parse(raw) } catch { diagnostic += 'invalid JSON; '; continue }
 
-      const trades = parseQuiver(data)
-      diagnostic += `parsed=${trades.length}; `
-      if (trades.length > 0) {
-        // Sort by tradedAt descending, take the 50 most recent
-        trades.sort((a, b) => b.tradedAt.getTime() - a.tradedAt.getTime())
-        return { trades: trades.slice(0, 50), diagnostic }
-      }
+      const parsed = source.parser(data)
+      diagnostic += `parsed=${parsed.length}; `
+      allTrades.push(...parsed)
     } catch (e) {
-      diagnostic += `error=${String(e).slice(0, 100)}; `
+      diagnostic += `[${source.name}] error=${String(e).slice(0, 100)}; `
     }
   }
 
-  return { trades: [], diagnostic }
+  // Sort by tradedAt descending, take 50 most recent
+  allTrades.sort((a, b) => b.tradedAt.getTime() - a.tradedAt.getTime())
+  return { trades: allTrades.slice(0, 50), diagnostic }
 }
 
 // ─── Commentary generation ─────────────────────────────────────────────────
@@ -220,10 +262,9 @@ export async function GET(req: Request) {
     const { trades, diagnostic } = await fetchTrades()
 
     if (trades.length === 0) {
-      return NextResponse.json({ ok: true, count: 0, note: 'No trades fetched', diagnostic })
+      return NextResponse.json({ ok: true, count: 0, note: 'No trades fetched — data sources may be unavailable', diagnostic })
     }
 
-    // Generate commentary in batches of 25 to stay under token limits
     const batch1 = trades.slice(0, 25)
     const batch2 = trades.slice(25)
     const [map1, map2] = await Promise.all([
