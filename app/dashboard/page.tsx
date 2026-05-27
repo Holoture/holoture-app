@@ -120,7 +120,7 @@ export default async function DashboardPage() {
               </p>
               <p className="text-xs text-white">
                 {lastLog
-                  ? `Updated ${lastLog.generatedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York', timeZoneName: 'short' })}`
+                  ? `Updated ${lastLog.generatedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' })} EST`
                   : isPro ? 'Full curated board' : 'Free daily pick'}
               </p>
             </div>

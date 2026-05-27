@@ -50,7 +50,7 @@ export default async function TrendsPage() {
           </div>
           {updatedAt && (
             <p className="text-xs shrink-0" style={{ color: 'var(--text-primary)', opacity: 0.5 }}>
-              Updated {new Date(updatedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York', timeZoneName: 'short' })}
+              Updated {new Date(updatedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' })} EST
             </p>
           )}
         </div>
