@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
 
-export const maxDuration = 120
+export const maxDuration = 60
 
 function verifyCron(req: Request): boolean {
   const secret = process.env.CRON_SECRET
@@ -12,22 +12,21 @@ function verifyCron(req: Request): boolean {
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
-type NormalizedTrade = {
-  externalId: string
-  politicianName: string
+type RawTrade = {
+  politician_name: string
   party: string
   chamber: string
   ticker: string
-  companyName: string
-  tradeType: string
-  amountRange: string
-  tradedAt: Date
-  filedAt: Date
+  company_name: string
+  trade_type: string
+  amount_range: string
+  traded_at: string
+  filed_at: string
 }
 
-// ─── Normalization helpers ─────────────────────────────────────────────────
+// ─── Normalization ─────────────────────────────────────────────────────────
 
-function normalizeParty(raw: string): string {
+function normParty(raw: string): string {
   const lower = (raw ?? '').toLowerCase()
   if (lower.includes('democrat') || lower === 'd') return 'Democrat'
   if (lower.includes('republican') || lower === 'r') return 'Republican'
@@ -35,177 +34,72 @@ function normalizeParty(raw: string): string {
   return raw || 'Unknown'
 }
 
-function normalizeChamber(raw: string): string {
-  const lower = (raw ?? '').toLowerCase()
-  if (lower.includes('senate') || lower === 's') return 'Senate'
-  return 'House'
+function normChamber(raw: string): string {
+  return (raw ?? '').toLowerCase().includes('senate') ? 'Senate' : 'House'
 }
 
-function normalizeTradeType(raw: string): string {
+function normTradeType(raw: string): string {
   const lower = (raw ?? '').toLowerCase()
-  if (lower.includes('purchase') || lower === 'buy' || lower === 'p') return 'BUY'
-  if (lower.includes('sale') || lower === 'sell' || lower === 's') return 'SELL'
+  if (lower === 'buy' || lower.includes('purchase')) return 'BUY'
+  if (lower === 'sell' || lower.includes('sale')) return 'SELL'
   return (raw ?? 'UNKNOWN').toUpperCase()
 }
 
-function safeDate(raw: string | undefined | null): Date {
+function safeDate(raw: string): Date {
   if (!raw) return new Date()
   const d = new Date(raw)
   return isNaN(d.getTime()) ? new Date() : d
 }
 
-// ─── House parser ──────────────────────────────────────────────────────────
-// Source: https://house-stock-watcher-data.s3-us-west-2.amazonaws.com/data/all_transactions.json
+// ─── Fetch data committed by the GitHub Action scraper ────────────────────
+// The scraper runs daily and commits data/all_trades.json to master.
+// raw.githubusercontent.com always returns fresh content from that branch.
 
-function parseHouse(data: unknown): NormalizedTrade[] {
-  if (!Array.isArray(data)) return []
-  const trades: NormalizedTrade[] = []
+const DATA_URL =
+  'https://raw.githubusercontent.com/Holoture/holoture-app/master/data/all_trades.json'
 
-  for (const item of data) {
-    if (!item || typeof item !== 'object') continue
-    const t = item as Record<string, unknown>
-
-    const ticker = String(t['ticker'] ?? '').toUpperCase().trim()
-    if (!ticker || ticker === '--' || ticker === 'N/A') continue
-
-    const rep = String(t['representative'] ?? '').trim()
-    if (!rep) continue
-
-    const txDate = String(t['transaction_date'] ?? '')
-    const filedDate = String(t['disclosure_date'] ?? t['transaction_date'] ?? '')
-
-    const externalId = `house-${rep}-${ticker}-${txDate}`
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, '-')
-      .replace(/-+/g, '-')
-
-    trades.push({
-      externalId,
-      politicianName: rep,
-      party: normalizeParty(String(t['party'] ?? '')),
-      chamber: 'House',
-      ticker,
-      companyName: String(t['asset_description'] ?? ''),
-      tradeType: normalizeTradeType(String(t['type'] ?? '')),
-      amountRange: String(t['amount'] ?? 'Unknown'),
-      tradedAt: safeDate(txDate),
-      filedAt: safeDate(filedDate),
-    })
-  }
-
-  return trades
-}
-
-// ─── Senate parser ─────────────────────────────────────────────────────────
-// Source: https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json
-
-function parseSenate(data: unknown): NormalizedTrade[] {
-  if (!Array.isArray(data)) return []
-  const trades: NormalizedTrade[] = []
-
-  for (const item of data) {
-    if (!item || typeof item !== 'object') continue
-    const t = item as Record<string, unknown>
-
-    const ticker = String(t['ticker'] ?? '').toUpperCase().trim()
-    if (!ticker || ticker === '--' || ticker === 'N/A') continue
-
-    const senator = String(t['senator'] ?? '').trim()
-    if (!senator) continue
-
-    const txDate = String(t['transaction_date'] ?? '')
-    const filedDate = String(t['date'] ?? t['transaction_date'] ?? '')
-
-    const externalId = `senate-${senator}-${ticker}-${txDate}`
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, '-')
-      .replace(/-+/g, '-')
-
-    trades.push({
-      externalId,
-      politicianName: senator,
-      party: normalizeParty(String(t['party'] ?? '')),
-      chamber: 'Senate',
-      ticker,
-      companyName: String(t['asset_description'] ?? ''),
-      tradeType: normalizeTradeType(String(t['type'] ?? '')),
-      amountRange: String(t['amount'] ?? 'Unknown'),
-      tradedAt: safeDate(txDate),
-      filedAt: safeDate(filedDate),
-    })
-  }
-
-  return trades
-}
-
-// ─── Fetch from House and Senate stock watcher datasets ───────────────────
-
-async function fetchTrades(): Promise<{ trades: NormalizedTrade[]; diagnostic: string }> {
+async function fetchTrades(): Promise<{ trades: RawTrade[]; diagnostic: string }> {
   let diagnostic = ''
-  const allTrades: NormalizedTrade[] = []
+  try {
+    const res = await fetch(DATA_URL, { cache: 'no-store' })
+    diagnostic += `HTTP ${res.status}; `
+    if (!res.ok) return { trades: [], diagnostic }
 
-  const sources = [
-    {
-      url: 'https://house-stock-watcher-data.s3-us-west-2.amazonaws.com/data/all_transactions.json',
-      parser: parseHouse,
-      name: 'House',
-    },
-    {
-      url: 'https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json',
-      parser: parseSenate,
-      name: 'Senate',
-    },
-  ]
+    const raw = await res.text()
+    diagnostic += `body_len=${raw.length}; `
 
-  for (const source of sources) {
-    try {
-      const res = await fetch(source.url, {
-        cache: 'no-store',
-        headers: {
-          Accept: 'application/json',
-          'User-Agent': 'Mozilla/5.0 Holoture/1.0',
-        },
-      })
-      diagnostic += `[${source.name}] HTTP ${res.status}; `
-      if (!res.ok) continue
+    const data = JSON.parse(raw) as RawTrade[]
+    if (!Array.isArray(data)) return { trades: [], diagnostic: diagnostic + 'not an array; ' }
 
-      const raw = await res.text()
-      diagnostic += `body_len=${raw.length}; `
-
-      let data: unknown
-      try { data = JSON.parse(raw) } catch { diagnostic += 'invalid JSON; '; continue }
-
-      const parsed = source.parser(data)
-      diagnostic += `parsed=${parsed.length}; `
-      allTrades.push(...parsed)
-    } catch (e) {
-      diagnostic += `[${source.name}] error=${String(e).slice(0, 100)}; `
-    }
+    const valid = data.filter(
+      (t) => t.politician_name && t.ticker && t.trade_type
+    )
+    diagnostic += `records=${data.length} valid=${valid.length}; `
+    return { trades: valid.slice(0, 50), diagnostic }
+  } catch (e) {
+    diagnostic += `error=${String(e).slice(0, 120)}`
+    return { trades: [], diagnostic }
   }
-
-  // Sort by tradedAt descending, take 50 most recent
-  allTrades.sort((a, b) => b.tradedAt.getTime() - a.tradedAt.getTime())
-  return { trades: allTrades.slice(0, 50), diagnostic }
 }
 
 // ─── Commentary generation ─────────────────────────────────────────────────
 
-async function generateCommentary(
-  trades: NormalizedTrade[]
-): Promise<Map<string, { commentary: string; significance: 'Low' | 'Medium' | 'High' }>> {
+type CommentaryResult = Map<string, { commentary: string; significance: 'Low' | 'Medium' | 'High' }>
+
+async function generateCommentary(trades: RawTrade[]): Promise<CommentaryResult> {
   if (trades.length === 0) return new Map()
   const client = getAnthropicClient()
 
   const input = trades.map((t, i) => ({
     index: i,
-    politician: t.politicianName,
+    politician: t.politician_name,
     party: t.party,
     chamber: t.chamber,
     ticker: t.ticker,
-    company: t.companyName,
-    type: t.tradeType,
-    amount: t.amountRange,
-    tradeDate: t.tradedAt.toISOString().split('T')[0],
+    company: t.company_name,
+    type: t.trade_type,
+    amount: t.amount_range,
+    tradeDate: t.traded_at,
   }))
 
   const message = await client.messages.create({
@@ -232,22 +126,23 @@ ${JSON.stringify(input)}`,
   const text = message.content[0].type === 'text' ? message.content[0].text : '[]'
   const cleaned = text.replace(/```json\s*/i, '').replace(/```/g, '').trim()
 
-  const result = new Map<string, { commentary: string; significance: 'Low' | 'Medium' | 'High' }>()
+  const result: CommentaryResult = new Map()
   try {
     const parsed = JSON.parse(cleaned) as { index: number; commentary: string; significance: string }[]
     for (const item of parsed) {
       const trade = trades[item.index]
-      if (trade) {
-        const sig: 'Low' | 'Medium' | 'High' =
-          item.significance === 'High' ? 'High'
-          : item.significance === 'Medium' ? 'Medium'
-          : 'Low'
-        result.set(trade.externalId, { commentary: item.commentary, significance: sig })
-      }
+      if (!trade) continue
+      const key = `${trade.politician_name}|${trade.ticker}|${trade.traded_at}`
+      const sig: 'Low' | 'Medium' | 'High' =
+        item.significance === 'High' ? 'High'
+        : item.significance === 'Medium' ? 'Medium'
+        : 'Low'
+      result.set(key, { commentary: item.commentary, significance: sig })
     }
   } catch {
     for (const t of trades) {
-      result.set(t.externalId, { commentary: 'Trade filed per STOCK Act disclosure requirements.', significance: 'Low' })
+      const key = `${t.politician_name}|${t.ticker}|${t.traded_at}`
+      result.set(key, { commentary: 'Trade filed per STOCK Act disclosure requirements.', significance: 'Low' })
     }
   }
   return result
@@ -262,7 +157,12 @@ export async function GET(req: Request) {
     const { trades, diagnostic } = await fetchTrades()
 
     if (trades.length === 0) {
-      return NextResponse.json({ ok: true, count: 0, note: 'No trades fetched — data sources may be unavailable', diagnostic })
+      return NextResponse.json({
+        ok: true,
+        count: 0,
+        note: 'No trades in data file — GitHub Action may not have run yet',
+        diagnostic,
+      })
     }
 
     const batch1 = trades.slice(0, 25)
@@ -275,21 +175,26 @@ export async function GET(req: Request) {
 
     let upserted = 0
     for (const trade of trades) {
-      const commentary = commentaryMap.get(trade.externalId)
+      const externalId = `${trade.politician_name}|${trade.ticker}|${trade.traded_at}|${trade.trade_type}`
+        .toLowerCase()
+        .replace(/[^a-z0-9|]/g, '-')
+      const key = `${trade.politician_name}|${trade.ticker}|${trade.traded_at}`
+      const commentary = commentaryMap.get(key)
+
       try {
         await prisma.politicianTrade.upsert({
-          where: { externalId: trade.externalId },
+          where: { externalId },
           create: {
-            externalId: trade.externalId,
-            politicianName: trade.politicianName,
-            party: trade.party,
-            chamber: trade.chamber,
-            ticker: trade.ticker,
-            companyName: trade.companyName,
-            tradeType: trade.tradeType,
-            amountRange: trade.amountRange,
-            tradedAt: trade.tradedAt,
-            filedAt: trade.filedAt,
+            externalId,
+            politicianName: trade.politician_name,
+            party: normParty(trade.party),
+            chamber: normChamber(trade.chamber),
+            ticker: trade.ticker.toUpperCase(),
+            companyName: trade.company_name ?? '',
+            tradeType: normTradeType(trade.trade_type),
+            amountRange: trade.amount_range ?? 'Unknown',
+            tradedAt: safeDate(trade.traded_at),
+            filedAt: safeDate(trade.filed_at),
             aiCommentary: commentary?.commentary ?? '',
             significance: commentary?.significance ?? 'Low',
           },
