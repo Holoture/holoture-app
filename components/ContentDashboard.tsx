@@ -2,9 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import {
-  Twitter,
-  Linkedin,
-  Instagram,
   RefreshCw,
   Copy,
   Check,
@@ -15,6 +12,9 @@ import {
   Calendar,
   CheckCircle2,
   BarChart3,
+  MessageSquare,
+  Briefcase,
+  Camera,
 } from 'lucide-react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -47,7 +47,7 @@ const PLATFORM_CONFIG: Record<string, { label: string; color: string; bg: string
     label: 'Twitter / X',
     color: '#1d9bf0',
     bg: 'rgba(29,155,240,0.12)',
-    icon: <Twitter className="w-4 h-4" />,
+    icon: <MessageSquare className="w-4 h-4" />,
   },
   Reddit: {
     label: 'Reddit',
@@ -59,7 +59,7 @@ const PLATFORM_CONFIG: Record<string, { label: string; color: string; bg: string
     label: 'Instagram',
     color: '#e1306c',
     bg: 'rgba(225,48,108,0.12)',
-    icon: <Instagram className="w-4 h-4" />,
+    icon: <Camera className="w-4 h-4" />,
   },
   TikTok: {
     label: 'TikTok',
@@ -71,7 +71,7 @@ const PLATFORM_CONFIG: Record<string, { label: string; color: string; bg: string
     label: 'LinkedIn',
     color: '#0a66c2',
     bg: 'rgba(10,102,194,0.12)',
-    icon: <Linkedin className="w-4 h-4" />,
+    icon: <Briefcase className="w-4 h-4" />,
   },
 }
 
@@ -509,7 +509,6 @@ export default function ContentDashboard() {
           style={{
             backgroundColor: 'var(--bg-primary)',
             border: '1px solid var(--border)',
-            placeholderColor: 'rgba(255,255,255,0.3)',
           }}
         />
 
