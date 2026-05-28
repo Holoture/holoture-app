@@ -3,12 +3,13 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import Header from '@/components/Header'
-import { Plus, TrendingUp, TrendingDown, Minus, Gift, Infinity, Zap } from 'lucide-react'
+import { Plus, TrendingUp, TrendingDown, Minus, Gift, Infinity, Zap, Clock } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import SignalDeleteButton from './SignalDeleteButton'
 import SignalToggleButton from './SignalToggleButton'
 import PromoCodeToggle from './PromoCodeToggle'
 import PromoCodeCreateForm from './PromoCodeCreateForm'
+import RefreshSignalsButton from './RefreshSignalsButton'
 
 async function getSignals() {
   return prisma.signal.findMany({ orderBy: { createdAt: 'desc' } })
@@ -22,38 +23,65 @@ async function getPromoCodes() {
   }
 }
 
+async function getLastRefresh() {
+  try {
+    return await prisma.signalGenerationLog.findFirst({ orderBy: { generatedAt: 'desc' } })
+  } catch {
+    return null
+  }
+}
+
+function formatRelativeTime(date: Date): string {
+  const h = (Date.now() - date.getTime()) / 3600000
+  if (h < 1) return `${Math.round(h * 60)}m ago`
+  if (h < 24) return `${Math.round(h)}h ago`
+  return `${Math.floor(h / 24)}d ago`
+}
+
 export default async function AdminSignalsPage() {
   const { userId } = await auth()
   if (!userId || userId !== process.env.ADMIN_USER_ID) redirect('/dashboard')
 
-  const [signals, promoCodes] = await Promise.all([getSignals(), getPromoCodes()])
+  const [signals, promoCodes, lastRefresh] = await Promise.all([getSignals(), getPromoCodes(), getLastRefresh()])
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-start justify-between mb-8 gap-4">
           <div>
             <h1 className="text-2xl font-black text-white">Signal Management</h1>
             <p className="text-sm mt-1 text-white">
               {signals.length} total signal{signals.length !== 1 ? 's' : ''} · {signals.filter((s) => s.isActive).length} active
             </p>
+            {lastRefresh && (
+              <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                <Clock className="w-3 h-3" />
+                Last refresh: {formatRelativeTime(lastRefresh.generatedAt)}
+                {lastRefresh.status === 'success' && lastRefresh.signalCount > 0 && ` · ${lastRefresh.signalCount} new signals`}
+                {lastRefresh.status === 'skipped' && ' · skipped (all tickers fresh)'}
+                {lastRefresh.status === 'error' && ' · error'}
+              </p>
+            )}
           </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/admin/content"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: 'var(--bg-surface)', color: 'white', border: '1px solid var(--border)' }}
-            >
-              Content
-            </Link>
-            <Link
-              href="/admin/signals/new"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#009BFF', color: 'white' }}
-            >
-              <Plus className="w-4 h-4" /> Add Signal
-            </Link>
+          <div className="flex flex-col items-end gap-3">
+            <div className="flex items-center gap-3">
+              <Link
+                href="/admin/content"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: 'var(--bg-surface)', color: 'white', border: '1px solid var(--border)' }}
+              >
+                Content
+              </Link>
+              <Link
+                href="/admin/signals/new"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#009BFF', color: 'white' }}
+              >
+                <Plus className="w-4 h-4" /> Add Signal
+              </Link>
+            </div>
+            <RefreshSignalsButton />
           </div>
         </div>
 
@@ -67,33 +95,39 @@ export default async function AdminSignalsPage() {
             <table className="w-full text-sm">
               <thead style={{ backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid var(--border)' }}>
                 <tr>
-                  {['Ticker', 'Type', 'Entry Zone', 'Target', 'Confidence', 'Horizon', 'Status', ''].map((h) => (
+                  {['Ticker', 'Type', 'Entry Zone', 'Target', 'Confidence', 'Horizon', 'Age', 'Status', ''].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {signals.map((signal, i) => (
-                  <tr
-                    key={signal.id}
-                    style={{
-                      backgroundColor: i % 2 === 0 ? 'var(--bg-primary)' : 'var(--bg-surface)',
-                      borderBottom: '1px solid var(--border-subtle)',
-                    }}
-                  >
-                    <td className="px-4 py-3">
-                      <p className="font-bold text-white">{signal.ticker}</p>
-                      <p className="text-xs text-white">{signal.companyName}</p>
-                    </td>
-                    <td className="px-4 py-3"><SignalTypeBadge type={signal.signalType} /></td>
-                    <td className="px-4 py-3 text-white">{formatCurrency(signal.entryZoneLow)}–{formatCurrency(signal.entryZoneHigh)}</td>
-                    <td className="px-4 py-3 font-semibold" style={{ color: '#4ade80' }}>{formatCurrency(signal.targetPrice)}</td>
-                    <td className="px-4 py-3"><ConfidencePill value={signal.confidence} /></td>
-                    <td className="px-4 py-3 text-white">{signal.timeHorizon}</td>
-                    <td className="px-4 py-3"><SignalToggleButton id={signal.id} isActive={signal.isActive} /></td>
-                    <td className="px-4 py-3"><SignalDeleteButton id={signal.id} ticker={signal.ticker} /></td>
-                  </tr>
-                ))}
+                {signals.map((signal, i) => {
+                  const ageH = (Date.now() - new Date(signal.createdAt).getTime()) / 3600000
+                  const rowBg = signal.isActive && ageH > 24
+                    ? 'rgba(239,68,68,0.07)'
+                    : signal.isActive && ageH > 12
+                    ? 'rgba(245,158,11,0.06)'
+                    : i % 2 === 0 ? 'var(--bg-primary)' : 'var(--bg-surface)'
+                  return (
+                    <tr
+                      key={signal.id}
+                      style={{ backgroundColor: rowBg, borderBottom: '1px solid var(--border-subtle)' }}
+                    >
+                      <td className="px-4 py-3">
+                        <p className="font-bold text-white">{signal.ticker}</p>
+                        <p className="text-xs text-white">{signal.companyName}</p>
+                      </td>
+                      <td className="px-4 py-3"><SignalTypeBadge type={signal.signalType} /></td>
+                      <td className="px-4 py-3 text-white">{formatCurrency(signal.entryZoneLow)}–{formatCurrency(signal.entryZoneHigh)}</td>
+                      <td className="px-4 py-3 font-semibold" style={{ color: '#4ade80' }}>{formatCurrency(signal.targetPrice)}</td>
+                      <td className="px-4 py-3"><ConfidencePill value={signal.confidence} /></td>
+                      <td className="px-4 py-3 text-white">{signal.timeHorizon}</td>
+                      <td className="px-4 py-3"><AgePill ageH={ageH} /></td>
+                      <td className="px-4 py-3"><SignalToggleButton id={signal.id} isActive={signal.isActive} /></td>
+                      <td className="px-4 py-3"><SignalDeleteButton id={signal.id} ticker={signal.ticker} /></td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
@@ -159,6 +193,21 @@ export default async function AdminSignalsPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+function AgePill({ ageH }: { ageH: number }) {
+  const color = ageH > 24 ? '#f87171' : ageH > 12 ? '#fbbf24' : 'rgba(255,255,255,0.45)'
+  const label = ageH < 1
+    ? `${Math.round(ageH * 60)}m`
+    : ageH < 24
+    ? `${Math.floor(ageH)}h`
+    : `${Math.floor(ageH / 24)}d`
+  return (
+    <span className="inline-flex items-center gap-1 text-xs font-semibold" style={{ color }}>
+      <Clock className="w-3 h-3" />
+      {label}
+    </span>
   )
 }
 
