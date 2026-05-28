@@ -19,7 +19,10 @@ export const proxy = clerkMiddleware(
     }
   },
   {
-    publishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+    // Use the single canonical Clerk publishable key env var.
+    // NEXT_PUBLIC_ prefix makes it available to both the Node.js proxy runtime
+    // and the browser bundle — no need for a separate CLERK_PUBLISHABLE_KEY.
+    publishableKey: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     secretKey: process.env.CLERK_SECRET_KEY,
   }
 )
