@@ -9,12 +9,19 @@ const isProtectedApiRoute = createRouteMatcher([
   '/trpc/(.*)',
 ])
 
-// These API routes are intentionally public — no auth required.
+// These API routes are intentionally public at the middleware level.
+// Auth is still enforced inside each route handler via auth() — middleware just
+// doesn't add an extra auth.protect() layer that could 401 the request before
+// the handler even runs (e.g. during a Clerk edge-validation hiccup).
 const isPublicApiRoute = createRouteMatcher([
   '/api/stripe/webhook',
   '/api/cron/(.*)',
   '/api/diag',
-  '/api/user/sync',  // sync is called on page load; auth is checked inside the handler
+  '/api/user/sync',
+  // Signal data routes: auth checked inside handlers; no middleware guard needed.
+  // Removing the middleware layer prevents transient Clerk validation failures
+  // from silently returning 401 to the chart/details fetch calls.
+  '/api/signals/(.*)',
 ])
 
 export const proxy = clerkMiddleware(
