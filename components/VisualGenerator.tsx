@@ -352,7 +352,7 @@ export default function VisualGenerator() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: '#353535',
+                    backgroundColor: '#0F0F0F',
                     zIndex: 1,
                   }}
                 >

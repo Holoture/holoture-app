@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-950: #2a2a2a;
-  --color-navy-900: #353535;
-  --color-navy-800: #404040;
-  --color-navy-700: #3a3a3a;
-  --color-navy-600: #4a4a4a;
-  --color-navy-500: #555555;
+  --color-navy-950: #0a0a0a;
+  --color-navy-900: #0F0F0F;
+  --color-navy-800: #1a1a1a;
+  --color-navy-700: #161616;
+  --color-navy-600: #252525;
+  --color-navy-500: #333333;
   --color-teal-300: #66baff;
   --color-teal-400: #33a8ff;
   --color-teal-500: #009BFF;
@@ -24,22 +24,22 @@
 
 :root,
 [data-theme="dark"] {
-  --bg-primary: #353535;
-  --bg-surface: #404040;
-  --bg-surface-2: #3a3a3a;
-  --bg-surface-3: #2a2a2a;
-  --text-primary: #ffffff;
-  --border: rgba(255,255,255,0.2);
+  --bg-primary:    #0F0F0F;
+  --bg-surface:    #1a1a1a;
+  --bg-surface-2:  #161616;
+  --bg-surface-3:  #0a0a0a;
+  --text-primary:  #ffffff;
+  --border:        rgba(255,255,255,0.2);
   --border-subtle: rgba(255,255,255,0.1);
-  --border-faint: rgba(255,255,255,0.08);
-  --border-15: rgba(255,255,255,0.15);
-  --overlay: rgba(53,53,53,0.88);
-  --background: #353535;
-  --surface: #404040;
-  --surface-hover: #3a3a3a;
-  --foreground: #ffffff;
-  --muted: #94a3b8;
-  --primary: #009BFF;
+  --border-faint:  rgba(255,255,255,0.08);
+  --border-15:     rgba(255,255,255,0.15);
+  --overlay:       rgba(15,15,15,0.92);
+  --background:    #0F0F0F;
+  --surface:       #1a1a1a;
+  --surface-hover: #222222;
+  --foreground:    #ffffff;
+  --muted:         #94a3b8;
+  --primary:       #009BFF;
   --primary-hover: #0080e0;
 }
 

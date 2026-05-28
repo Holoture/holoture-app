@@ -16,8 +16,8 @@ const SIZES = {
 
 type SizeName = keyof typeof SIZES
 
-const BG      = '#353535'
-const SURFACE = '#2d2d2d'
+const BG      = '#0F0F0F'
+const SURFACE = '#1a1a1a'
 const ACCENT  = '#009BFF'
 const TEXT    = '#ffffff'
 const MUTED   = 'rgba(255,255,255,0.55)'

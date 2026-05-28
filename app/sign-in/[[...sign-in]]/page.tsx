@@ -41,10 +41,10 @@ export default function SignInPage() {
             footerActionLink: 'text-teal-400 hover:text-teal-300',
           },
           variables: {
-            colorBackground: '#404040',
+            colorBackground: '#1a1a1a',
             colorText: '#e2e8f0',
             colorPrimary: '#009BFF',
-            colorInputBackground: '#2a2a2a',
+            colorInputBackground: '#0a0a0a',
             colorInputText: '#e2e8f0',
             borderRadius: '12px',
           },
