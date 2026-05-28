@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { Shield, Zap, BarChart3, Clock, Star, ChevronRight } from 'lucide-react'
 import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
+import ProductPreview from '@/components/ProductPreview'
+import { getPreviewData } from '@/lib/preview-data'
 
 const FEATURES = [
   {
@@ -27,7 +29,9 @@ const FEATURES = [
 ]
 
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const previewData = await getPreviewData()
+
   return (
     <div className="min-h-full" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
@@ -103,6 +107,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Product Preview */}
+      <ProductPreview data={previewData} />
 
       {/* Pricing Preview */}
       <section className="py-20">
