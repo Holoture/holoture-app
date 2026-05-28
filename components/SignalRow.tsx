@@ -8,6 +8,8 @@ import type { Signal } from './SignalCard'
 
 const SignalChart = dynamic(() => import('./SignalChart'), { ssr: false })
 
+// ─── types ────────────────────────────────────────────────────────────────────
+
 interface StockDetails {
   companyName: string | null
   exchange: string | null
@@ -23,11 +25,13 @@ interface StockDetails {
   dividendYield: number | null
 }
 
+// ─── formatters ───────────────────────────────────────────────────────────────
+
 function formatMarketCap(mc: number | null): string {
   if (mc == null) return 'N/A'
   if (mc >= 1e12) return `$${(mc / 1e12).toFixed(1)}T`
-  if (mc >= 1e9) return `$${(mc / 1e9).toFixed(1)}B`
-  if (mc >= 1e6) return `$${(mc / 1e6).toFixed(1)}M`
+  if (mc >= 1e9)  return `$${(mc / 1e9).toFixed(1)}B`
+  if (mc >= 1e6)  return `$${(mc / 1e6).toFixed(1)}M`
   return `$${mc.toFixed(0)}`
 }
 
@@ -39,12 +43,14 @@ function formatVolume(v: number | null): string {
   return String(Math.round(v))
 }
 
+// ─── sub-components ───────────────────────────────────────────────────────────
+
 function SignalBadge({ type }: { type: string }) {
   const styles: Record<string, { bg: string; color: string; border: string }> = {
-    BUY: { bg: 'rgba(29,158,117,0.15)', color: '#1D9E75', border: 'rgba(29,158,117,0.45)' },
-    WATCH: { bg: 'rgba(186,117,23,0.15)', color: '#BA7517', border: 'rgba(186,117,23,0.45)' },
-    SHORT: { bg: 'rgba(226,75,74,0.15)', color: '#E24B4A', border: 'rgba(226,75,74,0.45)' },
-    SELL: { bg: 'rgba(226,75,74,0.15)', color: '#E24B4A', border: 'rgba(226,75,74,0.45)' },
+    BUY:   { bg: 'rgba(29,158,117,0.15)',  color: '#1D9E75', border: 'rgba(29,158,117,0.45)' },
+    WATCH: { bg: 'rgba(186,117,23,0.15)',  color: '#BA7517', border: 'rgba(186,117,23,0.45)' },
+    SHORT: { bg: 'rgba(226,75,74,0.15)',   color: '#E24B4A', border: 'rgba(226,75,74,0.45)' },
+    SELL:  { bg: 'rgba(226,75,74,0.15)',   color: '#E24B4A', border: 'rgba(226,75,74,0.45)' },
   }
   const s = styles[type] ?? styles.WATCH
   return (
@@ -53,6 +59,22 @@ function SignalBadge({ type }: { type: string }) {
       style={{ backgroundColor: s.bg, color: s.color, border: `1px solid ${s.border}` }}
     >
       {type}
+    </span>
+  )
+}
+
+/** Gray placeholder badge shown for locked signals — no real type revealed */
+function LockedBadge() {
+  return (
+    <span
+      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold whitespace-nowrap"
+      style={{
+        backgroundColor: 'rgba(255,255,255,0.05)',
+        color: 'rgba(255,255,255,0.18)',
+        border: '1px solid rgba(255,255,255,0.1)',
+      }}
+    >
+      — —
     </span>
   )
 }
@@ -71,17 +93,17 @@ function Blurred({ children }: { children: React.ReactNode }) {
 
 function StockDetailsGrid({ signal, details }: { signal: Signal; details: StockDetails | null }) {
   const rows = [
-    { label: 'Company', value: details?.companyName ?? signal.companyName },
-    { label: 'Exchange', value: details?.exchange ?? 'N/A' },
-    { label: 'Market Cap', value: formatMarketCap(details?.marketCap ?? null) },
-    { label: 'P/E Ratio', value: details?.peRatio != null ? details.peRatio.toFixed(1) : 'N/A' },
-    { label: '52W High', value: details?.week52High != null ? formatCurrency(details.week52High) : 'N/A' },
-    { label: '52W Low', value: details?.week52Low != null ? formatCurrency(details.week52Low) : 'N/A' },
-    { label: 'Avg Volume', value: formatVolume(details?.avgVolume ?? null) },
+    { label: 'Company',        value: details?.companyName ?? signal.companyName },
+    { label: 'Exchange',       value: details?.exchange ?? 'N/A' },
+    { label: 'Market Cap',     value: formatMarketCap(details?.marketCap ?? null) },
+    { label: 'P/E Ratio',      value: details?.peRatio != null ? details.peRatio.toFixed(1) : 'N/A' },
+    { label: '52W High',       value: details?.week52High  != null ? formatCurrency(details.week52High)  : 'N/A' },
+    { label: '52W Low',        value: details?.week52Low   != null ? formatCurrency(details.week52Low)   : 'N/A' },
+    { label: 'Avg Volume',     value: formatVolume(details?.avgVolume   ?? null) },
     { label: "Today's Volume", value: formatVolume(details?.todayVolume ?? null) },
-    { label: 'Sector', value: signal.sector },
-    { label: 'Industry', value: details?.industry ?? 'N/A' },
-    { label: 'Beta', value: details?.beta != null ? details.beta.toFixed(2) : 'N/A' },
+    { label: 'Sector',         value: signal.sector },
+    { label: 'Industry',       value: details?.industry ?? 'N/A' },
+    { label: 'Beta',           value: details?.beta != null ? details.beta.toFixed(2) : 'N/A' },
     { label: 'Dividend Yield', value: details?.dividendYield != null ? `${details.dividendYield.toFixed(2)}%` : 'None' },
   ]
   return (
@@ -100,19 +122,25 @@ function StockDetailsGrid({ signal, details }: { signal: Signal; details: StockD
   )
 }
 
+// ─── main component ───────────────────────────────────────────────────────────
+
 interface Props {
   signal: Signal
   tier: 'free' | 'pro' | 'max'
   isEven: boolean
+  /** True only for free users on their one fully-visible daily pick */
+  isFreePick?: boolean
 }
 
-export default function SignalRow({ signal, tier, isEven }: Props) {
-  const [expanded, setExpanded] = useState(false)
-  const [details, setDetails] = useState<StockDetails | null>(null)
+export default function SignalRow({ signal, tier, isEven, isFreePick = false }: Props) {
+  const [expanded, setExpanded]           = useState(false)
+  const [details, setDetails]             = useState<StockDetails | null>(null)
   const [detailsLoading, setDetailsLoading] = useState(false)
   const [thesisExpanded, setThesisExpanded] = useState(false)
 
-  const isLocked = tier === 'free'
+  // isObscured: free user + NOT the daily free pick → hide ticker, blur everything
+  const isObscured = tier === 'free' && !isFreePick
+
   const confidenceColor =
     signal.confidence >= 75 ? '#1D9E75' : signal.confidence >= 55 ? '#BA7517' : '#E24B4A'
   const rowBg = isEven ? 'rgba(255,255,255,0.018)' : 'transparent'
@@ -120,13 +148,14 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
   async function handleToggle() {
     const opening = !expanded
     setExpanded(opening)
-    if (opening && !details && !isLocked) {
+    // Only fetch live data for rows the user can actually see
+    if (opening && !details && !isObscured) {
       setDetailsLoading(true)
       try {
         const res = await fetch(`/api/signals/${signal.ticker}/details`)
         if (res.ok) setDetails(await res.json())
       } catch {
-        // silent — details grid shows N/A fallbacks
+        // silent — StockDetailsGrid shows N/A fallbacks
       } finally {
         setDetailsLoading(false)
       }
@@ -141,26 +170,52 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
         className="w-full text-left transition-colors"
         style={{ backgroundColor: rowBg }}
       >
-        {/* Desktop layout */}
+        {/* ── Desktop layout ── */}
         <div className="hidden sm:flex items-center gap-3 px-4 py-3 hover:bg-white/[0.025]">
+
           {/* Ticker + sector */}
           <div style={{ width: 130, flexShrink: 0 }}>
-            <div className="font-bold text-white leading-tight" style={{ fontSize: 18 }}>
-              {signal.ticker}
-            </div>
-            <div className="truncate" style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
-              {signal.sector}
-            </div>
+            {isObscured ? (
+              <>
+                <div
+                  className="font-bold leading-tight flex items-center gap-1"
+                  style={{ fontSize: 16, color: 'rgba(255,255,255,0.25)' }}
+                >
+                  <Lock className="w-3 h-3 shrink-0" />
+                  PRO
+                </div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', marginTop: 2 }}>
+                  Upgrade to reveal
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="font-bold text-white leading-tight" style={{ fontSize: 18 }}>
+                  {signal.ticker}
+                </div>
+                <div className="truncate" style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
+                  {signal.sector}
+                </div>
+                {isFreePick && (
+                  <div
+                    className="inline-flex items-center gap-1 mt-1"
+                    style={{ fontSize: 10, color: '#1D9E75', fontWeight: 700, letterSpacing: '0.02em' }}
+                  >
+                    ✦ Today&apos;s Free Pick
+                  </div>
+                )}
+              </>
+            )}
           </div>
 
-          {/* Badge */}
+          {/* Signal badge */}
           <div style={{ width: 72, flexShrink: 0 }}>
-            <SignalBadge type={signal.signalType} />
+            {isObscured ? <LockedBadge /> : <SignalBadge type={signal.signalType} />}
           </div>
 
           {/* Confidence */}
           <div style={{ width: 68, flexShrink: 0 }}>
-            {isLocked ? (
+            {isObscured ? (
               <Blurred>99%</Blurred>
             ) : (
               <span className="text-sm font-bold" style={{ color: confidenceColor }}>
@@ -172,7 +227,7 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
 
           {/* Entry Zone */}
           <div style={{ flex: 1, minWidth: 0 }}>
-            {isLocked ? (
+            {isObscured ? (
               <Blurred>$000.00 – $000.00</Blurred>
             ) : (
               <span className="text-sm text-white">
@@ -184,7 +239,7 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
 
           {/* Target */}
           <div style={{ width: 104, flexShrink: 0 }}>
-            {isLocked ? (
+            {isObscured ? (
               <Blurred>↑ $000.00</Blurred>
             ) : (
               <span className="text-sm font-semibold" style={{ color: '#1D9E75' }}>
@@ -196,7 +251,7 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
 
           {/* Stop Loss */}
           <div style={{ width: 104, flexShrink: 0 }}>
-            {isLocked ? (
+            {isObscured ? (
               <Blurred>↓ $000.00</Blurred>
             ) : (
               <span className="text-sm font-semibold" style={{ color: '#E24B4A' }}>
@@ -208,7 +263,11 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
 
           {/* Timeframe */}
           <div style={{ width: 90, flexShrink: 0 }}>
-            <span className="text-sm text-white">{signal.timeHorizon}</span>
+            {isObscured ? (
+              <Blurred>00 days</Blurred>
+            ) : (
+              <span className="text-sm text-white">{signal.timeHorizon}</span>
+            )}
             <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>Timeframe</div>
           </div>
 
@@ -222,15 +281,33 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
           />
         </div>
 
-        {/* Mobile layout */}
+        {/* ── Mobile layout ── */}
         <div className="flex flex-col sm:hidden px-4 py-3 gap-2 hover:bg-white/[0.025]">
-          {/* Line 1: ticker + sector chip + badge + chevron */}
+          {/* Line 1: ticker/lock + sector/hint + badge + chevron */}
           <div className="flex items-center gap-2">
-            <span className="font-bold text-white" style={{ fontSize: 18 }}>{signal.ticker}</span>
-            <span className="text-xs truncate flex-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
-              {signal.sector}
-            </span>
-            <SignalBadge type={signal.signalType} />
+            {isObscured ? (
+              <>
+                <span
+                  className="font-bold flex items-center gap-1"
+                  style={{ fontSize: 16, color: 'rgba(255,255,255,0.25)' }}
+                >
+                  <Lock className="w-3 h-3" />
+                  PRO
+                </span>
+                <span className="text-xs flex-1 truncate" style={{ color: 'rgba(255,255,255,0.2)' }}>
+                  Upgrade to reveal
+                </span>
+                <LockedBadge />
+              </>
+            ) : (
+              <>
+                <span className="font-bold text-white" style={{ fontSize: 18 }}>{signal.ticker}</span>
+                <span className="text-xs flex-1 truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                  {signal.sector}
+                </span>
+                <SignalBadge type={signal.signalType} />
+              </>
+            )}
             <ChevronDown
               className="w-4 h-4 shrink-0 transition-transform duration-200"
               style={{
@@ -240,10 +317,17 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
             />
           </div>
 
+          {/* Free pick badge (mobile) */}
+          {isFreePick && (
+            <div style={{ fontSize: 10, color: '#1D9E75', fontWeight: 700 }}>
+              ✦ Today&apos;s Free Pick
+            </div>
+          )}
+
           {/* Line 2: confidence + entry zone */}
           <div className="flex items-center gap-5">
             <div>
-              {isLocked ? <Blurred>99%</Blurred> : (
+              {isObscured ? <Blurred>99%</Blurred> : (
                 <span className="text-sm font-bold" style={{ color: confidenceColor }}>
                   {signal.confidence}%
                 </span>
@@ -251,7 +335,7 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>Confidence</div>
             </div>
             <div>
-              {isLocked ? <Blurred>$000 – $000</Blurred> : (
+              {isObscured ? <Blurred>$000 – $000</Blurred> : (
                 <span className="text-sm text-white">
                   {formatCurrency(signal.entryZoneLow)} – {formatCurrency(signal.entryZoneHigh)}
                 </span>
@@ -263,7 +347,7 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
           {/* Line 3: target + stop loss + timeframe */}
           <div className="flex items-center gap-5">
             <div>
-              {isLocked ? <Blurred>↑ $000</Blurred> : (
+              {isObscured ? <Blurred>↑ $000</Blurred> : (
                 <span className="text-sm font-semibold" style={{ color: '#1D9E75' }}>
                   ↑ {formatCurrency(signal.targetPrice)}
                 </span>
@@ -271,7 +355,7 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>Target</div>
             </div>
             <div>
-              {isLocked ? <Blurred>↓ $000</Blurred> : (
+              {isObscured ? <Blurred>↓ $000</Blurred> : (
                 <span className="text-sm font-semibold" style={{ color: '#E24B4A' }}>
                   ↓ {formatCurrency(signal.stopLoss)}
                 </span>
@@ -279,7 +363,9 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>Stop Loss</div>
             </div>
             <div>
-              <span className="text-sm text-white">{signal.timeHorizon}</span>
+              {isObscured ? <Blurred>0 days</Blurred> : (
+                <span className="text-sm text-white">{signal.timeHorizon}</span>
+              )}
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>Timeframe</div>
             </div>
           </div>
@@ -292,8 +378,8 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
           className="px-4 sm:px-6 py-5 space-y-6"
           style={{ backgroundColor: 'var(--bg-surface-2)', borderTop: '1px solid var(--border)' }}
         >
-          {isLocked ? (
-            /* Locked state for free users */
+          {isObscured ? (
+            /* ── Locked upgrade prompt ── */
             <div className="flex flex-col items-center justify-center py-8 gap-4 text-center">
               <div
                 className="w-12 h-12 rounded-full flex items-center justify-center"
@@ -302,9 +388,10 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
                 <Lock className="w-6 h-6" style={{ color: '#009BFF' }} />
               </div>
               <div>
-                <p className="font-semibold text-white mb-1">Upgrade to Pro to see full details</p>
+                <p className="font-semibold text-white mb-1">Upgrade to Pro to unlock this signal</p>
                 <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  Get entry zones, targets, stop losses, confidence scores, live charts, and more.
+                  Get full access to the ticker, entry zone, target, stop loss, confidence score,
+                  live charts, and AI thesis for every signal.
                 </p>
               </div>
               <a
@@ -316,9 +403,22 @@ export default function SignalRow({ signal, tier, isEven }: Props) {
               </a>
             </div>
           ) : (
+            /* ── Full signal detail (pro/max + free pick) ── */
             <>
               {/* Section A — Summary */}
               <section>
+                {isFreePick && (
+                  <div
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold mb-3"
+                    style={{
+                      backgroundColor: 'rgba(29,158,117,0.12)',
+                      color: '#1D9E75',
+                      border: '1px solid rgba(29,158,117,0.3)',
+                    }}
+                  >
+                    ✦ Today&apos;s Free Pick — refreshes daily
+                  </div>
+                )}
                 <h4 className="text-sm font-bold text-white mb-2">Summary</h4>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
                   {signal.aiSummary}
