@@ -11,10 +11,12 @@ export const metadata: Metadata = {
   keywords: 'stock signals, data investing, stock picks, investment insights',
   icons: {
     icon: [
-      { url: '/logo.png', type: 'image/png' },
+      { url: '/favicon.ico',     sizes: 'any' },
+      { url: '/favicon.png?v=2', type: 'image/png', sizes: '32x32' },
+      { url: '/logo.png',        type: 'image/png', sizes: '192x192' },
     ],
-    shortcut: '/logo.png',
-    apple: '/logo.png',
+    shortcut: '/favicon.ico',
+    apple:    '/apple-touch-icon.png',
   },
 }
 
@@ -33,9 +35,9 @@ export default function RootLayout({
     >
       <html lang="en" className="h-full">
         <head>
-          <link rel="icon" href="/logo.png" type="image/png" />
-          <link rel="shortcut icon" href="/logo.png" type="image/png" />
-          <link rel="apple-touch-icon" href="/logo.png" />
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+          <link rel="icon" href="/favicon.png?v=2" type="image/png" />
+          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         </head>
         <body className="min-h-full flex flex-col antialiased">
           <Script
