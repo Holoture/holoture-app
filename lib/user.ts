@@ -19,9 +19,34 @@ export async function getOrCreateUser() {
       create: { clerkId: userId, email },
     })
     return user
-  } catch (e) {
-    const existing = await prisma.user.findUnique({ where: { clerkId: userId } })
-    if (existing) return existing
+  } catch (e: unknown) {
+    // First try: maybe the upsert raced and the record exists by clerkId now
+    const byClerkId = await prisma.user.findUnique({ where: { clerkId: userId } })
+    if (byClerkId) return byClerkId
+
+    // P2002 = unique constraint violation.  This happens when the same email
+    // address already exists in the DB under a different clerkId — most commonly
+    // after switching from Clerk development keys (pk_test_) to production keys
+    // (pk_live_), which assigns a new user ID to the same Google/email account.
+    // Migrate the existing row to the new production Clerk ID.
+    const prismaErr = e as { code?: string }
+    if (prismaErr?.code === 'P2002' && email) {
+      try {
+        const byEmail = await prisma.user.findUnique({ where: { email } })
+        if (byEmail) {
+          console.log(
+            `[getOrCreateUser] migrating clerkId for ${email}: ${byEmail.clerkId} → ${userId}`
+          )
+          return await prisma.user.update({
+            where: { id: byEmail.id },
+            data: { clerkId: userId },
+          })
+        }
+      } catch (migrationErr) {
+        console.error('[getOrCreateUser] migration failed', migrationErr)
+      }
+    }
+
     console.error('[getOrCreateUser] failed to upsert and no existing user found', e)
     return null
   }

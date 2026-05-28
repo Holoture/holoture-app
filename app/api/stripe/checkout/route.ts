@@ -6,10 +6,12 @@ import { getOrCreateUser } from '@/lib/user'
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
+  console.log('[stripe/checkout] userId from auth():', userId ?? 'null')
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getOrCreateUser()
-  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
+  console.log('[stripe/checkout] getOrCreateUser result:', user ? `id=${user.id} tier=${user.tier}` : 'null')
+  if (!user) return NextResponse.json({ error: 'User not found — DB sync failed. Try refreshing the page.' }, { status: 404 })
 
   const body = await req.json().catch(() => ({}))
   const requestedTier: 'pro' | 'max' = body.tier === 'max' ? 'max' : 'pro'

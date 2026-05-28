@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -28,6 +28,14 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [promoOpen, setPromoOpen] = useState(false)
   const { theme, toggle } = useTheme()
+
+  // Silently sync the authenticated user to the database on every page load.
+  // This handles the dev→prod Clerk key migration (same email, new user ID) so
+  // the user row always exists before any API calls that need it (e.g. checkout).
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return
+    fetch('/api/user/sync', { method: 'POST' }).catch(() => {/* silent — non-critical */})
+  }, [isLoaded, isSignedIn])
 
   return (
     <header
