@@ -464,18 +464,22 @@ export default function SignalRow({ signal, tier, isEven, isFreePick = false }: 
 
               {/* Section C — Price Chart */}
               <section>
-                <h4 className="text-sm font-bold text-white mb-3">Price Chart — Last 6 Months</h4>
+                <h4 className="text-sm font-bold text-white mb-3">Price Chart</h4>
                 <SignalChart
                   ticker={signal.ticker}
-                  entryZoneLow={signal.entryZoneLow}
-                  entryZoneHigh={signal.entryZoneHigh}
-                  targetPrice={signal.targetPrice}
-                  stopLoss={signal.stopLoss}
+                  exchange={details?.exchange ?? null}
                 />
-                <div className="flex items-center gap-5 mt-2 flex-wrap" style={{ fontSize: 11 }}>
-                  <span style={{ color: 'rgba(186,117,23,0.85)' }}>– – Entry Zone</span>
-                  <span style={{ color: '#1D9E75' }}>– – Target</span>
-                  <span style={{ color: '#E24B4A' }}>– – Stop Loss</span>
+                {/* Price-level reference (TradingView widget can't overlay custom lines) */}
+                <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3" style={{ fontSize: 11 }}>
+                  <span style={{ color: '#009BFF' }}>
+                    Entry Zone: {formatCurrency(signal.entryZoneLow)} – {formatCurrency(signal.entryZoneHigh)}
+                  </span>
+                  <span style={{ color: '#1D9E75' }}>
+                    Target: {formatCurrency(signal.targetPrice)}
+                  </span>
+                  <span style={{ color: '#E24B4A' }}>
+                    Stop Loss: {formatCurrency(signal.stopLoss)}
+                  </span>
                 </div>
               </section>
             </>
