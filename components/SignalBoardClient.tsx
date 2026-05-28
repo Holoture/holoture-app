@@ -227,10 +227,9 @@ export default function SignalBoardClient({
             <span className="text-xs font-semibold shrink-0" style={{ color: 'rgba(255,255,255,0.4)' }}>
               Timeframe:
             </span>
-            <FilterChip label="All"        active={timeframeFilter === 'all'}   onClick={() => setTimeframeFilter('all')} />
-            <FilterChip label="Short Term" active={timeframeFilter === 'short'} onClick={() => setTimeframeFilter('short')} />
-            <FilterChip label="Swing"      active={timeframeFilter === 'swing'} onClick={() => setTimeframeFilter('swing')} />
-            <FilterChip label="Long Term"  active={timeframeFilter === 'long'}  onClick={() => setTimeframeFilter('long')} />
+            <FilterChip label="All"       active={timeframeFilter === 'all'}   onClick={() => setTimeframeFilter('all')} />
+            <FilterChip label="Swing"     active={timeframeFilter === 'swing'} onClick={() => setTimeframeFilter('swing')} />
+            <FilterChip label="Long Term" active={timeframeFilter === 'long'}  onClick={() => setTimeframeFilter('long')} />
             <select
               value={sortKey}
               onChange={e => setSortKey(e.target.value as SortKey)}
