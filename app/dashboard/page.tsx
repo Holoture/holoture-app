@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import SignalBoardClient from '@/components/SignalBoardClient'
 import OptionsDashboardClient from '@/components/OptionsDashboardClient'
 import { UpgradeBanner } from '@/components/FreeSignalCard'
+import AuthLoadingGate from '@/components/AuthLoadingGate'
 import { TrendingUp, Crown, Zap, Lock } from 'lucide-react'
 import Link from 'next/link'
 
@@ -34,7 +35,13 @@ async function getLastGenerationLog() {
 
 export default async function DashboardPage() {
   const { userId } = await auth()
-  if (!userId) redirect('/sign-in')
+
+  // Don't do a hard server-side redirect when Clerk can't validate the session
+  // (e.g. during custom-domain SSL provisioning).  Instead, hand off to the
+  // client-side AuthLoadingGate which waits for Clerk to load, refreshes the
+  // page if the session is valid, and only then redirects to sign-in if truly
+  // unauthenticated.  This breaks the redirect loop.
+  if (!userId) return <AuthLoadingGate />
 
   let user: Awaited<ReturnType<typeof getOrCreateUser>> = null
   let signals: Awaited<ReturnType<typeof getSignals>> = []

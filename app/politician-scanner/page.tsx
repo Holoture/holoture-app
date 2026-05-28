@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { getOrCreateUser, computeTier } from '@/lib/user'
 import Header from '@/components/Header'
 import PoliticianTradesClient from '@/components/PoliticianTradesClient'
+import AuthLoadingGate from '@/components/AuthLoadingGate'
 import { Users, Lock } from 'lucide-react'
 import Link from 'next/link'
 
@@ -18,7 +19,11 @@ async function getPoliticianTrades(limit = 50) {
 
 export default async function PoliticianScannerPage() {
   const { userId } = await auth()
-  if (!userId) redirect('/sign-in')
+
+  // Use client-side AuthLoadingGate instead of an immediate server redirect to
+  // prevent the redirect loop that occurs when Clerk's session validation is
+  // temporarily unavailable (e.g. during custom-domain SSL provisioning).
+  if (!userId) return <AuthLoadingGate />
 
   const user = await getOrCreateUser()
   if (!user) redirect('/sign-in')

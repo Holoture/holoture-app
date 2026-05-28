@@ -41,13 +41,19 @@ export async function POST(req: NextRequest) {
     })
   }
 
+  // Derive base URL: prefer the explicit env var, fall back to the request host
+  // so the redirect works even if NEXT_PUBLIC_APP_URL is not set in Vercel.
+  const host = req.headers.get('host') ?? 'holoture.com'
+  const protocol = host.startsWith('localhost') ? 'http' : 'https'
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? `${protocol}://${host}`).replace(/\/$/, '')
+
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: 'subscription',
     payment_method_types: ['card'],
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgraded=true`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing?canceled=true`,
+    success_url: `${baseUrl}/dashboard?upgraded=true`,
+    cancel_url: `${baseUrl}/pricing?canceled=true`,
     metadata: { clerkId: userId },
   })
 
