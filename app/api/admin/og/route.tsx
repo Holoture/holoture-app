@@ -144,7 +144,7 @@ function Spotlight(signal: OgSignal, w: number, h: number) {
 
             {/* Confidence bar */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: s(6) }}>
-              <div style={{ width: '100%', height: s(6), backgroundColor: BORDER, borderRadius: s(3), overflow: 'hidden' }}>
+              <div style={{ display: 'flex', width: '100%', height: s(6), backgroundColor: BORDER, borderRadius: s(3), overflow: 'hidden' }}>
                 <div style={{ width: `${signal.confidence}%`, height: '100%', backgroundColor: sigColor(signal.signalType), borderRadius: s(3) }} />
               </div>
             </div>
@@ -240,7 +240,7 @@ function Top5(signals: OgSignal[], w: number, h: number) {
             {/* Confidence */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: s(4), minWidth: s(60) }}>
               <span style={{ color: sigColor(sig.signalType), fontSize: s(22), fontWeight: 900 }}>{sig.confidence}%</span>
-              <div style={{ width: s(56), height: s(4), backgroundColor: BORDER, borderRadius: s(2), overflow: 'hidden' }}>
+              <div style={{ display: 'flex', width: s(56), height: s(4), backgroundColor: BORDER, borderRadius: s(2), overflow: 'hidden' }}>
                 <div style={{ width: `${sig.confidence}%`, height: '100%', backgroundColor: sigColor(sig.signalType) }} />
               </div>
             </div>
@@ -521,7 +521,7 @@ function WeeklyRecap(signals: OgSignal[], w: number, h: number) {
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: SURFACE, borderRadius: s(14), padding: s(20), gap: s(6) }}>
           <span style={{ color: MUTED, fontSize: s(11), letterSpacing: '0.1em' }}>AVG CONFIDENCE</span>
           <span style={{ color: TEXT, fontSize: portrait ? s(24) : s(20), fontWeight: 700 }}>{avgConf}%</span>
-          <div style={{ width: '100%', height: s(4), backgroundColor: BORDER, borderRadius: s(2) }}>
+          <div style={{ display: 'flex', width: '100%', height: s(4), backgroundColor: BORDER, borderRadius: s(2) }}>
             <div style={{ width: `${avgConf}%`, height: '100%', backgroundColor: ACCENT, borderRadius: s(2) }} />
           </div>
         </div>
