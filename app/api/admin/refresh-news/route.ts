@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
+import { checkRateLimit, tooManyRequests, ADMIN_LIMIT, ADMIN_WINDOW_MS } from '@/lib/rate-limit'
 
 export const maxDuration = 60
 
 export async function POST(req: Request) {
+  // ── Auth: admin only ────────────────────────────────────────────────────────
   const { userId } = await auth()
   if (!userId || userId !== process.env.ADMIN_USER_ID) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+
+  // ── Rate limiting: 20 / minute / admin ─────────────────────────────────────
+  const rl = checkRateLimit(`admin-refresh-news:${userId}`, ADMIN_LIMIT, ADMIN_WINDOW_MS)
+  if (!rl.success) return tooManyRequests(rl.retryAfter!)
 
   const secret = process.env.CRON_SECRET
   const host = req.headers.get('host') ?? 'localhost:3000'

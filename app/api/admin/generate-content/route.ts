@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
+import { checkRateLimit, tooManyRequests, ADMIN_LIMIT, ADMIN_WINDOW_MS } from '@/lib/rate-limit'
 
 export const maxDuration = 120
 
@@ -132,8 +133,14 @@ Do not include markdown or any extra text.`
 }
 
 // GET — fetch history (last 8 weeks)
+// GET — fetch history (last 8 weeks)
 export async function GET() {
-  if (!(await adminGuard())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const adminId = await adminGuard()
+  if (!adminId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  // Rate limiting: 20 / minute / admin
+  const rl = checkRateLimit(`admin-gen-get:${adminId}`, ADMIN_LIMIT, ADMIN_WINDOW_MS)
+  if (!rl.success) return tooManyRequests(rl.retryAfter!)
 
   const items = await prisma.generatedContent.findMany({
     orderBy: [{ weekOf: 'desc' }, { type: 'asc' }, { day: 'asc' }],
@@ -144,16 +151,25 @@ export async function GET() {
 
 // POST — generate full week OR regenerate single item
 export async function POST(request: Request) {
-  if (!(await adminGuard())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const adminId = await adminGuard()
+  if (!adminId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const body = await request.json()
+  // Rate limiting: 20 / minute / admin (generation is expensive — prevent rapid re-runs)
+  const rl = checkRateLimit(`admin-gen-post:${adminId}`, ADMIN_LIMIT, ADMIN_WINDOW_MS)
+  if (!rl.success) return tooManyRequests(rl.retryAfter!)
+
+  let body: Record<string, unknown>
+  try { body = await request.json() } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
 
   // Regenerate single
   if (body.regenerateId) {
+    const regenId = String(body.regenerateId)
     try {
-      const item = await regenerateSingle(body.regenerateId)
+      const item = await regenerateSingle(regenId)
       const updated = await prisma.generatedContent.update({
-        where: { id: body.regenerateId },
+        where: { id: regenId },
         data: { content: item.content, metadata: JSON.stringify(item.metadata) },
       })
       return NextResponse.json(updated)
@@ -196,22 +212,33 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, count: created.length, weekOf })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
-    console.error('[generate-content]', msg)
+    console.error('[generate-content] generation failed')
     return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
 
 // PATCH — mark as used / update performance
 export async function PATCH(request: Request) {
-  if (!(await adminGuard())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const adminId = await adminGuard()
+  if (!adminId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const body = await request.json()
-  const { id, usedAt, performance } = body
+  // Rate limiting: 20 / minute / admin
+  const rl = checkRateLimit(`admin-gen-patch:${adminId}`, ADMIN_LIMIT, ADMIN_WINDOW_MS)
+  if (!rl.success) return tooManyRequests(rl.retryAfter!)
+
+  let body: Record<string, unknown>
+  try { body = await request.json() } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
+
+  const id          = body.id          != null ? String(body.id) : null
+  const usedAt      = body.usedAt
+  const performance = body.performance
 
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
 
   const data: Record<string, unknown> = {}
-  if (usedAt !== undefined) data.usedAt = usedAt ? new Date(usedAt) : null
+  if (usedAt !== undefined) data.usedAt = usedAt ? new Date(String(usedAt)) : null
   if (performance !== undefined) data.performance = performance
 
   const updated = await prisma.generatedContent.update({ where: { id }, data })
