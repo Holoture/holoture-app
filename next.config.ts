@@ -22,25 +22,78 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      // Scripts: self + Clerk auth + Stripe payments + Next.js
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.accounts.dev https://*.clerk.accounts.dev https://js.stripe.com https://www.googletagmanager.com",
-      // Styles: self + inline (Tailwind/CSS-in-JS) + Google Fonts
+
+      // Scripts: self + Next.js hydration + Clerk (all domains) + Stripe
+      // 'unsafe-inline' and 'unsafe-eval' are required by Clerk's JS bundle
+      // and Next.js's inline scripts — a nonce-based CSP would be stronger
+      // but requires a custom server layer incompatible with Vercel edge.
+      [
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+        // Clerk — production instance frontend API
+        'https://clerk.holoture.com',
+        // Clerk — generic hosted accounts (covers clerk.dev, accounts.clerk.dev)
+        'https://clerk.dev',
+        'https://*.clerk.dev',
+        'https://accounts.clerk.dev',
+        // Clerk — shared accounts subdomain used during auth flows
+        'https://clerk.accounts.dev',
+        'https://*.clerk.accounts.dev',
+        // Stripe
+        'https://js.stripe.com',
+      ].join(' '),
+
+      // Styles: self + inline (Tailwind) + Google Fonts
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+
       // Fonts
       "font-src 'self' https://fonts.gstatic.com",
-      // Images: self + data URIs + any https (avatars, OG images, etc.)
+
+      // Images: self + data URIs + any https (Clerk avatars, OG images, etc.)
       "img-src 'self' data: https: blob:",
-      // API/WS connections: self + Clerk + Stripe + analytics
-      "connect-src 'self' https://*.clerk.accounts.dev https://clerk.holoture.com https://api.stripe.com https://checkout.stripe.com wss://*.clerk.accounts.dev",
-      // Frames: Stripe Checkout uses an iframe
-      "frame-src https://js.stripe.com https://hooks.stripe.com",
-      // Prevent embedding this site in frames on other domains (anti-clickjacking)
+
+      // API/WebSocket connections: self + all Clerk endpoints + Stripe
+      [
+        "connect-src 'self'",
+        'https://clerk.holoture.com',
+        'https://clerk.dev',
+        'https://*.clerk.dev',
+        'https://accounts.clerk.dev',
+        'https://clerk.accounts.dev',
+        'https://*.clerk.accounts.dev',
+        // Clerk WebSocket (real-time session sync)
+        'wss://clerk.holoture.com',
+        'wss://*.clerk.accounts.dev',
+        // Stripe
+        'https://api.stripe.com',
+        'https://checkout.stripe.com',
+      ].join(' '),
+
+      // Frames: Clerk UserButton modal + Stripe Checkout
+      // Clerk renders its profile/sign-in modal inside an iframe — all Clerk
+      // domains must appear here or UserButton silently fails to render.
+      [
+        'frame-src',
+        'https://clerk.holoture.com',
+        'https://clerk.dev',
+        'https://*.clerk.dev',
+        'https://accounts.clerk.dev',
+        'https://clerk.accounts.dev',
+        'https://*.clerk.accounts.dev',
+        'https://js.stripe.com',
+        'https://hooks.stripe.com',
+      ].join(' '),
+
+      // Prevent this site from being embedded in frames on other domains
+      // (clickjacking protection)
       "frame-ancestors 'none'",
-      // Block plugins (Flash, Java applets, etc.)
+
+      // Block legacy plugins (Flash, Java applets, etc.)
       "object-src 'none'",
+
       // Restrict <base> tag to prevent base-URI hijacking
       "base-uri 'self'",
-      // Limit form submission targets
+
+      // Limit form targets
       "form-action 'self' https://checkout.stripe.com",
     ].join('; '),
   },
