@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { ChevronDown, Search, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 import SignalRow from './SignalRow'
@@ -103,6 +103,26 @@ export default function SignalBoardClient({
   const [sortKey, setSortKey]                 = useState<SortKey>('confidence-desc')
   const [search, setSearch]                   = useState('')
   const [collapsedCats, setCollapsedCats]     = useState<Set<string>>(new Set())
+  // Map of signalId → trackedSignal record ID
+  const [trackedMap, setTrackedMap]           = useState<Map<string, string>>(new Map())
+
+  useEffect(() => {
+    fetch('/api/tracker')
+      .then(r => r.ok ? r.json() : [])
+      .then((data: { id: string; signalId: string }[]) => {
+        setTrackedMap(new Map(data.map(t => [t.signalId, t.id])))
+      })
+      .catch(() => {/* silent */})
+  }, [])
+
+  const handleTrackToggle = useCallback((signalId: string, newTrackedId: string | null) => {
+    setTrackedMap(prev => {
+      const next = new Map(prev)
+      if (newTrackedId) next.set(signalId, newTrackedId)
+      else next.delete(signalId)
+      return next
+    })
+  }, [])
 
   const isFree = tier === 'free'
 
@@ -340,6 +360,8 @@ export default function SignalBoardClient({
                         tier={tier}
                         isEven={idx % 2 === 0}
                         isFreePick={isFree && s.id === freePickId}
+                        trackedId={trackedMap.get(s.id) ?? null}
+                        onTrackToggle={handleTrackToggle}
                       />
                     ))}
 

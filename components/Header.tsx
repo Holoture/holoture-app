@@ -12,10 +12,12 @@ import { useTheme } from './ThemeProvider'
 
 const NAV_LINKS = [
   { href: '/dashboard', label: 'Dashboard' },
+  { href: '/tracker', label: 'Tracker' },
   { href: '/news', label: 'News' },
   { href: '/trends', label: 'Trends' },
   { href: '/calendar', label: 'Calendar' },
   { href: '/politician-scanner', label: 'Politician Scanner' },
+  { href: '/forum', label: 'Forum', highlight: true },
   { href: '/learn', label: 'Learn' },
   { href: '/alerts', label: 'Alerts' },
   { href: '/support', label: 'Support' },
@@ -52,8 +54,8 @@ export default function Header() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
-            {NAV_LINKS.map(({ href, label }) => (
-              <NavLink key={href} href={href} active={pathname === href}>
+            {NAV_LINKS.map(({ href, label, highlight }) => (
+              <NavLink key={href} href={href} active={pathname === href} highlight={highlight}>
                 {label}
               </NavLink>
             ))}
@@ -139,12 +141,25 @@ export default function Header() {
 function NavLink({
   href,
   active,
+  highlight,
   children,
 }: {
   href: string
   active: boolean
+  highlight?: boolean
   children: React.ReactNode
 }) {
+  if (highlight && !active) {
+    return (
+      <Link
+        href={href}
+        className="px-4 py-2.5 rounded-lg text-[17px] font-medium transition-colors whitespace-nowrap"
+        style={{ color: '#009BFF' }}
+      >
+        {children}
+      </Link>
+    )
+  }
   return (
     <Link
       href={href}

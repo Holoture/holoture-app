@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { ChevronDown, Lock } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import type { Signal } from './SignalCard'
+import TrackerButton from './TrackerButton'
 
 const SignalChart = dynamic(() => import('./SignalChart'), { ssr: false })
 
@@ -130,9 +131,19 @@ interface Props {
   isEven: boolean
   /** True only for free users on their one fully-visible daily pick */
   isFreePick?: boolean
+  /** TrackedSignal record ID if this signal is being tracked, else null */
+  trackedId?: string | null
+  onTrackToggle?: (signalId: string, newTrackedId: string | null) => void
 }
 
-export default function SignalRow({ signal, tier, isEven, isFreePick = false }: Props) {
+export default function SignalRow({
+  signal,
+  tier,
+  isEven,
+  isFreePick = false,
+  trackedId = null,
+  onTrackToggle,
+}: Props) {
   const [expanded, setExpanded]           = useState(false)
   const [details, setDetails]             = useState<StockDetails | null>(null)
   const [detailsLoading, setDetailsLoading] = useState(false)
@@ -271,6 +282,17 @@ export default function SignalRow({ signal, tier, isEven, isFreePick = false }: 
             <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>Timeframe</div>
           </div>
 
+          {/* Tracker */}
+          {onTrackToggle && (
+            <TrackerButton
+              signalId={signal.id}
+              ticker={signal.ticker}
+              trackedId={trackedId}
+              isObscured={isObscured}
+              onToggle={onTrackToggle}
+            />
+          )}
+
           {/* Chevron */}
           <ChevronDown
             className="w-4 h-4 shrink-0 transition-transform duration-200"
@@ -321,6 +343,19 @@ export default function SignalRow({ signal, tier, isEven, isFreePick = false }: 
           {isFreePick && (
             <div style={{ fontSize: 10, color: '#1D9E75', fontWeight: 700 }}>
               ✦ Today&apos;s Free Pick
+            </div>
+          )}
+
+          {/* Tracker (mobile) */}
+          {onTrackToggle && !isObscured && (
+            <div className="flex justify-end">
+              <TrackerButton
+                signalId={signal.id}
+                ticker={signal.ticker}
+                trackedId={trackedId}
+                isObscured={isObscured}
+                onToggle={onTrackToggle}
+              />
             </div>
           )}
 
