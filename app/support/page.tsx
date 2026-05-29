@@ -23,7 +23,7 @@ const FAQS = [
   },
   {
     q: 'What is Holoture Max?',
-    a: 'Holoture Max is our premium tier at $25/month. It includes everything in Pro, plus three exclusive features:\n\n• Unlimited Momentum Signals — no 5-signal cap, see every high-conviction BUY setup.\n\n• Options Signals — curated CALL and PUT contract setups with strike prices, expiration dates, and risk ratings.\n\n• Politician Stock Scanner — track real-time stock purchase and sale disclosures filed by US Congress members, with AI commentary and significance ratings sourced from Capitol Trades.\n\nMax is designed for active traders who want the full Holoture data stack.',
+    a: 'Holoture Max is our premium tier at $25/month. It includes everything in Pro, plus three exclusive features:\n\n• Unlimited Momentum Signals — no 5-signal cap, see every high-conviction BUY setup.\n\n• Options Signals — curated CALL and PUT contract setups with strike prices, expiration dates, and risk ratings.\n\n• Politician Stock Scanner — track real-time stock purchase and sale disclosures filed by US Congress members, with AI commentary and significance ratings.\n\nMax is designed for active traders who want the full Holoture data stack.',
   },
   {
     q: 'How do I upgrade to Pro or Max?',

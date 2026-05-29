@@ -98,7 +98,7 @@ export default async function PoliticianScannerPage() {
             </span>
           </div>
           <p className="text-sm text-white" style={{ opacity: 0.7 }}>
-            Recent stock disclosures by US Congress members — sourced from Capitol Trades
+            Recent stock disclosures by US Congress members
             {lastFetched && (
               <span>
                 {' '}· Last updated{' '}
@@ -118,7 +118,7 @@ export default async function PoliticianScannerPage() {
             <Users className="w-10 h-10 mb-4" style={{ color: '#a78bfa', opacity: 0.5 }} />
             <h3 className="text-lg font-bold text-white mb-2">No trades yet</h3>
             <p className="text-sm text-white" style={{ opacity: 0.6 }}>
-              Data is fetched daily from Capitol Trades. Check back after the next scheduled refresh.
+              Check back after the next scheduled refresh.
             </p>
           </div>
         ) : (
@@ -126,7 +126,7 @@ export default async function PoliticianScannerPage() {
         )}
 
         <p className="text-xs text-white opacity-30 mt-8 text-center">
-          All trades are public disclosures required by the STOCK Act. Data sourced from Capitol Trades. Not financial advice.
+          All trades are public disclosures required by the STOCK Act. Not financial advice.
         </p>
       </div>
     </div>

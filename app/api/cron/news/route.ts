@@ -69,45 +69,60 @@ async function fetchAllNews(): Promise<RawArticle[]> {
 }
 
 async function classifyArticles(articles: RawArticle[]): Promise<{ id: number; sentiment: string; confidence: number }[]> {
+  if (articles.length === 0) return []
   const client = getAnthropicClient()
-  const headlines = articles.map((a, i) => `${i}: ${a.headline}`).join('\n')
+  const results: { id: number; sentiment: string; confidence: number }[] = []
 
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 2048,
-    messages: [
-      {
-        role: 'user',
-        content: `Classify each headline as bullish, bearish, or neutral for equity markets.
-- Label BULLISH when the headline suggests positive market impact: earnings beats, strong guidance, rate cuts, acquisitions at premium, regulatory approvals, upgrades, demand surges.
-- Label BEARISH when the headline suggests negative market impact: earnings misses, guidance cuts, rate hikes, layoffs, lawsuits, regulatory fines, downgrades, geopolitical risks, economic slowdown.
-- Label NEUTRAL only if the headline is truly ambiguous with no directional signal whatsoever.
-- When in doubt, lean toward bullish or bearish based on even small directional cues. Avoid over-labeling neutral.
+  // Process in batches of 10 — includes summaries for better accuracy
+  for (let i = 0; i < articles.length; i += 10) {
+    const batch = articles.slice(i, i + 10)
+    const newsData = batch.map((a, idx) => ({
+      index: idx,
+      headline: a.headline,
+      summary: (a.summary ?? '').slice(0, 200),
+    }))
 
-Examples:
-{"index":0,"sentiment":"bullish","confidence":90} — "Apple beats Q4 earnings, raises guidance"
-{"index":1,"sentiment":"bearish","confidence":85} — "Fed signals further rate hikes amid persistent inflation"
-{"index":2,"sentiment":"bearish","confidence":80} — "Microsoft announces 10,000 layoffs to cut costs"
-{"index":3,"sentiment":"bullish","confidence":88} — "NVIDIA stock climbs as AI chip demand surges"
-{"index":4,"sentiment":"bearish","confidence":75} — "SEC investigating crypto exchange for compliance violations"
-{"index":5,"sentiment":"neutral","confidence":55} — "Company announces quarterly dividend payment date"
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1024,
+      messages: [
+        {
+          role: 'user',
+          content: `Classify each news article as BULLISH, BEARISH, or NEUTRAL for equity markets.
 
-Reply with a JSON array only, no markdown, no explanation.
-Format: [{"index":0,"sentiment":"bullish","confidence":75},...]
+BULLISH: earnings beats, revenue beats, price target increases, analyst upgrades, strong guidance, M&A at premium, new product launches, regulatory approvals, market share gains, CEO optimism, strong economic data, rate cuts, inflation decreasing, stock buybacks, dividend increases.
 
-Headlines:
-${headlines}`,
-      },
-    ],
-  })
+BEARISH: earnings misses, revenue misses, price target cuts, analyst downgrades, weak guidance, layoffs, regulatory fines, lawsuits, market share losses, recession fears, rate hikes, inflation increasing, geopolitical risks, CEO departures, bankruptcy, debt concerns.
 
-  const text = message.content[0].type === 'text' ? message.content[0].text : ''
-  try {
-    const parsed: { index: number; sentiment: string; confidence: number }[] = JSON.parse(text)
-    return parsed.map((p) => ({ id: articles[p.index].id, sentiment: p.sentiment, confidence: p.confidence }))
-  } catch {
-    return articles.map((a) => ({ id: a.id, sentiment: 'neutral', confidence: 50 }))
+NEUTRAL: ONLY when genuinely balanced with equal positive and negative factors, or purely informational with zero market impact. Be decisive — at least 70% of articles should be BULLISH or BEARISH. If an article has any directional lean, choose that direction.
+
+Reply with a JSON array only — no markdown, no explanation.
+Format: [{"index":0,"sentiment":"BULLISH","confidence":85},...]
+
+Articles:
+${JSON.stringify(newsData, null, 2)}`,
+        },
+      ],
+    })
+
+    const raw = message.content[0].type === 'text' ? message.content[0].text : '[]'
+    const cleaned = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim()
+    try {
+      const parsed: { index: number; sentiment: string; confidence: number }[] = JSON.parse(cleaned)
+      for (const p of parsed) {
+        const article = batch[p.index]
+        if (article) {
+          results.push({ id: article.id, sentiment: p.sentiment.toLowerCase(), confidence: p.confidence })
+        }
+      }
+    } catch {
+      for (const article of batch) {
+        results.push({ id: article.id, sentiment: 'neutral', confidence: 50 })
+      }
+    }
   }
+
+  return results
 }
 
 export async function GET(req: Request) {
