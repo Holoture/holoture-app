@@ -11,7 +11,9 @@ const PRODUCT_LINKS = [
 const LEGAL_LINKS = [
   { href: '/privacy-policy', label: 'Privacy Policy' },
   { href: '/terms', label: 'Terms of Service' },
-  { href: '/terms', label: 'Not Financial Advice' },
+  { href: '/cookie-policy', label: 'Cookie Policy' },
+  { href: '/accessibility', label: 'Accessibility' },
+  { href: '/do-not-sell', label: 'Do Not Sell My Info' },
 ]
 
 export default function Footer() {
