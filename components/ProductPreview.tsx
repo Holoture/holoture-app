@@ -277,7 +277,7 @@ function TrendsPanel({ sectors, marketSummary }: { sectors: PreviewData['sectors
           className="p-3 rounded-xl mb-5 text-xs leading-relaxed"
           style={{ backgroundColor: 'rgba(0,155,255,0.07)', border: '1px solid rgba(0,155,255,0.2)', color: 'rgba(255,255,255,0.7)' }}
         >
-          <span className="font-bold" style={{ color: '#009BFF' }}>🤖 AI Market Summary · </span>
+          <span className="font-bold" style={{ color: '#009BFF' }}>Market Summary ·</span>
           {marketSummary.length > 220 ? `${marketSummary.slice(0, 220)}…` : marketSummary}
         </div>
       )}
