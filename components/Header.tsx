@@ -17,7 +17,6 @@ const NAV_LINKS = [
   { href: '/trends', label: 'Trends' },
   { href: '/calendar', label: 'Calendar' },
   { href: '/politician-scanner', label: 'Politician Scanner' },
-  { href: '/forum', label: 'Forum', highlight: true },
   { href: '/learn', label: 'Learn' },
   { href: '/alerts', label: 'Alerts' },
   { href: '/support', label: 'Support' },
@@ -54,8 +53,8 @@ export default function Header() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
-            {NAV_LINKS.map(({ href, label, highlight }) => (
-              <NavLink key={href} href={href} active={pathname === href} highlight={highlight}>
+            {NAV_LINKS.map(({ href, label }) => (
+              <NavLink key={href} href={href} active={pathname === href}>
                 {label}
               </NavLink>
             ))}
@@ -77,6 +76,7 @@ export default function Header() {
                 >
                   Get Started
                 </Link>
+                <ForumPill />
               </>
             )}
             {isLoaded && isSignedIn && (
@@ -96,6 +96,7 @@ export default function Header() {
                   <Gift className="w-5 h-5" />
                 </button>
                 <UserButton appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
+                <ForumPill />
               </>
             )}
             <button
@@ -141,25 +142,12 @@ export default function Header() {
 function NavLink({
   href,
   active,
-  highlight,
   children,
 }: {
   href: string
   active: boolean
-  highlight?: boolean
   children: React.ReactNode
 }) {
-  if (highlight && !active) {
-    return (
-      <Link
-        href={href}
-        className="px-4 py-2.5 rounded-lg text-[17px] font-medium transition-colors whitespace-nowrap"
-        style={{ color: '#009BFF' }}
-      >
-        {children}
-      </Link>
-    )
-  }
   return (
     <Link
       href={href}
@@ -169,6 +157,20 @@ function NavLink({
       )}
     >
       {children}
+    </Link>
+  )
+}
+
+function ForumPill() {
+  return (
+    <Link
+      href="/forum"
+      className="shrink-0 font-semibold whitespace-nowrap transition-colors text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-1.5"
+      style={{ backgroundColor: '#009BFF', color: 'white', borderRadius: 100 }}
+      onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#0080DD')}
+      onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#009BFF')}
+    >
+      Forum
     </Link>
   )
 }
