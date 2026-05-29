@@ -63,7 +63,7 @@ export default function TrackerButton({ signalId, ticker, trackedId, isObscured,
         border: isTracked
           ? '1px solid rgba(0,155,255,0.35)'
           : '1px solid transparent',
-        color: isTracked ? '#009BFF' : 'rgba(255,255,255,0.3)',
+        color: isTracked ? '#009BFF' : 'var(--text-w30)',
       }}
     >
       {loading ? (

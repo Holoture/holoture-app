@@ -30,14 +30,14 @@ export default function Footer() {
             <p className="text-sm text-white mb-3 leading-relaxed">
               Data-powered signals for everyday investors.
             </p>
-            <p className="text-xs" style={{ color: 'var(--text-muted, rgba(255,255,255,0.5))' }}>
+            <p className="text-xs" style={{ color: 'var(--muted)' }}>
               © 2026 Holoture LLC. All rights reserved.
             </p>
           </div>
 
           {/* Product */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: 'var(--text-muted, rgba(255,255,255,0.5))' }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: 'var(--muted)' }}>
               Product
             </p>
             <ul className="space-y-2.5">
@@ -56,7 +56,7 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: 'var(--text-muted, rgba(255,255,255,0.5))' }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: 'var(--muted)' }}>
               Legal
             </p>
             <ul className="space-y-2.5">
@@ -76,7 +76,7 @@ export default function Footer() {
 
         {/* Disclaimer bar */}
         <div className="pt-6" style={{ borderTop: '1px solid var(--border)' }}>
-          <p className="text-xs text-center" style={{ color: 'var(--text-muted, rgba(255,255,255,0.45))' }}>
+          <p className="text-xs text-center" style={{ color: 'var(--muted)' }}>
             Holoture is not a registered investment advisor. All signals are for informational purposes only.
           </p>
         </div>

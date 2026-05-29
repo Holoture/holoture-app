@@ -125,7 +125,7 @@ function VoteButtons({
         className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all"
         style={{
           backgroundColor: currentVote === 'up' ? 'rgba(29,158,117,0.15)' : 'transparent',
-          color: currentVote === 'up' ? '#1D9E75' : 'rgba(255,255,255,0.35)',
+          color: currentVote === 'up' ? '#1D9E75' : 'var(--text-w35)',
           border: currentVote === 'up' ? '1px solid rgba(29,158,117,0.4)' : '1px solid transparent',
           cursor: (!isSignedIn || isOwn) ? 'default' : 'pointer',
         }}
@@ -133,7 +133,7 @@ function VoteButtons({
         <ThumbsUp className="w-3.5 h-3.5" />
         {upvotes}
       </button>
-      <span className="text-xs font-bold" style={{ color: score > 0 ? '#1D9E75' : score < 0 ? '#E24B4A' : 'rgba(255,255,255,0.3)' }}>
+      <span className="text-xs font-bold" style={{ color: score > 0 ? '#1D9E75' : score < 0 ? '#E24B4A' : 'var(--text-w30)' }}>
         {score > 0 ? '+' : ''}{score}
       </span>
       <button
@@ -143,7 +143,7 @@ function VoteButtons({
         className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all"
         style={{
           backgroundColor: currentVote === 'down' ? 'rgba(226,75,74,0.15)' : 'transparent',
-          color: currentVote === 'down' ? '#E24B4A' : 'rgba(255,255,255,0.35)',
+          color: currentVote === 'down' ? '#E24B4A' : 'var(--text-w35)',
           border: currentVote === 'down' ? '1px solid rgba(226,75,74,0.4)' : '1px solid transparent',
           cursor: (!isSignedIn || isOwn) ? 'default' : 'pointer',
         }}
@@ -292,7 +292,7 @@ export default function ForumPostClient({
               </span>
             )}
             {post.isLocked && (
-              <span className="inline-flex items-center gap-1 text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              <span className="inline-flex items-center gap-1 text-xs font-semibold" style={{ color: 'var(--text-w40)' }}>
                 <Lock className="w-3 h-3" />Locked
               </span>
             )}
@@ -307,15 +307,15 @@ export default function ForumPostClient({
 
           {/* Author */}
           <div className="flex items-center gap-2 mb-5 flex-wrap" style={{ fontSize: 12 }}>
-            <span style={{ color: 'rgba(255,255,255,0.6)' }}>{post.authorName}</span>
+            <span style={{ color: 'var(--text-w60)' }}>{post.authorName}</span>
             <TierBadge tier={post.authorTier} />
-            <span style={{ color: 'rgba(255,255,255,0.3)' }}>{timeAgo(post.createdAt)}</span>
+            <span style={{ color: 'var(--text-w30)' }}>{timeAgo(post.createdAt)}</span>
           </div>
 
           {/* Content */}
           <div
             className="text-sm leading-relaxed whitespace-pre-wrap mb-6"
-            style={{ color: 'rgba(255,255,255,0.8)' }}
+            style={{ color: 'var(--text-w80)' }}
           >
             {post.content}
           </div>
@@ -333,7 +333,7 @@ export default function ForumPostClient({
               onVote={handleVote}
             />
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1 text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-w35)' }}>
                 <MessageSquare className="w-3.5 h-3.5" />{post.replyCount} replies
               </span>
               {isSignedIn && !isPostOwn && (
@@ -341,7 +341,7 @@ export default function ForumPostClient({
                   onClick={flagPost}
                   title="Flag for moderation"
                   className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs hover:opacity-70 transition-opacity"
-                  style={{ color: 'rgba(255,255,255,0.3)' }}
+                  style={{ color: 'var(--text-w30)' }}
                 >
                   <Flag className="w-3 h-3" />
                 </button>
@@ -360,14 +360,14 @@ export default function ForumPostClient({
             <button
               onClick={() => adminPatch({ isPinned: !post.isPinned })}
               className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded hover:opacity-70 transition-opacity"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
+              style={{ color: 'var(--text-w50)' }}
             >
               <Pin className="w-3 h-3" />{post.isPinned ? 'Unpin' : 'Pin'}
             </button>
             <button
               onClick={() => adminPatch({ isLocked: !post.isLocked })}
               className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded hover:opacity-70 transition-opacity"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
+              style={{ color: 'var(--text-w50)' }}
             >
               {post.isLocked ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
               {post.isLocked ? 'Unlock' : 'Lock'}
@@ -375,7 +375,7 @@ export default function ForumPostClient({
             <button
               onClick={() => adminPatch({ isHidden: !post.isHidden })}
               className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded hover:opacity-70 transition-opacity"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
+              style={{ color: 'var(--text-w50)' }}
             >
               <EyeOff className="w-3 h-3" />{post.isHidden ? 'Show' : 'Hide'}
             </button>
@@ -400,12 +400,12 @@ export default function ForumPostClient({
               className="rounded-xl p-5"
               style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
             >
-              <div className="flex items-center gap-2 mb-3 flex-wrap" style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>
+              <div className="flex items-center gap-2 mb-3 flex-wrap" style={{ fontSize: 12, color: 'var(--text-w60)' }}>
                 <span>{reply.authorName}</span>
                 <TierBadge tier={reply.authorTier} />
-                <span style={{ color: 'rgba(255,255,255,0.3)' }}>{timeAgo(reply.createdAt)}</span>
+                <span style={{ color: 'var(--text-w30)' }}>{timeAgo(reply.createdAt)}</span>
               </div>
-              <p className="text-sm leading-relaxed whitespace-pre-wrap mb-4" style={{ color: 'rgba(255,255,255,0.8)' }}>
+              <p className="text-sm leading-relaxed whitespace-pre-wrap mb-4" style={{ color: 'var(--text-w80)' }}>
                 {reply.content}
               </p>
               <div className="flex items-center justify-between gap-3">
@@ -429,7 +429,7 @@ export default function ForumPostClient({
                       })
                     }}
                     className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs hover:opacity-70 transition-opacity"
-                    style={{ color: 'rgba(255,255,255,0.25)' }}
+                    style={{ color: 'var(--text-w25)' }}
                   >
                     <Flag className="w-3 h-3" />
                   </button>
@@ -458,7 +458,7 @@ export default function ForumPostClient({
             style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
           />
           <div className="flex items-center justify-between mt-3">
-            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            <span className="text-xs" style={{ color: 'var(--text-w30)' }}>
               {replyContent.length}/2000
             </span>
             <div className="flex items-center gap-3">
@@ -478,7 +478,7 @@ export default function ForumPostClient({
           </div>
         </div>
       ) : post.isLocked ? (
-        <div className="text-center py-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
+        <div className="text-center py-6" style={{ color: 'var(--text-w40)' }}>
           <Lock className="w-5 h-5 mx-auto mb-2" />
           <p className="text-sm">This post is locked. No new replies.</p>
         </div>
@@ -487,7 +487,7 @@ export default function ForumPostClient({
           className="rounded-xl p-6 text-center"
           style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
         >
-          <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <p className="text-sm mb-3" style={{ color: 'var(--text-w50)' }}>
             Sign in to join the discussion
           </p>
           <Link

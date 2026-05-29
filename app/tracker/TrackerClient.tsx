@@ -100,7 +100,7 @@ function StatsBar({ tracked }: { tracked: TrackedSignal[] }) {
           style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
         >
           <div className="text-lg font-black text-white">{s.value}</div>
-          <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.label}</div>
+          <div className="text-xs mt-0.5" style={{ color: 'var(--text-w40)' }}>{s.label}</div>
         </div>
       ))}
     </div>
@@ -180,12 +180,12 @@ function SignalCard({
               <SignalBadge type={s.signalType} />
               <span className="text-sm font-bold" style={{ color: confidenceColor }}>{s.confidence}%</span>
               {!s.isActive && (
-                <span className="text-xs px-1.5 py-0.5 rounded font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)' }}>
+                <span className="text-xs px-1.5 py-0.5 rounded font-semibold" style={{ backgroundColor: 'var(--surf-w8)', color: 'var(--text-w40)' }}>
                   Inactive
                 </span>
               )}
             </div>
-            <div className="text-xs mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <div className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-w45)' }}>
               {s.companyName} · {s.sector} · {s.timeHorizon}
             </div>
           </div>
@@ -195,7 +195,7 @@ function SignalCard({
             onClick={handlePin}
             title={item.isPinned ? 'Unpin' : 'Pin'}
             className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"
-            style={{ color: item.isPinned ? '#009BFF' : 'rgba(255,255,255,0.3)' }}
+            style={{ color: item.isPinned ? '#009BFF' : 'var(--text-w30)' }}
           >
             {item.isPinned ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5" />}
           </button>
@@ -203,7 +203,7 @@ function SignalCard({
             onClick={handleDelete}
             title="Remove from tracker"
             className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"
-            style={{ color: 'rgba(255,255,255,0.3)' }}
+            style={{ color: 'var(--text-w30)' }}
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
@@ -229,7 +229,7 @@ function SignalCard({
       <div className="px-5 py-4 space-y-4">
         {/* Status buttons */}
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs font-semibold shrink-0" style={{ color: 'rgba(255,255,255,0.4)' }}>Status:</span>
+          <span className="text-xs font-semibold shrink-0" style={{ color: 'var(--text-w40)' }}>Status:</span>
           {(['watching', 'entered'] as const).map(st => (
             <button
               key={st}
@@ -238,7 +238,7 @@ function SignalCard({
               style={
                 item.status === st
                   ? { backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.35)' }
-                  : { backgroundColor: 'var(--bg-surface-2)', color: 'rgba(255,255,255,0.5)', border: '1px solid var(--border)' }
+                  : { backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w50)', border: '1px solid var(--border)' }
               }
             >
               {st === 'watching' ? <><Activity className="w-3 h-3 inline mr-1" />Watching</> : <><TrendingUp className="w-3 h-3 inline mr-1" />Entered</>}
@@ -258,8 +258,8 @@ function SignalCard({
                 disabled={closingWith !== null}
                 className="px-3 py-1 rounded-lg text-xs font-semibold transition-all capitalize"
                 style={{
-                  backgroundColor: 'rgba(255,255,255,0.05)',
-                  color: closingWith === outcome ? outcomeColor(outcome) : 'rgba(255,255,255,0.45)',
+                  backgroundColor: 'var(--surf-w5)',
+                  color: closingWith === outcome ? outcomeColor(outcome) : 'var(--text-w45)',
                   border: '1px solid var(--border)',
                 }}
               >
@@ -272,7 +272,7 @@ function SignalCard({
         {/* Entry price + notes */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex items-center gap-2 rounded-lg px-3 py-2 flex-1" style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}>
-            <span className="text-xs shrink-0" style={{ color: 'rgba(255,255,255,0.4)' }}>My Entry $</span>
+            <span className="text-xs shrink-0" style={{ color: 'var(--text-w40)' }}>My Entry $</span>
             <input
               type="number"
               step="0.01"
@@ -296,7 +296,7 @@ function SignalCard({
           onClick={handleSaveNotes}
           disabled={savingNotes}
           className="text-xs font-semibold px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity"
-          style={{ backgroundColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' }}
+          style={{ backgroundColor: 'var(--surf-w8)', color: 'var(--text-w70)' }}
         >
           {savingNotes ? 'Saving…' : 'Save Notes'}
         </button>
@@ -328,7 +328,7 @@ function ClosedCard({ item, onDelete }: { item: TrackedSignal; onDelete: (id: st
             <span
               className="text-xs font-bold px-2 py-0.5 rounded capitalize"
               style={{
-                backgroundColor: item.outcome ? `${outcomeColor(item.outcome)}20` : 'rgba(255,255,255,0.06)',
+                backgroundColor: item.outcome ? `${outcomeColor(item.outcome)}20` : 'var(--surf-w6)',
                 color: outcomeColor(item.outcome),
                 border: `1px solid ${outcomeColor(item.outcome)}40`,
               }}
@@ -336,12 +336,12 @@ function ClosedCard({ item, onDelete }: { item: TrackedSignal; onDelete: (id: st
               {item.outcome ?? 'closed'}
             </span>
           </div>
-          <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+          <div className="text-xs mt-0.5" style={{ color: 'var(--text-w35)' }}>
             {s.companyName} · Held {held}
           </div>
         </div>
       </div>
-      <button onClick={handleDelete} className="p-1.5 rounded-lg hover:bg-white/5 transition-colors shrink-0" style={{ color: 'rgba(255,255,255,0.25)' }}>
+      <button onClick={handleDelete} className="p-1.5 rounded-lg hover:bg-white/5 transition-colors shrink-0" style={{ color: 'var(--text-w25)' }}>
         <Trash2 className="w-3.5 h-3.5" />
       </button>
     </div>
@@ -378,7 +378,7 @@ function SectionHeader({
         </span>
       </div>
       {collapsible && (
-        <span style={{ color: 'rgba(255,255,255,0.35)' }}>
+        <span style={{ color: 'var(--text-w35)' }}>
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </span>
       )}
@@ -455,7 +455,7 @@ export default function TrackerClient({ initialTracked }: { initialTracked: Trac
       )}
 
       {tracked.length === 0 && (
-        <div className="text-center py-12" style={{ color: 'rgba(255,255,255,0.4)' }}>
+        <div className="text-center py-12" style={{ color: 'var(--text-w40)' }}>
           <p className="font-semibold text-white mb-2">Tracker is empty</p>
           <Link href="/dashboard" className="text-sm hover:underline" style={{ color: '#009BFF' }}>
             Browse signals →

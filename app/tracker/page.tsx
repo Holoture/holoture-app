@@ -39,7 +39,7 @@ export default async function TrackerPage() {
               <Bookmark className="w-6 h-6" style={{ color: '#009BFF' }} />
               <h1 className="text-2xl font-black text-white">Signal Tracker</h1>
             </div>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <p className="text-sm" style={{ color: 'var(--text-w50)' }}>
               Your personal trade journal — track signals, log entries, and record outcomes
             </p>
           </div>
@@ -57,9 +57,9 @@ export default async function TrackerPage() {
             className="rounded-2xl p-16 text-center"
             style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
           >
-            <Bookmark className="w-10 h-10 mx-auto mb-4" style={{ color: 'rgba(255,255,255,0.2)' }} />
+            <Bookmark className="w-10 h-10 mx-auto mb-4" style={{ color: 'var(--text-w20)' }} />
             <p className="font-semibold text-white text-lg mb-2">No tracked signals yet</p>
-            <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            <p className="text-sm mb-6" style={{ color: 'var(--text-w40)' }}>
               Click the bookmark icon on any signal to start tracking it
             </p>
             <Link

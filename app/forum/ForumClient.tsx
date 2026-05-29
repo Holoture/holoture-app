@@ -78,24 +78,24 @@ function PostCard({ post }: { post: Post }) {
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap mb-1">
             {post.isPinned && <Pin className="w-3 h-3 shrink-0" style={{ color: '#009BFF' }} />}
-            {post.isLocked && <Lock className="w-3 h-3 shrink-0" style={{ color: 'rgba(255,255,255,0.3)' }} />}
+            {post.isLocked && <Lock className="w-3 h-3 shrink-0" style={{ color: 'var(--text-w30)' }} />}
             <h3 className="font-bold text-white text-sm leading-snug">{post.title}</h3>
           </div>
-          <p className="text-xs mb-3 leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <p className="text-xs mb-3 leading-relaxed" style={{ color: 'var(--text-w50)' }}>
             {preview}
           </p>
           <div className="flex items-center gap-3 flex-wrap" style={{ fontSize: 11 }}>
-            <span style={{ color: 'rgba(255,255,255,0.45)' }}>{post.authorName}</span>
+            <span style={{ color: 'var(--text-w45)' }}>{post.authorName}</span>
             <TierBadge tier={post.authorTier} />
-            <span style={{ color: 'rgba(255,255,255,0.25)' }}>{timeAgo(post.createdAt)}</span>
+            <span style={{ color: 'var(--text-w25)' }}>{timeAgo(post.createdAt)}</span>
           </div>
         </div>
         <div className="flex flex-col items-end gap-2 shrink-0 text-xs">
-          <div className="flex items-center gap-1" style={{ color: score > 0 ? '#1D9E75' : score < 0 ? '#E24B4A' : 'rgba(255,255,255,0.35)' }}>
+          <div className="flex items-center gap-1" style={{ color: score > 0 ? '#1D9E75' : score < 0 ? '#E24B4A' : 'var(--text-w35)' }}>
             <ThumbsUp className="w-3 h-3" />
             <span className="font-semibold">{score > 0 ? '+' : ''}{score}</span>
           </div>
-          <div className="flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+          <div className="flex items-center gap-1" style={{ color: 'var(--text-w35)' }}>
             <MessageSquare className="w-3 h-3" />
             <span>{post.replyCount}</span>
           </div>
@@ -140,7 +140,7 @@ export default function ForumClient({
             style={
               filter === t.key
                 ? { backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.35)' }
-                : { backgroundColor: 'transparent', color: 'rgba(255,255,255,0.5)', border: '1px solid transparent' }
+                : { backgroundColor: 'transparent', color: 'var(--text-w50)', border: '1px solid transparent' }
             }
           >
             {t.label}
@@ -173,9 +173,9 @@ export default function ForumClient({
           className="rounded-xl p-12 text-center"
           style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
         >
-          <MessageSquare className="w-8 h-8 mx-auto mb-3" style={{ color: 'rgba(255,255,255,0.2)' }} />
+          <MessageSquare className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-w20)' }} />
           <p className="font-semibold text-white mb-1">No posts yet</p>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>Be the first to start a discussion</p>
+          <p className="text-sm" style={{ color: 'var(--text-w40)' }}>Be the first to start a discussion</p>
         </div>
       ) : (
         <div className="space-y-3">

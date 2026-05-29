@@ -70,7 +70,7 @@ function ImpactBadge({ rating }: { rating: string }) {
   const [bg, color] =
     r === 'high'   ? ['rgba(248,113,113,0.15)', '#f87171'] :
     r === 'medium' ? ['rgba(251,191,36,0.15)',  '#fbbf24'] :
-                     ['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.4)']
+                     ['var(--surf-w8)', 'var(--text-w40)']
   return (
     <span className="px-2 py-0.5 rounded-full text-xs font-bold shrink-0" style={{ backgroundColor: bg, color }}>
       {rating}
@@ -96,7 +96,7 @@ function ConfBar({ value }: { value: number }) {
   const color = value >= 80 ? '#4ade80' : value >= 60 ? '#fbbf24' : '#f87171'
   return (
     <div className="flex items-center gap-2">
-      <div className="w-16 h-1.5 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}>
+      <div className="w-16 h-1.5 rounded-full" style={{ backgroundColor: 'var(--surf-w8)' }}>
         <div className="h-1.5 rounded-full" style={{ width: `${value}%`, backgroundColor: color }} />
       </div>
       <span className="text-xs font-bold tabular-nums" style={{ color }}>{value}%</span>
@@ -130,7 +130,7 @@ function SignalsPanel({ signals, totalSignals }: { signals: PreviewData['signals
 
   if (signals.length === 0) {
     return (
-      <div className="py-12 text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
+      <div className="py-12 text-center" style={{ color: 'var(--text-w40)' }}>
         <p className="text-sm">Signal data refreshes daily — check back soon.</p>
         <PreviewCTA />
       </div>
@@ -153,13 +153,13 @@ function SignalsPanel({ signals, totalSignals }: { signals: PreviewData['signals
             <span className="font-black text-white text-sm">{s.ticker}</span>
             <SignalBadge type={s.signalType} />
           </div>
-          <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-w40)' }}>
             {s.companyName}
           </p>
         </div>
         <div className="shrink-0 text-right">
           <ConfBar value={s.confidence} />
-          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>{s.timeHorizon}</p>
+          <p className="text-xs mt-0.5" style={{ color: 'var(--text-w35)' }}>{s.timeHorizon}</p>
         </div>
       </div>
     )
@@ -169,7 +169,7 @@ function SignalsPanel({ signals, totalSignals }: { signals: PreviewData['signals
     <div>
       {largeCap.length > 0 && (
         <div className="mb-3">
-          <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.28)' }}>
+          <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-w28)' }}>
             Large Cap
           </p>
           <div className="space-y-1.5">
@@ -180,7 +180,7 @@ function SignalsPanel({ signals, totalSignals }: { signals: PreviewData['signals
 
       {smallCap.length > 0 && (
         <div className="mb-1.5">
-          <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.28)' }}>
+          <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-w28)' }}>
             Small Cap
           </p>
           <div className="space-y-1.5">
@@ -203,7 +203,7 @@ function SignalsPanel({ signals, totalSignals }: { signals: PreviewData['signals
             <p className="text-sm font-bold text-white">
               Upgrade to see all {totalSignals} signals today
             </p>
-            <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-w40)' }}>
               Pro members get the full board
             </p>
           </div>
@@ -220,7 +220,7 @@ function SignalsPanel({ signals, totalSignals }: { signals: PreviewData['signals
 function NewsPanel({ news }: { news: PreviewData['news'] }) {
   if (news.length === 0) {
     return (
-      <div className="py-12 text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
+      <div className="py-12 text-center" style={{ color: 'var(--text-w40)' }}>
         <p className="text-sm">News updates every 30 minutes — check back soon.</p>
         <PreviewCTA />
       </div>
@@ -244,7 +244,7 @@ function NewsPanel({ news }: { news: PreviewData['news'] }) {
               >
                 {n.headline}
               </p>
-              <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              <p className="text-xs mt-1" style={{ color: 'var(--text-w35)' }}>
                 {n.source} · {timeAgo(n.publishedAt)}
               </p>
             </div>
@@ -263,7 +263,7 @@ function TrendsPanel({ sectors, marketSummary }: { sectors: PreviewData['sectors
 
   if (sectors.length === 0) {
     return (
-      <div className="py-12 text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
+      <div className="py-12 text-center" style={{ color: 'var(--text-w40)' }}>
         <p className="text-sm">Sector data refreshes every 30 minutes.</p>
         <PreviewCTA />
       </div>
@@ -275,7 +275,7 @@ function TrendsPanel({ sectors, marketSummary }: { sectors: PreviewData['sectors
       {marketSummary && (
         <div
           className="p-3 rounded-xl mb-5 text-xs leading-relaxed"
-          style={{ backgroundColor: 'rgba(0,155,255,0.07)', border: '1px solid rgba(0,155,255,0.2)', color: 'rgba(255,255,255,0.7)' }}
+          style={{ backgroundColor: 'rgba(0,155,255,0.07)', border: '1px solid rgba(0,155,255,0.2)', color: 'var(--text-w70)' }}
         >
           <span className="font-bold" style={{ color: '#009BFF' }}>Market Summary ·</span>
           {marketSummary.length > 220 ? `${marketSummary.slice(0, 220)}…` : marketSummary}
@@ -291,11 +291,11 @@ function TrendsPanel({ sectors, marketSummary }: { sectors: PreviewData['sectors
             <div key={s.id} className="flex items-center gap-3">
               <span
                 className="text-xs font-semibold shrink-0 text-right"
-                style={{ width: 110, color: 'rgba(255,255,255,0.55)' }}
+                style={{ width: 110, color: 'var(--text-w55)' }}
               >
                 {s.sector}
               </span>
-              <div className="flex-1 h-2 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
+              <div className="flex-1 h-2 rounded-full" style={{ backgroundColor: 'var(--surf-w6)' }}>
                 <div
                   className="h-2 rounded-full"
                   style={{ width: `${pct}%`, backgroundColor: color, opacity: 0.85 }}
@@ -319,7 +319,7 @@ function TrendsPanel({ sectors, marketSummary }: { sectors: PreviewData['sectors
 function CalendarPanel({ calendar }: { calendar: PreviewData['calendar'] }) {
   if (calendar.length === 0) {
     return (
-      <div className="py-12 text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
+      <div className="py-12 text-center" style={{ color: 'var(--text-w40)' }}>
         <p className="text-sm">Earnings calendar updates daily.</p>
         <PreviewCTA />
       </div>
@@ -347,7 +347,7 @@ function CalendarPanel({ calendar }: { calendar: PreviewData['calendar'] }) {
                 <ImpactBadge rating={entry.impactRating} />
               </div>
               {entry.epsEstimate != null && (
-                <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--text-w40)' }}>
                   EPS est: ${entry.epsEstimate.toFixed(2)}
                 </p>
               )}
@@ -355,7 +355,7 @@ function CalendarPanel({ calendar }: { calendar: PreviewData['calendar'] }) {
             <div className="text-right shrink-0">
               <p className="text-xs font-semibold text-white">{formatCalDate(entry.date)}</p>
               {hourLabel(entry.hour) && (
-                <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                <p className="text-xs" style={{ color: 'var(--text-w35)' }}>
                   {hourLabel(entry.hour)}
                 </p>
               )}
@@ -373,7 +373,7 @@ function CalendarPanel({ calendar }: { calendar: PreviewData['calendar'] }) {
 function PoliticianPanel({ trades }: { trades: PreviewData['trades'] }) {
   if (trades.length === 0) {
     return (
-      <div className="py-12 text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
+      <div className="py-12 text-center" style={{ color: 'var(--text-w40)' }}>
         <p className="text-sm">Congressional trade disclosures update daily.</p>
         <PreviewCTA label="Upgrade to Max to access this" href="/pricing" />
       </div>
@@ -398,7 +398,7 @@ function PoliticianPanel({ trades }: { trades: PreviewData['trades'] }) {
         <PartyBadge party={t.party} />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold text-white truncate">{t.politicianName}</p>
-          <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-w40)' }}>
             {t.ticker} · {t.companyName}
           </p>
         </div>
@@ -412,7 +412,7 @@ function PoliticianPanel({ trades }: { trades: PreviewData['trades'] }) {
           >
             {isBuy ? 'Purchase' : 'Sale'}
           </span>
-          <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{t.amountRange}</p>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-w40)' }}>{t.amountRange}</p>
         </div>
       </div>
     )
@@ -439,7 +439,7 @@ function PoliticianPanel({ trades }: { trades: PreviewData['trades'] }) {
                 <Zap className="w-5 h-5 text-white" />
               </div>
               <p className="text-sm font-black text-white">Max Exclusive</p>
-              <p className="text-xs mt-1 mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              <p className="text-xs mt-1 mb-3" style={{ color: 'var(--text-w50)' }}>
                 Real-time Congress trade disclosures with AI commentary &amp; significance ratings
               </p>
               <Link
@@ -484,7 +484,7 @@ export default function ProductPreview({ data }: { data: PreviewData }) {
           <h2 className="text-3xl sm:text-4xl font-black text-white">
             See exactly what you&apos;re getting
           </h2>
-          <p className="mt-4" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          <p className="mt-4" style={{ color: 'var(--text-w55)' }}>
             Click through each feature to see a live preview
           </p>
         </div>
@@ -501,7 +501,7 @@ export default function ProductPreview({ data }: { data: PreviewData }) {
               className="shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap"
               style={{
                 backgroundColor: activeTab === tab.key ? '#009BFF' : 'var(--bg-surface)',
-                color: activeTab === tab.key ? 'white' : 'rgba(255,255,255,0.55)',
+                color: activeTab === tab.key ? 'white' : 'var(--text-w55)',
                 border: activeTab === tab.key ? '1px solid #009BFF' : '1px solid var(--border)',
               }}
             >

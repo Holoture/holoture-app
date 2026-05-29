@@ -62,9 +62,9 @@ const TIERS = [
     icon:  Star,
     label: 'Free',
     price: '$0',
-    color: 'rgba(255,255,255,0.5)',
-    border: 'rgba(255,255,255,0.15)',
-    bg:    'rgba(255,255,255,0.04)',
+    color: 'var(--text-w50)',
+    border: 'var(--border)',
+    bg:    'var(--surf-w4)',
     features: [
       '1 signal per day (random pick)',
       'Basic signal board access',
@@ -147,7 +147,7 @@ export default function SupportPage() {
                   </div>
                   <ul className="space-y-1.5">
                     {tier.features.map((f) => (
-                      <li key={f} className="flex items-start gap-1.5 text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                      <li key={f} className="flex items-start gap-1.5 text-xs" style={{ color: 'var(--text-w70)' }}>
                         <span style={{ color: tier.color, marginTop: 1 }}>✓</span>
                         {f}
                       </li>

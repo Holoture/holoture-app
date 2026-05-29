@@ -70,9 +70,9 @@ function LockedBadge() {
     <span
       className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold whitespace-nowrap"
       style={{
-        backgroundColor: 'rgba(255,255,255,0.05)',
-        color: 'rgba(255,255,255,0.18)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        backgroundColor: 'var(--surf-w5)',
+        color: 'var(--text-w18)',
+        border: '1px solid var(--border-subtle)',
       }}
     >
       — —
@@ -84,7 +84,7 @@ function Blurred({ children }: { children: React.ReactNode }) {
   return (
     <span
       className="select-none pointer-events-none"
-      style={{ filter: 'blur(5px)', color: 'rgba(255,255,255,0.5)' }}
+      style={{ filter: 'blur(5px)', color: 'var(--text-w50)' }}
       aria-hidden="true"
     >
       {children}
@@ -113,9 +113,9 @@ function StockDetailsGrid({ signal, details }: { signal: Signal; details: StockD
         <div
           key={label}
           className="rounded-lg p-3"
-          style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+          style={{ backgroundColor: 'var(--surf-w4)', border: '1px solid var(--border-faint)' }}
         >
-          <div className="text-xs mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</div>
+          <div className="text-xs mb-1" style={{ color: 'var(--text-w40)' }}>{label}</div>
           <div className="text-sm font-semibold text-white truncate">{value}</div>
         </div>
       ))}
@@ -154,7 +154,7 @@ export default function SignalRow({
 
   const confidenceColor =
     signal.confidence >= 75 ? '#1D9E75' : signal.confidence >= 55 ? '#BA7517' : '#E24B4A'
-  const rowBg = isEven ? 'rgba(255,255,255,0.018)' : 'transparent'
+  const rowBg = isEven ? 'var(--surf-w18)' : 'transparent'
 
   async function handleToggle() {
     const opening = !expanded
@@ -190,12 +190,12 @@ export default function SignalRow({
               <>
                 <div
                   className="font-bold leading-tight flex items-center gap-1"
-                  style={{ fontSize: 16, color: 'rgba(255,255,255,0.25)' }}
+                  style={{ fontSize: 16, color: 'var(--text-w25)' }}
                 >
                   <Lock className="w-3 h-3 shrink-0" />
                   PRO
                 </div>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-w20)', marginTop: 2 }}>
                   Upgrade to reveal
                 </div>
               </>
@@ -204,7 +204,7 @@ export default function SignalRow({
                 <div className="font-bold text-white leading-tight" style={{ fontSize: 18 }}>
                   {signal.ticker}
                 </div>
-                <div className="truncate" style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
+                <div className="truncate" style={{ fontSize: 11, color: 'var(--text-w40)', marginTop: 2 }}>
                   {signal.sector}
                 </div>
                 {isFreePick && (
@@ -233,7 +233,7 @@ export default function SignalRow({
                 {signal.confidence}%
               </span>
             )}
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>Confidence</div>
+            <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>Confidence</div>
           </div>
 
           {/* Entry Zone */}
@@ -245,7 +245,7 @@ export default function SignalRow({
                 {formatCurrency(signal.entryZoneLow)} – {formatCurrency(signal.entryZoneHigh)}
               </span>
             )}
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>Entry Zone</div>
+            <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>Entry Zone</div>
           </div>
 
           {/* Target */}
@@ -257,7 +257,7 @@ export default function SignalRow({
                 ↑ {formatCurrency(signal.targetPrice)}
               </span>
             )}
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>Target</div>
+            <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>Target</div>
           </div>
 
           {/* Stop Loss */}
@@ -269,7 +269,7 @@ export default function SignalRow({
                 ↓ {formatCurrency(signal.stopLoss)}
               </span>
             )}
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>Stop Loss</div>
+            <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>Stop Loss</div>
           </div>
 
           {/* Timeframe */}
@@ -279,7 +279,7 @@ export default function SignalRow({
             ) : (
               <span className="text-sm text-white">{signal.timeHorizon}</span>
             )}
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>Timeframe</div>
+            <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>Timeframe</div>
           </div>
 
           {/* Tracker */}
@@ -297,7 +297,7 @@ export default function SignalRow({
           <ChevronDown
             className="w-4 h-4 shrink-0 transition-transform duration-200"
             style={{
-              color: 'rgba(255,255,255,0.35)',
+              color: 'var(--text-w35)',
               transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
             }}
           />
@@ -311,12 +311,12 @@ export default function SignalRow({
               <>
                 <span
                   className="font-bold flex items-center gap-1"
-                  style={{ fontSize: 16, color: 'rgba(255,255,255,0.25)' }}
+                  style={{ fontSize: 16, color: 'var(--text-w25)' }}
                 >
                   <Lock className="w-3 h-3" />
                   PRO
                 </span>
-                <span className="text-xs flex-1 truncate" style={{ color: 'rgba(255,255,255,0.2)' }}>
+                <span className="text-xs flex-1 truncate" style={{ color: 'var(--text-w20)' }}>
                   Upgrade to reveal
                 </span>
                 <LockedBadge />
@@ -324,7 +324,7 @@ export default function SignalRow({
             ) : (
               <>
                 <span className="font-bold text-white" style={{ fontSize: 18 }}>{signal.ticker}</span>
-                <span className="text-xs flex-1 truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                <span className="text-xs flex-1 truncate" style={{ color: 'var(--text-w40)' }}>
                   {signal.sector}
                 </span>
                 <SignalBadge type={signal.signalType} />
@@ -333,7 +333,7 @@ export default function SignalRow({
             <ChevronDown
               className="w-4 h-4 shrink-0 transition-transform duration-200"
               style={{
-                color: 'rgba(255,255,255,0.35)',
+                color: 'var(--text-w35)',
                 transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
               }}
             />
@@ -367,7 +367,7 @@ export default function SignalRow({
                   {signal.confidence}%
                 </span>
               )}
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>Confidence</div>
+              <div style={{ fontSize: 10, color: 'var(--text-w35)' }}>Confidence</div>
             </div>
             <div>
               {isObscured ? <Blurred>$000 – $000</Blurred> : (
@@ -375,7 +375,7 @@ export default function SignalRow({
                   {formatCurrency(signal.entryZoneLow)} – {formatCurrency(signal.entryZoneHigh)}
                 </span>
               )}
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>Entry Zone</div>
+              <div style={{ fontSize: 10, color: 'var(--text-w35)' }}>Entry Zone</div>
             </div>
           </div>
 
@@ -387,7 +387,7 @@ export default function SignalRow({
                   ↑ {formatCurrency(signal.targetPrice)}
                 </span>
               )}
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>Target</div>
+              <div style={{ fontSize: 10, color: 'var(--text-w35)' }}>Target</div>
             </div>
             <div>
               {isObscured ? <Blurred>↓ $000</Blurred> : (
@@ -395,13 +395,13 @@ export default function SignalRow({
                   ↓ {formatCurrency(signal.stopLoss)}
                 </span>
               )}
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>Stop Loss</div>
+              <div style={{ fontSize: 10, color: 'var(--text-w35)' }}>Stop Loss</div>
             </div>
             <div>
               {isObscured ? <Blurred>0 days</Blurred> : (
                 <span className="text-sm text-white">{signal.timeHorizon}</span>
               )}
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>Timeframe</div>
+              <div style={{ fontSize: 10, color: 'var(--text-w35)' }}>Timeframe</div>
             </div>
           </div>
         </div>
@@ -424,7 +424,7 @@ export default function SignalRow({
               </div>
               <div>
                 <p className="font-semibold text-white mb-1">Upgrade to Pro to unlock this signal</p>
-                <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                <p className="text-sm" style={{ color: 'var(--text-w50)' }}>
                   Get full access to the ticker, entry zone, target, stop loss, confidence score,
                   live charts, and AI thesis for every signal.
                 </p>
@@ -455,7 +455,7 @@ export default function SignalRow({
                   </div>
                 )}
                 <h4 className="text-sm font-bold text-white mb-2">Summary</h4>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-w75)' }}>
                   {signal.aiSummary}
                 </p>
                 <button
@@ -469,7 +469,7 @@ export default function SignalRow({
                   <p
                     className="mt-3 text-sm leading-relaxed"
                     style={{
-                      color: 'rgba(255,255,255,0.65)',
+                      color: 'var(--text-w65)',
                       borderLeft: '2px solid rgba(0,155,255,0.3)',
                       paddingLeft: 12,
                     }}
@@ -488,7 +488,7 @@ export default function SignalRow({
                       className="w-4 h-4 rounded-full border-2 animate-spin"
                       style={{ borderColor: '#009BFF', borderTopColor: 'transparent' }}
                     />
-                    <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                    <span className="text-xs" style={{ color: 'var(--text-w40)' }}>
                       Loading from Finnhub…
                     </span>
                   </div>

@@ -81,7 +81,7 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
       style={
         active
           ? { backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.4)' }
-          : { backgroundColor: 'var(--bg-surface-2)', color: 'rgba(255,255,255,0.6)', border: '1px solid var(--border)' }
+          : { backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w60)', border: '1px solid var(--border)' }
       }
     >
       {label}
@@ -220,7 +220,7 @@ export default function SignalBoardClient({
         >
           {/* Row 1: type filters + search */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-semibold shrink-0" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            <span className="text-xs font-semibold shrink-0" style={{ color: 'var(--text-w40)' }}>
               Type:
             </span>
             <FilterChip label="All"   active={typeFilter === 'all'}   onClick={() => setTypeFilter('all')} />
@@ -231,7 +231,7 @@ export default function SignalBoardClient({
               className="flex items-center gap-2 ml-auto rounded-lg px-3 py-1.5"
               style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
             >
-              <Search className="w-3.5 h-3.5 shrink-0" style={{ color: 'rgba(255,255,255,0.35)' }} />
+              <Search className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-w35)' }} />
               <input
                 type="text"
                 placeholder="Search ticker…"
@@ -244,7 +244,7 @@ export default function SignalBoardClient({
 
           {/* Row 2: timeframe filters + sort */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-semibold shrink-0" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            <span className="text-xs font-semibold shrink-0" style={{ color: 'var(--text-w40)' }}>
               Timeframe:
             </span>
             <FilterChip label="All"       active={timeframeFilter === 'all'}   onClick={() => setTimeframeFilter('all')} />
@@ -256,7 +256,7 @@ export default function SignalBoardClient({
               className="ml-auto text-xs rounded-lg px-3 py-1.5 outline-none cursor-pointer"
               style={{
                 backgroundColor: 'var(--bg-surface-2)',
-                color: 'rgba(255,255,255,0.8)',
+                color: 'var(--text-w80)',
                 border: '1px solid var(--border)',
               }}
             >
@@ -276,7 +276,7 @@ export default function SignalBoardClient({
           style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
         >
           <p className="font-semibold text-white">No signals match this filter</p>
-          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-w40)' }}>
             Try clearing your filters
           </p>
         </div>
@@ -312,7 +312,7 @@ export default function SignalBoardClient({
                   <ChevronDown
                     className="w-4 h-4 transition-transform duration-200"
                     style={{
-                      color: 'rgba(255,255,255,0.4)',
+                      color: 'var(--text-w40)',
                       transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
                     }}
                   />
@@ -326,7 +326,7 @@ export default function SignalBoardClient({
                       style={{
                         borderTop: '1px solid var(--border)',
                         borderBottom: '1px solid var(--border)',
-                        backgroundColor: 'rgba(255,255,255,0.02)',
+                        backgroundColor: 'var(--surf-w2)',
                       }}
                     >
                       {[
@@ -343,7 +343,7 @@ export default function SignalBoardClient({
                           className="text-xs font-semibold"
                           style={{
                             ...(col.flex ? { flex: 1, minWidth: 0 } : { width: col.w, flexShrink: 0 }),
-                            color: 'rgba(255,255,255,0.35)',
+                            color: 'var(--text-w35)',
                           }}
                         >
                           {col.label}
@@ -371,7 +371,7 @@ export default function SignalBoardClient({
                         className="flex items-center justify-between px-4 py-3"
                         style={{ borderTop: '1px solid var(--border)' }}
                       >
-                        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                        <span className="text-sm" style={{ color: 'var(--text-w50)' }}>
                           {momentumHidden} more Momentum signal{momentumHidden > 1 ? 's' : ''} — Max tier only
                         </span>
                         <Link

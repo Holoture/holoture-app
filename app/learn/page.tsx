@@ -801,7 +801,7 @@ export default function LearnPage() {
 
         {/* Search bar */}
         <div className="relative mb-8">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'rgba(255,255,255,0.35)' }} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-w35)' }} />
           <input
             type="text"
             value={query}
@@ -818,7 +818,7 @@ export default function LearnPage() {
             <button
               onClick={() => setQuery('')}
               className="absolute right-3.5 top-1/2 -translate-y-1/2"
-              style={{ color: 'rgba(255,255,255,0.35)' }}
+              style={{ color: 'var(--text-w35)' }}
             >
               <X className="w-4 h-4" />
             </button>
@@ -827,7 +827,7 @@ export default function LearnPage() {
 
         {/* No results */}
         {filtered.length === 0 && (
-          <div className="text-center py-16" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          <div className="text-center py-16" style={{ color: 'var(--text-w40)' }}>
             <Search className="w-8 h-8 mx-auto mb-3 opacity-40" />
             <p className="text-sm font-semibold">No articles match &ldquo;{query}&rdquo;</p>
             <button onClick={() => setQuery('')} className="text-xs mt-2 hover:opacity-80 transition-opacity" style={{ color: '#009BFF' }}>
@@ -853,7 +853,7 @@ export default function LearnPage() {
                   {difficulty}
                 </span>
                 <div className="flex-1 h-px" style={{ backgroundColor: 'var(--border)' }} />
-                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                <span className="text-xs" style={{ color: 'var(--text-w30)' }}>
                   {articles.filter((a) => completed.has(a.id)).length}/{articles.length}
                 </span>
               </div>
@@ -884,15 +884,15 @@ export default function LearnPage() {
                           className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                           style={{ backgroundColor: isDone ? cfg2.bg : 'var(--bg-primary)' }}
                         >
-                          <Icon className="w-5 h-5" style={{ color: isDone ? cfg2.color : 'rgba(255,255,255,0.5)' }} />
+                          <Icon className="w-5 h-5" style={{ color: isDone ? cfg2.color : 'var(--text-w50)' }} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3 className="font-bold text-white text-sm">{article.title}</h3>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                            <span className="text-xs" style={{ color: 'var(--text-w40)' }}>
                               {article.readTime} read
                             </span>
-                            <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
+                            <span style={{ color: 'var(--text-w20)' }}>·</span>
                             <span
                               className="text-xs font-semibold"
                               style={{ color: cfg2.color }}
@@ -912,7 +912,7 @@ export default function LearnPage() {
                       {/* Expanded content */}
                       {isOpen && (
                         <div className="px-5 pb-5 border-t" style={{ borderColor: 'var(--border)' }}>
-                          <p className="text-sm leading-relaxed mt-4 mb-5" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                          <p className="text-sm leading-relaxed mt-4 mb-5" style={{ color: 'var(--text-w65)' }}>
                             {article.summary}
                           </p>
 
@@ -928,7 +928,7 @@ export default function LearnPage() {
                                 {sec.bullets && (
                                   <ul className="mt-2 space-y-1.5">
                                     {sec.bullets.map((b, i) => (
-                                      <li key={i} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                                      <li key={i} className="flex items-start gap-2 text-sm" style={{ color: 'var(--text-w70)' }}>
                                         <span className="mt-1 shrink-0 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: cfg2.color }} />
                                         {b}
                                       </li>
@@ -949,7 +949,7 @@ export default function LearnPage() {
                             </p>
                             <ul className="space-y-1.5">
                               {article.takeaways.map((t, i) => (
-                                <li key={i} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                                <li key={i} className="flex items-start gap-2 text-sm" style={{ color: 'var(--text-w80)' }}>
                                   <span className="mt-1 shrink-0" style={{ color: cfg2.color }}>✓</span>
                                   {t}
                                 </li>
@@ -963,7 +963,7 @@ export default function LearnPage() {
                             className="mt-5 px-5 py-2.5 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
                             style={{
                               backgroundColor: isDone ? 'var(--bg-primary)' : cfg2.color,
-                              color: isDone ? 'rgba(255,255,255,0.6)' : 'white',
+                              color: isDone ? 'var(--text-w60)' : 'white',
                               border: isDone ? '1px solid var(--border)' : 'none',
                             }}
                           >
@@ -979,7 +979,7 @@ export default function LearnPage() {
           )
         })}
 
-        <p className="text-center text-xs mt-4" style={{ color: 'rgba(255,255,255,0.25)' }}>
+        <p className="text-center text-xs mt-4" style={{ color: 'var(--text-w25)' }}>
           Not financial advice. Educational content only. Always do your own research.
         </p>
       </div>

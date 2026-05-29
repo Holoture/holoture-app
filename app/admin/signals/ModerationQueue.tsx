@@ -43,9 +43,9 @@ export default function ModerationQueue({ posts: initial }: { posts: FlaggedPost
         className="rounded-2xl p-10 text-center"
         style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
       >
-        <Flag className="w-8 h-8 mx-auto mb-3" style={{ color: 'rgba(255,255,255,0.15)' }} />
+        <Flag className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-w15)' }} />
         <p className="text-white font-semibold">No flagged posts</p>
-        <p className="text-sm text-white mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+        <p className="text-sm text-white mt-1" style={{ color: 'var(--text-w40)' }}>
           The forum queue is clean.
         </p>
       </div>
@@ -83,7 +83,7 @@ export default function ModerationQueue({ posts: initial }: { posts: FlaggedPost
               </td>
               <td className="px-4 py-3 text-white">{post.authorName}</td>
               <td className="px-4 py-3">
-                <span className="font-bold" style={{ color: post.flagCount >= 5 ? '#E24B4A' : post.flagCount >= 3 ? '#fbbf24' : 'rgba(255,255,255,0.6)' }}>
+                <span className="font-bold" style={{ color: post.flagCount >= 5 ? '#E24B4A' : post.flagCount >= 3 ? '#fbbf24' : 'var(--text-w60)' }}>
                   {post.flagCount}
                 </span>
               </td>
@@ -104,7 +104,7 @@ export default function ModerationQueue({ posts: initial }: { posts: FlaggedPost
                     onClick={() => toggleHide(post.id, post.isHidden)}
                     title={post.isHidden ? 'Show post' : 'Hide post'}
                     className="p-1.5 rounded hover:bg-white/10 transition-colors"
-                    style={{ color: 'rgba(255,255,255,0.5)' }}
+                    style={{ color: 'var(--text-w50)' }}
                   >
                     {post.isHidden ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                   </button>

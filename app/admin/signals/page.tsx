@@ -71,7 +71,7 @@ export default async function AdminSignalsPage() {
               {signals.length} total signal{signals.length !== 1 ? 's' : ''} · {signals.filter((s) => s.isActive).length} active
             </p>
             {lastRefresh && (
-              <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--text-w35)' }}>
                 <Clock className="w-3 h-3" />
                 Last refresh: {formatRelativeTime(lastRefresh.generatedAt)}
                 {lastRefresh.status === 'success' && lastRefresh.signalCount > 0 && ` · ${lastRefresh.signalCount} new signals`}
@@ -154,7 +154,7 @@ export default async function AdminSignalsPage() {
           <div className="flex items-center gap-3 mb-6">
             <Flag className="w-5 h-5" style={{ color: '#E24B4A' }} />
             <h2 className="text-xl font-black text-white">Forum Moderation</h2>
-            <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: flaggedPosts.length > 0 ? 'rgba(226,75,74,0.15)' : 'rgba(255,255,255,0.08)', color: flaggedPosts.length > 0 ? '#E24B4A' : 'rgba(255,255,255,0.4)' }}>
+            <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: flaggedPosts.length > 0 ? 'rgba(226,75,74,0.15)' : 'var(--surf-w8)', color: flaggedPosts.length > 0 ? '#E24B4A' : 'var(--text-w40)' }}>
               {flaggedPosts.length} flagged
             </span>
             <Link
@@ -233,7 +233,7 @@ export default async function AdminSignalsPage() {
 }
 
 function AgePill({ ageH }: { ageH: number }) {
-  const color = ageH > 24 ? '#f87171' : ageH > 12 ? '#fbbf24' : 'rgba(255,255,255,0.45)'
+  const color = ageH > 24 ? '#f87171' : ageH > 12 ? '#fbbf24' : 'var(--text-w45)'
   const label = ageH < 1
     ? `${Math.round(ageH * 60)}m`
     : ageH < 24
