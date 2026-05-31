@@ -256,3 +256,17 @@ model GeneratedContent {
   usedAt       DateTime?
   performance  String?
 }
+
+model VideoRender {
+  id          String    @id @default(cuid())
+  templateId  String
+  renderId    String    @unique
+  bucketName  String
+  awsRegion   String    @default("us-east-1")
+  status      String    @default("rendering") // rendering | done | failed
+  progress    Float     @default(0)
+  outputUrl   String?
+  errorMsg    String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+}

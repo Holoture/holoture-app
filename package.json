@@ -17,6 +17,7 @@
     "@hookform/resolvers": "^5.4.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@remotion/lambda": "^4.0.470",
     "@remotion/player": "^4.0.470",
     "@stripe/stripe-js": "^9.6.0",
     "clsx": "^2.1.1",

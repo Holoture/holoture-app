@@ -1,69 +1,67 @@
 /**
  * POST /api/admin/render-video
+ *   Triggers a Remotion Lambda render. Returns {renderId} immediately — the
+ *   actual encode runs in AWS Lambda (up to 15 min) and the client polls
+ *   /api/admin/render-video/progress/[renderId] for completion.
  *
- * Triggers a Remotion server-side render for the requested template.
- * Fetches live data from the database and passes it as inputProps.
+ * GET  /api/admin/render-video
+ *   Lists the last 10 VideoRender records from the database.
  *
- * ── LOCAL DEVELOPMENT ───────────────────────────────────────────────────────
- * Works fully when Chrome is available (standard macOS/Linux/Windows desktop).
- * Output is written to /public/generated-videos/.
+ * Required Vercel env vars:
+ *   AWS_REGION                      e.g. us-east-1
+ *   AWS_ACCESS_KEY_ID               IAM user key
+ *   AWS_SECRET_ACCESS_KEY           IAM user secret
+ *   REMOTION_AWS_FUNCTION_NAME      output of: npx remotion lambda functions deploy
+ *   REMOTION_SITE_URL               output of: npx remotion lambda sites create
  *
- * ── VERCEL PRODUCTION ────────────────────────────────────────────────────────
- * Vercel serverless functions do NOT bundle Chrome or FFmpeg, so renderMedia()
- * will throw "No usable Chrome browser could be found on your system".
- * For cloud rendering, set up @remotion/lambda (AWS) — see:
- *   https://www.remotion.dev/docs/lambda
- * The UI surfaces this limitation clearly when running on Vercel.
- *
- * ── SECURITY ─────────────────────────────────────────────────────────────────
- * Admin auth required. Rate limited 20/min per admin.
+ * Security: admin-only, rate limited 20/min.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 import { checkRateLimit, tooManyRequests, ADMIN_LIMIT, ADMIN_WINDOW_MS } from '@/lib/rate-limit'
-import path from 'path'
-import fs from 'fs'
+import type { AwsRegion } from '@remotion/lambda'
 
-export const maxDuration = 120
+export const maxDuration = 30  // Lambda trigger is fast; only the poll waits
+
+// ── Lambda config from env ────────────────────────────────────────────────────
+
+function getLambdaConfig() {
+  const region       = (process.env.AWS_REGION ?? 'us-east-1') as AwsRegion
+  const functionName = process.env.REMOTION_AWS_FUNCTION_NAME ?? ''
+  const serveUrl     = process.env.REMOTION_SITE_URL ?? ''
+  const configured   = Boolean(functionName && serveUrl)
+  return { region, functionName, serveUrl, configured }
+}
+
+// ── Data fetchers (same as before, correct field names) ───────────────────────
 
 type TemplateId = 'SignalReel' | 'PoliticianReel' | 'WeeklyRecap' | 'SectorTrends'
 
-// Duration (frames) per template at 30fps
-const DURATIONS: Record<TemplateId, number> = {
-  SignalReel:    900,
-  PoliticianReel: 900,
-  WeeklyRecap:  1350,
-  SectorTrends:  600,
-}
-
-/** Fetch live data from DB and build inputProps for the requested template */
 async function buildInputProps(templateId: TemplateId): Promise<Record<string, unknown>> {
   switch (templateId) {
 
     case 'SignalReel': {
       const signal = await prisma.signal.findFirst({
-        where: { isActive: true, signalType: { in: ['BUY', 'SHORT', 'WATCH'] } },
+        where: { isActive: true },
         orderBy: [{ confidence: 'desc' }, { signalDate: 'desc' }],
       })
       if (!signal) throw new Error('No active signals found')
 
-      // Attempt to fetch 30-day price history from Finnhub
+      // 30-day price history from Finnhub (synthetic fallback)
       let priceHistory: number[] = []
       try {
         const to   = Math.floor(Date.now() / 1000)
         const from = to - 30 * 24 * 60 * 60
-        const url  = `https://finnhub.io/api/v1/stock/candle?symbol=${signal.ticker}&resolution=D&from=${from}&to=${to}&token=${process.env.FINNHUB_API_KEY}`
-        const res  = await fetch(url)
+        const res  = await fetch(
+          `https://finnhub.io/api/v1/stock/candle?symbol=${signal.ticker}&resolution=D&from=${from}&to=${to}&token=${process.env.FINNHUB_API_KEY}`
+        )
         const data = await res.json()
-        if (data.s === 'ok' && Array.isArray(data.c)) {
-          priceHistory = data.c.slice(-30)
-        }
-      } catch { /* fall back to synthetic data */ }
+        if (data.s === 'ok' && Array.isArray(data.c)) priceHistory = data.c.slice(-30)
+      } catch { /* use fallback */ }
 
       if (priceHistory.length < 2) {
-        // Synthetic fallback so the composition still renders
         const base = signal.entryZoneLow ?? 100
         priceHistory = Array.from({ length: 30 }, (_, i) =>
           base * (1 + (Math.random() - 0.48) * 0.03 + i * 0.001)
@@ -71,22 +69,16 @@ async function buildInputProps(templateId: TemplateId): Promise<Record<string, u
       }
 
       return {
-        ticker:       signal.ticker,
-        signalType:   signal.signalType,
-        confidence:   signal.confidence,
-        entryZoneLow:  signal.entryZoneLow,
-        entryZoneHigh: signal.entryZoneHigh,
-        targetPrice:   signal.targetPrice,
-        stopLoss:      signal.stopLoss,
-        companyName:   signal.companyName,
-        priceHistory,
+        ticker: signal.ticker, signalType: signal.signalType,
+        confidence: signal.confidence,
+        entryZoneLow: signal.entryZoneLow, entryZoneHigh: signal.entryZoneHigh,
+        targetPrice: signal.targetPrice, stopLoss: signal.stopLoss,
+        companyName: signal.companyName, priceHistory,
       }
     }
 
     case 'PoliticianReel': {
-      const trade = await prisma.politicianTrade.findFirst({
-        orderBy: { tradedAt: 'desc' },
-      })
+      const trade = await prisma.politicianTrade.findFirst({ orderBy: { tradedAt: 'desc' } })
       if (!trade) throw new Error('No politician trades found')
       return {
         politicianName:  trade.politicianName,
@@ -108,15 +100,12 @@ async function buildInputProps(templateId: TemplateId): Promise<Record<string, u
         take: 5,
       })
       if (signals.length === 0) throw new Error('No signals from the past 7 days')
-      const now = new Date()
-      const weekLabel = `Week of ${now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
+      const weekLabel = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
       return {
-        weekLabel,
+        weekLabel: `Week of ${weekLabel}`,
         signals: signals.map(s => ({
-          ticker:     s.ticker,
-          signalType: s.signalType,
-          companyName: s.companyName,
-          confidence: s.confidence,
+          ticker: s.ticker, signalType: s.signalType,
+          companyName: s.companyName, confidence: s.confidence,
         })),
       }
     }
@@ -133,121 +122,108 @@ async function buildInputProps(templateId: TemplateId): Promise<Record<string, u
   }
 }
 
+// ── Duration map (frames) ─────────────────────────────────────────────────────
+
+const DURATIONS: Record<TemplateId, number> = {
+  SignalReel:     900,
+  PoliticianReel: 900,
+  WeeklyRecap:   1350,
+  SectorTrends:   600,
+}
+
+// ── POST — trigger Lambda render ──────────────────────────────────────────────
+
 export async function POST(req: NextRequest) {
-  // ── Auth ────────────────────────────────────────────────────────────────────
+  // Auth
   const { userId } = await auth()
   if (!userId || userId !== process.env.ADMIN_USER_ID) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  // ── Rate limiting ───────────────────────────────────────────────────────────
+  // Rate limit
   const rl = checkRateLimit(`render-video:${userId}`, ADMIN_LIMIT, ADMIN_WINDOW_MS)
   if (!rl.success) return tooManyRequests(rl.retryAfter!)
 
+  // Lambda config check
+  const { region, functionName, serveUrl, configured } = getLambdaConfig()
+  if (!configured) {
+    return NextResponse.json({
+      error: 'LAMBDA_NOT_CONFIGURED',
+      detail: 'Set REMOTION_AWS_FUNCTION_NAME and REMOTION_SITE_URL in your Vercel environment variables. See the setup guide in the Video Engine tab.',
+    }, { status: 503 })
+  }
+
+  // Parse body
   let body: { templateId?: unknown }
   try { body = await req.json() } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
   const templateId = body.templateId as TemplateId
-  const validTemplates: TemplateId[] = ['SignalReel', 'PoliticianReel', 'WeeklyRecap', 'SectorTrends']
-  if (!validTemplates.includes(templateId)) {
+  const valid: TemplateId[] = ['SignalReel', 'PoliticianReel', 'WeeklyRecap', 'SectorTrends']
+  if (!valid.includes(templateId)) {
     return NextResponse.json({ error: 'Invalid templateId' }, { status: 400 })
   }
 
-  // ── Fetch live data ─────────────────────────────────────────────────────────
+  // Fetch live data
   let inputProps: Record<string, unknown>
   try {
     inputProps = await buildInputProps(templateId)
   } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Failed to fetch data'
-    return NextResponse.json({ error: msg }, { status: 422 })
+    return NextResponse.json({ error: err instanceof Error ? err.message : 'Data fetch failed' }, { status: 422 })
   }
 
-  // ── Ensure output directory exists ──────────────────────────────────────────
-  const outputDir = path.join(process.cwd(), 'public', 'generated-videos')
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true })
-  }
-
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
-  const filename  = `${templateId}-${timestamp}.mp4`
-  const outputPath = path.join(outputDir, filename)
-
-  // ── Render with @remotion/renderer (requires local Chrome + FFmpeg) ──────────
+  // Trigger Lambda render
   try {
-    const { bundle }       = await import('@remotion/bundler')
-    const { renderMedia, selectComposition } = await import('@remotion/renderer')
+    const { renderMediaOnLambda } = await import('@remotion/lambda/client')
 
-    const entryPoint = path.join(process.cwd(), 'remotion', 'index.ts')
-    const bundleLocation = await bundle({ entryPoint })
-
-    const composition = await selectComposition({
-      serveUrl: bundleLocation,
-      id: templateId,
+    const { renderId, bucketName } = await renderMediaOnLambda({
+      region,
+      functionName,
+      serveUrl,
+      composition: templateId,
       inputProps,
-    })
-
-    await renderMedia({
-      composition,
-      serveUrl: bundleLocation,
       codec: 'h264',
-      outputLocation: outputPath,
-      inputProps,
+      privacy: 'public',
+      framesPerLambda: 40,      // parallelise across multiple Lambda invocations
+      concurrencyPerLambda: 1,
+      timeoutInMilliseconds: 180_000,
     })
 
-    return NextResponse.json({
-      ok: true,
-      filename,
-      url: `/generated-videos/${filename}`,
-      templateId,
-      renderedAt: new Date().toISOString(),
+    // Persist to DB so history survives across requests
+    await prisma.videoRender.create({
+      data: {
+        templateId,
+        renderId,
+        bucketName,
+        awsRegion: region,
+        status: 'rendering',
+      },
     })
+
+    return NextResponse.json({ renderId, status: 'rendering' })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
-
-    // Detect the "no Chrome" error that will always occur on Vercel
-    const isNoBrowser = msg.toLowerCase().includes('chrome') || msg.toLowerCase().includes('browser')
-    if (isNoBrowser) {
-      return NextResponse.json({
-        error: 'RENDER_NOT_AVAILABLE',
-        detail: 'Remotion rendering requires Chrome + FFmpeg, which are not available in Vercel serverless functions. See setup instructions below.',
-        inputProps, // Return the props so local render is possible
-      }, { status: 503 })
-    }
-
-    console.error('[render-video] render failed')
-    return NextResponse.json({ error: 'Render failed. Check server logs.' }, { status: 500 })
+    console.error('[render-video] Lambda trigger failed')
+    return NextResponse.json({ error: 'Failed to start render. Check AWS credentials and Lambda setup.' }, { status: 500 })
   }
 }
 
-/** GET — list previously generated videos */
-export async function GET(_req: NextRequest) {
+// ── GET — list recent renders ─────────────────────────────────────────────────
+
+export async function GET() {
   const { userId } = await auth()
   if (!userId || userId !== process.env.ADMIN_USER_ID) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const outputDir = path.join(process.cwd(), 'public', 'generated-videos')
+  const renders = await prisma.videoRender.findMany({
+    orderBy: { createdAt: 'desc' },
+    take: 10,
+  })
 
-  if (!fs.existsSync(outputDir)) {
-    return NextResponse.json({ videos: [] })
-  }
+  // Also expose Lambda config status so the UI knows whether to show setup guide
+  const { configured } = getLambdaConfig()
 
-  const files = fs
-    .readdirSync(outputDir)
-    .filter(f => f.endsWith('.mp4'))
-    .map(f => {
-      const stat = fs.statSync(path.join(outputDir, f))
-      return {
-        filename: f,
-        url: `/generated-videos/${f}`,
-        size: stat.size,
-        createdAt: stat.birthtime.toISOString(),
-      }
-    })
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 10)
-
-  return NextResponse.json({ videos: files })
+  return NextResponse.json({ renders, lambdaConfigured: configured })
 }
