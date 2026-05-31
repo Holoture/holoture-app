@@ -1,13 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles, ImageIcon } from 'lucide-react'
+import { Sparkles, ImageIcon, Video } from 'lucide-react'
 import ContentDashboard from './ContentDashboard'
 import VisualGenerator from './VisualGenerator'
+import VideoEngine from './VideoEngine'
 
 const TABS = [
   { id: 'content', label: 'Content Generator', icon: Sparkles },
   { id: 'visuals', label: 'Visual Generator',  icon: ImageIcon },
+  { id: 'video',   label: 'Video Engine',       icon: Video    },
 ] as const
 
 type TabId = (typeof TABS)[number]['id']
@@ -40,7 +42,9 @@ export default function AdminContentTabs() {
         </div>
       </div>
 
-      {activeTab === 'content' ? <ContentDashboard /> : <VisualGenerator />}
+      {activeTab === 'content' && <ContentDashboard />}
+      {activeTab === 'visuals' && <VisualGenerator />}
+      {activeTab === 'video'   && <VideoEngine />}
     </div>
   )
 }
