@@ -1,355 +1,235 @@
 /**
  * Template 1 — Daily Signal Reel
- * 30 seconds · 30 fps · 1080 × 1920 (vertical)
+ * 15 seconds · 30 fps · 1080 × 1920 (vertical)
  *
  * Timeline:
- *  0–3 s   (0–89)    Hook text fades in
- *  3–8 s   (90–239)  Logo + tagline spring in
- *  8–20 s  (240–599) Signal card with animated confidence bar
- *  20–27 s (600–809) Price chart draws itself left-to-right
- *  27–30 s (810–899) CTA screen
+ *  0–2 s   (0–59)    Hook text
+ *  2–13 s  (60–389)  Full signal card with chart
+ *  13–15 s (390–449) CTA
  */
 
 import React from 'react'
 import {
-  AbsoluteFill,
-  interpolate,
-  spring,
-  useCurrentFrame,
-  useVideoConfig,
-  Sequence,
+  AbsoluteFill, Sequence,
+  interpolate, spring,
+  useCurrentFrame, useVideoConfig,
 } from 'remotion'
-import { Logo, Watermark } from '../components/Logo'
-import { CTAScreen } from '../components/CTAScreen'
+import { SceneHeader } from '../components/SceneHeader'
 import { COLORS, SignalReelProps, signalColor } from '../types'
 
-// ── Helpers ─────────────────────────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────────────────────────
 
-function formatCurrency(n: number) {
-  return `$${n.toFixed(2)}`
-}
+const fmt  = (n: number) => `$${n.toFixed(2)}`
+const pct  = (n: number) => `${n > 0 ? '+' : ''}${n.toFixed(1)}%`
 
-// Build an SVG polyline path from an array of price values
-function buildPath(data: number[], w: number, h: number): string {
-  const min = Math.min(...data)
-  const max = Math.max(...data)
+function buildPath(data: number[], w: number, h: number) {
+  const min = Math.min(...data), max = Math.max(...data)
   const range = max - min || 1
-  const margin = 20
-  return data
-    .map((v, i) => {
-      const x = margin + ((i / (data.length - 1)) * (w - margin * 2))
-      const y = h - margin - ((v - min) / range) * (h - margin * 2)
-      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`
-    })
-    .join(' ')
+  const pad = 24
+  return data.map((v, i) => {
+    const x = pad + (i / (data.length - 1)) * (w - pad * 2)
+    const y = h - pad - ((v - min) / range) * (h - pad * 2)
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`
+  }).join(' ')
 }
 
-// ── Scene components ─────────────────────────────────────────────────────────
+// ── Scenes ─────────────────────────────────────────────────────────────────────
 
 function HookScene() {
   const frame = useCurrentFrame()
-  const opacity = interpolate(frame, [0, 20, 70, 89], [0, 1, 1, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-  const translateY = interpolate(frame, [0, 20], [40, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
+  const { fps } = useVideoConfig()
+  const scale = spring({ fps, frame, config: { damping: 10, stiffness: 120 } })
+  const opacity = interpolate(frame, [0, 10, 50, 59], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
 
   return (
-    <AbsoluteFill
-      style={{ backgroundColor: COLORS.bg, justifyContent: 'center', alignItems: 'center' }}
-    >
-      <div
-        style={{
-          opacity,
-          transform: `translateY(${translateY}px)`,
-          textAlign: 'center',
-          padding: '0 80px',
-        }}
-      >
-        <p
-          style={{
-            color: COLORS.text,
-            fontSize: 80,
-            fontWeight: 900,
-            fontFamily: 'Arial Black, Arial, sans-serif',
-            lineHeight: 1.15,
-          }}
-        >
-          Today's top signal just dropped 📈
+    <AbsoluteFill style={{ backgroundColor: COLORS.bg, alignItems: 'center', justifyContent: 'center' }}>
+      {/* Radial glow */}
+      <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse 70% 50% at 50% 50%, ${COLORS.accent}28 0%, transparent 70%)` }} />
+      <SceneHeader />
+
+      <div style={{ textAlign: 'center', padding: '0 72px', transform: `scale(${scale})`, opacity }}>
+        <p style={{ fontSize: 100, lineHeight: 1, marginBottom: 16, color: COLORS.text }}>📈</p>
+        <p style={{ color: COLORS.text, fontSize: 76, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1.1 }}>
+          Today's top<br />signal just<br />dropped
         </p>
-        <div
-          style={{
-            width: 80,
-            height: 4,
-            backgroundColor: COLORS.accent,
-            borderRadius: 2,
-            margin: '32px auto 0',
-          }}
-        />
+        <div style={{ marginTop: 32, display: 'flex', justifyContent: 'center' }}>
+          <span style={{
+            backgroundColor: COLORS.accent, color: '#fff',
+            fontSize: 28, fontWeight: 700, fontFamily: 'Arial, sans-serif',
+            padding: '10px 32px', borderRadius: 100,
+          }}>
+            Free on Holoture
+          </span>
+        </div>
       </div>
-      <Watermark />
     </AbsoluteFill>
   )
 }
 
-function LogoScene() {
+function MainScene({ s }: { s: SignalReelProps }) {
   const frame = useCurrentFrame()
   const { fps } = useVideoConfig()
 
-  const scale = spring({ fps, frame, config: { damping: 14, stiffness: 80 } })
-  const opacity = interpolate(frame, [0, 10], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
+  // Card entrance
+  const cardY = interpolate(frame, [0, 20], [80, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+  const cardOp = interpolate(frame, [0, 15], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+
+  // Confidence bar fills over 1.5 s starting at frame 10
+  const confPct = interpolate(frame, [10, 10 + fps * 1.5], [0, s.confidence], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+
+  // Price chart clip grows after frame 90 (~3 s into this scene)
+  const chartW = 940
+  const chartH = 280
+  const clipW  = interpolate(frame, [120, 300], [0, chartW], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+
+  const color     = signalColor(s.signalType)
+  const barColor  = s.confidence >= 75 ? COLORS.buy : s.confidence >= 50 ? COLORS.watch : COLORS.short
+  const last      = s.priceHistory[s.priceHistory.length - 1]
+  const first     = s.priceHistory[0]
+  const changePct = ((last - first) / first) * 100
+  const isUp      = changePct >= 0
+  const lineColor = isUp ? COLORS.buy : COLORS.short
+  const path      = buildPath(s.priceHistory, chartW, chartH)
+
+  // R/R ratio
+  const entryMid = (s.entryZoneLow + s.entryZoneHigh) / 2
+  const rr        = ((s.targetPrice - entryMid) / (entryMid - s.stopLoss)).toFixed(1)
+
+  // Staggered row entrances
+  const rowOp = (i: number) => interpolate(frame, [i * 12, i * 12 + 18], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+  const rowX  = (i: number) => interpolate(frame, [i * 12, i * 12 + 18], [-30, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
 
   return (
-    <AbsoluteFill
-      style={{ backgroundColor: COLORS.bg, justifyContent: 'center', alignItems: 'center' }}
-    >
-      <div style={{ textAlign: 'center', transform: `scale(${scale})`, opacity }}>
-        <Logo size={64} style={{ justifyContent: 'center', marginBottom: 24 }} />
-        <p
-          style={{
-            color: COLORS.muted,
-            fontSize: 44,
-            fontFamily: 'Arial, sans-serif',
-            fontWeight: 600,
-            letterSpacing: '0.08em',
-          }}
-        >
-          Data. Not hype.
-        </p>
-      </div>
-      <Watermark />
-    </AbsoluteFill>
-  )
-}
+    <AbsoluteFill style={{ backgroundColor: COLORS.bg, padding: '120px 48px 40px' }}>
+      <SceneHeader />
 
-function SignalCardScene({ signal }: { signal: SignalReelProps }) {
-  const frame = useCurrentFrame()
-  const { fps } = useVideoConfig()
-
-  // Card slides up
-  const cardY = interpolate(frame, [0, 20], [120, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-  const cardOpacity = interpolate(frame, [0, 15], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-
-  // Confidence bar fills from 0 → actual value over 1.5 s starting at frame 20
-  const barProgress = interpolate(
-    frame,
-    [20, 20 + fps * 1.5],
-    [0, signal.confidence],
-    { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
-  )
-
-  // Numbers count up
-  const displayConf = Math.round(
-    interpolate(frame, [20, 20 + fps * 1.5], [0, signal.confidence], {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
-    })
-  )
-
-  const badgeColor = signalColor(signal.signalType)
-  const barColor   = signal.confidence >= 75 ? COLORS.buy : signal.confidence >= 50 ? COLORS.watch : COLORS.short
-
-  return (
-    <AbsoluteFill
-      style={{ backgroundColor: COLORS.bg, justifyContent: 'center', alignItems: 'center', padding: '0 48px' }}
-    >
-      {/* Logo in top-left corner */}
-      <div style={{ position: 'absolute', top: 60, left: 60 }}>
-        <Logo size={30} />
-      </div>
-
-      {/* Card */}
-      <div
-        style={{
-          width: '100%',
-          backgroundColor: COLORS.surface,
-          borderRadius: 32,
-          border: `2px solid ${COLORS.accent}44`,
-          padding: '60px 56px',
-          transform: `translateY(${cardY}px)`,
-          opacity: cardOpacity,
-        }}
-      >
-        {/* Ticker + badge row */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+      <div style={{ transform: `translateY(${cardY}px)`, opacity: cardOp, marginTop: 8 }}>
+        {/* ── Ticker row ── */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
           <div>
-            <p style={{ color: COLORS.text, fontSize: 88, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1 }}>
-              {signal.ticker}
+            <p style={{ color: COLORS.text, fontSize: 104, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1, marginBottom: 4 }}>
+              {s.ticker}
             </p>
-            <p style={{ color: COLORS.muted, fontSize: 32, fontFamily: 'Arial, sans-serif', marginTop: 8 }}>
-              {signal.companyName}
+            <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 30, fontFamily: 'Arial, sans-serif' }}>
+              {s.companyName}
             </p>
           </div>
-          <div
-            style={{
-              backgroundColor: `${badgeColor}22`,
-              border: `2px solid ${badgeColor}`,
-              borderRadius: 16,
-              padding: '16px 32px',
-            }}
-          >
-            <span style={{ color: badgeColor, fontSize: 40, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif' }}>
-              {signal.signalType}
+          <div style={{
+            backgroundColor: `${color}22`, border: `2px solid ${color}`,
+            borderRadius: 18, padding: '14px 30px',
+          }}>
+            <span style={{ color, fontSize: 44, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif' }}>
+              {s.signalType}
             </span>
           </div>
         </div>
 
-        {/* Confidence */}
-        <p style={{ color: COLORS.muted, fontSize: 28, fontFamily: 'Arial, sans-serif', marginBottom: 12 }}>
-          Confidence
-        </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 48 }}>
-          <div style={{ flex: 1, height: 16, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 8, overflow: 'hidden' }}>
-            <div
-              style={{
-                height: '100%',
-                width: `${barProgress}%`,
-                backgroundColor: barColor,
-                borderRadius: 8,
-                transition: 'width 0.05s linear',
-              }}
-            />
+        {/* ── Confidence ── */}
+        <div style={{ marginBottom: 28, opacity: rowOp(1), transform: `translateX(${rowX(1)}px)` }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 26, fontFamily: 'Arial, sans-serif', fontWeight: 600, letterSpacing: '0.06em' }}>
+              CONFIDENCE
+            </span>
+            <span style={{ color: barColor, fontSize: 36, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif' }}>
+              {Math.round(confPct)}%
+            </span>
           </div>
-          <span style={{ color: barColor, fontSize: 40, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif', minWidth: 80, textAlign: 'right' }}>
-            {displayConf}%
-          </span>
+          <div style={{ height: 18, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 9 }}>
+            <div style={{ height: '100%', width: `${confPct}%`, backgroundColor: barColor, borderRadius: 9, transition: 'width 0.05s' }} />
+          </div>
         </div>
 
-        {/* Price levels */}
-        {[
-          { label: 'Entry Zone', value: `${formatCurrency(signal.entryZoneLow)} – ${formatCurrency(signal.entryZoneHigh)}`, color: COLORS.text },
-          { label: 'Target',     value: formatCurrency(signal.targetPrice),  color: COLORS.buy },
-          { label: 'Stop Loss',  value: formatCurrency(signal.stopLoss),     color: COLORS.short },
-        ].map(({ label, value, color }) => (
-          <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 20 }}>
-            <span style={{ color: COLORS.muted, fontSize: 28, fontFamily: 'Arial, sans-serif' }}>{label}</span>
-            <span style={{ color, fontSize: 36, fontWeight: 700, fontFamily: 'Arial, sans-serif' }}>{value}</span>
-          </div>
-        ))}
-      </div>
+        {/* ── Price levels ── */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+          gap: 16, marginBottom: 20,
+          opacity: rowOp(2), transform: `translateX(${rowX(2)}px)`,
+        }}>
+          {[
+            { label: 'Entry Zone', value: `${fmt(s.entryZoneLow)}–${fmt(s.entryZoneHigh)}`, color: COLORS.text },
+            { label: 'Target 🎯',  value: fmt(s.targetPrice),  color: COLORS.buy },
+            { label: 'Stop Loss',  value: fmt(s.stopLoss),     color: COLORS.short },
+          ].map(({ label, value, color: c }) => (
+            <div key={label} style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 20, padding: '20px 16px', textAlign: 'center' }}>
+              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 22, fontFamily: 'Arial, sans-serif', marginBottom: 8 }}>{label}</p>
+              <p style={{ color: c, fontSize: 26, fontWeight: 800, fontFamily: 'Arial, sans-serif', lineHeight: 1.2 }}>{value}</p>
+            </div>
+          ))}
+        </div>
 
-      <Watermark />
+        {/* ── R/R + timeframe row ── */}
+        <div style={{
+          display: 'flex', gap: 16, marginBottom: 24,
+          opacity: rowOp(3), transform: `translateX(${rowX(3)}px)`,
+        }}>
+          {[
+            { label: 'Risk/Reward', value: `1 : ${rr}`, color: COLORS.accent },
+            { label: 'Time Horizon', value: s.signalType === 'SHORT' ? 'Short Term' : 'Swing Trade', color: 'rgba(255,255,255,0.7)' },
+          ].map(({ label, value, color: c }) => (
+            <div key={label} style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: '16px 20px' }}>
+              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 20, fontFamily: 'Arial, sans-serif', marginBottom: 6 }}>{label}</p>
+              <p style={{ color: c, fontSize: 30, fontWeight: 800, fontFamily: 'Arial, sans-serif' }}>{value}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Price chart ── */}
+        <div style={{ opacity: rowOp(4) }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 22, fontFamily: 'Arial, sans-serif' }}>30-Day Price</span>
+            <span style={{ color: lineColor, fontSize: 28, fontWeight: 800, fontFamily: 'Arial, sans-serif' }}>
+              {pct(changePct)}
+            </span>
+          </div>
+          <div style={{ position: 'relative', height: chartH }}>
+            <svg width={chartW} height={chartH} style={{ position: 'absolute', inset: 0 }}>
+              <defs>
+                <clipPath id="chartClip">
+                  <rect x={0} y={0} width={clipW} height={chartH} />
+                </clipPath>
+                <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={lineColor} stopOpacity={0.25} />
+                  <stop offset="100%" stopColor={lineColor} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <path d={`${path} L ${chartW - 24} ${chartH - 24} L 24 ${chartH - 24} Z`} fill="url(#areaFill)" clipPath="url(#chartClip)" />
+              <path d={path} fill="none" stroke={lineColor} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" clipPath="url(#chartClip)" />
+            </svg>
+          </div>
+        </div>
+      </div>
     </AbsoluteFill>
   )
 }
 
-function ChartScene({ priceHistory }: { priceHistory: number[] }) {
+function CTAScene() {
   const frame = useCurrentFrame()
-  const chartW = 984  // 1080 - 96px padding
-  const chartH = 500
-
-  // Clip grows left → right over 7 s (210 frames)
-  const clipWidth = interpolate(frame, [0, 210], [0, chartW], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-
-  const path = buildPath(priceHistory, chartW, chartH)
-  const last  = priceHistory[priceHistory.length - 1]
-  const first = priceHistory[0]
-  const isUp  = last >= first
-
-  const opacity = interpolate(frame, [0, 15], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
+  const { fps } = useVideoConfig()
+  const scale  = spring({ fps, frame, config: { damping: 14, stiffness: 100 } })
+  const opacity = interpolate(frame, [0, 12], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
 
   return (
-    <AbsoluteFill
-      style={{ backgroundColor: COLORS.bg, justifyContent: 'center', alignItems: 'center', padding: '0 48px', opacity }}
-    >
-      <div style={{ position: 'absolute', top: 60, left: 60 }}>
-        <Logo size={30} />
-      </div>
-
-      <div style={{ width: '100%' }}>
-        <p style={{ color: COLORS.muted, fontSize: 30, fontFamily: 'Arial, sans-serif', marginBottom: 16 }}>
-          30-Day Price History
+    <AbsoluteFill style={{ backgroundColor: COLORS.bg, alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse 80% 60% at 50% 50%, ${COLORS.accent}20 0%, transparent 70%)` }} />
+      <SceneHeader />
+      <div style={{ textAlign: 'center', padding: '0 72px', transform: `scale(${scale})`, opacity }}>
+        <p style={{ color: COLORS.text, fontSize: 68, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1.15, marginBottom: 40 }}>
+          See every signal free at holoture.com
         </p>
-
-        {/* SVG chart with animated clip */}
-        <div style={{ position: 'relative', width: chartW, height: chartH }}>
-          {/* Clip mask growing from left */}
-          <svg width={chartW} height={chartH} style={{ position: 'absolute', inset: 0 }}>
-            <defs>
-              <clipPath id="grow">
-                <rect x={0} y={0} width={clipWidth} height={chartH} />
-              </clipPath>
-            </defs>
-            {/* Gradient fill under the line */}
-            <defs>
-              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={isUp ? COLORS.buy : COLORS.short} stopOpacity={0.3} />
-                <stop offset="100%" stopColor={isUp ? COLORS.buy : COLORS.short} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            {/* Area fill (approximate) */}
-            <path
-              d={`${path} L ${chartW - 20} ${chartH - 20} L 20 ${chartH - 20} Z`}
-              fill="url(#areaGrad)"
-              clipPath="url(#grow)"
-            />
-            {/* Price line */}
-            <path
-              d={path}
-              fill="none"
-              stroke={isUp ? COLORS.buy : COLORS.short}
-              strokeWidth={5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              clipPath="url(#grow)"
-            />
-          </svg>
-        </div>
-
-        {/* Change label */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
-          <span style={{ color: isUp ? COLORS.buy : COLORS.short, fontSize: 36, fontWeight: 700, fontFamily: 'Arial, sans-serif' }}>
-            {isUp ? '+' : ''}{(((last - first) / first) * 100).toFixed(1)}%
-          </span>
+        <div style={{ backgroundColor: COLORS.accent, color: '#fff', fontSize: 40, fontWeight: 800, fontFamily: 'Arial Black, Arial, sans-serif', padding: '22px 64px', borderRadius: 100, display: 'inline-block' }}>
+          Start Free →
         </div>
       </div>
-
-      <Watermark />
     </AbsoluteFill>
   )
 }
 
-// ── Root composition ─────────────────────────────────────────────────────────
+// ── Root ───────────────────────────────────────────────────────────────────────
 
-export const SignalReel: React.FC<SignalReelProps> = (props) => {
-  return (
-    <>
-      <Sequence from={0} durationInFrames={90}>
-        <HookScene />
-      </Sequence>
-      <Sequence from={90} durationInFrames={150}>
-        <LogoScene />
-      </Sequence>
-      <Sequence from={240} durationInFrames={360}>
-        <SignalCardScene signal={props} />
-      </Sequence>
-      <Sequence from={600} durationInFrames={210}>
-        <ChartScene priceHistory={props.priceHistory} />
-      </Sequence>
-      <Sequence from={810} durationInFrames={90}>
-        <CTAScreen
-          startFrame={810}
-          headline="See all signals free at holoture.com"
-        />
-      </Sequence>
-    </>
-  )
-}
+export const SignalReel: React.FC<SignalReelProps> = (props) => (
+  <>
+    <Sequence from={0}   durationInFrames={60}>  <HookScene /> </Sequence>
+    <Sequence from={60}  durationInFrames={330}> <MainScene s={props} /> </Sequence>
+    <Sequence from={390} durationInFrames={60}>  <CTAScene /> </Sequence>
+  </>
+)

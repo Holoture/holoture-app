@@ -124,11 +124,12 @@ async function buildInputProps(templateId: TemplateId): Promise<Record<string, u
 
 // ── Duration map (frames) ─────────────────────────────────────────────────────
 
+// Frame counts must match the Composition durationInFrames in remotion/Root.tsx
 const DURATIONS: Record<TemplateId, number> = {
-  SignalReel:     900,
-  PoliticianReel: 900,
-  WeeklyRecap:   1350,
-  SectorTrends:   600,
+  SignalReel:     450,   // 15 s
+  PoliticianReel: 450,   // 15 s
+  WeeklyRecap:    540,   // 18 s
+  SectorTrends:   360,   // 12 s
 }
 
 // ── POST — trigger Lambda render ──────────────────────────────────────────────

@@ -1,105 +1,108 @@
 /**
  * Template 4 — Sector Trends Reel
- * 20 seconds · 30 fps · 1080 × 1920 (vertical)
+ * 12 seconds · 30 fps · 1080 × 1920 (vertical)
  *
  * Timeline:
- *  0–3 s   (0–89)   Hook
- *  3–17 s  (90–509) Sectors animate in one-by-one with bars
- *  17–20 s (510–599) Market summary fades in + CTA overlay throughout
+ *  0–1.5 s (0–44)    Hook
+ *  1.5–10 s (45–299) All sectors visible with staggered bar animations
+ *  10–12 s  (300–359) Market summary + CTA
  */
 
 import React from 'react'
 import {
-  AbsoluteFill,
-  interpolate,
-  useCurrentFrame,
-  Sequence,
+  AbsoluteFill, Sequence,
+  interpolate, spring,
+  useCurrentFrame, useVideoConfig,
 } from 'remotion'
-import { Logo, Watermark } from '../components/Logo'
+import { SceneHeader } from '../components/SceneHeader'
 import { COLORS, SectorTrendsProps } from '../types'
 
-const FRAMES_PER_BAR = 30   // each sector animates in over ~1 s
+// Sort sectors: biggest movers first (absolute change)
+function sortSectors(sectors: SectorTrendsProps['sectors']) {
+  return [...sectors].sort((a, b) => Math.abs(b.change) - Math.abs(a.change))
+}
+
+// ── Scenes ─────────────────────────────────────────────────────────────────────
 
 function HookScene() {
   const frame = useCurrentFrame()
-  const opacity = interpolate(frame, [0, 20, 70, 89], [0, 1, 1, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-  const y = interpolate(frame, [0, 20], [40, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
+  const { fps } = useVideoConfig()
+  const scale  = spring({ fps, frame, config: { damping: 10, stiffness: 130 } })
+  const opacity = interpolate(frame, [0, 8, 36, 44], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
 
   return (
-    <AbsoluteFill style={{ backgroundColor: COLORS.bg, justifyContent: 'center', alignItems: 'center' }}>
-      <div style={{ opacity, transform: `translateY(${y}px)`, textAlign: 'center', padding: '0 80px' }}>
-        <p style={{
-          color: COLORS.text,
-          fontSize: 76,
-          fontWeight: 900,
-          fontFamily: 'Arial Black, Arial, sans-serif',
-          lineHeight: 1.15,
-        }}>
-          Here's where the market is moving today 📊
+    <AbsoluteFill style={{ backgroundColor: COLORS.bg, alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse 70% 50% at 50% 50%, rgba(251,191,36,0.18) 0%, transparent 70%)` }} />
+      <SceneHeader />
+      <div style={{ textAlign: 'center', padding: '0 72px', transform: `scale(${scale})`, opacity }}>
+        <p style={{ fontSize: 96, lineHeight: 1, marginBottom: 16 }}>📊</p>
+        <p style={{ color: COLORS.text, fontSize: 72, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1.1 }}>
+          Here's where the market is moving today
         </p>
       </div>
-      <Watermark />
     </AbsoluteFill>
   )
 }
 
 function SectorsScene({ sectors, marketSummary }: SectorTrendsProps) {
-  const frame = useCurrentFrame()
-  const maxAbs = Math.max(...sectors.map(s => Math.abs(s.change)), 0.01)
+  const frame   = useCurrentFrame()
+  const { fps } = useVideoConfig()
+  const sorted  = sortSectors(sectors)
+  const maxAbs  = Math.max(...sorted.map(s => Math.abs(s.change)), 0.01)
 
-  // Market summary fades in at frame 420 (14 s into this scene = 17 s total)
-  const summaryOpacity = interpolate(frame, [360, 390], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
+  const STAGGER = 18  // frames between each sector row
 
-  // CTA pill is always visible
+  // Summary fades in after all bars are done
+  const summaryOpacity = interpolate(frame, [sorted.length * STAGGER + 30, sorted.length * STAGGER + 60], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+
   return (
-    <AbsoluteFill style={{ backgroundColor: COLORS.bg, padding: '120px 60px 160px' }}>
-      <div style={{ position: 'absolute', top: 60, left: 60 }}>
-        <Logo size={30} />
-      </div>
+    <AbsoluteFill style={{ backgroundColor: COLORS.bg, padding: '120px 56px 60px' }}>
+      <SceneHeader />
 
-      <p style={{ color: COLORS.accent, fontSize: 28, fontFamily: 'Arial, sans-serif', fontWeight: 600, letterSpacing: '0.06em', marginBottom: 36, marginTop: 0 }}>
+      <p style={{
+        color:         'rgba(255,255,255,0.4)',
+        fontSize:      24,
+        fontFamily:    'Arial, sans-serif',
+        fontWeight:    700,
+        letterSpacing: '0.1em',
+        marginBottom:  20,
+        marginTop:     12,
+      }}>
         SECTOR PERFORMANCE TODAY
       </p>
 
-      {/* Sector bars */}
-      {sectors.map((s, i) => {
-        const entryStart = i * FRAMES_PER_BAR
-        const barFill = interpolate(frame, [entryStart, entryStart + FRAMES_PER_BAR], [0, Math.abs(s.change)], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })
-        const rowOpacity = interpolate(frame, [entryStart, entryStart + 10], [0, 1], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })
-        const pct = (Math.abs(s.change) / maxAbs) * 100
-        const color = s.change >= 0 ? COLORS.buy : COLORS.short
+      {/* Sector rows */}
+      {sorted.map((s, i) => {
+        const delay   = i * STAGGER
+        const rowOp   = interpolate(frame, [delay, delay + 10], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+        const rowY    = interpolate(frame, [delay, delay + 14], [20, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+        const barFill = interpolate(frame, [delay + 8, delay + 8 + fps * 0.5], [0, (Math.abs(s.change) / maxAbs) * 100], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+        // Animated count-up for the percentage
+        const countUp = interpolate(frame, [delay + 8, delay + 8 + fps * 0.5], [0, Math.abs(s.change)], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+
+        const color     = s.change >= 0 ? COLORS.buy : COLORS.short
+        const prefix    = s.change >= 0 ? '+' : '-'
+        const isWinner  = Math.abs(s.change) === maxAbs
 
         return (
-          <div key={s.sector} style={{ marginBottom: 22, opacity: rowOpacity }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-              <span style={{ color: COLORS.muted, fontSize: 26, fontFamily: 'Arial, sans-serif' }}>{s.sector}</span>
-              <span style={{ color, fontSize: 28, fontWeight: 700, fontFamily: 'Arial, sans-serif' }}>
-                {s.change >= 0 ? '+' : ''}{barFill.toFixed(2)}%
+          <div key={s.sector} style={{ opacity: rowOp, transform: `translateY(${rowY}px)`, marginBottom: 18 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 28, fontFamily: 'Arial, sans-serif', fontWeight: 600 }}>
+                  {s.sector}
+                </span>
+                {isWinner && (
+                  <span style={{ backgroundColor: `${color}22`, border: `1px solid ${color}`, borderRadius: 100, padding: '2px 14px', color, fontSize: 18, fontWeight: 700, fontFamily: 'Arial, sans-serif' }}>
+                    TOP MOVER
+                  </span>
+                )}
+              </div>
+              <span style={{ color, fontSize: 32, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif', minWidth: 88, textAlign: 'right' }}>
+                {prefix}{countUp.toFixed(2)}%
               </span>
             </div>
-            <div style={{ height: 12, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 6 }}>
-              <div style={{
-                height: '100%',
-                width: `${(Math.abs(s.change) / maxAbs) * 100}%`,
-                backgroundColor: color,
-                opacity: 0.85,
-                borderRadius: 6,
-              }} />
+            <div style={{ height: 14, backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: 7 }}>
+              <div style={{ height: '100%', width: `${barFill}%`, backgroundColor: color, borderRadius: 7, opacity: 0.9 }} />
             </div>
           </div>
         )
@@ -108,56 +111,50 @@ function SectorsScene({ sectors, marketSummary }: SectorTrendsProps) {
       {/* Market summary */}
       {marketSummary && (
         <div style={{
-          marginTop: 32,
-          opacity: summaryOpacity,
-          backgroundColor: `${COLORS.accent}12`,
-          border: `1px solid ${COLORS.accent}30`,
-          borderRadius: 20,
-          padding: '24px 28px',
+          opacity:         summaryOpacity,
+          marginTop:       24,
+          backgroundColor: `${COLORS.accent}0E`,
+          border:          `1px solid ${COLORS.accent}28`,
+          borderRadius:    20,
+          padding:         '20px 24px',
         }}>
-          <p style={{ color: COLORS.text, fontSize: 28, fontFamily: 'Arial, sans-serif', lineHeight: 1.5, margin: 0 }}>
-            {marketSummary.length > 180 ? marketSummary.slice(0, 180) + '…' : marketSummary}
+          <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 26, fontFamily: 'Arial, sans-serif', lineHeight: 1.5, margin: 0 }}>
+            {marketSummary.length > 200 ? marketSummary.slice(0, 200) + '…' : marketSummary}
           </p>
         </div>
       )}
+    </AbsoluteFill>
+  )
+}
 
-      {/* Persistent CTA overlay at bottom */}
-      <div style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        textAlign: 'center',
-        padding: '24px 0 48px',
-        background: 'linear-gradient(to bottom, transparent, rgba(15,15,15,0.95))',
-      }}>
-        <span style={{
-          backgroundColor: COLORS.accent,
-          color: '#fff',
-          fontSize: 30,
-          fontWeight: 700,
-          fontFamily: 'Arial, sans-serif',
-          padding: '14px 40px',
-          borderRadius: 100,
-        }}>
-          Full dashboard at holoture.com
+function CTAScene() {
+  const frame = useCurrentFrame()
+  const { fps } = useVideoConfig()
+  const scale  = spring({ fps, frame, config: { damping: 14, stiffness: 100 } })
+  const opacity = interpolate(frame, [0, 12], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+
+  return (
+    <AbsoluteFill style={{ backgroundColor: COLORS.bg, alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse 70% 50% at 50% 50%, rgba(251,191,36,0.15) 0%, transparent 70%)` }} />
+      <SceneHeader />
+      <div style={{ textAlign: 'center', padding: '0 72px', transform: `scale(${scale})`, opacity }}>
+        <p style={{ color: COLORS.text, fontSize: 64, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1.2, marginBottom: 36 }}>
+          Full market trends dashboard — free on Holoture
+        </p>
+        <span style={{ backgroundColor: '#fbbf24', color: '#0F0F0F', fontSize: 36, fontWeight: 900, fontFamily: 'Arial Black, Arial, sans-serif', padding: '18px 56px', borderRadius: 100 }}>
+          holoture.com
         </span>
       </div>
     </AbsoluteFill>
   )
 }
 
-// ── Root composition ─────────────────────────────────────────────────────────
+// ── Root ───────────────────────────────────────────────────────────────────────
 
-export const SectorTrends: React.FC<SectorTrendsProps> = (props) => {
-  return (
-    <>
-      <Sequence from={0} durationInFrames={90}>
-        <HookScene />
-      </Sequence>
-      <Sequence from={90} durationInFrames={510}>
-        <SectorsScene {...props} />
-      </Sequence>
-    </>
-  )
-}
+export const SectorTrends: React.FC<SectorTrendsProps> = (props) => (
+  <>
+    <Sequence from={0}   durationInFrames={45}>  <HookScene /> </Sequence>
+    <Sequence from={45}  durationInFrames={255}> <SectorsScene {...props} /> </Sequence>
+    <Sequence from={300} durationInFrames={60}>  <CTAScene /> </Sequence>
+  </>
+)
