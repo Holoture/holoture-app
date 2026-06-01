@@ -185,7 +185,7 @@ export async function POST(req: NextRequest) {
       inputProps,
       codec: 'h264',
       privacy: 'public',
-      framesPerLambda: 40,      // parallelise across multiple Lambda invocations
+      framesPerLambda: 200,      // parallelise across multiple Lambda invocations
       concurrencyPerLambda: 1,
       timeoutInMilliseconds: 180_000,
     })

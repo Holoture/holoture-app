@@ -1,0 +1,477 @@
+{
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\eslint.config.mjs": {
+    "mtime": 1779756269.175362,
+    "ast_hash": "dfa1f5f6a7037bf39dc510f30b180002",
+    "semantic_hash": "dfa1f5f6a7037bf39dc510f30b180002"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\next.config.ts": {
+    "mtime": 1779757070.388679,
+    "ast_hash": "1c287c9fb173c720ba0360729f5a81b2",
+    "semantic_hash": "1c287c9fb173c720ba0360729f5a81b2"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\package.json": {
+    "mtime": 1779818764.0799036,
+    "ast_hash": "2a66aa4e56fc1847f756bf799b77e42f",
+    "semantic_hash": "2a66aa4e56fc1847f756bf799b77e42f"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\postcss.config.mjs": {
+    "mtime": 1779756269.1953728,
+    "ast_hash": "239f3ebf717465dc636818a1a619398d",
+    "semantic_hash": "239f3ebf717465dc636818a1a619398d"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\prisma.config.ts": {
+    "mtime": 1779758634.205472,
+    "ast_hash": "6e885db924f786ae0b0e8b87332207b6",
+    "semantic_hash": "6e885db924f786ae0b0e8b87332207b6"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\proxy.ts": {
+    "mtime": 1779832324.190621,
+    "ast_hash": "e71a3258f04e113790ea326712e6a2d4",
+    "semantic_hash": "e71a3258f04e113790ea326712e6a2d4"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\tsconfig.json": {
+    "mtime": 1779756269.424476,
+    "ast_hash": "02fc19ad21338c2ab820a70136310db4",
+    "semantic_hash": "02fc19ad21338c2ab820a70136310db4"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\vercel.json": {
+    "mtime": 1779838514.61803,
+    "ast_hash": "987edd6efc741bfe15ca7095ad9a289f",
+    "semantic_hash": "987edd6efc741bfe15ca7095ad9a289f"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\.claude\\settings.json": {
+    "mtime": 1779912218.715926,
+    "ast_hash": "5d6ecd96cf065b16e8bb9fbf5d7d8f0d",
+    "semantic_hash": "5d6ecd96cf065b16e8bb9fbf5d7d8f0d"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\.claude\\settings.local.json": {
+    "mtime": 1779912218.316227,
+    "ast_hash": "11df5d98e7e58bbcc1c16d221c2a7c1b",
+    "semantic_hash": "11df5d98e7e58bbcc1c16d221c2a7c1b"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\layout.tsx": {
+    "mtime": 1779895378.4493334,
+    "ast_hash": "140d35b0abf614fa4bada66a3bef6984",
+    "semantic_hash": "140d35b0abf614fa4bada66a3bef6984"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\page.tsx": {
+    "mtime": 1779849125.520396,
+    "ast_hash": "0b50ecc39f66a14e3b3bf9db7eadcb32",
+    "semantic_hash": "0b50ecc39f66a14e3b3bf9db7eadcb32"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\admin\\content\\page.tsx": {
+    "mtime": 1779897829.7739408,
+    "ast_hash": "df26cd777f9190148e0ca16316364203",
+    "semantic_hash": "df26cd777f9190148e0ca16316364203"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\admin\\signals\\page.tsx": {
+    "mtime": 1779897909.1978216,
+    "ast_hash": "8a569af3a0d681672b1695023b427ace",
+    "semantic_hash": "8a569af3a0d681672b1695023b427ace"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\admin\\signals\\PromoCodeCreateForm.tsx": {
+    "mtime": 1779839591.9373002,
+    "ast_hash": "2ccc74aec5c846667836c8b75cf2a70c",
+    "semantic_hash": "2ccc74aec5c846667836c8b75cf2a70c"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\admin\\signals\\PromoCodeToggle.tsx": {
+    "mtime": 1779813474.480356,
+    "ast_hash": "6ba1320732817bfc9a5624c2b7ea764e",
+    "semantic_hash": "6ba1320732817bfc9a5624c2b7ea764e"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\admin\\signals\\SignalDeleteButton.tsx": {
+    "mtime": 1779756867.0308425,
+    "ast_hash": "10767c2c0a05c37c49b4639967ff7ddc",
+    "semantic_hash": "10767c2c0a05c37c49b4639967ff7ddc"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\admin\\signals\\SignalToggleButton.tsx": {
+    "mtime": 1779756872.6298058,
+    "ast_hash": "127941fc09e0c531a0ce6f4fd06b80f6",
+    "semantic_hash": "127941fc09e0c531a0ce6f4fd06b80f6"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\admin\\signals\\new\\page.tsx": {
+    "mtime": 1779817608.356288,
+    "ast_hash": "403753efe5c99acc0a26e155820f02bb",
+    "semantic_hash": "403753efe5c99acc0a26e155820f02bb"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\alerts\\page.tsx": {
+    "mtime": 1779817541.3898294,
+    "ast_hash": "69c010003c583d9a8bcb91d684b948a8",
+    "semantic_hash": "69c010003c583d9a8bcb91d684b948a8"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\admin\\generate-content\\route.ts": {
+    "mtime": 1779897822.6746385,
+    "ast_hash": "ac5436ddc9d40ddf46aee7eff582616d",
+    "semantic_hash": "ac5436ddc9d40ddf46aee7eff582616d"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\admin\\promo\\route.ts": {
+    "mtime": 1779839576.3966756,
+    "ast_hash": "b6f9122c05e3d94fdd7ec1cbf3903d8c",
+    "semantic_hash": "b6f9122c05e3d94fdd7ec1cbf3903d8c"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\admin\\promo\\[id]\\route.ts": {
+    "mtime": 1779813428.45717,
+    "ast_hash": "614ce55a511845dd3ca53adb6a6ba1b0",
+    "semantic_hash": "614ce55a511845dd3ca53adb6a6ba1b0"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\alerts\\route.ts": {
+    "mtime": 1779812353.8466158,
+    "ast_hash": "eb863452c8ccdb76e7cdd9e833de9345",
+    "semantic_hash": "eb863452c8ccdb76e7cdd9e833de9345"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\cron\\calendar\\route.ts": {
+    "mtime": 1779830864.6620414,
+    "ast_hash": "f00250b5abbb7337fb5ff6c56e1dc48e",
+    "semantic_hash": "f00250b5abbb7337fb5ff6c56e1dc48e"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\cron\\news\\route.ts": {
+    "mtime": 1779836141.1070576,
+    "ast_hash": "98f902e293b535f6a8beee3f5f3b9eb0",
+    "semantic_hash": "98f902e293b535f6a8beee3f5f3b9eb0"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\cron\\options\\route.ts": {
+    "mtime": 1779838409.8854928,
+    "ast_hash": "dee7c2dfe8c4d230e82d5fa2a32f0492",
+    "semantic_hash": "dee7c2dfe8c4d230e82d5fa2a32f0492"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\cron\\politician\\route.ts": {
+    "mtime": 1779894911.838307,
+    "ast_hash": "058231df0cefda86c772af76b78b1fbb",
+    "semantic_hash": "058231df0cefda86c772af76b78b1fbb"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\cron\\signals\\route.ts": {
+    "mtime": 1779850081.048314,
+    "ast_hash": "0b0f69066dc1db3cf073576a03a3079a",
+    "semantic_hash": "0b0f69066dc1db3cf073576a03a3079a"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\cron\\trends\\route.ts": {
+    "mtime": 1779830861.1413095,
+    "ast_hash": "38a22bf184580368f15ddfe942f95f04",
+    "semantic_hash": "38a22bf184580368f15ddfe942f95f04"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\diag\\route.ts": {
+    "mtime": 1779832320.7768452,
+    "ast_hash": "a041409f38af23b4ea1488fdd927d248",
+    "semantic_hash": "a041409f38af23b4ea1488fdd927d248"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\promo\\redeem\\route.ts": {
+    "mtime": 1779839569.306038,
+    "ast_hash": "07fb257089e3d4d272a7af00b502cbf9",
+    "semantic_hash": "07fb257089e3d4d272a7af00b502cbf9"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\promo\\status\\route.ts": {
+    "mtime": 1779813417.6379154,
+    "ast_hash": "1acf72e590343ff9903d9e3af6f960c1",
+    "semantic_hash": "1acf72e590343ff9903d9e3af6f960c1"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\signals\\route.ts": {
+    "mtime": 1779756888.32687,
+    "ast_hash": "b4ba447d28c72dfd31786f5f7327ccd2",
+    "semantic_hash": "b4ba447d28c72dfd31786f5f7327ccd2"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\signals\\[id]\\route.ts": {
+    "mtime": 1779756893.53118,
+    "ast_hash": "353560f1ac4b22eec602db7b6046b679",
+    "semantic_hash": "353560f1ac4b22eec602db7b6046b679"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\stripe\\checkout\\route.ts": {
+    "mtime": 1779838143.058971,
+    "ast_hash": "ffa40c2b08ccc303e84bbcc5933a930c",
+    "semantic_hash": "ffa40c2b08ccc303e84bbcc5933a930c"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\stripe\\webhook\\route.ts": {
+    "mtime": 1779838134.4539068,
+    "ast_hash": "566af1307f8abe7226e7188a01e1e5ef",
+    "semantic_hash": "566af1307f8abe7226e7188a01e1e5ef"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\api\\user\\sync\\route.ts": {
+    "mtime": 1779756912.382111,
+    "ast_hash": "caa8a7b268cb630a6b30e243f43eaad4",
+    "semantic_hash": "caa8a7b268cb630a6b30e243f43eaad4"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\calendar\\loading.tsx": {
+    "mtime": 1779819042.5851965,
+    "ast_hash": "b09ae94ecd8356427e19977d61fe30d0",
+    "semantic_hash": "b09ae94ecd8356427e19977d61fe30d0"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\calendar\\page.tsx": {
+    "mtime": 1779836101.1789787,
+    "ast_hash": "511d0b6a7ee41c7e34671d3c17e2c56e",
+    "semantic_hash": "511d0b6a7ee41c7e34671d3c17e2c56e"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\dashboard\\page.tsx": {
+    "mtime": 1779851882.9939253,
+    "ast_hash": "ceb2e5953325a1622386239516376ca3",
+    "semantic_hash": "ceb2e5953325a1622386239516376ca3"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\learn\\page.tsx": {
+    "mtime": 1779848569.9258654,
+    "ast_hash": "0e3a574791842e2e483bdec9281e19fe",
+    "semantic_hash": "0e3a574791842e2e483bdec9281e19fe"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\news\\loading.tsx": {
+    "mtime": 1779819026.780857,
+    "ast_hash": "5fc7625ddff4bf7ec470a3b9c7f607c1",
+    "semantic_hash": "5fc7625ddff4bf7ec470a3b9c7f607c1"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\news\\NewsContent.tsx": {
+    "mtime": 1779836084.546197,
+    "ast_hash": "8b25bf0553a286971026721ef8cb2b58",
+    "semantic_hash": "8b25bf0553a286971026721ef8cb2b58"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\news\\page.tsx": {
+    "mtime": 1779838526.7821558,
+    "ast_hash": "32fa0677fcd6f152908d9883cf9eb469",
+    "semantic_hash": "32fa0677fcd6f152908d9883cf9eb469"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\politician-scanner\\page.tsx": {
+    "mtime": 1779852283.9594567,
+    "ast_hash": "1f47302a6947be3c20dec2b4a2d9aeea",
+    "semantic_hash": "1f47302a6947be3c20dec2b4a2d9aeea"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\pricing\\page.tsx": {
+    "mtime": 1779838178.6293116,
+    "ast_hash": "6e223e02ce2df945e5440db107103c0a",
+    "semantic_hash": "6e223e02ce2df945e5440db107103c0a"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\privacy-policy\\page.tsx": {
+    "mtime": 1779849070.8575327,
+    "ast_hash": "189031c2cb1dffc60eabab11b3460f44",
+    "semantic_hash": "189031c2cb1dffc60eabab11b3460f44"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\sign-in\\[[...sign-in]]\\page.tsx": {
+    "mtime": 1779817633.2685742,
+    "ast_hash": "1c7c72dd67f5d455611656ab073c16f0",
+    "semantic_hash": "1c7c72dd67f5d455611656ab073c16f0"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\sign-up\\[[...sign-up]]\\page.tsx": {
+    "mtime": 1779817640.377142,
+    "ast_hash": "fbce553161503071ebae42d61a602f21",
+    "semantic_hash": "fbce553161503071ebae42d61a602f21"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\support\\page.tsx": {
+    "mtime": 1779848565.9006696,
+    "ast_hash": "2bf59c479e89ba632ccad100ac48d19e",
+    "semantic_hash": "2bf59c479e89ba632ccad100ac48d19e"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\terms\\page.tsx": {
+    "mtime": 1779849106.367507,
+    "ast_hash": "fdc54632f5a354885a42200bfbb11874",
+    "semantic_hash": "fdc54632f5a354885a42200bfbb11874"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\trends\\loading.tsx": {
+    "mtime": 1779819034.6078868,
+    "ast_hash": "6a990b9b76eb982111761e4a0472dde7",
+    "semantic_hash": "6a990b9b76eb982111761e4a0472dde7"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\trends\\page.tsx": {
+    "mtime": 1779851890.3252807,
+    "ast_hash": "d4942f9cd8ad781294bde4a3363e4f0b",
+    "semantic_hash": "d4942f9cd8ad781294bde4a3363e4f0b"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\AlertsForm.tsx": {
+    "mtime": 1779817362.6200006,
+    "ast_hash": "c0f4c2d65d0c5224b6e64439fc519303",
+    "semantic_hash": "c0f4c2d65d0c5224b6e64439fc519303"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\AutoRefresh.tsx": {
+    "mtime": 1779818948.080594,
+    "ast_hash": "2624378cd4d94d18dcee9c4c52213cd1",
+    "semantic_hash": "2624378cd4d94d18dcee9c4c52213cd1"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\CheckoutButton.tsx": {
+    "mtime": 1779838150.3309798,
+    "ast_hash": "cbf29383bbfd46b3814f0cec0584b981",
+    "semantic_hash": "cbf29383bbfd46b3814f0cec0584b981"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\ContentDashboard.tsx": {
+    "mtime": 1779898079.0617101,
+    "ast_hash": "955a9a3113169d3b338b41ce2424123b",
+    "semantic_hash": "955a9a3113169d3b338b41ce2424123b"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\Footer.tsx": {
+    "mtime": 1779849041.8908582,
+    "ast_hash": "4c3058eaf4ea4d59ec45c19c92f749b9",
+    "semantic_hash": "4c3058eaf4ea4d59ec45c19c92f749b9"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\FreeSignalCard.tsx": {
+    "mtime": 1779838564.8934946,
+    "ast_hash": "c2b80b93a969ca00cf10133e9208df88",
+    "semantic_hash": "c2b80b93a969ca00cf10133e9208df88"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\Header.tsx": {
+    "mtime": 1779849443.7249806,
+    "ast_hash": "c6ab57e4ae9a90946b53b44cd520acb9",
+    "semantic_hash": "c6ab57e4ae9a90946b53b44cd520acb9"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\OptionsDashboardClient.tsx": {
+    "mtime": 1779838264.3094642,
+    "ast_hash": "52143f8b2d605736dd0a026ca79023ae",
+    "semantic_hash": "52143f8b2d605736dd0a026ca79023ae"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\PoliticianTradesClient.tsx": {
+    "mtime": 1779852261.7902646,
+    "ast_hash": "7dfd114887f156b0831a2363f181008b",
+    "semantic_hash": "7dfd114887f156b0831a2363f181008b"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\ProDashboardClient.tsx": {
+    "mtime": 1779838243.1422246,
+    "ast_hash": "44272767b865f812aa183af3e07ffa86",
+    "semantic_hash": "44272767b865f812aa183af3e07ffa86"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\PromoModal.tsx": {
+    "mtime": 1779817342.8214848,
+    "ast_hash": "fc3f7dc4a60b368f38fd3c83854a086e",
+    "semantic_hash": "fc3f7dc4a60b368f38fd3c83854a086e"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\RefreshBanner.tsx": {
+    "mtime": 1779838542.696565,
+    "ast_hash": "c102a5439792accbd86bfd24965e01ad",
+    "semantic_hash": "c102a5439792accbd86bfd24965e01ad"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\SignalCard.tsx": {
+    "mtime": 1779838607.086914,
+    "ast_hash": "e7970efbcd129d278bf66c3f8733c02f",
+    "semantic_hash": "e7970efbcd129d278bf66c3f8733c02f"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\SignalForm.tsx": {
+    "mtime": 1779817388.256228,
+    "ast_hash": "af717318730af77e5e8874954f495e2f",
+    "semantic_hash": "af717318730af77e5e8874954f495e2f"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\components\\ThemeProvider.tsx": {
+    "mtime": 1779817160.5277703,
+    "ast_hash": "54f6219d802023666c1a196d014978e3",
+    "semantic_hash": "54f6219d802023666c1a196d014978e3"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\data\\all_trades.json": {
+    "mtime": 1779894975.3516161,
+    "ast_hash": "5921a368d2cf2380c99dd316d8fa7723",
+    "semantic_hash": "5921a368d2cf2380c99dd316d8fa7723"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\lib\\anthropic.ts": {
+    "mtime": 1779818937.466283,
+    "ast_hash": "96c8bbb6f32c9a5c5445728b57c79b47",
+    "semantic_hash": "96c8bbb6f32c9a5c5445728b57c79b47"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\lib\\finnhub.ts": {
+    "mtime": 1779768064.1428835,
+    "ast_hash": "0052845a795b8e2b68f893553f1cf9d4",
+    "semantic_hash": "0052845a795b8e2b68f893553f1cf9d4"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\lib\\prisma.ts": {
+    "mtime": 1779757396.966969,
+    "ast_hash": "72dde9ef851b29efe8052c3e0b82bd3b",
+    "semantic_hash": "72dde9ef851b29efe8052c3e0b82bd3b"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\lib\\stripe.ts": {
+    "mtime": 1779757066.6277149,
+    "ast_hash": "8d28427f53c7de504fb85a4c373b98ca",
+    "semantic_hash": "8d28427f53c7de504fb85a4c373b98ca"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\lib\\user.ts": {
+    "mtime": 1779838124.833052,
+    "ast_hash": "f5c7c0129e43b02642defd139b1c7f62",
+    "semantic_hash": "f5c7c0129e43b02642defd139b1c7f62"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\lib\\utils.ts": {
+    "mtime": 1779756608.1003263,
+    "ast_hash": "fca439d591b11cc415854e68b6570ec5",
+    "semantic_hash": "fca439d591b11cc415854e68b6570ec5"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\scripts\\check-signals.mjs": {
+    "mtime": 1779832181.0770335,
+    "ast_hash": "8a875de1c36acc09219fb6a458328ad3",
+    "semantic_hash": "8a875de1c36acc09219fb6a458328ad3"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\scripts\\scrape_trades.py": {
+    "mtime": 1779894903.8816478,
+    "ast_hash": "70ad42df8e33e6d0e847ae3207c9683c",
+    "semantic_hash": "70ad42df8e33e6d0e847ae3207c9683c"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\scripts\\seed-signals.mjs": {
+    "mtime": 1779762824.4598048,
+    "ast_hash": "69283bbf9a54d325628299ddf5e57012",
+    "semantic_hash": "69283bbf9a54d325628299ddf5e57012"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\scripts\\seed-signals.ts": {
+    "mtime": 1779762961.9786735,
+    "ast_hash": "13852df9e91249d67ee64d699e6a39e4",
+    "semantic_hash": "13852df9e91249d67ee64d699e6a39e4"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\AGENTS.md": {
+    "mtime": 1779756303.6241891,
+    "ast_hash": "9e09241799026ac05be315a2f0b50055",
+    "semantic_hash": "9e09241799026ac05be315a2f0b50055"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\CLAUDE.md": {
+    "mtime": 1779912218.7147212,
+    "ast_hash": "b0517ee048d45b5cd5463430230eb52f",
+    "semantic_hash": "b0517ee048d45b5cd5463430230eb52f"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\README.md": {
+    "mtime": 1779756269.1585424,
+    "ast_hash": "f15aaa42d5d299d091b1171097ea56ad",
+    "semantic_hash": "f15aaa42d5d299d091b1171097ea56ad"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\SETUP.md": {
+    "mtime": 1779757545.7576754,
+    "ast_hash": "e692a988c92acef56eef65d749aedb7e",
+    "semantic_hash": "e692a988c92acef56eef65d749aedb7e"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\.claude\\CLAUDE.md": {
+    "mtime": 1779912218.7097225,
+    "ast_hash": "817fe671013b35ae0bc9301dfe449a87",
+    "semantic_hash": "817fe671013b35ae0bc9301dfe449a87"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\.claude\\skills\\graphify\\SKILL.md": {
+    "mtime": 1779912218.7087238,
+    "ast_hash": "e065bdafac4ca689ffd4e353ffd71160",
+    "semantic_hash": "e065bdafac4ca689ffd4e353ffd71160"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\.github\\workflows\\scrape-trades.yml": {
+    "mtime": 1779854839.285419,
+    "ast_hash": "235505e9036097bf5296eb205caff2df",
+    "semantic_hash": "235505e9036097bf5296eb205caff2df"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\apple-icon.png": {
+    "mtime": 1779768510.05118,
+    "ast_hash": "079467ad1fbbe29e648228572d81edd7",
+    "semantic_hash": "079467ad1fbbe29e648228572d81edd7"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\app\\icon.png": {
+    "mtime": 1779768510.05118,
+    "ast_hash": "079467ad1fbbe29e648228572d81edd7",
+    "semantic_hash": "079467ad1fbbe29e648228572d81edd7"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\public\\file.svg": {
+    "mtime": 1779756269.201402,
+    "ast_hash": "d09f95206c3fa0bb9bd9fefabfd0ea71",
+    "semantic_hash": "d09f95206c3fa0bb9bd9fefabfd0ea71"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\public\\globe.svg": {
+    "mtime": 1779756269.2132657,
+    "ast_hash": "2aaafa6a49b6563925fe440891e32717",
+    "semantic_hash": "2aaafa6a49b6563925fe440891e32717"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\public\\logo.png": {
+    "mtime": 1779768510.05118,
+    "ast_hash": "079467ad1fbbe29e648228572d81edd7",
+    "semantic_hash": "079467ad1fbbe29e648228572d81edd7"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\public\\next.svg": {
+    "mtime": 1779756269.2233446,
+    "ast_hash": "8e061864f388b47f33a1c3780831193e",
+    "semantic_hash": "8e061864f388b47f33a1c3780831193e"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\public\\vercel.svg": {
+    "mtime": 1779756269.2326844,
+    "ast_hash": "c0af2f507b369b085b35ef4bbe3bcf1e",
+    "semantic_hash": "c0af2f507b369b085b35ef4bbe3bcf1e"
+  },
+  "C:\\Users\\jaken\\Desktop\\holoture-app\\public\\window.svg": {
+    "mtime": 1779756269.2401898,
+    "ast_hash": "a2760511c65806022ad20adf74370ff3",
+    "semantic_hash": "a2760511c65806022ad20adf74370ff3"
+  }
+}

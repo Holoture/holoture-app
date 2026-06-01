@@ -1,0 +1,3 @@
+remotion-render-4-0-470-mem2048mb-disk2048mb-180sec
+
+https://remotionlambda-useast1-bebbiz8h9p.s3.us-east-1.amazonaws.com/sites/holoture-video/index.htm
