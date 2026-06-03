@@ -37,7 +37,7 @@ function getLambdaConfig() {
 
 // ── Data fetchers (same as before, correct field names) ───────────────────────
 
-type TemplateId = 'SignalReel' | 'PoliticianReel' | 'WeeklyRecap' | 'SectorTrends'
+type TemplateId = 'SignalReel' | 'PoliticianReel' | 'WeeklyRecap' | 'SectorTrends' | 'PromoVideo'
 
 async function buildInputProps(templateId: TemplateId): Promise<Record<string, unknown>> {
   switch (templateId) {
@@ -110,6 +110,43 @@ async function buildInputProps(templateId: TemplateId): Promise<Record<string, u
       }
     }
 
+    case 'PromoVideo': {
+      const [rawSignals, rawOptions, rawPols] = await Promise.all([
+        prisma.signal.findMany({ where: { isActive: true }, orderBy: { confidence: 'desc' }, take: 5 }),
+        prisma.optionsSignal.findMany({ where: { isActive: true }, orderBy: { confidence: 'desc' }, take: 3 }),
+        prisma.politicianTrade.findMany({ orderBy: { tradedAt: 'desc' }, take: 3 }),
+      ])
+
+      const { PROMO_FALLBACK } = await import('@/remotion/compositions/PromoVideo')
+
+      const signals = rawSignals.length > 0
+        ? rawSignals.map(s => ({
+            ticker: s.ticker, companyName: s.companyName,
+            signalType: s.signalType, confidence: s.confidence,
+            entryZoneLow: s.entryZoneLow, entryZoneHigh: s.entryZoneHigh,
+            targetPrice: s.targetPrice, stopLoss: s.stopLoss,
+          }))
+        : PROMO_FALLBACK.signals
+
+      const options = rawOptions.length > 0
+        ? rawOptions.map(o => ({
+            ticker: o.ticker, companyName: o.companyName,
+            contractType: o.contractType, strikePrice: o.strikePrice,
+            expirationDate: o.expirationDate, confidence: o.confidence,
+          }))
+        : PROMO_FALLBACK.options
+
+      const politicians = rawPols.length > 0
+        ? rawPols.map(p => ({
+            politicianName: p.politicianName, party: p.party,
+            ticker: p.ticker, companyName: p.companyName,
+            tradeType: p.tradeType, amountRange: p.amountRange,
+          }))
+        : PROMO_FALLBACK.politicians
+
+      return { signals, options, politicians }
+    }
+
     case 'SectorTrends': {
       const snapshots = await prisma.sectorSnapshot.findMany({ orderBy: { change: 'desc' } })
       const summary   = await prisma.marketSummary.findFirst({ orderBy: { updatedAt: 'desc' } }).catch(() => null)
@@ -130,6 +167,7 @@ const DURATIONS: Record<TemplateId, number> = {
   PoliticianReel: 450,   // 15 s
   WeeklyRecap:    540,   // 18 s
   SectorTrends:   360,   // 12 s
+  PromoVideo:    1200,   // 40 s
 }
 
 // ── POST — trigger Lambda render ──────────────────────────────────────────────
@@ -161,7 +199,7 @@ export async function POST(req: NextRequest) {
   }
 
   const templateId = body.templateId as TemplateId
-  const valid: TemplateId[] = ['SignalReel', 'PoliticianReel', 'WeeklyRecap', 'SectorTrends']
+  const valid: TemplateId[] = ['SignalReel', 'PoliticianReel', 'WeeklyRecap', 'SectorTrends', 'PromoVideo']
   if (!valid.includes(templateId)) {
     return NextResponse.json({ error: 'Invalid templateId' }, { status: 400 })
   }
