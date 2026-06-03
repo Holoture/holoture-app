@@ -2,6 +2,7 @@
 
 # Remotion generated videos (large MP4 files — don't commit to git)
 /public/generated-videos/*.mp4
+*.mp4
 
 # dependencies
 /node_modules
