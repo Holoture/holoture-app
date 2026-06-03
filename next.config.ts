@@ -40,6 +40,10 @@ const securityHeaders = [
         'https://*.clerk.accounts.dev',
         // Stripe
         'https://js.stripe.com',
+        // TradingView chart widgets
+        'https://s3.tradingview.com',
+        'https://s.tradingview.com',
+        'https://*.tradingview.com',
       ].join(' '),
 
       // Styles: self + inline (Tailwind) + Google Fonts
@@ -49,7 +53,8 @@ const securityHeaders = [
       "font-src 'self' https://fonts.gstatic.com",
 
       // Images: self + data URIs + any https (Clerk avatars, OG images, etc.)
-      "img-src 'self' data: https: blob:",
+      // https: already covers TradingView; explicit entry added for clarity
+      "img-src 'self' data: https: blob: https://*.tradingview.com",
 
       // API/WebSocket connections: self + all Clerk endpoints + Stripe
       [
@@ -66,6 +71,9 @@ const securityHeaders = [
         // Stripe
         'https://api.stripe.com',
         'https://checkout.stripe.com',
+        // TradingView — widget data feeds and symbol search
+        'https://*.tradingview.com',
+        'https://symbol-search.tradingview.com',
       ].join(' '),
 
       // Frames: Clerk UserButton modal + Stripe Checkout
@@ -81,6 +89,10 @@ const securityHeaders = [
         'https://*.clerk.accounts.dev',
         'https://js.stripe.com',
         'https://hooks.stripe.com',
+        // TradingView — widgetembed iframes and chart containers
+        'https://s.tradingview.com',
+        'https://www.tradingview.com',
+        'https://*.tradingview.com',
       ].join(' '),
 
       // Prevent this site from being embedded in frames on other domains
