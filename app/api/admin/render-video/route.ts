@@ -111,40 +111,8 @@ async function buildInputProps(templateId: TemplateId): Promise<Record<string, u
     }
 
     case 'PromoVideo': {
-      const [rawSignals, rawOptions, rawPols] = await Promise.all([
-        prisma.signal.findMany({ where: { isActive: true }, orderBy: { confidence: 'desc' }, take: 5 }),
-        prisma.optionsSignal.findMany({ where: { isActive: true }, orderBy: { confidence: 'desc' }, take: 3 }),
-        prisma.politicianTrade.findMany({ orderBy: { tradedAt: 'desc' }, take: 3 }),
-      ])
-
-      const { PROMO_FALLBACK } = await import('@/remotion/compositions/PromoVideo')
-
-      const signals = rawSignals.length > 0
-        ? rawSignals.map(s => ({
-            ticker: s.ticker, companyName: s.companyName,
-            signalType: s.signalType, confidence: s.confidence,
-            entryZoneLow: s.entryZoneLow, entryZoneHigh: s.entryZoneHigh,
-            targetPrice: s.targetPrice, stopLoss: s.stopLoss,
-          }))
-        : PROMO_FALLBACK.signals
-
-      const options = rawOptions.length > 0
-        ? rawOptions.map(o => ({
-            ticker: o.ticker, companyName: o.companyName,
-            contractType: o.contractType, strikePrice: o.strikePrice,
-            expirationDate: o.expirationDate, confidence: o.confidence,
-          }))
-        : PROMO_FALLBACK.options
-
-      const politicians = rawPols.length > 0
-        ? rawPols.map(p => ({
-            politicianName: p.politicianName, party: p.party,
-            ticker: p.ticker, companyName: p.companyName,
-            tradeType: p.tradeType, amountRange: p.amountRange,
-          }))
-        : PROMO_FALLBACK.politicians
-
-      return { signals, options, politicians }
+      // No dynamic data — video uses baked-in screen recordings
+      return {}
     }
 
     case 'SectorTrends': {
