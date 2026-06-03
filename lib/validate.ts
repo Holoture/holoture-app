@@ -196,7 +196,7 @@ export const tickerParamSchema = z
 export const adminPromoCreateSchema = z.object({
   code:    z.string().trim().min(1).max(50).regex(/^[A-Z0-9_-]+$/i),
   type:    z.enum(['pro_1month', 'pro_lifetime', 'max_1month', 'max_lifetime']),
-  maxUses: z.number().int().min(1).max(10_000),
+  maxUses: z.coerce.number().int().min(1).max(10_000),
 })
 
 // ── Parser helper ─────────────────────────────────────────────────────────────

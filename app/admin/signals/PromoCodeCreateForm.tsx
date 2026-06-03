@@ -34,7 +34,7 @@ export default function PromoCodeCreateForm() {
       const res = await fetch('/api/admin/promo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, type, maxUses }),
+        body: JSON.stringify({ code, type, maxUses: parseInt(maxUses, 10) }),
       })
       if (!res.ok) {
         const data = await res.json()
