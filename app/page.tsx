@@ -46,9 +46,9 @@ export default async function LandingPage() {
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight">
-            Trade with Edge
+            Trade with an Edge
             <br />
-            <span style={{ color: '#009BFF' }}>Expert-Curated Signals</span>
+            <span style={{ color: '#009BFF' }}>Algorithmic Trading Made Simple</span>
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl max-w-2xl mx-auto text-white">
