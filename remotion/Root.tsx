@@ -8,6 +8,10 @@ import { SectorTrends } from './compositions/SectorTrends'
 import { PromoVideo, PROMO_FALLBACK } from './compositions/PromoVideo'
 import { ProductDemo, DEMO_FALLBACK } from './compositions/ProductDemo'
 import { MRVLExplainer } from './compositions/MRVLExplainer'
+import {
+  CarouselTitle, CarouselStock, CarouselCTA,
+} from './compositions/Carousel'
+import { STOCKS } from './lib/carouselData'
 import type { SignalReelProps, PoliticianReelProps, WeeklyRecapProps, SectorTrendsProps } from './types'
 
 // Remotion's <Composition component> expects LooseComponentType<Record<string,unknown>>.
@@ -21,6 +25,9 @@ const AnySectorTrends = SectorTrends  as React.ComponentType<any>
 const AnyPromoVideo      = PromoVideo      as React.ComponentType<any>
 const AnyProductDemo     = ProductDemo     as React.ComponentType<any>
 const AnyMRVLExplainer   = MRVLExplainer   as React.ComponentType<any>
+const AnyCarouselTitle   = CarouselTitle   as React.ComponentType<any>
+const AnyCarouselStock   = CarouselStock   as React.ComponentType<any>
+const AnyCarouselCTA     = CarouselCTA     as React.ComponentType<any>
 
 // ── Sample props for Remotion Studio preview ──────────────────────────────────
 
@@ -88,5 +95,14 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="ProductDemo" component={AnyProductDemo} durationInFrames={1200} fps={30} width={1080} height={1920} defaultProps={DEMO_FALLBACK} />
     {/* Template 7 — 60 s MRVL explainer */}
     <Composition id="MRVLExplainer" component={AnyMRVLExplainer} durationInFrames={1800} fps={30} width={1080} height={1920} defaultProps={{}} />
+
+    {/* ── Instagram carousel stills (1080 × 1350, 4:5) ── */}
+    <Composition id="Carousel_01_Title" component={AnyCarouselTitle} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={{}} />
+    <Composition id="Carousel_02_SNDK"  component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[0]} />
+    <Composition id="Carousel_03_DELL"  component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[1]} />
+    <Composition id="Carousel_04_MU"    component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[2]} />
+    <Composition id="Carousel_05_AMD"   component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[3]} />
+    <Composition id="Carousel_06_AVGO"  component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[4]} />
+    <Composition id="Carousel_07_CTA"   component={AnyCarouselCTA}   durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={{}} />
   </>
 )
