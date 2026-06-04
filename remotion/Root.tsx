@@ -7,6 +7,7 @@ import { WeeklyRecap } from './compositions/WeeklyRecap'
 import { SectorTrends } from './compositions/SectorTrends'
 import { PromoVideo, PROMO_FALLBACK } from './compositions/PromoVideo'
 import { ProductDemo, DEMO_FALLBACK } from './compositions/ProductDemo'
+import { MRVLExplainer } from './compositions/MRVLExplainer'
 import type { SignalReelProps, PoliticianReelProps, WeeklyRecapProps, SectorTrendsProps } from './types'
 
 // Remotion's <Composition component> expects LooseComponentType<Record<string,unknown>>.
@@ -17,8 +18,9 @@ const AnyPolitician   = PoliticianReel as React.ComponentType<any>
 const AnyWeeklyRecap  = WeeklyRecap   as React.ComponentType<any>
 const AnySectorTrends = SectorTrends  as React.ComponentType<any>
 
-const AnyPromoVideo   = PromoVideo   as React.ComponentType<any>
-const AnyProductDemo  = ProductDemo  as React.ComponentType<any>
+const AnyPromoVideo      = PromoVideo      as React.ComponentType<any>
+const AnyProductDemo     = ProductDemo     as React.ComponentType<any>
+const AnyMRVLExplainer   = MRVLExplainer   as React.ComponentType<any>
 
 // ── Sample props for Remotion Studio preview ──────────────────────────────────
 
@@ -84,5 +86,7 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="PromoVideo" component={AnyPromoVideo} durationInFrames={1200} fps={30} width={1080} height={1920} defaultProps={PROMO_FALLBACK} />
     {/* Template 6 — 40 s product demo */}
     <Composition id="ProductDemo" component={AnyProductDemo} durationInFrames={1200} fps={30} width={1080} height={1920} defaultProps={DEMO_FALLBACK} />
+    {/* Template 7 — 60 s MRVL explainer */}
+    <Composition id="MRVLExplainer" component={AnyMRVLExplainer} durationInFrames={1800} fps={30} width={1080} height={1920} defaultProps={{}} />
   </>
 )
