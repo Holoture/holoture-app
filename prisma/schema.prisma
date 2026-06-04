@@ -284,3 +284,17 @@ model UserSession {
   @@index([userId])
   @@index([lastActiveAt])
 }
+
+model TrialRecord {
+  id                String   @id @default(cuid())
+  email             String
+  userId            String
+  deviceFingerprint String   @default("")
+  ipAddress         String   @default("")
+  trialStartedAt    DateTime @default(now())
+  createdAt         DateTime @default(now())
+
+  @@index([email])
+  @@index([deviceFingerprint])
+  @@index([userId])
+}

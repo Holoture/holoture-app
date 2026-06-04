@@ -3,11 +3,16 @@
  *
  * Creates a Stripe Checkout session for Pro or Max subscription.
  *
- * Security:
- * - Auth required (Clerk)
- * - Rate limited: 10 requests / minute / user (prevents session-flood attacks)
- * - Input validated via Zod: tier must be "pro" | "max"
- * - No sensitive user data logged to console
+ * Trial rules:
+ * - Pro:  7-day free trial, UNLESS the email or device fingerprint already
+ *         has a TrialRecord (one trial per email, one per device).
+ * - Max:  No trial — charges immediately.
+ *
+ * When trial abuse is detected the route returns 403 with
+ * { error, trialUsed: true } so the client can offer a direct (no-trial)
+ * checkout instead of silently failing.
+ *
+ * Security: auth required, rate limited 10/min/user, Zod-validated.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -15,7 +20,7 @@ import { auth } from '@clerk/nextjs/server'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
 import { getOrCreateUser } from '@/lib/user'
-import { checkRateLimit, tooManyRequests, CHECKOUT_LIMIT, CHECKOUT_WINDOW_MS } from '@/lib/rate-limit'
+import { checkRateLimit, tooManyRequests, getIp, CHECKOUT_LIMIT, CHECKOUT_WINDOW_MS } from '@/lib/rate-limit'
 import { parseBody, checkoutSchema } from '@/lib/validate'
 
 export async function POST(req: NextRequest) {
@@ -23,18 +28,14 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // ── Rate limiting: 10 / minute / user ──────────────────────────────────────
-  // Protects against checkout-session flooding which wastes Stripe API quota.
+  // ── Rate limiting ───────────────────────────────────────────────────────────
   const rl = checkRateLimit(`checkout:${userId}`, CHECKOUT_LIMIT, CHECKOUT_WINDOW_MS)
   if (!rl.success) return tooManyRequests(rl.retryAfter!)
 
   // ── User lookup ─────────────────────────────────────────────────────────────
   const user = await getOrCreateUser()
   if (!user) {
-    return NextResponse.json(
-      { error: 'User not found — try refreshing the page.' },
-      { status: 404 },
-    )
+    return NextResponse.json({ error: 'User not found — try refreshing the page.' }, { status: 404 })
   }
 
   // ── Input validation ────────────────────────────────────────────────────────
@@ -44,19 +45,43 @@ export async function POST(req: NextRequest) {
   const parsed = parseBody(checkoutSchema, rawBody)
   if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 })
 
-  const { tier: requestedTier } = parsed.data
+  const { tier: requestedTier, deviceFingerprint, skipTrial } = parsed.data
 
   if (user.tier === requestedTier && user.subscriptionStatus === 'active') {
     return NextResponse.json({ error: 'Already subscribed to this tier' }, { status: 400 })
   }
 
-  const priceId =
-    requestedTier === 'max'
-      ? process.env.STRIPE_MAX_PRICE_ID
-      : process.env.STRIPE_PRICE_ID
+  const priceId = requestedTier === 'max'
+    ? process.env.STRIPE_MAX_PRICE_ID
+    : process.env.STRIPE_PRICE_ID
 
   if (!priceId) {
     return NextResponse.json({ error: 'Price not configured' }, { status: 500 })
+  }
+
+  // ── Trial abuse checks (Pro only, when not skipping trial) ──────────────────
+  const wantsTrial = requestedTier === 'pro' && !skipTrial
+
+  if (wantsTrial) {
+    // Check 1 — same email already used a trial
+    const byEmail = await prisma.trialRecord.findFirst({ where: { email: user.email } })
+    if (byEmail) {
+      return NextResponse.json({
+        error: 'A free trial has already been used with this email address. Start your Pro subscription at $15/month.',
+        trialUsed: true,
+      }, { status: 403 })
+    }
+
+    // Check 2 — same device fingerprint already used a trial
+    if (deviceFingerprint) {
+      const byDevice = await prisma.trialRecord.findFirst({ where: { deviceFingerprint } })
+      if (byDevice) {
+        return NextResponse.json({
+          error: 'A free trial has already been used on this device. Start your Pro subscription at $15/month.',
+          trialUsed: true,
+        }, { status: 403 })
+      }
+    }
   }
 
   try {
@@ -74,27 +99,39 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    // Derive base URL from request host so redirects work on any Vercel deployment.
-    const host = req.headers.get('host') ?? 'holoture.com'
+    const host    = req.headers.get('host') ?? 'holoture.com'
     const protocol = host.startsWith('localhost') ? 'http' : 'https'
-    const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? `${protocol}://${host}`).replace(/\/$/, '')
+    const baseUrl  = (process.env.NEXT_PUBLIC_APP_URL ?? `${protocol}://${host}`).replace(/\/$/, '')
+    const ip       = getIp(req)
 
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      mode: 'subscription',
+    // Build session params — trial only for Pro, never for Max
+    const sessionParams: Parameters<typeof stripe.checkout.sessions.create>[0] = {
+      customer:             customerId,
+      mode:                 'subscription',
       payment_method_types: ['card'],
-      line_items: [{ price: priceId, quantity: 1 }],
-      // 7-day free trial — card is required upfront but not charged until day 8.
-      // Stripe sends a trial_will_end webhook 3 days before the trial ends.
-      subscription_data: { trial_period_days: 7 },
-      success_url: `${baseUrl}/dashboard?upgraded=true`,
-      cancel_url:  `${baseUrl}/pricing?canceled=true`,
-      metadata: { clerkId: userId },
-    })
+      line_items:           [{ price: priceId, quantity: 1 }],
+      success_url:          `${baseUrl}/dashboard?upgraded=true`,
+      cancel_url:           `${baseUrl}/pricing?canceled=true`,
+      metadata:             { clerkId: userId },
+    }
 
+    if (wantsTrial) {
+      // 7-day free trial for Pro — pass fingerprint + ip in metadata so the
+      // webhook can create the TrialRecord without an extra API call.
+      sessionParams.subscription_data = {
+        trial_period_days: 7,
+        metadata: {
+          deviceFingerprint: deviceFingerprint ?? '',
+          trialIp:           ip,
+          clerkId:           userId,
+        },
+      }
+    }
+    // Max (and skipTrial Pro): no subscription_data → immediate charge
+
+    const session = await stripe.checkout.sessions.create(sessionParams)
     return NextResponse.json({ url: session.url })
   } catch {
-    // Never expose Stripe internals — they may contain card or PII hints.
     return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 })
   }
 }

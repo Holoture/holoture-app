@@ -163,15 +163,14 @@ export default function PricingPage() {
             </div>
 
             <div>
-              <TrialBadge />
               <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#a78bfa' }}>
                 Holoture Max
               </p>
-              <div className="mt-3 mb-2 flex items-end gap-2">
+              <div className="mt-4 mb-2 flex items-end gap-2">
                 <span className="text-5xl font-black text-white">$25</span>
                 <span className="mb-2 text-white">/month</span>
               </div>
-              <p className="text-sm text-white">after your free trial ends</p>
+              <p className="text-sm text-white">Full access to every feature</p>
             </div>
 
             <ul className="mt-8 space-y-4 flex-1">
@@ -190,9 +189,6 @@ export default function PricingPage() {
 
             <div className="mt-8">
               <CheckoutButton tier="max" />
-              <p className="mt-2 text-xs text-center" style={{ color: 'var(--text-w50)' }}>
-                Free for 7 days, then $25/month
-              </p>
             </div>
           </div>
         </div>

@@ -82,8 +82,8 @@ export default async function DashboardPage() {
     updatedAt: s.updatedAt instanceof Date ? s.updatedAt.toISOString() : String(s.updatedAt),
   }))
 
-  // ── Trial banner data ────────────────────────────────────────────────────────
-  const isTrialing   = user.subscriptionStatus === 'trialing'
+  // ── Trial banner data (Pro only — Max has no trial) ─────────────────────────
+  const isTrialing   = user.subscriptionStatus === 'trialing' && tier === 'pro'
   const trialEndsAt  = (user as { trialEndsAt?: Date | null }).trialEndsAt ?? null
   const daysLeft     = trialEndsAt
     ? Math.max(0, Math.ceil((trialEndsAt.getTime() - Date.now()) / 86_400_000))
@@ -104,8 +104,8 @@ export default async function DashboardPage() {
         >
           ⏰{' '}
           {daysLeft === 0
-            ? `Your free trial ends today. You'll be charged after midnight.`
-            : `Your free trial ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'} — you won't be charged until ${trialEndDate}.`
+            ? `Your Pro trial ends today. You'll be charged after midnight.`
+            : `Your Pro trial ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'} — you won't be charged until ${trialEndDate}.`
           }
           {' '}
           <a href="/pricing" className="underline hover:opacity-80 transition-opacity" style={{ color: '#1D9E75' }}>

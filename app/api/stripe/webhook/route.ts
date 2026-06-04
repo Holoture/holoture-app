@@ -29,23 +29,52 @@ export async function POST(req: NextRequest) {
       case 'customer.subscription.updated': {
         const sub        = event.data.object as Stripe.Subscription
         const customerId = sub.customer as string
-        const status     = sub.status   // 'trialing' | 'active' | 'past_due' | etc.
+        const status     = sub.status
         const priceId    = sub.items.data[0]?.price.id
 
-        // Grant the paid tier during BOTH 'active' and 'trialing' so users
-        // have full access throughout their free trial period.
         const tier = (status === 'active' || status === 'trialing')
           ? tierFromPriceId(priceId)
           : 'free'
 
-        // Store trial_end as a Date so the dashboard banner can compute
-        // "X days remaining" without calling Stripe on every page load.
         const trialEndsAt = sub.trial_end ? new Date(sub.trial_end * 1000) : null
 
         await prisma.user.updateMany({
           where: { stripeCustomerId: customerId },
           data:  { stripeSubscriptionId: sub.id, subscriptionStatus: status, tier, trialEndsAt },
         })
+
+        // ── Record first-time Pro trial to prevent abuse ─────────────────────
+        // Only on subscription.created (not updates) and only when trialing.
+        // The deviceFingerprint and trialIp were passed via subscription_data.metadata
+        // in the checkout route so we don't need an extra Stripe API call here.
+        if (event.type === 'customer.subscription.created' && status === 'trialing') {
+          const fingerprint = sub.metadata?.deviceFingerprint ?? ''
+          const trialIp     = sub.metadata?.trialIp           ?? ''
+          const clerkId     = sub.metadata?.clerkId           ?? ''
+
+          if (clerkId) {
+            const dbUser = await prisma.user.findUnique({
+              where: { clerkId },
+              select: { email: true },
+            })
+            if (dbUser) {
+              // Only create if no record already exists (idempotent for retried webhooks).
+              const already = await prisma.trialRecord.findFirst({
+                where: { email: dbUser.email },
+              })
+              if (!already) {
+                await prisma.trialRecord.create({
+                  data: {
+                    email:             dbUser.email,
+                    userId:            clerkId,
+                    deviceFingerprint: fingerprint,
+                    ipAddress:         trialIp,
+                  },
+                }).catch(() => {}) // ignore race-condition duplicates
+              }
+            }
+          }
+        }
         break
       }
 

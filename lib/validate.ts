@@ -104,7 +104,11 @@ export const promoCodeSchema = z.object({
 
 /** Stripe checkout intent */
 export const checkoutSchema = z.object({
-  tier: z.enum(['pro', 'max']),
+  tier:              z.enum(['pro', 'max']),
+  /** SHA-256 device fingerprint; only sent for Pro trial requests */
+  deviceFingerprint: z.string().max(200).optional().default(''),
+  /** When true, skip the trial (e.g. user already used one) */
+  skipTrial:         z.boolean().optional().default(false),
 })
 
 /**
