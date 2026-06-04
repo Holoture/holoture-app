@@ -52,8 +52,8 @@ export default async function LandingPage() {
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl max-w-2xl mx-auto text-white">
-            Holoture delivers daily curated stock signals with precise entry zones,
-            confidence scores, and clear time horizons — so you always know what to watch.
+            Stop guessing. Every day Holoture delivers curated stock signals with clear entry zones,
+            price targets, and stop losses — backed by real market data and built for traders who want an actual edge.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
