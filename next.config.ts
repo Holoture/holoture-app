@@ -76,11 +76,15 @@ const securityHeaders = [
         'https://symbol-search.tradingview.com',
       ].join(' '),
 
-      // Frames: Clerk UserButton modal + Stripe Checkout
+      // Frames: Clerk UserButton modal + Stripe Checkout + TradingView charts
       // Clerk renders its profile/sign-in modal inside an iframe — all Clerk
       // domains must appear here or UserButton silently fails to render.
+      // NOTE: 'https:' is intentionally broad here as a diagnostic step to
+      // confirm CSP is not blocking TradingView. Narrow back to explicit domains
+      // once confirmed working.
       [
         'frame-src',
+        'https:',   // ← diagnostic: allow all HTTPS frames temporarily
         'https://clerk.holoture.com',
         'https://clerk.dev',
         'https://*.clerk.dev',
@@ -89,7 +93,6 @@ const securityHeaders = [
         'https://*.clerk.accounts.dev',
         'https://js.stripe.com',
         'https://hooks.stripe.com',
-        // TradingView — widgetembed iframes and chart containers
         'https://s.tradingview.com',
         'https://www.tradingview.com',
         'https://*.tradingview.com',

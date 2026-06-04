@@ -40,7 +40,7 @@ function buildSrc(ticker: string, exchange: string | null | undefined): string {
     allow_symbol_change: '0',
     save_image:      '0',
     calendar:        '0',
-    support_host:    'https://www.tradingview.com',
+    support_host:    'https://holoture.com',
   })
 
   return `https://s.tradingview.com/widgetembed/?${params.toString()}`
@@ -69,6 +69,7 @@ export default function SignalChart({ ticker, exchange }: Props) {
         src={src}
         title={`${ticker} price chart`}
         onLoad={() => setLoaded(true)}
+        referrerPolicy="origin"
         style={{
           width:      '100%',
           height:     '100%',
