@@ -63,10 +63,11 @@ export function computeTier(user: {
   const now = new Date()
   if (user.isLifetimeMax) return 'max'
   if (user.maxExpiresAt && user.maxExpiresAt > now) return 'max'
-  if (user.tier === 'max' && user.subscriptionStatus === 'active') return 'max'
+  // 'trialing' grants the same tier access as 'active' during the free trial
+  if (user.tier === 'max' && (user.subscriptionStatus === 'active' || user.subscriptionStatus === 'trialing')) return 'max'
   if (user.isLifetimePro) return 'pro'
   if (user.proExpiresAt && user.proExpiresAt > now) return 'pro'
-  if (user.tier === 'pro' && user.subscriptionStatus === 'active') return 'pro'
+  if (user.tier === 'pro' && (user.subscriptionStatus === 'active' || user.subscriptionStatus === 'trialing')) return 'pro'
   return 'free'
 }
 

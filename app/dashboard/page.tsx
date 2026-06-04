@@ -82,9 +82,38 @@ export default async function DashboardPage() {
     updatedAt: s.updatedAt instanceof Date ? s.updatedAt.toISOString() : String(s.updatedAt),
   }))
 
+  // ── Trial banner data ────────────────────────────────────────────────────────
+  const isTrialing   = user.subscriptionStatus === 'trialing'
+  const trialEndsAt  = (user as { trialEndsAt?: Date | null }).trialEndsAt ?? null
+  const daysLeft     = trialEndsAt
+    ? Math.max(0, Math.ceil((trialEndsAt.getTime() - Date.now()) / 86_400_000))
+    : null
+  const trialEndDate = trialEndsAt
+    ? trialEndsAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
+    : null
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
+
+      {/* ── Trial banner ── */}
+      {isTrialing && trialEndsAt && (
+        <div
+          className="px-4 py-3 text-sm text-center font-semibold"
+          style={{ backgroundColor: 'rgba(29,158,117,0.12)', borderBottom: '1px solid rgba(29,158,117,0.25)', color: '#1D9E75' }}
+        >
+          ⏰{' '}
+          {daysLeft === 0
+            ? `Your free trial ends today. You'll be charged after midnight.`
+            : `Your free trial ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'} — you won't be charged until ${trialEndDate}.`
+          }
+          {' '}
+          <a href="/pricing" className="underline hover:opacity-80 transition-opacity" style={{ color: '#1D9E75' }}>
+            Manage plan
+          </a>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Page header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">

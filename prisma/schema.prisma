@@ -19,6 +19,7 @@ model User {
   proExpiresAt         DateTime?
   isLifetimeMax        Boolean         @default(false)
   maxExpiresAt         DateTime?
+  trialEndsAt          DateTime?
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
   redemptions          RedemptionLog[]
@@ -269,4 +270,17 @@ model VideoRender {
   errorMsg    String?
   createdAt   DateTime  @default(now())
   completedAt DateTime?
+}
+
+model UserSession {
+  id           String   @id @default(cuid())
+  userId       String
+  sessionToken String   @unique
+  deviceInfo   String   @default("")
+  ipAddress    String   @default("")
+  lastActiveAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([lastActiveAt])
 }

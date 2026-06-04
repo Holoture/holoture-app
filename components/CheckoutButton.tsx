@@ -47,7 +47,7 @@ export default function CheckoutButton({
     }
   }
 
-  const defaultLabel = tier === 'max' ? 'Upgrade to Max — $25/month' : 'Upgrade to Pro — $15/month'
+  const defaultLabel = tier === 'max' ? 'Start Free Trial' : 'Start Free Trial'
   const defaultStyle: React.CSSProperties =
     tier === 'max'
       ? { background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }

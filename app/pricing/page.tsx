@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Check, Star, TrendingUp, Zap } from 'lucide-react'
+import { Check, Star, TrendingUp, Zap, Clock } from 'lucide-react'
 import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 
@@ -34,6 +34,18 @@ const MAX_FEATURES = [
   'Cancel anytime',
 ]
 
+function TrialBadge() {
+  return (
+    <div
+      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-4"
+      style={{ backgroundColor: 'rgba(29,158,117,0.15)', color: '#1D9E75', border: '1px solid rgba(29,158,117,0.3)' }}
+    >
+      <Clock className="w-3 h-3" />
+      7-day free trial
+    </div>
+  )
+}
+
 export default function PricingPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
@@ -43,10 +55,19 @@ export default function PricingPage() {
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-black text-white">Choose Your Plan</h1>
           <p className="mt-4 text-lg text-white">Start free. Unlock the full edge when you&apos;re ready.</p>
+          {/* Trial callout */}
+          <div
+            className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 rounded-xl text-sm font-semibold"
+            style={{ backgroundColor: 'rgba(29,158,117,0.1)', border: '1px solid rgba(29,158,117,0.25)', color: '#1D9E75' }}
+          >
+            <Clock className="w-4 h-4" />
+            Pro &amp; Max come with a 7-day free trial — card required, nothing charged until day 8.
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Free */}
+
+          {/* ── Free ── */}
           <div
             className="rounded-2xl p-8 flex flex-col"
             style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
@@ -77,7 +98,7 @@ export default function PricingPage() {
             </Link>
           </div>
 
-          {/* Pro */}
+          {/* ── Pro ── */}
           <div
             className="rounded-2xl p-8 flex flex-col relative"
             style={{
@@ -94,12 +115,13 @@ export default function PricingPage() {
             </div>
 
             <div>
+              <TrialBadge />
               <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#009BFF' }}>Pro</p>
-              <div className="mt-4 mb-2 flex items-end gap-2">
+              <div className="mt-3 mb-2 flex items-end gap-2">
                 <span className="text-5xl font-black text-white">$15</span>
                 <span className="mb-2 text-white">/month</span>
               </div>
-              <p className="text-sm text-white">Billed monthly, cancel anytime</p>
+              <p className="text-sm text-white">after your free trial ends</p>
             </div>
 
             <ul className="mt-8 space-y-4 flex-1">
@@ -116,10 +138,15 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            <CheckoutButton tier="pro" />
+            <div className="mt-8">
+              <CheckoutButton tier="pro" />
+              <p className="mt-2 text-xs text-center" style={{ color: 'var(--text-w50)' }}>
+                Free for 7 days, then $15/month
+              </p>
+            </div>
           </div>
 
-          {/* Max */}
+          {/* ── Max ── */}
           <div
             className="rounded-2xl p-8 flex flex-col relative"
             style={{
@@ -136,14 +163,15 @@ export default function PricingPage() {
             </div>
 
             <div>
+              <TrialBadge />
               <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#a78bfa' }}>
                 Holoture Max
               </p>
-              <div className="mt-4 mb-2 flex items-end gap-2">
+              <div className="mt-3 mb-2 flex items-end gap-2">
                 <span className="text-5xl font-black text-white">$25</span>
                 <span className="mb-2 text-white">/month</span>
               </div>
-              <p className="text-sm text-white">Full access to every feature</p>
+              <p className="text-sm text-white">after your free trial ends</p>
             </div>
 
             <ul className="mt-8 space-y-4 flex-1">
@@ -160,11 +188,25 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            <CheckoutButton tier="max" />
+            <div className="mt-8">
+              <CheckoutButton tier="max" />
+              <p className="mt-2 text-xs text-center" style={{ color: 'var(--text-w50)' }}>
+                Free for 7 days, then $25/month
+              </p>
+            </div>
           </div>
         </div>
 
-        <p className="text-center mt-10 text-sm text-white">
+        {/* Trial fine print */}
+        <div
+          className="mt-10 rounded-xl px-6 py-4 text-center text-sm"
+          style={{ backgroundColor: 'rgba(29,158,117,0.07)', border: '1px solid rgba(29,158,117,0.2)', color: 'var(--text-w60)' }}
+        >
+          <span style={{ color: '#1D9E75' }} className="font-semibold">Cancel anytime before your trial ends and you won't be charged.</span>
+          {' '}Your card is securely stored by Stripe but not billed until day 8. Promo codes grant immediate access and bypass the trial.
+        </div>
+
+        <p className="text-center mt-6 text-sm text-white" style={{ opacity: 0.5 }}>
           Payments processed securely by Stripe. Holoture does not store your card details. Not financial advice. Always do your own research.
         </p>
       </div>

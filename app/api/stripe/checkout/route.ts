@@ -84,6 +84,9 @@ export async function POST(req: NextRequest) {
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
+      // 7-day free trial — card is required upfront but not charged until day 8.
+      // Stripe sends a trial_will_end webhook 3 days before the trial ends.
+      subscription_data: { trial_period_days: 7 },
       success_url: `${baseUrl}/dashboard?upgraded=true`,
       cancel_url:  `${baseUrl}/pricing?canceled=true`,
       metadata: { clerkId: userId },

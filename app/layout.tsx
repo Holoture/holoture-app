@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import Script from 'next/script'
 import ThemeProvider from '@/components/ThemeProvider'
+import { SessionGuard } from '@/components/SessionGuard'
 import Footer from '@/components/Footer'
 import './globals.css'
 
@@ -47,7 +48,9 @@ export default function RootLayout({
               __html: `(function(){try{var t=localStorage.getItem('theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark')}catch(e){}})()`,
             }}
           />
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <SessionGuard>{children}</SessionGuard>
+          </ThemeProvider>
           <Footer />
         </body>
       </html>
