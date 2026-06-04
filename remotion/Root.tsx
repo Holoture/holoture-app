@@ -97,12 +97,12 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="MRVLExplainer" component={AnyMRVLExplainer} durationInFrames={1800} fps={30} width={1080} height={1920} defaultProps={{}} />
 
     {/* ── Instagram carousel stills (1080 × 1350, 4:5) ── */}
-    <Composition id="Carousel_01_Title" component={AnyCarouselTitle} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={{}} />
-    <Composition id="Carousel_02_SNDK"  component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[0]} />
-    <Composition id="Carousel_03_DELL"  component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[1]} />
-    <Composition id="Carousel_04_MU"    component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[2]} />
-    <Composition id="Carousel_05_AMD"   component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[3]} />
-    <Composition id="Carousel_06_AVGO"  component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[4]} />
-    <Composition id="Carousel_07_CTA"   component={AnyCarouselCTA}   durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={{}} />
+    <Composition id="Carousel-01-Title" component={AnyCarouselTitle} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={{}} />
+    <Composition id="Carousel-02-SNDK"  component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[0]} />
+    <Composition id="Carousel-03-DELL"  component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[1]} />
+    <Composition id="Carousel-04-MU"    component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[2]} />
+    <Composition id="Carousel-05-AMD"   component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[3]} />
+    <Composition id="Carousel-06-AVGO"  component={AnyCarouselStock} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={STOCKS[4]} />
+    <Composition id="Carousel-07-CTA"   component={AnyCarouselCTA}   durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={{}} />
   </>
 )

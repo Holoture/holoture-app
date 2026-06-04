@@ -33,17 +33,17 @@ interface SlideSpec {
 
 const SLIDES: SlideSpec[] = [
   {
-    id:       'Carousel_01_Title',
+    id:       'Carousel-01-Title',
     filename: 'slide-01-title.png',
     props:    {},
   },
   ...STOCKS.map((s, i) => ({
-    id:       `Carousel_0${i + 2}_${s.ticker}`,
+    id:       `Carousel-0${i + 2}-${s.ticker}`,
     filename: `slide-0${i + 2}-${s.ticker.toLowerCase()}.png`,
     props:    s as unknown as Record<string, unknown>,
   })),
   {
-    id:       'Carousel_07_CTA',
+    id:       'Carousel-07-CTA',
     filename: 'slide-07-cta.png',
     props:    {},
   },
