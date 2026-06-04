@@ -71,9 +71,12 @@ const securityHeaders = [
         // Stripe
         'https://api.stripe.com',
         'https://checkout.stripe.com',
-        // TradingView — widget data feeds and symbol search
+        // TradingView — REST data feeds, symbol search, AND real-time WebSocket
+        // streams. wss:// is a distinct scheme from https:// in CSP — omitting
+        // it blocks every WebSocket the chart opens even when https:// is allowed.
         'https://*.tradingview.com',
         'https://symbol-search.tradingview.com',
+        'wss://*.tradingview.com',
       ].join(' '),
 
       // Frames: Clerk UserButton modal + Stripe Checkout + TradingView charts
