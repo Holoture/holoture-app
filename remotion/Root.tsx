@@ -8,6 +8,7 @@ import { SectorTrends } from './compositions/SectorTrends'
 import { PromoVideo, PROMO_FALLBACK } from './compositions/PromoVideo'
 import { ProductDemo, DEMO_FALLBACK } from './compositions/ProductDemo'
 import { MRVLExplainer } from './compositions/MRVLExplainer'
+import { ExpandingBrain } from './compositions/ExpandingBrain'
 import {
   CarouselTitle, CarouselStock, CarouselCTA,
 } from './compositions/Carousel'
@@ -25,6 +26,7 @@ const AnySectorTrends = SectorTrends  as React.ComponentType<any>
 const AnyPromoVideo      = PromoVideo      as React.ComponentType<any>
 const AnyProductDemo     = ProductDemo     as React.ComponentType<any>
 const AnyMRVLExplainer   = MRVLExplainer   as React.ComponentType<any>
+const AnyExpandingBrain  = ExpandingBrain  as React.ComponentType<any>
 const AnyCarouselTitle   = CarouselTitle   as React.ComponentType<any>
 const AnyCarouselStock   = CarouselStock   as React.ComponentType<any>
 const AnyCarouselCTA     = CarouselCTA     as React.ComponentType<any>
@@ -93,6 +95,8 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="PromoVideo" component={AnyPromoVideo} durationInFrames={1200} fps={30} width={1080} height={1920} defaultProps={PROMO_FALLBACK} />
     {/* Template 6 — 40 s product demo */}
     <Composition id="ProductDemo" component={AnyProductDemo} durationInFrames={1200} fps={30} width={1080} height={1920} defaultProps={DEMO_FALLBACK} />
+    {/* Meme — 5 s expanding brain */}
+    <Composition id="ExpandingBrain" component={AnyExpandingBrain} durationInFrames={150} fps={30} width={1080} height={1080} defaultProps={{}} />
     {/* Template 7 — 60 s MRVL explainer */}
     <Composition id="MRVLExplainer" component={AnyMRVLExplainer} durationInFrames={1800} fps={30} width={1080} height={1920} defaultProps={{}} />
 
