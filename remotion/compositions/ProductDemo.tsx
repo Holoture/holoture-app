@@ -24,7 +24,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion'
-import { loadFont } from '@remotion/google-fonts/DmSans'
+import { loadFont } from '@remotion/google-fonts/DMSans'
 import type { ProductDemoProps, DemoSignal, DemoOption, DemoPolitician } from '../lib/demoTypes'
 export type { ProductDemoProps }
 export { DEMO_FALLBACK } from '../lib/demoTypes'
@@ -329,7 +329,6 @@ function SceneBrand() {
         width: 500, height: 500,
         background: `radial-gradient(circle, ${C.accent}30 0%, transparent 65%)`,
       }} />
-
       {/* Particles */}
       {PARTICLES.map((p, i) => {
         const pf = Math.max(0, frame - p.delay)
@@ -347,16 +346,18 @@ function SceneBrand() {
           }} />
         )
       })}
-
       {/* Logo */}
       <div style={{
         position: 'absolute', left: '50%', top: VH * 0.38,
         transform: `translateX(-50%) translateY(${floatY}px) scale(${logoSc})`,
         opacity: logoOp,
       }}>
-        <Img src={staticFile('logo.png')} style={{ width: 160, height: 160, objectFit: 'contain' }} />
+        <Img src={staticFile('logo.png')} style={{
+          width: 160,
+          height: 160,
+          objectFit: 'contain'
+        }} />
       </div>
-
       {/* "Holoture" wordmark */}
       <div style={{
         position: 'absolute', left: SAFE_X, right: SAFE_X,
@@ -368,7 +369,6 @@ function SceneBrand() {
           Holo<span style={{ color: C.accent }}>ture</span>
         </span>
       </div>
-
       {/* Tagline */}
       <div style={{
         position: 'absolute', left: SAFE_X, right: SAFE_X,
@@ -381,7 +381,7 @@ function SceneBrand() {
         </span>
       </div>
     </AbsoluteFill>
-  )
+  );
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
