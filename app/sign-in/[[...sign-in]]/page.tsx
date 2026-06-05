@@ -54,6 +54,11 @@ export default function SignInPage() {
               border:          '1px solid rgba(255,255,255,0.12)',
             },
             dividerLine: { backgroundColor: 'rgba(255,255,255,0.10)' },
+            dividerText: { color: '#B0B8C4' },
+            headerSubtitle: { color: '#B0B8C4' },
+            formFieldLabel: { color: '#C8D0DA' },
+            identityPreviewText: { color: '#B0B8C4' },
+            footerActionText: { color: '#B0B8C4' },
           },
         }}
       />
