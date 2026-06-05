@@ -55,10 +55,13 @@ export default function SignUpPage() {
             },
             dividerLine: { backgroundColor: 'rgba(255,255,255,0.10)' },
             dividerText: { color: '#B0B8C4' },
+            headerTitle: { color: '#FFFFFF' },
             headerSubtitle: { color: '#B0B8C4' },
             formFieldLabel: { color: '#C8D0DA' },
             identityPreviewText: { color: '#B0B8C4' },
             footerActionText: { color: '#B0B8C4' },
+            badge: { color: '#C8D0DA', backgroundColor: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.15)' },
+            socialButtonsBlockButtonText: { color: '#FFFFFF' },
           },
         }}
       />
