@@ -4,10 +4,9 @@ import { prisma } from '@/lib/prisma'
 import { getOrCreateUser, computeTier } from '@/lib/user'
 import Header from '@/components/Header'
 import SignalBoardClient from '@/components/SignalBoardClient'
-import OptionsDashboardClient from '@/components/OptionsDashboardClient'
 import { UpgradeBanner } from '@/components/FreeSignalCard'
 import AuthLoadingGate from '@/components/AuthLoadingGate'
-import { TrendingUp, Crown, Zap, Lock } from 'lucide-react'
+import { TrendingUp, Crown, Zap } from 'lucide-react'
 import Link from 'next/link'
 
 // ── EST helpers ────────────────────────────────────────────────────────────────
@@ -225,50 +224,28 @@ export default async function DashboardPage() {
         {signals.length === 0 ? (
           <EmptyState />
         ) : isPro ? (
-          <div className="space-y-10">
-            <SignalBoardClient signals={serializedSignals} tier={tier} isAdmin={isAdmin} isYesterday={isYesterday} lastGenerated={lastLog?.generatedAt.toISOString() ?? null} />
-            {isMax && <OptionsDashboardClient signals={serializedOptions} />}
-            {!isMax && <MaxUpsell />}
-          </div>
+          <SignalBoardClient
+            signals={serializedSignals}
+            tier={tier}
+            optionsSignals={serializedOptions}
+            isAdmin={isAdmin}
+            isYesterday={isYesterday}
+            lastGenerated={lastLog?.generatedAt.toISOString() ?? null}
+          />
         ) : (
           <div className="space-y-6">
             <UpgradeBanner />
-            <SignalBoardClient signals={serializedSignals} tier="free" isAdmin={isAdmin} isYesterday={isYesterday} lastGenerated={lastLog?.generatedAt.toISOString() ?? null} />
+            <SignalBoardClient
+              signals={serializedSignals}
+              tier="free"
+              optionsSignals={serializedOptions}
+              isAdmin={isAdmin}
+              isYesterday={isYesterday}
+              lastGenerated={lastLog?.generatedAt.toISOString() ?? null}
+            />
           </div>
         )}
       </div>
-    </div>
-  )
-}
-
-function MaxUpsell() {
-  return (
-    <div
-      className="rounded-xl p-6 flex flex-col sm:flex-row items-center gap-4"
-      style={{
-        background: 'linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(79,70,229,0.08) 100%)',
-        border: '1px solid rgba(124,58,237,0.35)',
-      }}
-    >
-      <div
-        className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-        style={{ backgroundColor: 'rgba(124,58,237,0.2)' }}
-      >
-        <Lock className="w-6 h-6" style={{ color: '#a78bfa' }} />
-      </div>
-      <div className="text-center sm:text-left flex-1">
-        <h3 className="font-bold text-white">Unlock Options Signals &amp; Politician Scanner</h3>
-        <p className="text-sm mt-1 text-white">
-          Holoture Max adds CALL/PUT options signals and the politician stock scanner — $25/month.
-        </p>
-      </div>
-      <Link
-        href="/pricing"
-        className="px-5 py-2.5 rounded-lg font-semibold text-sm shrink-0 hover:opacity-90 transition-opacity"
-        style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
-      >
-        Upgrade to Max
-      </Link>
     </div>
   )
 }

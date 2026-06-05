@@ -192,7 +192,7 @@ Rules:
 - Include any stock with a clear directional setup
 - Distribute across sectors (max 3 signals per sector)
 - Include a mix of BUY, WATCH, and SHORT signals
-- Include swing trades (1-4 weeks) and longer-term plays (1-6 months)
+- Include a mix of timeframes: 1-3 day plays (stocks with catalyst events like earnings, FDA decisions, or product launches in the next 1-3 days, or strong technical setups on 1h/4h charts), swing trades (1-4 weeks), and longer-term plays (1-3+ months)
 - If fewer than ${minTarget} stocks have strong setups at confidence ≥65.0, lower threshold and use WATCH signals at confidence ≥50.0
 - Reply with a JSON array only — no markdown, no explanation
 
@@ -205,7 +205,7 @@ Each signal object must have exactly these keys:
 - targetPrice (number)
 - stopLoss (number)
 - confidence (float 0-100, exactly one decimal place, e.g. 67.3, 82.1, 54.8 — never round to nearest 5 or 10; score each factor below independently on 0-100, then compute the weighted average: technical indicator alignment 30%, volume confirmation 20%, sector momentum 15%, news sentiment 15%, historical pattern strength 10%, market cap/liquidity 10%; add ±2-3 points minor variance based on overall market conditions)
-- timeHorizon (string, e.g. "2-4 weeks", "1-3 months")
+- timeHorizon (string, e.g. "1-3 days", "2-4 weeks", "1-3 months")
 - thesis (string, 1-2 sentences)
 - aiSummary (string, 1 sentence)
 - sector (string: "Technology", "Healthcare", "Finance", "Energy", "Consumer", "Industrials", "Defense", "Clean Energy", "Cryptocurrency", "Biotech", "Real Estate")
@@ -318,8 +318,8 @@ export async function GET(req: Request) {
     const diverseLarge = applySectorDiversity(validLarge, 3)
     const diverseSmall = applySectorDiversity(validSmall, 3)
 
-    // Merge and cap at 50 total
-    const allSignals = [...diverseLarge, ...diverseSmall].slice(0, 50)
+    // Merge signals
+    const allSignals = [...diverseLarge, ...diverseSmall]
 
     if (allSignals.length === 0) {
       await prisma.signalGenerationLog.create({ data: { signalCount: 0, status: 'no_signals' } })

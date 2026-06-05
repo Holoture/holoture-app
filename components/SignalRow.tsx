@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
-import { ChevronDown, Lock } from 'lucide-react'
+import { ChevronDown, Lock, Clock } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import type { Signal } from './SignalCard'
 import TrackerButton from './TrackerButton'
@@ -134,6 +134,12 @@ interface Props {
   /** TrackedSignal record ID if this signal is being tracked, else null */
   trackedId?: string | null
   onTrackToggle?: (signalId: string, newTrackedId: string | null) => void
+  /** Free user trying to view an intraday or 1-3 day signal (Pro+ only) */
+  isShortTermLocked?: boolean
+  /** Show colored timeframe badge instead of plain text */
+  timeframeBadge?: 'intraday' | '1-3days' | null
+  /** Whether market is currently open — drives LIVE indicator */
+  isMarketOpen?: boolean
 }
 
 export default function SignalRow({
@@ -143,6 +149,9 @@ export default function SignalRow({
   isFreePick = false,
   trackedId = null,
   onTrackToggle,
+  isShortTermLocked = false,
+  timeframeBadge = null,
+  isMarketOpen = false,
 }: Props) {
   const [expanded, setExpanded]           = useState(false)
   const [details, setDetails]             = useState<StockDetails | null>(null)
@@ -150,7 +159,8 @@ export default function SignalRow({
   const [thesisExpanded, setThesisExpanded] = useState(false)
 
   // isObscured: free user + NOT one of the 5 daily free picks → hide ticker, blur everything
-  const isObscured = tier === 'free' && !isFreePick
+  // Also obscure intraday/1-3day signals for free users (Pro+ only timeframes)
+  const isObscured = (tier === 'free' && !isFreePick) || isShortTermLocked
 
   const confidenceColor =
     signal.confidence >= 75 ? '#1D9E75' : signal.confidence >= 55 ? '#BA7517' : '#E24B4A'
@@ -207,6 +217,21 @@ export default function SignalRow({
                 <div className="truncate" style={{ fontSize: 11, color: 'var(--text-w40)', marginTop: 2 }}>
                   {signal.sector}
                 </div>
+                {timeframeBadge === 'intraday' && (
+                  <div className="flex items-center gap-1 mt-1" style={{ fontSize: 9, color: '#f97316', fontWeight: 700 }}>
+                    <Clock className="w-2.5 h-2.5" />
+                    TIME SENSITIVE
+                  </div>
+                )}
+                {timeframeBadge === 'intraday' && isMarketOpen && (
+                  <div className="inline-flex items-center gap-1 mt-0.5">
+                    <span className="relative flex w-1.5 h-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#4ade80' }} />
+                      <span className="relative inline-flex rounded-full w-1.5 h-1.5" style={{ backgroundColor: '#22c55e' }} />
+                    </span>
+                    <span style={{ fontSize: 9, color: '#4ade80', fontWeight: 700 }}>LIVE</span>
+                  </div>
+                )}
                 {isFreePick && (
                   <div
                     className="inline-flex items-center gap-1 mt-1"
@@ -276,6 +301,16 @@ export default function SignalRow({
           <div style={{ width: 90, flexShrink: 0 }}>
             {isObscured ? (
               <Blurred>00 days</Blurred>
+            ) : timeframeBadge === 'intraday' ? (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-bold"
+                style={{ backgroundColor: 'rgba(249,115,22,0.15)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)' }}>
+                INTRADAY
+              </span>
+            ) : timeframeBadge === '1-3days' ? (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold"
+                style={{ backgroundColor: 'rgba(168,85,247,0.15)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.3)' }}>
+                1–3 DAYS
+              </span>
             ) : (
               <span className="text-sm text-white">{signal.timeHorizon}</span>
             )}
@@ -398,7 +433,17 @@ export default function SignalRow({
               <div style={{ fontSize: 10, color: 'var(--text-w35)' }}>Stop Loss</div>
             </div>
             <div>
-              {isObscured ? <Blurred>0 days</Blurred> : (
+              {isObscured ? <Blurred>0 days</Blurred> : timeframeBadge === 'intraday' ? (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-bold"
+                  style={{ backgroundColor: 'rgba(249,115,22,0.15)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)' }}>
+                  INTRADAY
+                </span>
+              ) : timeframeBadge === '1-3days' ? (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold"
+                  style={{ backgroundColor: 'rgba(168,85,247,0.15)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.3)' }}>
+                  1–3 DAYS
+                </span>
+              ) : (
                 <span className="text-sm text-white">{signal.timeHorizon}</span>
               )}
               <div style={{ fontSize: 10, color: 'var(--text-w35)' }}>Timeframe</div>
@@ -418,21 +463,30 @@ export default function SignalRow({
             <div className="flex flex-col items-center justify-center py-8 gap-4 text-center">
               <div
                 className="w-12 h-12 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: 'rgba(0,155,255,0.15)', border: '1px solid rgba(0,155,255,0.3)' }}
+                style={isShortTermLocked
+                  ? { backgroundColor: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)' }
+                  : { backgroundColor: 'rgba(0,155,255,0.15)', border: '1px solid rgba(0,155,255,0.3)' }}
               >
-                <Lock className="w-6 h-6" style={{ color: '#009BFF' }} />
+                {isShortTermLocked
+                  ? <Clock className="w-6 h-6" style={{ color: '#f97316' }} />
+                  : <Lock className="w-6 h-6" style={{ color: '#009BFF' }} />}
               </div>
               <div>
-                <p className="font-semibold text-white mb-1">Upgrade to Pro to unlock this signal</p>
+                <p className="font-semibold text-white mb-1">
+                  {isShortTermLocked
+                    ? 'Short-term signals require Pro or Max'
+                    : 'Upgrade to Pro to unlock this signal'}
+                </p>
                 <p className="text-sm" style={{ color: 'var(--text-w50)' }}>
-                  Get full access to the ticker, entry zone, target, stop loss, confidence score,
-                  live charts, and AI thesis for every signal.
+                  {isShortTermLocked
+                    ? 'Intraday and 1–3 day signals are time-sensitive and available to Pro and Max subscribers.'
+                    : 'Get full access to the ticker, entry zone, target, stop loss, confidence score, live charts, and AI thesis for every signal.'}
                 </p>
               </div>
               <a
                 href="/pricing"
                 className="px-5 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#009BFF', color: 'white' }}
+                style={{ backgroundColor: isShortTermLocked ? '#f97316' : '#009BFF', color: 'white' }}
               >
                 Upgrade to Pro
               </a>

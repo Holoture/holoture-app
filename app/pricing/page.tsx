@@ -11,7 +11,7 @@ const FREE_FEATURES = [
 ]
 
 const PRO_FEATURES = [
-  'Full signal board (15–50 signals/day)',
+  'Full signal board updated daily',
   'Large Cap & Small Cap signals',
   'Swing Trade & Long Term signals',
   'Up to 5 Momentum signals/day',

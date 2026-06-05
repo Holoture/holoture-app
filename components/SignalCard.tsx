@@ -18,6 +18,9 @@ export type Signal = {
   signalCategory?: string
   marketCap?: number
   signalDate: Date | string
+  bestEntryTime?: string | null
+  expectedMove?: string | null
+  catalyst?: string | null
 }
 
 function SignalTypeBadge({ type }: { type: string }) {
