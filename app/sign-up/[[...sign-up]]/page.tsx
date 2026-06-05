@@ -1,5 +1,5 @@
 import { SignUp } from '@clerk/nextjs'
-import { TrendingUp } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 export default function SignUpPage() {
@@ -10,12 +10,13 @@ export default function SignUpPage() {
     >
       <div className="mb-8 flex flex-col items-center gap-3">
         <Link href="/" className="flex items-center gap-2">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ backgroundColor: '#009BFF' }}
-          >
-            <TrendingUp className="w-6 h-6" style={{ color: 'white' }} />
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Holoture"
+            width={36}
+            height={36}
+            style={{ borderRadius: '4px' }}
+          />
           <span className="text-2xl font-black text-white">
             Holo<span style={{ color: '#009BFF' }}>ture</span>
           </span>
@@ -24,29 +25,35 @@ export default function SignUpPage() {
           Create your account — free to start
         </p>
       </div>
+
       <SignUp
         appearance={{
-          elements: {
-            card: 'bg-navy-800 border border-navy-600 shadow-xl',
-            headerTitle: 'text-white',
-            headerSubtitle: 'text-slate-400',
-            socialButtonsBlockButton:
-              'bg-navy-700 border border-navy-600 text-white hover:bg-navy-600',
-            dividerLine: 'bg-navy-600',
-            dividerText: 'text-slate-400',
-            formFieldLabel: 'text-slate-300',
-            formFieldInput:
-              'bg-navy-950 border border-navy-600 text-white placeholder:text-slate-500',
-            formButtonPrimary: 'bg-teal-500 hover:bg-teal-600',
-            footerActionLink: 'text-teal-400 hover:text-teal-300',
-          },
           variables: {
-            colorBackground: '#1a1a1a',
-            colorText: '#e2e8f0',
-            colorPrimary: '#009BFF',
-            colorInputBackground: '#0a0a0a',
-            colorInputText: '#e2e8f0',
-            borderRadius: '12px',
+            colorBackground:              '#0F0F0F',
+            colorText:                    '#FFFFFF',
+            colorTextSecondary:           '#CCCCCC',
+            colorTextOnPrimaryBackground: '#FFFFFF',
+            colorInputBackground:         '#1A1A1A',
+            colorInputText:               '#FFFFFF',
+            colorPrimary:                 '#009BFF',
+            colorNeutral:                 '#FFFFFF',
+            borderRadius:                 '12px',
+          },
+          elements: {
+            card: {
+              backgroundColor: '#111111',
+              border:          '1px solid rgba(255,255,255,0.10)',
+              boxShadow:       '0 20px 60px rgba(0,0,0,0.50)',
+            },
+            socialButtonsBlockButton: {
+              backgroundColor: '#1A1A1A',
+              border:          '1px solid rgba(255,255,255,0.12)',
+            },
+            formFieldInput: {
+              backgroundColor: '#1A1A1A',
+              border:          '1px solid rgba(255,255,255,0.12)',
+            },
+            dividerLine: { backgroundColor: 'rgba(255,255,255,0.10)' },
           },
         }}
       />

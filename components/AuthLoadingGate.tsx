@@ -3,7 +3,7 @@
 import { useAuth } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { TrendingUp } from 'lucide-react'
+import Image from 'next/image'
 
 /**
  * Renders a full-screen loading spinner while Clerk resolves the session
@@ -55,11 +55,8 @@ export default function AuthLoadingGate() {
         style={{ backgroundColor: 'var(--bg-primary)' }}
       >
         <div className="text-center max-w-sm">
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4"
-            style={{ backgroundColor: '#009BFF' }}
-          >
-            <TrendingUp className="w-6 h-6 text-white" />
+          <div className="mx-auto mb-4">
+            <Image src="/logo.png" alt="Holoture" width={48} height={48} style={{ borderRadius: '8px' }} />
           </div>
           <p className="text-white font-semibold mb-2">Authentication is taking longer than expected.</p>
           <p className="text-sm mb-6" style={{ color: '#94a3b8' }}>
@@ -83,11 +80,8 @@ export default function AuthLoadingGate() {
       style={{ backgroundColor: 'var(--bg-primary)' }}
     >
       <div className="flex flex-col items-center gap-4">
-        <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center"
-          style={{ backgroundColor: '#009BFF' }}
-        >
-          <TrendingUp className="w-6 h-6 text-white" />
+        <div>
+          <Image src="/logo.png" alt="Holoture" width={48} height={48} style={{ borderRadius: '8px' }} />
         </div>
         <div className="flex items-center gap-2.5">
           <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
