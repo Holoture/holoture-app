@@ -274,8 +274,8 @@ const ARTICLES: Article[] = [
     summary: 'A step-by-step guide to getting started with Holoture without making the classic beginner mistakes.',
     sections: [
       {
-        heading: 'Step 1 — Start With the Free Daily Signal',
-        body: 'The free tier gives you one signal per day, randomly selected. Read it fully — the thesis, the entry zone, the target, and the stop-loss. Do not act on it immediately. Instead, look up the company, read some recent news, and decide if the thesis makes sense to you.',
+        heading: 'Step 1 — Start With the Free Daily Signals',
+        body: 'The free tier gives you 5 curated signals per day. Read each one fully — the thesis, the entry zone, the target, and the stop-loss. Do not act immediately. Instead, look up the company, read some recent news, and decide if the thesis makes sense to you.',
       },
       {
         heading: 'Step 2 — Paper Trade Before Real Money',

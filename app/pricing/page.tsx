@@ -4,7 +4,7 @@ import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 
 const FREE_FEATURES = [
-  '1 curated signal per day',
+  '5 curated signals per day',
   'Large Cap & Small Cap signals only',
   'Basic ticker and signal type',
   'No credit card required',

@@ -19,7 +19,7 @@ const FAQS = [
   },
   {
     q: 'What are the different plans?',
-    a: 'Holoture has three tiers:\n\n• Free — 1 randomly selected signal per day with basic access to the signal board.\n\n• Pro ($15/month) — Full signal board with all entry zones, confidence scores, price targets, stop-losses, and AI thesis. Includes Swing Trade and Long Term signals, up to 5 Momentum signals per day, plus News, Trends, and Earnings Calendar.\n\n• Max ($25/month) — Everything in Pro, plus unlimited Momentum signals, Options Signals (CALL/PUT setups), and the Politician Stock Scanner (real-time Congress trade disclosures).',
+    a: 'Holoture has three tiers:\n\n• Free — 5 curated signals per day with basic access to the signal board.\n\n• Pro ($15/month) — Full signal board with all entry zones, confidence scores, price targets, stop-losses, and AI thesis. Includes Swing Trade and Long Term signals, up to 5 Momentum signals per day, plus News, Trends, and Earnings Calendar.\n\n• Max ($25/month) — Everything in Pro, plus unlimited Momentum signals, Options Signals (CALL/PUT setups), and the Politician Stock Scanner (real-time Congress trade disclosures).',
   },
   {
     q: 'What is Holoture Max?',
@@ -66,7 +66,7 @@ const TIERS = [
     border: 'var(--border)',
     bg:    'var(--surf-w4)',
     features: [
-      '1 signal per day (random pick)',
+      '5 signals per day',
       'Basic signal board access',
       'Signal type & ticker visible',
     ],

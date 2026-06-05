@@ -129,7 +129,7 @@ interface Props {
   signal: Signal
   tier: 'free' | 'pro' | 'max'
   isEven: boolean
-  /** True only for free users on their one fully-visible daily pick */
+  /** True for free users on any of their 5 fully-visible daily picks */
   isFreePick?: boolean
   /** TrackedSignal record ID if this signal is being tracked, else null */
   trackedId?: string | null
@@ -149,7 +149,7 @@ export default function SignalRow({
   const [detailsLoading, setDetailsLoading] = useState(false)
   const [thesisExpanded, setThesisExpanded] = useState(false)
 
-  // isObscured: free user + NOT the daily free pick → hide ticker, blur everything
+  // isObscured: free user + NOT one of the 5 daily free picks → hide ticker, blur everything
   const isObscured = tier === 'free' && !isFreePick
 
   const confidenceColor =
@@ -212,7 +212,7 @@ export default function SignalRow({
                     className="inline-flex items-center gap-1 mt-1"
                     style={{ fontSize: 10, color: '#1D9E75', fontWeight: 700, letterSpacing: '0.02em' }}
                   >
-                    ✦ Today&apos;s Free Pick
+                    ✦ Free Pick
                   </div>
                 )}
               </>
@@ -342,7 +342,7 @@ export default function SignalRow({
           {/* Free pick badge (mobile) */}
           {isFreePick && (
             <div style={{ fontSize: 10, color: '#1D9E75', fontWeight: 700 }}>
-              ✦ Today&apos;s Free Pick
+              ✦ Free Pick
             </div>
           )}
 
@@ -451,7 +451,7 @@ export default function SignalRow({
                       border: '1px solid rgba(29,158,117,0.3)',
                     }}
                   >
-                    ✦ Today&apos;s Free Pick — refreshes daily
+                    ✦ Free Pick — 5 picks refresh daily
                   </div>
                 )}
                 <h4 className="text-sm font-bold text-white mb-2">Summary</h4>

@@ -132,7 +132,7 @@ export default async function LandingPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 {[
-                  '1 signal per day',
+                  '5 signals per day',
                   'Large cap & small cap signals',
                   'Basic signal info',
                   'No credit card required',

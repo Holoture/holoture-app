@@ -39,20 +39,53 @@ function isMomentum(s: Signal): boolean {
   return s.signalType === 'BUY' && s.confidence >= 75
 }
 
-// ─── daily free pick ──────────────────────────────────────────────────────────
+// ─── daily free picks ─────────────────────────────────────────────────────────
+
+const FREE_SIGNAL_COUNT = 5
 
 /**
- * Returns a deterministic signal ID for today's free pick.
- * Stable across all users — same pick all day, changes at midnight.
+ * Returns a deterministic Set of 5 signal IDs for today's free picks.
+ * Stable across all users — same picks all day, rotate at midnight.
  * Sorted by ID before hashing so the result is independent of fetch order.
+ * Picks are spread across categories (large cap, small cap, swing, long-term,
+ * high-confidence) for variety rather than clustering in one category.
  */
-function getDailyFreePickId(signals: Signal[]): string | null {
-  if (signals.length === 0) return null
-  const today = new Date().toISOString().slice(0, 10) // "2026-05-28"
+function getDailyFreePickIds(signals: Signal[]): Set<string> {
+  if (signals.length === 0) return new Set()
+  if (signals.length <= FREE_SIGNAL_COUNT) return new Set(signals.map(s => s.id))
+
+  const today = new Date().toISOString().slice(0, 10) // "2026-06-04"
   let hash = 5381
   for (const c of today) hash = ((hash << 5) + hash + c.charCodeAt(0)) >>> 0
+
   const sorted = [...signals].sort((a, b) => a.id.localeCompare(b.id))
-  return sorted[hash % sorted.length].id
+
+  // Category pools — attempt to pick one from each for variety.
+  // Pools are ordered by specificity; each pool filters independently.
+  const pools: Signal[][] = [
+    sorted.filter(s => isLargeCapTicker(s) && s.signalType === 'BUY'),
+    sorted.filter(s => !isLargeCapTicker(s) && !isMomentum(s)),   // small/mid-cap
+    sorted.filter(s => isSwingTrade(String(s.timeHorizon))),
+    sorted.filter(s => isLongTerm(String(s.timeHorizon))),
+    sorted.filter(s => isMomentum(s)),
+  ]
+
+  const picked = new Set<string>()
+
+  for (let i = 0; i < pools.length && picked.size < FREE_SIGNAL_COUNT; i++) {
+    const available = pools[i].filter(s => !picked.has(s.id))
+    if (available.length > 0) {
+      picked.add(available[(hash + i * 1013) % available.length].id)
+    }
+  }
+
+  // Top-up from the full sorted list if categories didn't yield enough
+  for (const s of sorted) {
+    if (picked.size >= FREE_SIGNAL_COUNT) break
+    picked.add(s.id)
+  }
+
+  return picked
 }
 
 // ─── filter/sort types ────────────────────────────────────────────────────────
@@ -126,8 +159,8 @@ export default function SignalBoardClient({
 
   const isFree = tier === 'free'
 
-  // Compute the daily free pick once (stable for the day, same for all users)
-  const freePickId = useMemo(() => (isFree ? getDailyFreePickId(signals) : null), [signals, isFree])
+  // Compute the 5 daily free picks once (stable for the day, same for all users)
+  const freePickIds = useMemo(() => (isFree ? getDailyFreePickIds(signals) : new Set<string>()), [signals, isFree])
 
   // Filtering + sorting — only active for pro/max users
   const filtered = useMemo(() => {
@@ -198,7 +231,7 @@ export default function SignalBoardClient({
                 {signals.length} signal{signals.length !== 1 ? 's' : ''}
               </span>
               {' '}available today — you&apos;re seeing{' '}
-              <span className="font-bold text-white">1 free pick.</span>
+              <span className="font-bold text-white">{Math.min(FREE_SIGNAL_COUNT, signals.length)} free picks.</span>
               {' '}Upgrade to unlock all.
             </p>
           </div>
@@ -359,7 +392,7 @@ export default function SignalBoardClient({
                         signal={s}
                         tier={tier}
                         isEven={idx % 2 === 0}
-                        isFreePick={isFree && s.id === freePickId}
+                        isFreePick={isFree && freePickIds.has(s.id)}
                         trackedId={trackedMap.get(s.id) ?? null}
                         onTrackToggle={handleTrackToggle}
                       />
