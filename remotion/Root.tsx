@@ -9,6 +9,7 @@ import { PromoVideo, PROMO_FALLBACK } from './compositions/PromoVideo'
 import { ProductDemo, DEMO_FALLBACK } from './compositions/ProductDemo'
 import { MRVLExplainer } from './compositions/MRVLExplainer'
 import { ExpandingBrain } from './compositions/ExpandingBrain'
+import { QSReel, SERVReel, MSFTReel, PLTRReel, HOODReel } from './compositions/StockReels'
 import { BuyTheDip }     from './compositions/BuyTheDip'
 import {
   PDTCarouselComposition,
@@ -33,6 +34,11 @@ const AnyPromoVideo      = PromoVideo      as React.ComponentType<any>
 const AnyProductDemo     = ProductDemo     as React.ComponentType<any>
 const AnyMRVLExplainer   = MRVLExplainer   as React.ComponentType<any>
 const AnyExpandingBrain  = ExpandingBrain  as React.ComponentType<any>
+const AnyQSReel   = QSReel   as React.ComponentType<any>
+const AnySERVReel = SERVReel as React.ComponentType<any>
+const AnyMSFTReel = MSFTReel as React.ComponentType<any>
+const AnyPLTRReel = PLTRReel as React.ComponentType<any>
+const AnyHOODReel = HOODReel as React.ComponentType<any>
 const AnyBuyTheDip         = BuyTheDip             as React.ComponentType<any>
 const AnyPDTCarousel       = PDTCarouselComposition as React.ComponentType<any>
 const AnyPDTSlide1         = PDTSlide1Component     as React.ComponentType<any>
@@ -115,6 +121,12 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="PDTSlide3"  component={AnyPDTSlide3}     durationInFrames={90}  fps={30} width={1080} height={1350} defaultProps={{}} />
     <Composition id="PDTSlide4"  component={AnyPDTSlide4}     durationInFrames={90}  fps={30} width={1080} height={1350} defaultProps={{}} />
     <Composition id="PDTSlide5"  component={AnyPDTSlide5}     durationInFrames={90}  fps={30} width={1080} height={1350} defaultProps={{}} />
+    {/* ── Stock reels — 57 s each (1710 frames) ── */}
+    <Composition id="QSReel"   component={AnyQSReel}   durationInFrames={1710} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="SERVReel" component={AnySERVReel} durationInFrames={1710} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="MSFTReel" component={AnyMSFTReel} durationInFrames={1710} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="PLTRReel" component={AnyPLTRReel} durationInFrames={1710} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="HOODReel" component={AnyHOODReel} durationInFrames={1710} fps={30} width={1080} height={1920} defaultProps={{}} />
     {/* Educational graphic — 6 s, 4:5 */}
     <Composition id="BuyTheDip" component={AnyBuyTheDip} durationInFrames={180} fps={30} width={1080} height={1350} defaultProps={{}} />
     {/* Meme — 5 s expanding brain */}
