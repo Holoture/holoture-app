@@ -16,9 +16,11 @@
 import React from 'react'
 import {
   AbsoluteFill,
+  Img,
   Sequence,
   interpolate,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion'
@@ -90,38 +92,25 @@ function GridOverlay() {
   )
 }
 
-/** Sun / radiant circle icon — used in logo mark */
-function SunSVG({ size = 26 }: { size?: number }) {
-  const cx = size / 2, cy = size / 2, cr = size * 0.16
-  const innerR = size * 0.26, outerR = size * 0.42
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={cx} cy={cy} r={cr} fill="#fff" />
-      {Array.from({ length: 8 }, (_, i) => {
-        const a  = (i / 8) * Math.PI * 2
-        const ca = Math.cos(a), sa = Math.sin(a)
-        return (
-          <line key={i}
-            x1={cx + ca * innerR} y1={cy + sa * innerR}
-            x2={cx + ca * outerR} y2={cy + sa * outerR}
-            stroke="#fff" strokeWidth="1.8" strokeLinecap="round" />
-        )
-      })}
-    </svg>
-  )
-}
-
-/** Rounded-square gradient logo mark */
+/** Holoture bull logo mark — white rounded-square container so the
+ *  blue bull reads cleanly against the dark navy background */
 function LogoMark({ size = 42 }: { size?: number }) {
+  const pad = Math.round(size * 0.10)
   return (
     <div style={{
-      width: size, height: size, borderRadius: size * 0.24,
-      background: GRAD,
+      width: size, height: size, borderRadius: size * 0.22,
+      backgroundColor: '#ffffff',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      boxShadow: `0 4px 20px rgba(0,210,255,0.38)`,
+      padding: pad,
+      boxSizing: 'border-box' as const,
+      boxShadow: `0 2px 12px rgba(0,0,0,0.35)`,
       flexShrink: 0,
+      overflow: 'hidden',
     }}>
-      <SunSVG size={Math.round(size * 0.60)} />
+      <Img
+        src={staticFile('logo.png')}
+        style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+      />
     </div>
   )
 }
