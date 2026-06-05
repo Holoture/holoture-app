@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
-import { ChevronDown, Search, TrendingUp } from 'lucide-react'
+import { ChevronDown, Search, TrendingUp, History, RefreshCw, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import SignalRow from './SignalRow'
+import SignalHistoryTab from './SignalHistoryTab'
 import type { Signal } from './SignalCard'
 
 // ─── category helpers ─────────────────────────────────────────────────────────
@@ -127,10 +128,18 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
 export default function SignalBoardClient({
   signals,
   tier,
+  isAdmin   = false,
+  isYesterday = false,
+  lastGenerated = null,
 }: {
   signals: Signal[]
   tier: 'free' | 'pro' | 'max'
+  isAdmin?:      boolean
+  isYesterday?:  boolean
+  lastGenerated?: string | null
 }) {
+  const [activeTab, setActiveTab]             = useState<'today' | 'history'>('today')
+  const [refreshing, setRefreshing]           = useState(false)
   const [typeFilter, setTypeFilter]           = useState<TypeFilter>('all')
   const [timeframeFilter, setTimeframeFilter] = useState<TimeframeFilter>('all')
   const [sortKey, setSortKey]                 = useState<SortKey>('confidence-desc')
@@ -207,8 +216,72 @@ export default function SignalBoardClient({
     })
   }
 
+  async function handleAdminRefresh() {
+    setRefreshing(true)
+    try {
+      await fetch('/api/admin/refresh-signals', { method: 'POST' })
+      window.location.reload()
+    } catch { /* silent */ }
+    finally { setRefreshing(false) }
+  }
+
+  // Formatted last-generated time
+  const updatedLabel = lastGenerated
+    ? new Date(lastGenerated).toLocaleTimeString('en-US', {
+        hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York',
+      }) + ' EST'
+    : null
+
   return (
     <div className="space-y-5">
+
+      {/* ── TAB BAR ── */}
+      <div className="flex items-center gap-1 border-b pb-0" style={{ borderColor: 'var(--border)' }}>
+        {(['today', 'history'] as const).map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors relative"
+            style={{
+              color: activeTab === tab ? '#009BFF' : 'var(--text-w50)',
+              borderBottom: activeTab === tab ? '2px solid #009BFF' : '2px solid transparent',
+              marginBottom: -1,
+            }}
+          >
+            {tab === 'history' && <History className="w-3.5 h-3.5" />}
+            {tab === 'today' ? 'Today' : 'History'}
+          </button>
+        ))}
+
+        {/* Admin refresh — right-aligned, only visible to admin */}
+        {isAdmin && activeTab === 'today' && (
+          <button
+            onClick={handleAdminRefresh}
+            disabled={refreshing}
+            className="ml-auto flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-opacity hover:opacity-70 disabled:opacity-40"
+            style={{ color: 'var(--text-w50)', border: '1px solid var(--border)' }}
+            title="Admin: regenerate today's signals"
+          >
+            <RefreshCw className={`w-3 h-3 ${refreshing ? 'animate-spin' : ''}`} />
+            {refreshing ? 'Generating…' : 'Refresh signals'}
+          </button>
+        )}
+
+        {/* Updated timestamp */}
+        {updatedLabel && activeTab === 'today' && !isAdmin && (
+          <span className="ml-auto text-xs" style={{ color: 'var(--text-w35)' }}>
+            {isYesterday ? 'Yesterday · ' : ''}{updatedLabel}
+          </span>
+        )}
+      </div>
+
+      {/* ── HISTORY TAB ── */}
+      {activeTab === 'history' && (
+        <SignalHistoryTab tier={tier} />
+      )}
+
+      {/* ── TODAY TAB ── */}
+      {activeTab === 'today' && <>
 
       {/* ── FREE USER BANNER ── */}
       {isFree && (
@@ -423,6 +496,8 @@ export default function SignalBoardClient({
           })}
         </div>
       )}
+
+      </> /* end today tab */}
     </div>
   )
 }

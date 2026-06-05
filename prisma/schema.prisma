@@ -54,7 +54,7 @@ model Signal {
   entryZoneHigh  Float
   targetPrice    Float
   stopLoss       Float
-  confidence     Int
+  confidence     Float
   timeHorizon    String
   thesis         String
   aiSummary      String
@@ -77,7 +77,7 @@ model OptionsSignal {
   strikePrice    Float
   expirationDate String
   premiumEstimate Float
-  confidence     Int
+  confidence     Float
   reasoning      String
   summary        String
   riskLevel      String   @default("Medium")

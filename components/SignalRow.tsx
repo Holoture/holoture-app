@@ -230,7 +230,7 @@ export default function SignalRow({
               <Blurred>99%</Blurred>
             ) : (
               <span className="text-sm font-bold" style={{ color: confidenceColor }}>
-                {signal.confidence}%
+                {signal.confidence.toFixed(1)}%
               </span>
             )}
             <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>Confidence</div>
@@ -364,7 +364,7 @@ export default function SignalRow({
             <div>
               {isObscured ? <Blurred>99%</Blurred> : (
                 <span className="text-sm font-bold" style={{ color: confidenceColor }}>
-                  {signal.confidence}%
+                  {signal.confidence.toFixed(1)}%
                 </span>
               )}
               <div style={{ fontSize: 10, color: 'var(--text-w35)' }}>Confidence</div>

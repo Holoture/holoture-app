@@ -10,11 +10,51 @@ import AuthLoadingGate from '@/components/AuthLoadingGate'
 import { TrendingUp, Crown, Zap, Lock } from 'lucide-react'
 import Link from 'next/link'
 
+// ── EST helpers ────────────────────────────────────────────────────────────────
+
+/** Returns the current hour:minute in the America/New_York timezone. */
+function estNow() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York',
+    hour: 'numeric', minute: 'numeric', hour12: false,
+  }).formatToParts(new Date())
+  const h = parseInt(parts.find(p => p.type === 'hour')!.value, 10)
+  const m = parseInt(parts.find(p => p.type === 'minute')!.value, 10)
+  return { h, m }
+}
+
+function isBefore630amEST() {
+  const { h, m } = estNow()
+  return h < 6 || (h === 6 && m < 30)
+}
+
+// ── Signal fetch with 24 h freshness logic ─────────────────────────────────
+
 async function getSignals() {
-  return prisma.signal.findMany({
-    where: { isActive: true },
+  const cutoff24h = new Date(Date.now() - 24 * 60 * 60 * 1000)
+
+  // Today's signals — created in the last 24 h
+  const todaySignals = await prisma.signal.findMany({
+    where: { isActive: true, createdAt: { gte: cutoff24h } },
     orderBy: { signalDate: 'desc' },
   })
+
+  if (todaySignals.length > 0) {
+    return { signals: todaySignals, isYesterday: false }
+  }
+
+  // No signals yet — if before 6:30 am EST show yesterday's batch
+  if (isBefore630amEST()) {
+    const cutoff48h = new Date(Date.now() - 48 * 60 * 60 * 1000)
+    const yesterdaySignals = await prisma.signal.findMany({
+      where: { isActive: true, createdAt: { gte: cutoff48h } },
+      orderBy: { signalDate: 'desc' },
+    })
+    return { signals: yesterdaySignals, isYesterday: true }
+  }
+
+  // After 6:30 am but signals not yet generated — empty board
+  return { signals: [] as typeof todaySignals, isYesterday: false }
 }
 
 async function getOptionsSignals() {
@@ -44,12 +84,12 @@ export default async function DashboardPage() {
   if (!userId) return <AuthLoadingGate />
 
   let user: Awaited<ReturnType<typeof getOrCreateUser>> = null
-  let signals: Awaited<ReturnType<typeof getSignals>> = []
+  let signalResult: Awaited<ReturnType<typeof getSignals>> = { signals: [], isYesterday: false }
   let optionsSignals: Awaited<ReturnType<typeof getOptionsSignals>> = []
   let lastLog: Awaited<ReturnType<typeof getLastGenerationLog>> = null
 
   try {
-    ;[user, signals, optionsSignals, lastLog] = await Promise.all([
+    ;[user, signalResult, optionsSignals, lastLog] = await Promise.all([
       getOrCreateUser(),
       getSignals(),
       getOptionsSignals(),
@@ -69,6 +109,9 @@ export default async function DashboardPage() {
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   })
+
+  const { signals, isYesterday } = signalResult
+  const isAdmin = userId === process.env.ADMIN_USER_ID
 
   // Serialize signals (Date → string) for client components
   const serializedSignals = signals.map(s => ({
@@ -114,12 +157,19 @@ export default async function DashboardPage() {
         </div>
       )}
 
+      {/* ── Yesterday banner ── */}
+      {isYesterday && (
+        <div className="px-4 py-3 text-sm text-center font-semibold" style={{ backgroundColor: 'rgba(251,191,36,0.1)', borderBottom: '1px solid rgba(251,191,36,0.25)', color: '#fbbf24' }}>
+          ⏳ Today&apos;s signals are being generated — showing yesterday&apos;s picks. Updates at 6:30 am EST.
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Page header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <h1 className="text-2xl sm:text-3xl font-black text-white">Signal Board</h1>
+              <h1 className="text-2xl sm:text-3xl font-black text-white">Today&apos;s Signals</h1>
               {isMax && (
                 <span
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold"
@@ -152,15 +202,20 @@ export default async function DashboardPage() {
             className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
             style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
           >
-            <Zap className="w-4 h-4" style={{ color: '#009BFF' }} />
+            {/* Freshness dot: green = today, amber = yesterday */}
+            <div
+              className="w-2.5 h-2.5 rounded-full shrink-0"
+              style={{ backgroundColor: isYesterday ? '#fbbf24' : '#1D9E75' }}
+              title={isYesterday ? 'Showing yesterday\'s signals' : 'Signals are fresh'}
+            />
             <div>
               <p className="text-xs font-semibold text-white">
-                {isPro ? `${signals.length} Active Signals` : `${signals.length} Signals Available`}
+                {signals.length} signal{signals.length !== 1 ? 's' : ''}{isYesterday ? ' (yesterday)' : ''}
               </p>
-              <p className="text-xs text-white">
+              <p className="text-xs" style={{ color: 'var(--text-w50)' }}>
                 {lastLog
                   ? `Updated ${lastLog.generatedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' })} EST`
-                  : isPro ? 'Full curated board' : 'Upgrade to unlock all details'}
+                  : 'Generating…'}
               </p>
             </div>
           </div>
@@ -171,14 +226,14 @@ export default async function DashboardPage() {
           <EmptyState />
         ) : isPro ? (
           <div className="space-y-10">
-            <SignalBoardClient signals={serializedSignals} tier={tier} />
+            <SignalBoardClient signals={serializedSignals} tier={tier} isAdmin={isAdmin} isYesterday={isYesterday} lastGenerated={lastLog?.generatedAt.toISOString() ?? null} />
             {isMax && <OptionsDashboardClient signals={serializedOptions} />}
             {!isMax && <MaxUpsell />}
           </div>
         ) : (
           <div className="space-y-6">
             <UpgradeBanner />
-            <SignalBoardClient signals={serializedSignals} tier="free" />
+            <SignalBoardClient signals={serializedSignals} tier="free" isAdmin={isAdmin} isYesterday={isYesterday} lastGenerated={lastLog?.generatedAt.toISOString() ?? null} />
           </div>
         )}
       </div>
