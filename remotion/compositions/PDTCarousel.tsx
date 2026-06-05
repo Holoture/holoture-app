@@ -16,11 +16,9 @@
 import React from 'react'
 import {
   AbsoluteFill,
-  Img,
   Sequence,
   interpolate,
   spring,
-  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion'
@@ -92,47 +90,7 @@ function GridOverlay() {
   )
 }
 
-/** Holoture bull logo — SVG feColorMatrix filter removes the white
- *  background by zeroing alpha on near-white pixels while leaving the
- *  blue logo colour fully intact.  No white box, no colour shift. */
-function LogoMark({ size = 42 }: { size?: number }) {
-  return (
-    <div style={{ width: size, height: size, flexShrink: 0, position: 'relative' as const }}>
-      {/* 0×0 hidden SVG that registers the filter in the document */}
-      <svg width="0" height="0"
-        style={{ position: 'absolute' as const, overflow: 'hidden', pointerEvents: 'none' }}>
-        <defs>
-          <filter id="htLogoFilter" colorInterpolationFilters="sRGB">
-            {/*
-              Keep R/G/B channels unchanged.
-              Alpha row: alpha = 2.8 − R − G − B
-                white  (1,1,1) → 2.8−3   = −0.2  → clamped to 0 (transparent) ✓
-                blue (~0.1,0.5,1) → 2.8−1.6 = 1.2  → clamped to 1 (opaque)    ✓
-            */}
-            <feColorMatrix type="matrix" values="
-              1 0 0 0 0
-              0 1 0 0 0
-              0 0 1 0 0
-             -1 -1 -1 0 2.8" />
-          </filter>
-        </defs>
-      </svg>
-
-      <Img
-        src={staticFile('logo.png')}
-        style={{
-          width: size, height: size,
-          objectFit: 'contain',
-          display: 'block',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          filter: 'url(#htLogoFilter)' as any,
-        }}
-      />
-    </div>
-  )
-}
-
-/** Full logo lockup: mark + wordmark */
+/** Wordmark only — no logo image */
 function LogoBar({ opacity = 1 }: { opacity?: number }) {
   return (
     <div style={{
@@ -140,8 +98,7 @@ function LogoBar({ opacity = 1 }: { opacity?: number }) {
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       opacity,
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-        <LogoMark size={42} />
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <span style={{
           fontSize: 20, fontWeight: 700, color: C.white,
           fontFamily: SORA, letterSpacing: '0.10em',
@@ -314,7 +271,6 @@ export function PDTSlide1Component() {
         borderTop:`1px solid ${C.dimmer}`, paddingTop:22,
       }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <LogoMark size={34} />
           <span style={{ fontSize:18, fontWeight:700, color:C.white, fontFamily:SORA, letterSpacing:'0.08em' }}>
             HOLOTURE
           </span>
@@ -432,7 +388,6 @@ export function PDTSlide2Component() {
         borderTop:`1px solid ${C.dimmer}`, paddingTop:20,
       }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <LogoMark size={34} />
           <span style={{ fontSize:18, fontWeight:700, color:C.white, fontFamily:SORA, letterSpacing:'0.08em' }}>
             HOLOTURE
           </span>
@@ -547,7 +502,6 @@ export function PDTSlide3Component() {
         borderTop:`1px solid ${C.dimmer}`, paddingTop:20,
       }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <LogoMark size={34} />
           <span style={{ fontSize:18, fontWeight:700, color:C.white, fontFamily:SORA, letterSpacing:'0.08em' }}>
             HOLOTURE
           </span>
@@ -675,7 +629,6 @@ export function PDTSlide4Component() {
         borderTop:`1px solid ${C.dimmer}`, paddingTop:20,
       }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <LogoMark size={34} />
           <span style={{ fontSize:18, fontWeight:700, color:C.white, fontFamily:SORA, letterSpacing:'0.08em' }}>
             HOLOTURE
           </span>
@@ -724,7 +677,6 @@ export function PDTSlide5Component() {
         opacity: logoOp,
         transform:`scale(${logoSc})`,
       }}>
-        <LogoMark size={72} />
         <span style={{
           fontSize:26, fontWeight:700, color:C.white,
           fontFamily:SORA, letterSpacing:'0.14em',
