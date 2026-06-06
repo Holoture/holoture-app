@@ -9,7 +9,9 @@
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "remotion:studio": "remotion studio remotion/index.ts",
+    "render:congress": "remotion render remotion/index.ts reel-pelosi-ai --output out/reel-pelosi-ai.mp4 && remotion render remotion/index.ts reel-pelosi-apple --output out/reel-pelosi-apple.mp4 && remotion render remotion/index.ts reel-mtg --output out/reel-mtg.mp4 && remotion render remotion/index.ts reel-committee --output out/reel-committee.mp4 && remotion render remotion/index.ts reel-weekly --output out/reel-weekly.mp4"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",

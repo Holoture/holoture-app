@@ -12,6 +12,9 @@ import { ExpandingBrain } from './compositions/ExpandingBrain'
 import { QSReel, SERVReel, MSFTReel, PLTRReel, HOODReel } from './compositions/StockReels'
 import { BuyTheDip }     from './compositions/BuyTheDip'
 import {
+  ReelPelosiAI, ReelPelosiApple, ReelMTG, ReelCommittee, ReelWeekly,
+} from './compositions/CongressReels'
+import {
   PDTCarouselComposition,
   PDTSlide1Component, PDTSlide2Component, PDTSlide3Component,
   PDTSlide4Component, PDTSlide5Component,
@@ -39,6 +42,11 @@ const AnySERVReel = SERVReel as React.ComponentType<any>
 const AnyMSFTReel = MSFTReel as React.ComponentType<any>
 const AnyPLTRReel = PLTRReel as React.ComponentType<any>
 const AnyHOODReel = HOODReel as React.ComponentType<any>
+const AnyReelPelosiAI    = ReelPelosiAI    as React.ComponentType<any>
+const AnyReelPelosiApple = ReelPelosiApple as React.ComponentType<any>
+const AnyReelMTG         = ReelMTG         as React.ComponentType<any>
+const AnyReelCommittee   = ReelCommittee   as React.ComponentType<any>
+const AnyReelWeekly      = ReelWeekly      as React.ComponentType<any>
 const AnyBuyTheDip         = BuyTheDip             as React.ComponentType<any>
 const AnyPDTCarousel       = PDTCarouselComposition as React.ComponentType<any>
 const AnyPDTSlide1         = PDTSlide1Component     as React.ComponentType<any>
@@ -127,6 +135,12 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="MSFTReel" component={AnyMSFTReel} durationInFrames={1710} fps={30} width={1080} height={1920} defaultProps={{}} />
     <Composition id="PLTRReel" component={AnyPLTRReel} durationInFrames={1710} fps={30} width={1080} height={1920} defaultProps={{}} />
     <Composition id="HOODReel" component={AnyHOODReel} durationInFrames={1710} fps={30} width={1080} height={1920} defaultProps={{}} />
+    {/* ── Congress Scanner series — 16–20 s each ─────────────────────────────── */}
+    <Composition id="reel-pelosi-ai"    component={AnyReelPelosiAI}    durationInFrames={540} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="reel-pelosi-apple" component={AnyReelPelosiApple} durationInFrames={480} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="reel-mtg"          component={AnyReelMTG}          durationInFrames={600} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="reel-committee"    component={AnyReelCommittee}    durationInFrames={600} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="reel-weekly"       component={AnyReelWeekly}       durationInFrames={540} fps={30} width={1080} height={1920} defaultProps={{}} />
     {/* Educational graphic — 6 s, 4:5 */}
     <Composition id="BuyTheDip" component={AnyBuyTheDip} durationInFrames={180} fps={30} width={1080} height={1350} defaultProps={{}} />
     {/* Meme — 5 s expanding brain */}
