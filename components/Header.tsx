@@ -17,6 +17,7 @@ const NAV_LINKS = [
   { href: '/trends', label: 'Trends' },
   { href: '/calendar', label: 'Calendar' },
   { href: '/politician-scanner', label: 'Politician Scanner' },
+  { href: '/insider-scanner', label: 'Insider' },
   { href: '/learn', label: 'Learn' },
   { href: '/alerts', label: 'Alerts' },
   { href: '/support', label: 'Support' },
