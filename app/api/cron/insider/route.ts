@@ -7,8 +7,9 @@ export const maxDuration = 120
 const client = new Anthropic()
 
 // OpenInsider screener: purchases only, min $50k value, last 2 days, exclude penny stocks
+// NOTE: openinsider.com does not serve HTTPS (connection refused on 443) — must use HTTP.
 const OPENINSIDER_URL =
-  'https://openinsider.com/screener?s=&o=&pl=&ph=&ll=&lh=&fd=2&fdr=&td=0&tdr=&fdlyl=&fdlyh=&daysago=&xp=1&vl=50&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&ov=&ovh=&portfolio=&cgp=0&pb=1&ii=&bf=&sortcol=0&cnt=100&page=1'
+  'http://openinsider.com/screener?s=&o=&pl=&ph=&ll=&lh=&fd=2&fdr=&td=0&tdr=&fdlyl=&fdlyh=&daysago=&xp=1&vl=50&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&ov=&ovh=&portfolio=&cgp=0&pb=1&ii=&bf=&sortcol=0&cnt=100&page=1'
 
 interface ParsedTrade {
   ticker: string
@@ -56,19 +57,19 @@ function parseOpenInsiderHTML(html: string): ParsedTrade[] {
 
     try {
       // Column order from OpenInsider tinytable:
-      // 0: checkbox, 1: filing date (with link), 2: trade date, 3: ticker (with link),
+      // 0: checkbox, 1: filing date (with link to SEC filing), 2: trade date, 3: ticker (with link + chart tooltip),
       // 4: company, 5: insider name, 6: title, 7: trade type,
       // 8: price, 9: qty, 10: owned, 11: delta own, 12: value
 
-      // Extract trade type — must be "P" (purchase)
+      // Extract trade type — values look like "P - Purchase", "S - Sale", etc.
       const tradeTypeRaw = cells[7].replace(/<[^>]+>/g, '').trim()
-      if (tradeTypeRaw !== 'P') continue
+      if (!tradeTypeRaw.startsWith('P')) continue
 
-      // Extract SEC filing link
+      // Extract SEC filing link — already a full URL to sec.gov
       const linkMatch = cells[1].match(/href="([^"]+)"/)
-      const secLink = linkMatch ? `https://openinsider.com${linkMatch[1]}` : ''
+      const secLink = linkMatch ? linkMatch[1] : ''
 
-      // Extract filing date
+      // Extract filing date (text content of the <a> tag)
       const filingDateRaw = cells[1].replace(/<[^>]+>/g, '').trim()
       const filingDate = new Date(filingDateRaw)
       if (isNaN(filingDate.getTime())) continue
@@ -78,8 +79,10 @@ function parseOpenInsiderHTML(html: string): ParsedTrade[] {
       const tradeDate = new Date(tradeDateRaw)
       if (isNaN(tradeDate.getTime())) continue
 
-      // Extract ticker
-      const ticker = cells[3].replace(/<[^>]+>/g, '').trim().toUpperCase()
+      // Extract ticker from the href (the cell contains a chart tooltip with embedded
+      // <img> tags, so naive tag-stripping leaves cruft — pull it from href="/TICKER" instead)
+      const tickerMatch = cells[3].match(/href="\/([A-Z.\-]+)"/)
+      const ticker = tickerMatch ? tickerMatch[1].toUpperCase() : ''
       if (!ticker || ticker.length > 6) continue
 
       // Extract company name

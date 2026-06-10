@@ -71,8 +71,17 @@ async function fetchTrades(): Promise<{ trades: RawTrade[]; diagnostic: string }
     const data = JSON.parse(raw) as RawTrade[]
     if (!Array.isArray(data)) return { trades: [], diagnostic: diagnostic + 'not an array; ' }
 
+    // Discard incomplete rows and rows with an impossible (future) trade date —
+    // PDF text extraction occasionally misreads a year and produces a date
+    // that's after the filing date / in the future.
+    const today = new Date().toISOString().slice(0, 10)
     const valid = data.filter(
-      (t) => t.politician_name && t.ticker && t.trade_type
+      (t) =>
+        t.politician_name &&
+        t.ticker &&
+        t.trade_type &&
+        t.traded_at &&
+        t.traded_at <= today
     )
     diagnostic += `records=${data.length} valid=${valid.length}; `
     return { trades: valid.slice(0, 50), diagnostic }
@@ -80,6 +89,45 @@ async function fetchTrades(): Promise<{ trades: RawTrade[]; diagnostic: string }
     diagnostic += `error=${String(e).slice(0, 120)}`
     return { trades: [], diagnostic }
   }
+}
+
+// ─── Company name enrichment ───────────────────────────────────────────────
+// House PTR PDFs sometimes don't yield a clean company name, leaving
+// company_name === ticker. Backfill the real name from Finnhub's company
+// profile endpoint (free tier).
+
+async function fetchCompanyName(ticker: string): Promise<string | null> {
+  const key = process.env.FINNHUB_API_KEY
+  if (!key) return null
+  try {
+    const res = await fetch(
+      `https://finnhub.io/api/v1/stock/profile2?symbol=${ticker}&token=${key}`,
+      { cache: 'no-store', signal: AbortSignal.timeout(5000) }
+    )
+    if (!res.ok) return null
+    const data = await res.json()
+    return typeof data.name === 'string' && data.name.trim() ? data.name.trim() : null
+  } catch { return null }
+}
+
+async function enrichCompanyNames(trades: RawTrade[]): Promise<RawTrade[]> {
+  const needsLookup = [...new Set(
+    trades.filter((t) => t.company_name === t.ticker).map((t) => t.ticker)
+  )]
+  if (needsLookup.length === 0) return trades
+
+  const names = await Promise.all(needsLookup.map((t) => fetchCompanyName(t)))
+  const nameMap = new Map<string, string>()
+  needsLookup.forEach((ticker, i) => {
+    if (names[i]) nameMap.set(ticker, names[i]!)
+  })
+  if (nameMap.size === 0) return trades
+
+  return trades.map((t) =>
+    t.company_name === t.ticker && nameMap.has(t.ticker)
+      ? { ...t, company_name: nameMap.get(t.ticker)! }
+      : t
+  )
 }
 
 // ─── Commentary generation ─────────────────────────────────────────────────
@@ -176,8 +224,10 @@ export async function GET(req: Request) {
       })
     }
 
-    const batch1 = trades.slice(0, 25)
-    const batch2 = trades.slice(25)
+    const enrichedTrades = await enrichCompanyNames(trades)
+
+    const batch1 = enrichedTrades.slice(0, 25)
+    const batch2 = enrichedTrades.slice(25)
     const [map1, map2] = await Promise.all([
       generateCommentary(batch1),
       generateCommentary(batch2),
@@ -185,7 +235,7 @@ export async function GET(req: Request) {
     const commentaryMap = new Map([...map1, ...map2])
 
     let upserted = 0
-    for (const trade of trades) {
+    for (const trade of enrichedTrades) {
       const externalId = `${trade.politician_name}|${trade.ticker}|${trade.traded_at}|${trade.trade_type}`
         .toLowerCase()
         .replace(/[^a-z0-9|]/g, '-')

@@ -55,14 +55,6 @@ export default function PricingPage() {
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-black text-white">Choose Your Plan</h1>
           <p className="mt-4 text-lg text-white">Start free. Unlock the full edge when you&apos;re ready.</p>
-          {/* Trial callout */}
-          <div
-            className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 rounded-xl text-sm font-semibold"
-            style={{ backgroundColor: 'rgba(29,158,117,0.1)', border: '1px solid rgba(29,158,117,0.25)', color: '#1D9E75' }}
-          >
-            <Clock className="w-4 h-4" />
-            Pro &amp; Max come with a 7-day free trial — card required, nothing charged until day 8.
-          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -198,8 +190,7 @@ export default function PricingPage() {
           className="mt-10 rounded-xl px-6 py-4 text-center text-sm"
           style={{ backgroundColor: 'rgba(29,158,117,0.07)', border: '1px solid rgba(29,158,117,0.2)', color: 'var(--text-w60)' }}
         >
-          <span style={{ color: '#1D9E75' }} className="font-semibold">Cancel anytime before your trial ends and you won't be charged.</span>
-          {' '}Your card is securely stored by Stripe but not billed until day 8. Promo codes grant immediate access and bypass the trial.
+          Your card is securely stored by Stripe but not billed until day 8. Promo codes grant immediate access and bypass the trial.
         </div>
 
         <p className="text-center mt-6 text-sm text-white" style={{ opacity: 0.5 }}>
