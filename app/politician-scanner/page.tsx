@@ -8,12 +8,28 @@ import AuthLoadingGate from '@/components/AuthLoadingGate'
 import { Users, Lock } from 'lucide-react'
 import Link from 'next/link'
 
+// Cap how many trades from any single politician can appear in the feed so
+// one prolific filer (e.g. a spouse with dozens of trades in a single PTR)
+// doesn't crowd out everyone else.
+const MAX_PER_POLITICIAN = 3
+
 async function getPoliticianTrades(limit = 50) {
   try {
-    return await prisma.politicianTrade.findMany({
+    const trades = await prisma.politicianTrade.findMany({
       orderBy: { filedAt: 'desc' },
-      take: limit,
+      take: limit * 4,
     })
+
+    const counts = new Map<string, number>()
+    const result: typeof trades = []
+    for (const trade of trades) {
+      const count = counts.get(trade.politicianName) ?? 0
+      if (count >= MAX_PER_POLITICIAN) continue
+      counts.set(trade.politicianName, count + 1)
+      result.push(trade)
+      if (result.length >= limit) break
+    }
+    return result
   } catch { return [] }
 }
 
@@ -84,7 +100,7 @@ export default async function PoliticianScannerPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-1">

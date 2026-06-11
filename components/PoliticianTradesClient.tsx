@@ -19,10 +19,10 @@ type Trade = {
   significance: string
 }
 
-const PARTY_STYLE: Record<string, { bg: string; text: string; border: string }> = {
-  Democrat:    { bg: 'rgba(59,130,246,0.15)',  text: '#60a5fa', border: 'rgba(59,130,246,0.3)' },
-  Republican:  { bg: 'rgba(239,68,68,0.15)',   text: '#f87171', border: 'rgba(239,68,68,0.3)' },
-  Independent: { bg: 'rgba(168,85,247,0.15)',  text: '#c084fc', border: 'rgba(168,85,247,0.3)' },
+const PARTY_STYLE: Record<string, { bg: string; text: string; border: string; avatar: string }> = {
+  Democrat:    { bg: 'rgba(59,130,246,0.15)',  text: '#60a5fa', border: 'rgba(59,130,246,0.3)', avatar: '#3b82f6' },
+  Republican:  { bg: 'rgba(239,68,68,0.15)',   text: '#f87171', border: 'rgba(239,68,68,0.3)', avatar: '#ef4444' },
+  Independent: { bg: 'rgba(168,85,247,0.15)',  text: '#c084fc', border: 'rgba(168,85,247,0.3)', avatar: '#a855f7' },
 }
 
 const SIG_COLOR: Record<string, string> = {
@@ -35,76 +35,119 @@ function isBuy(tradeType: string) {
   return tradeType.toUpperCase() === 'BUY' || tradeType.toLowerCase().includes('purchase')
 }
 
-function TradeCard({ trade }: { trade: Trade }) {
-  const party = PARTY_STYLE[trade.party] ?? { bg: 'rgba(148,163,184,0.15)', text: '#94a3b8', border: 'rgba(148,163,184,0.3)' }
+function initials(name: string) {
+  return name.split(' ').filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toUpperCase()
+}
+
+function formatRelativeDate(iso: string) {
+  const date = new Date(iso)
+  const now = new Date()
+  const dayMs = 24 * 60 * 60 * 1000
+  const dateDay = Math.floor(date.setHours(0, 0, 0, 0) / dayMs)
+  const todayDay = Math.floor(new Date(now).setHours(0, 0, 0, 0) / dayMs)
+  const diff = todayDay - dateDay
+
+  const time = new Date(iso).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
+  const dateLabel = new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+
+  if (diff === 0) return { time, label: 'Today' }
+  if (diff === 1) return { time, label: 'Yesterday' }
+  return { time, label: dateLabel }
+}
+
+function daysBetween(a: string, b: string) {
+  const ms = new Date(b).getTime() - new Date(a).getTime()
+  return Math.max(0, Math.round(ms / (24 * 60 * 60 * 1000)))
+}
+
+function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
+  const party = PARTY_STYLE[trade.party] ?? { bg: 'rgba(148,163,184,0.15)', text: '#94a3b8', border: 'rgba(148,163,184,0.3)', avatar: '#64748b' }
   const buy = isBuy(trade.tradeType)
   const sigColor = SIG_COLOR[trade.significance] ?? '#64748b'
-  const tradeDate = new Date(trade.tradedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-  const filedDate = new Date(trade.filedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  const published = formatRelativeDate(trade.filedAt)
+  const traded = new Date(trade.tradedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  const filedAfter = daysBetween(trade.tradedAt, trade.filedAt)
 
   return (
     <div
-      className="rounded-xl p-5"
-      style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
+      className="grid grid-cols-[1.6fr_1.6fr_0.9fr_0.9fr_0.7fr_0.7fr_0.8fr_1fr] items-center gap-3 px-4 py-3 text-sm"
+      style={{ borderBottom: isLast ? 'none' : '1px solid var(--border)' }}
     >
-      <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-        {/* Left: politician + trade info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span className="font-bold text-white">{trade.politicianName}</span>
-            <span
-              className="text-xs font-semibold px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: party.bg, color: party.text, border: `1px solid ${party.border}` }}
-            >
-              {trade.party}
-            </span>
-            <span className="text-xs text-white opacity-50">{trade.chamber}</span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className="text-xl font-black text-white tracking-tight">{trade.ticker}</span>
-            {trade.companyName && (
-              <span className="text-sm text-white opacity-70 truncate max-w-[200px]">{trade.companyName}</span>
-            )}
-            <span
-              className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full"
-              style={
-                buy
-                  ? { backgroundColor: 'rgba(74,222,128,0.15)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)' }
-                  : { backgroundColor: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }
-              }
-            >
-              {buy ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-              {buy ? 'BUY' : 'SELL'}
-            </span>
-          </div>
-
-          {trade.aiCommentary && (
-            <p className="text-sm text-white leading-relaxed" style={{ opacity: 0.8 }}>{trade.aiCommentary}</p>
-          )}
+      {/* Politician */}
+      <div className="flex items-center gap-2.5 min-w-0">
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+          style={{ backgroundColor: `${party.avatar}30`, color: party.avatar }}
+        >
+          {initials(trade.politicianName)}
         </div>
-
-        {/* Right: metadata */}
-        <div className="flex sm:flex-col gap-4 sm:gap-2 shrink-0 sm:items-end">
-          <div className="sm:text-right">
-            <p className="text-xs text-white opacity-50">Amount</p>
-            <p className="text-sm font-semibold text-white">{trade.amountRange}</p>
-          </div>
-          <div className="sm:text-right">
-            <p className="text-xs text-white opacity-50">Traded</p>
-            <p className="text-sm text-white">{tradeDate}</p>
-          </div>
-          <div className="sm:text-right">
-            <p className="text-xs text-white opacity-50">Filed</p>
-            <p className="text-sm text-white">{filedDate}</p>
-          </div>
-          <span
-            className="text-xs font-bold px-2 py-0.5 rounded-full self-start sm:self-auto"
-            style={{ backgroundColor: `${sigColor}20`, color: sigColor, border: `1px solid ${sigColor}40` }}
-          >
-            {trade.significance}
-          </span>
+        <div className="min-w-0">
+          <p className="font-semibold text-white truncate">{trade.politicianName}</p>
+          <p className="text-xs truncate" style={{ color: party.text, opacity: 0.85 }}>
+            {trade.party} | {trade.chamber}
+          </p>
         </div>
+      </div>
+
+      {/* Traded Issuer */}
+      <div className="flex items-center gap-2.5 min-w-0">
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+          style={{ backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w60)', border: '1px solid var(--border)' }}
+        >
+          {trade.ticker.slice(0, 1)}
+        </div>
+        <div className="min-w-0">
+          <p className="font-semibold text-white truncate">{trade.ticker}</p>
+          <p className="text-xs truncate" style={{ color: 'var(--text-w50)' }}>{trade.companyName || 'N/A'}</p>
+        </div>
+      </div>
+
+      {/* Published */}
+      <div>
+        <p className="font-semibold text-white">{published.time}</p>
+        <p className="text-xs" style={{ color: 'var(--text-w50)' }}>{published.label}</p>
+      </div>
+
+      {/* Traded */}
+      <div>
+        <p className="text-white">{traded}</p>
+      </div>
+
+      {/* Filed After */}
+      <div>
+        <p className="text-white">{filedAfter}</p>
+        <p className="text-xs" style={{ color: 'var(--text-w50)' }}>days</p>
+      </div>
+
+      {/* Type */}
+      <div>
+        <span
+          className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full"
+          style={
+            buy
+              ? { backgroundColor: 'rgba(74,222,128,0.15)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)' }
+              : { backgroundColor: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }
+          }
+        >
+          {buy ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+          {buy ? 'BUY' : 'SELL'}
+        </span>
+      </div>
+
+      {/* Size */}
+      <div>
+        <p className="text-white whitespace-nowrap">{trade.amountRange}</p>
+      </div>
+
+      {/* Significance */}
+      <div>
+        <span
+          className="text-xs font-bold px-2 py-0.5 rounded-full"
+          style={{ backgroundColor: `${sigColor}20`, color: sigColor, border: `1px solid ${sigColor}40` }}
+        >
+          {trade.significance}
+        </span>
       </div>
     </div>
   )
@@ -181,7 +224,7 @@ export default function PoliticianTradesClient({
         </div>
       )}
 
-      {/* Trade list */}
+      {/* Trade table */}
       {displayed.length === 0 ? (
         <div
           className="rounded-xl p-10 text-center"
@@ -190,8 +233,30 @@ export default function PoliticianTradesClient({
           <p className="text-white font-semibold">No trades match this filter</p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {displayed.map((t) => <TradeCard key={t.id} trade={t} />)}
+        <div
+          className="rounded-xl overflow-x-auto"
+          style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
+        >
+          <div className="min-w-[860px]">
+            {/* Column headers */}
+            <div
+              className="grid grid-cols-[1.6fr_1.6fr_0.9fr_0.9fr_0.7fr_0.7fr_0.8fr_1fr] gap-3 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide"
+              style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-w35)', backgroundColor: 'var(--surf-w2)' }}
+            >
+              <div>Politician</div>
+              <div>Traded Issuer</div>
+              <div>Published</div>
+              <div>Traded</div>
+              <div>Filed After</div>
+              <div>Type</div>
+              <div>Size</div>
+              <div>Significance</div>
+            </div>
+
+            {displayed.map((t, i) => (
+              <TradeRow key={t.id} trade={t} isLast={i === displayed.length - 1} />
+            ))}
+          </div>
         </div>
       )}
 
