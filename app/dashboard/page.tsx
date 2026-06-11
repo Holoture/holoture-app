@@ -27,33 +27,30 @@ function isBefore630amEST() {
   return h < 6 || (h === 6 && m < 30)
 }
 
-// ── Signal fetch with 24 h freshness logic ─────────────────────────────────
+// ── Signal fetch ────────────────────────────────────────────────────────────
+// Show ALL active signals regardless of when they were generated — intraday,
+// 1-3 day, momentum, swing, and long-term signals can all be active at once
+// since they're produced by separate crons on independent schedules.
 
 async function getSignals() {
-  const cutoff24h = new Date(Date.now() - 24 * 60 * 60 * 1000)
-
-  // Today's signals — created in the last 24 h
-  const todaySignals = await prisma.signal.findMany({
-    where: { isActive: true, createdAt: { gte: cutoff24h } },
+  const signals = await prisma.signal.findMany({
+    where: { isActive: true },
     orderBy: { signalDate: 'desc' },
   })
 
-  if (todaySignals.length > 0) {
-    return { signals: todaySignals, isYesterday: false }
-  }
+  if (signals.length === 0) return { signals, isYesterday: false }
 
-  // No signals yet — if before 6:30 am EST show yesterday's batch
-  if (isBefore630amEST()) {
-    const cutoff48h = new Date(Date.now() - 48 * 60 * 60 * 1000)
-    const yesterdaySignals = await prisma.signal.findMany({
-      where: { isActive: true, createdAt: { gte: cutoff48h } },
-      orderBy: { signalDate: 'desc' },
-    })
-    return { signals: yesterdaySignals, isYesterday: true }
-  }
+  // "isYesterday" banner: only relevant in the early-morning gap before
+  // today's main batch has been generated yet.
+  const dateFmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' })
+  const todayStr = dateFmt.format(new Date())
+  const hasTodaySignal = signals.some((s) => {
+    const d = s.signalDate instanceof Date ? s.signalDate : new Date(s.signalDate)
+    return dateFmt.format(d) === todayStr
+  })
 
-  // After 6:30 am but signals not yet generated — empty board
-  return { signals: [] as typeof todaySignals, isYesterday: false }
+  const isYesterday = !hasTodaySignal && isBefore630amEST()
+  return { signals, isYesterday }
 }
 
 async function getOptionsSignals() {
