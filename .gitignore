@@ -54,3 +54,6 @@ next-env.d.ts
 /.clerk/
 
 .env*
+
+# Puppeteer screenshot-capture session
+.puppeteer-profile/

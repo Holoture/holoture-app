@@ -1,38 +1,15 @@
 import Link from 'next/link'
 import { auth } from '@clerk/nextjs/server'
-import { Zap, BarChart3, Users, Eye, Star, ChevronRight } from 'lucide-react'
+import { Zap, Star, ChevronRight } from 'lucide-react'
 import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 import ProductPreview from '@/components/ProductPreview'
 import TrialPopup from '@/components/TrialPopup'
 import ScrollBackground from '@/components/ScrollBackground'
+import EdgeCarousel from '@/components/EdgeCarousel'
 import { getPreviewData } from '@/lib/preview-data'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
-
-// The four core products, presented as feature highlights.
-const FEATURES = [
-  {
-    icon: BarChart3,
-    title: 'Stock Signals',
-    desc: 'Curated buy/watch/short signals with precise entry zones, price targets, stop losses, confidence scores, and time horizons.',
-  },
-  {
-    icon: Zap,
-    title: 'Options Signals',
-    desc: 'Directional CALL & PUT ideas with strikes, expirations, and risk ratings — for traders who want leverage with a plan.',
-  },
-  {
-    icon: Users,
-    title: 'Politician Scanner',
-    desc: 'See exactly what members of Congress are buying and selling, with AI commentary and significance ratings.',
-  },
-  {
-    icon: Eye,
-    title: 'Insider Scanner',
-    desc: 'Track significant insider buying as executives and directors put their own money to work — scored for significance.',
-  },
-]
 
 // Determine whether to show the delayed trial popup. Logged-out visitors and
 // users who have never subscribed are eligible; prior/current customers are not.
@@ -117,36 +94,8 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Features — the four core products */}
-      <section className="relative z-10 py-20" style={{ backgroundColor: 'var(--bg-surface)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-black text-white">
-              One Platform, Four Edges
-            </h2>
-            <p className="mt-4 text-lg text-white">Signals, options, and the scanners that show you where the smart money moves.</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {FEATURES.map(({ icon: Icon, title, desc }) => (
-              <div
-                key={title}
-                className="rounded-xl p-6"
-                style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}
-              >
-                <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-                  style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}
-                >
-                  <Icon className="w-5 h-5" style={{ color: '#009BFF' }} />
-                </div>
-                <h3 className="font-bold text-white mb-2">{title}</h3>
-                <p className="text-sm leading-relaxed text-white">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* One Platform, Four Edges — screenshot carousel */}
+      <EdgeCarousel />
 
       {/* Product Preview */}
       <ProductPreview data={previewData} />
