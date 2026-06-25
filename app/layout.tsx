@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
-import Script from 'next/script'
 import { DM_Sans, JetBrains_Mono } from 'next/font/google'
-import ThemeProvider from '@/components/ThemeProvider'
 import { SessionGuard } from '@/components/SessionGuard'
 import Footer from '@/components/Footer'
 import './globals.css'
@@ -49,23 +47,14 @@ export default function RootLayout({
       signInFallbackRedirectUrl="/dashboard"
       signUpFallbackRedirectUrl="/dashboard"
     >
-      <html lang="en" className={`h-full ${dmSans.variable} ${jetbrainsMono.variable}`}>
+      <html lang="en" data-theme="dark" className={`h-full ${dmSans.variable} ${jetbrainsMono.variable}`}>
         <head>
           <link rel="icon" href="/favicon.ico" sizes="any" />
           <link rel="icon" href="/favicon.png?v=2" type="image/png" />
           <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         </head>
         <body className="min-h-full flex flex-col antialiased">
-          <Script
-            id="theme-init"
-            strategy="beforeInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `(function(){try{var t=localStorage.getItem('theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark')}catch(e){}})()`,
-            }}
-          />
-          <ThemeProvider>
-            <SessionGuard>{children}</SessionGuard>
-          </ThemeProvider>
+          <SessionGuard>{children}</SessionGuard>
           <Footer />
         </body>
       </html>

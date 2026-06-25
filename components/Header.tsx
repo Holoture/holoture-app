@@ -5,10 +5,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useUser, UserButton } from '@clerk/nextjs'
-import { Menu, X, Gift, Sun, Moon, ChevronDown, Lock } from 'lucide-react'
+import { Menu, X, Gift, ChevronDown, Lock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import PromoModal from './PromoModal'
-import { useTheme } from './ThemeProvider'
 
 type DropdownItemConfig = {
   href: string
@@ -39,7 +38,6 @@ const SCANNERS_MENU: DropdownItemConfig[] = [
 const NAV_LINKS = [
   { href: '/learn', label: 'Learn' },
   { href: '/tracker', label: 'Tracker' },
-  { href: '/alerts', label: 'Alerts' },
   { href: '/support', label: 'Support' },
   { href: '/pricing', label: 'Pricing' },
 ]
@@ -49,7 +47,6 @@ export default function Header() {
   const { isSignedIn, isLoaded } = useUser()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [promoOpen, setPromoOpen] = useState(false)
-  const { theme, toggle } = useTheme()
 
   // Silently sync the authenticated user to the database on every page load.
   // This handles the dev→prod Clerk key migration (same email, new user ID) so
@@ -109,13 +106,6 @@ export default function Header() {
             )}
             {isLoaded && isSignedIn && (
               <>
-                <button
-                  onClick={toggle}
-                  className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white"
-                  title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-                >
-                  {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </button>
                 <button
                   onClick={() => setPromoOpen(true)}
                   className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white"

@@ -173,16 +173,6 @@ export const trackerCreateSchema = z.object({
   ticker:   z.string().trim().min(1).max(10).regex(/^[A-Za-z0-9.]{1,10}$/),
 })
 
-/** Alert preferences update — only known boolean/numeric fields allowed */
-export const alertsSchema = z.object({
-  newSignalAlert:      z.boolean().optional(),
-  highConfidenceAlert: z.boolean().optional(),
-  confidenceThreshold: z.number().min(0).max(100).optional(),
-  dailyDigest:         z.boolean().optional(),
-  earningsWarning:     z.boolean().optional(),
-  emailAlerts:         z.boolean().optional(),
-})
-
 /**
  * Ticker symbol in a URL path parameter.
  * Accepts 1–10 alphanumeric characters + dots (e.g. "BRK.B").
