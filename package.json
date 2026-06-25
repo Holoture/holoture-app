@@ -36,6 +36,7 @@
     "remotion": "^4.0.471",
     "stripe": "^22.1.1",
     "tailwind-merge": "^3.6.0",
+    "three": "^0.185.0",
     "zod": "4.3.6"
   },
   "devDependencies": {
