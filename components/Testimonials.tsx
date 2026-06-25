@@ -35,7 +35,7 @@ function Stars() {
 
 export default function Testimonials() {
   return (
-    <section className="relative z-10 py-20" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <section className="relative z-10 py-20" style={{ backgroundColor: 'rgba(15,15,15,0.75)' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-black text-white">What traders are saying</h2>
@@ -47,7 +47,7 @@ export default function Testimonials() {
               key={t.attribution}
               className="rounded-2xl p-7 flex flex-col"
               style={{
-                backgroundColor: 'var(--bg-surface)',
+                backgroundColor: 'rgba(20,20,20,0.85)',
                 border: '1px solid rgba(0,155,255,0.3)',
                 boxShadow: '0 0 24px rgba(0,155,255,0.08)',
               }}

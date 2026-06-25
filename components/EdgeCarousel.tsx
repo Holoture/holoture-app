@@ -91,7 +91,7 @@ export default function EdgeCarousel() {
   const active = SLIDES[index]
 
   return (
-    <section className="relative z-10 py-20" style={{ backgroundColor: 'var(--bg-surface)' }}>
+    <section className="relative z-10 py-20" style={{ backgroundColor: 'rgba(15,15,15,0.75)' }}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <p className="term-label mb-3">// ONE_PLATFORM<span className="term-cursor" /></p>

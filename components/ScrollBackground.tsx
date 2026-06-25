@@ -57,7 +57,7 @@ type Cluster = { left: number; top: number; opacity: number; sub: number; candle
 function buildClusters(): Cluster[] {
   const r = rng(20260625)
   const clusters: Cluster[] = []
-  for (let c = 0; c < 11; c++) {
+  for (let c = 0; c < 22; c++) {
     const count = 6 + Math.floor(r() * 3) // 6–8 candles
     const candles: Candle[] = []
     for (let i = 0; i < count; i++) {
@@ -70,8 +70,8 @@ function buildClusters(): Cluster[] {
     }
     clusters.push({
       left: r() * 92,
-      top: r() * 92,
-      opacity: 0.06 + r() * 0.08, // 6%–14%
+      top: r() * 98,
+      opacity: 0.2 + r() * 0.1, // 20%–30%
       sub: c % 3, // assign to one of three parallax sub-layers
       candles,
     })
@@ -99,7 +99,7 @@ const TICKERS = [
 function buildParticles(): Particle[] {
   const r = rng(70707)
   const out: Particle[] = []
-  for (let i = 0; i < 72; i++) {
+  for (let i = 0; i < 135; i++) {
     const roll = r()
     const kind: Particle['kind'] = roll < 0.6 ? 'dot' : roll < 0.82 ? 'plus' : 'ticker'
     out.push({
@@ -107,7 +107,7 @@ function buildParticles(): Particle[] {
       left: r() * 98,
       top: r() * 98,
       opacity:
-        kind === 'dot' ? 0.2 + r() * 0.2 : kind === 'plus' ? 0.1 : 0.08,
+        kind === 'dot' ? 0.5 + r() * 0.2 : kind === 'plus' ? 0.25 : 0.18,
       sub: r() > 0.5 ? 1 : 0,
       pulse: r() > 0.65,
       delay: r() * 4,
@@ -120,10 +120,13 @@ const PARTICLES = buildParticles()
 
 // ── Layer 4 — ring accents ──────────────────────────────────────────────────────
 const RINGS = [
-  { size: 520, left: 50, top: 18, center: true },  // behind hero headline
-  { size: 360, left: 12, top: 60, center: false },
-  { size: 440, left: 85, top: 75, center: false },
-  { size: 300, left: 70, top: 30, center: false },
+  { size: 520, left: 50, top: 12, center: true },  // behind hero headline
+  { size: 360, left: 12, top: 28, center: false },
+  { size: 440, left: 85, top: 40, center: false },
+  { size: 300, left: 70, top: 55, center: false },
+  { size: 480, left: 20, top: 70, center: false },
+  { size: 340, left: 78, top: 84, center: false },
+  { size: 400, left: 45, top: 95, center: false },
 ]
 
 export default function ScrollBackground() {
@@ -195,7 +198,7 @@ export default function ScrollBackground() {
         style={{ willChange: wc, opacity: mode === 'lite' ? 0.6 : 1 }}
       >
         <svg viewBox="-720 -450 1440 900" className="w-[140%] h-[140%]">
-          <g stroke="#009BFF" strokeWidth="1" fill="none" style={{ opacity: 0.04 }}>
+          <g stroke="#009BFF" strokeWidth="1" fill="none" style={{ opacity: 0.12 }}>
             {GRID.lines.map((l, i) => (
               <line key={`gl${i}`} x1="0" y1="0" x2={l.x2} y2={l.y2} />
             ))}
@@ -243,7 +246,7 @@ export default function ScrollBackground() {
                 left: `${r.left}%`,
                 top: `${r.top}%`,
                 transform: 'translate(-50%, -50%)',
-                border: '1px solid rgba(0,155,255,0.03)',
+                border: '1px solid rgba(0,155,255,0.10)',
               }}
             />
           ))}
@@ -255,7 +258,7 @@ export default function ScrollBackground() {
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse 70% 60% at 50% 38%, rgba(15,15,15,0.6) 0%, rgba(15,15,15,0.25) 45%, transparent 75%)',
+            'radial-gradient(ellipse 70% 60% at 50% 38%, rgba(15,15,15,0.3) 0%, rgba(15,15,15,0.12) 45%, transparent 75%)',
         }}
       />
     </div>

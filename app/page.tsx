@@ -107,7 +107,7 @@ export default async function LandingPage() {
             {/* Free */}
             <div
               className="rounded-2xl p-8"
-              style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
+              style={{ backgroundColor: 'rgba(20,20,20,0.85)', border: '1px solid var(--border)' }}
             >
               <p className="text-sm font-semibold uppercase tracking-wider text-white">Free</p>
               <div className="mt-3 mb-6">
