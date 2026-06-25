@@ -1,104 +1,67 @@
 'use client'
 
 /**
- * GlobeBackground — an animated 3D heat-map globe for use as a fixed page
- * background. Self-contained: generates its own procedural texture, needs no
- * props, and cleans up all GPU resources on unmount.
+ * GlobeBackground — animated realistic-earth globe for a fixed page background.
+ *
+ * Layers: starfield · real earth texture (CDN) · soft heat-map data overlay ·
+ * cyan atmosphere limb glow · tilted equatorial orbital ring. No pins/labels.
+ *
+ * Self-contained: generates its own overlay texture, needs no props, and
+ * disposes all GPU resources on unmount.
  *
  * Props (all optional):
- *   rotationSpeed  number  full globe turns per one full page scroll      (default 1)
- *   idleSpeed      number  idle auto-rotation in radians/second           (default 0.03)
- *   opacity        number  overall canvas opacity 0–1                     (default 0.85)
- *   position       string  'center' | 'right'                             (default 'right')
+ *   rotationSpeed  number  full globe turns per one full page scroll   (default 1)
+ *   idleSpeed      number  idle auto-rotation in radians/second        (default 0.03)
+ *   opacity        number  overall canvas opacity 0–1                  (default 0.85)
+ *   position       string  'center' | 'right'                          (default 'right')
  */
 
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
 const TWO_PI = Math.PI * 2
-
-// City nodes: [name, latitude, longitude, percentChange]
-const CITIES = [
-  { name: 'New York',  lat: 40.71, lon: -74.0,  pct: '+0.72%', off: [-150, -34] },
-  { name: 'London',    lat: 51.51, lon: -0.13,  pct: '+0.38%', off: [40, -90] },
-  { name: 'Frankfurt', lat: 50.11, lon: 8.68,   pct: '+0.27%', off: [120, -50] },
-  { name: 'Tokyo',     lat: 35.68, lon: 139.65, pct: '+1.25%', off: [140, -10] },
-  { name: 'Hong Kong', lat: 22.32, lon: 114.17, pct: '+0.81%', off: [120, 60] },
-]
-
 const GLOBE_RADIUS = 1
 const VIEWPORT_FRACTION = 0.78 // globe diameter ≈ 78% of viewport height
 const LERP = 0.07              // rotation easing toward target
 
-// ── Procedural heat-map texture (green/red glowing tiles + faint grid) ──────────
-function makeHeatTexture() {
+// Dark-style earth texture (NASA / three.js example asset) — dark oceans, clear
+// continent detail, ideal for a dark site background.
+const EARTH_TEXTURE_URL = 'https://unpkg.com/three-globe/example/img/earth-dark.jpg'
+
+// ── Soft heat-map overlay: blurred green/red radial blobs on transparent bg ─────
+function makeHeatOverlayTexture() {
   const w = 2048
   const h = 1024
   const cv = document.createElement('canvas')
   cv.width = w
   cv.height = h
   const ctx = cv.getContext('2d')
+  ctx.clearRect(0, 0, w, h) // transparent base — earth shows through
 
-  // Base
-  ctx.fillStyle = '#03070f'
-  ctx.fillRect(0, 0, w, h)
+  const blobs = 70
+  for (let i = 0; i < blobs; i++) {
+    // Bias toward mid-latitudes (where most land sits) and away from the poles.
+    const y = h * (0.18 + Math.random() * 0.64)
+    const x = Math.random() * w
+    const radius = 50 + Math.random() * 130
+    const green = Math.random() > 0.5
+    const [r, g, b] = green ? [0, 232, 122] : [255, 80, 80] // #00e87a / #ff5050
+    const peak = 0.32 + Math.random() * 0.18               // ~0.4–0.5 at centre
 
-  // Faint lat/long grid (wireframe feel)
-  ctx.strokeStyle = 'rgba(0,155,255,0.10)'
-  ctx.lineWidth = 1
-  const cols = 48
-  const rows = 24
-  for (let c = 0; c <= cols; c++) {
-    const x = (c / cols) * w
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke()
-  }
-  for (let r = 0; r <= rows; r++) {
-    const y = (r / rows) * h
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke()
-  }
-
-  // Scattered glowing heat tiles
-  const cellW = w / cols
-  const cellH = h / rows
-  for (let c = 0; c < cols; c++) {
-    for (let r = 0; r < rows; r++) {
-      // Thin out toward the poles so it doesn't smear at the top/bottom.
-      const polar = Math.sin((r / rows) * Math.PI)
-      if (Math.random() > 0.22 * polar + 0.04) continue
-
-      const up = Math.random() > 0.5
-      const fill = up ? '29,158,117' : '226,75,74'      // #1D9E75 / #E24B4A
-      const a = 0.35 + Math.random() * 0.5
-      const pad = 2
-      const x = c * cellW + pad
-      const y = r * cellH + pad
-      const tw = cellW - pad * 2
-      const th = cellH - pad * 2
-
-      ctx.fillStyle = `rgba(${fill},${a})`
-      ctx.fillRect(x, y, tw, th)
-      // Glowing edge
-      ctx.strokeStyle = `rgba(${fill},${Math.min(1, a + 0.35)})`
-      ctx.lineWidth = 1.5
-      ctx.strokeRect(x + 0.5, y + 0.5, tw - 1, th - 1)
-    }
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, radius)
+    grad.addColorStop(0, `rgba(${r},${g},${b},${peak})`)
+    grad.addColorStop(0.6, `rgba(${r},${g},${b},${peak * 0.4})`)
+    grad.addColorStop(1, `rgba(${r},${g},${b},0)`)
+    ctx.fillStyle = grad
+    ctx.beginPath()
+    ctx.arc(x, y, radius, 0, TWO_PI)
+    ctx.fill()
   }
 
   const tex = new THREE.CanvasTexture(cv)
   tex.colorSpace = THREE.SRGBColorSpace
   tex.anisotropy = 4
   return tex
-}
-
-// lat/long (degrees) → position on a sphere of the given radius
-function latLonToVec3(lat, lon, radius) {
-  const phi = (90 - lat) * (Math.PI / 180)
-  const theta = (lon + 180) * (Math.PI / 180)
-  return new THREE.Vector3(
-    -radius * Math.sin(phi) * Math.cos(theta),
-    radius * Math.cos(phi),
-    radius * Math.sin(phi) * Math.sin(theta),
-  )
 }
 
 const ATMOSPHERE_VERT = /* glsl */ `
@@ -116,6 +79,18 @@ const ATMOSPHERE_FRAG = /* glsl */ `
   }
 `
 
+function prefersReducedOrLowPower() {
+  if (typeof window === 'undefined') return false
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const small = window.matchMedia('(max-width: 768px)').matches
+  const lowPower =
+    typeof navigator !== 'undefined' &&
+    typeof navigator.hardwareConcurrency === 'number' &&
+    navigator.hardwareConcurrency > 0 &&
+    navigator.hardwareConcurrency <= 4
+  return reduce || small || lowPower
+}
+
 export default function GlobeBackground({
   rotationSpeed = 1,
   idleSpeed = 0.03,
@@ -130,28 +105,83 @@ export default function GlobeBackground({
 
     let width = mount.clientWidth || window.innerWidth
     let height = mount.clientHeight || window.innerHeight
+    const staticMode = prefersReducedOrLowPower()
 
     // ── Renderer / scene / camera ──────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.setSize(width, height)
-    renderer.setClearColor(0x000000, 0)
+    renderer.setClearColor(0x0a0f1e, 1) // dark space background
     mount.appendChild(renderer.domElement)
 
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100)
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 200)
 
-    const group = new THREE.Group() // holds globe + ring + nodes; rotates as a unit
+    const group = new THREE.Group() // earth + overlay; rotates as a unit
     scene.add(group)
 
-    // ── Globe ────────────────────────────────────────────────────────────────────
-    const heatTex = makeHeatTexture()
-    const globeGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 96, 96)
-    const globeMat = new THREE.MeshBasicMaterial({ map: heatTex })
-    const globe = new THREE.Mesh(globeGeo, globeMat)
-    group.add(globe)
+    // ── Starfield ────────────────────────────────────────────────────────────────
+    const starCount = 1400
+    const starPos = new Float32Array(starCount * 3)
+    for (let i = 0; i < starCount; i++) {
+      // Random points on a large shell behind the globe.
+      const rr = 40 + Math.random() * 50
+      const t = Math.random() * TWO_PI
+      const p = Math.acos(2 * Math.random() - 1)
+      starPos[i * 3] = rr * Math.sin(p) * Math.cos(t)
+      starPos[i * 3 + 1] = rr * Math.sin(p) * Math.sin(t)
+      starPos[i * 3 + 2] = rr * Math.cos(p)
+    }
+    const starGeo = new THREE.BufferGeometry()
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3))
+    const starMat = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.12,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0.6,
+      depthWrite: false,
+    })
+    const stars = new THREE.Points(starGeo, starMat)
+    scene.add(stars)
 
-    // ── Atmosphere edge glow ──────────────────────────────────────────────────────
+    // ── Earth ──────────────────────────────────────────────────────────────────────
+    const earthGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 96, 96)
+    const earthMat = new THREE.MeshBasicMaterial({ color: 0x0b2034 }) // fallback tint
+    const earth = new THREE.Mesh(earthGeo, earthMat)
+    group.add(earth)
+
+    const loader = new THREE.TextureLoader()
+    loader.setCrossOrigin('anonymous')
+    let earthTex = null
+    loader.load(
+      EARTH_TEXTURE_URL,
+      (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace
+        tex.anisotropy = renderer.capabilities.getMaxAnisotropy()
+        earthTex = tex
+        earthMat.color.set(0xffffff)
+        earthMat.map = tex
+        earthMat.needsUpdate = true
+        if (staticMode) renderOnce()
+      },
+      undefined,
+      () => {/* keep dark fallback tint on network/CORS failure */ if (staticMode) renderOnce() },
+    )
+
+    // ── Heat-map data overlay (slightly larger sphere) ────────────────────────────
+    const heatTex = makeHeatOverlayTexture()
+    const overlayGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.004, 96, 96)
+    const overlayMat = new THREE.MeshBasicMaterial({
+      map: heatTex,
+      transparent: true,
+      depthWrite: false,
+      opacity: 0.9,
+    })
+    const overlay = new THREE.Mesh(overlayGeo, overlayMat)
+    group.add(overlay)
+
+    // ── Atmosphere limb glow ──────────────────────────────────────────────────────
     const atmoGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.18, 96, 96)
     const atmoMat = new THREE.ShaderMaterial({
       vertexShader: ATMOSPHERE_VERT,
@@ -163,7 +193,7 @@ export default function GlobeBackground({
     })
     const atmosphere = new THREE.Mesh(atmoGeo, atmoMat)
     atmosphere.renderOrder = -1
-    scene.add(atmosphere) // not in group → glow stays put as globe spins
+    scene.add(atmosphere)
 
     // ── Orbital ring (equatorial torus, tilted ~15°) ──────────────────────────────
     const ringGeo = new THREE.TorusGeometry(GLOBE_RADIUS * 1.32, 0.006, 16, 220)
@@ -178,56 +208,14 @@ export default function GlobeBackground({
     ring.rotation.x = Math.PI / 2 + THREE.MathUtils.degToRad(15)
     scene.add(ring)
 
-    // ── City nodes (small bright spheres, parented to the globe so they spin) ──────
-    const nodeGeo = new THREE.SphereGeometry(0.018, 16, 16)
-    const nodeMat = new THREE.MeshBasicMaterial({ color: 0x66ccff })
-    const nodeMeshes = CITIES.map((city) => {
-      const m = new THREE.Mesh(nodeGeo, nodeMat)
-      m.position.copy(latLonToVec3(city.lat, city.lon, GLOBE_RADIUS * 1.01))
-      group.add(m)
-      return m
-    })
-
-    // ── HTML overlay: connector lines (SVG) + labels ──────────────────────────────
-    const overlay = document.createElement('div')
-    overlay.style.cssText = 'position:absolute;inset:0;pointer-events:none;'
-    mount.appendChild(overlay)
-
-    const svgNS = 'http://www.w3.org/2000/svg'
-    const svg = document.createElementNS(svgNS, 'svg')
-    svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:visible;'
-    overlay.appendChild(svg)
-
-    const labelEls = CITIES.map((city) => {
-      const line = document.createElementNS(svgNS, 'line')
-      line.setAttribute('stroke', 'rgba(255,255,255,0.55)')
-      line.setAttribute('stroke-width', '1')
-      svg.appendChild(line)
-
-      const label = document.createElement('div')
-      label.style.cssText =
-        'position:absolute;transform:translate(-50%,-50%);white-space:nowrap;' +
-        'font-family:var(--font-mono-data),ui-monospace,monospace;font-size:12px;' +
-        'line-height:1.25;text-shadow:0 1px 4px rgba(0,0,0,0.9);'
-      label.innerHTML =
-        `<div style="color:#fff;font-weight:600">${city.name}</div>` +
-        `<div style="color:#1D9E75">${city.pct}</div>`
-      overlay.appendChild(label)
-
-      return { line, label }
-    })
-
     // ── Layout / sizing ────────────────────────────────────────────────────────────
     function frameCamera() {
       camera.aspect = width / height
-      // Distance so the globe's diameter spans VIEWPORT_FRACTION of view height.
       const vFov = THREE.MathUtils.degToRad(camera.fov)
-      const dist = (GLOBE_RADIUS) / (VIEWPORT_FRACTION * Math.tan(vFov / 2))
+      const dist = GLOBE_RADIUS / (VIEWPORT_FRACTION * Math.tan(vFov / 2))
       camera.position.set(0, 0, dist)
       camera.lookAt(0, 0, 0)
 
-      // Shift everything left so the globe sits right-of-centre (in world units,
-      // a fraction of the radius reads well across sizes).
       const shift = position === 'right' ? GLOBE_RADIUS * 0.55 : 0
       group.position.x = shift
       atmosphere.position.x = shift
@@ -237,11 +225,10 @@ export default function GlobeBackground({
     }
     frameCamera()
 
-    // ── Rotation state ──────────────────────────────────────────────────────────────
+    // ── Rotation + render ────────────────────────────────────────────────────────────
     let idleAngle = 0
     let currentY = 0
     const clock = new THREE.Clock()
-    const tmp = new THREE.Vector3()
 
     function scrollProgress() {
       const max = document.documentElement.scrollHeight - window.innerHeight
@@ -249,49 +236,28 @@ export default function GlobeBackground({
       return Math.min(1, Math.max(0, window.scrollY / max))
     }
 
-    // ── Animation loop ───────────────────────────────────────────────────────────────
+    function renderOnce() {
+      renderer.render(scene, camera)
+    }
+
     let raf = 0
     function animate() {
       raf = requestAnimationFrame(animate)
       const dt = Math.min(clock.getDelta(), 0.05)
-
       idleAngle += idleSpeed * dt
-      // Scroll down → rotate clockwise from above (negative Y). Flip via rotationSpeed sign.
+      // Scroll down → clockwise from above (negative Y). Flip via rotationSpeed sign.
       const target = -(scrollProgress() * TWO_PI * rotationSpeed) - idleAngle
       currentY += (target - currentY) * LERP
       group.rotation.y = currentY
-
       renderer.render(scene, camera)
-
-      // Project nodes → screen for labels/connectors
-      for (let i = 0; i < nodeMeshes.length; i++) {
-        const node = nodeMeshes[i]
-        node.getWorldPosition(tmp)
-        // Near-side test: is the node facing the camera?
-        const toCam = tmp.clone().sub(camera.position)
-        const facing = tmp.clone().sub(group.position).normalize().dot(toCam.normalize()) < 0
-        tmp.project(camera)
-        const sx = (tmp.x * 0.5 + 0.5) * width
-        const sy = (-tmp.y * 0.5 + 0.5) * height
-        const { line, label } = labelEls[i]
-        const visible = facing && tmp.z < 1
-        if (!visible) {
-          line.style.display = 'none'
-          label.style.display = 'none'
-          continue
-        }
-        line.style.display = ''
-        label.style.display = ''
-        const [dx, dy] = CITIES[i].off
-        const lx = sx + dx
-        const ly = sy + dy
-        line.setAttribute('x1', sx); line.setAttribute('y1', sy)
-        line.setAttribute('x2', lx); line.setAttribute('y2', ly)
-        label.style.left = `${lx}px`
-        label.style.top = `${ly}px`
-      }
     }
-    animate()
+
+    if (staticMode) {
+      group.rotation.y = -0.5 // a pleasant fixed angle
+      renderOnce()
+    } else {
+      animate()
+    }
 
     // ── Resize ───────────────────────────────────────────────────────────────────────
     function onResize() {
@@ -299,20 +265,23 @@ export default function GlobeBackground({
       height = mount.clientHeight || window.innerHeight
       renderer.setSize(width, height)
       frameCamera()
+      if (staticMode) renderOnce()
     }
     window.addEventListener('resize', onResize)
 
     // ── Cleanup ────────────────────────────────────────────────────────────────────
     return () => {
-      cancelAnimationFrame(raf)
+      if (raf) cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
       renderer.dispose()
-      globeGeo.dispose(); globeMat.dispose(); heatTex.dispose()
+      earthGeo.dispose(); earthMat.dispose(); if (earthTex) earthTex.dispose()
+      overlayGeo.dispose(); overlayMat.dispose(); heatTex.dispose()
       atmoGeo.dispose(); atmoMat.dispose()
       ringGeo.dispose(); ringMat.dispose()
-      nodeGeo.dispose(); nodeMat.dispose()
-      if (renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement)
-      if (overlay.parentNode) overlay.parentNode.removeChild(overlay)
+      starGeo.dispose(); starMat.dispose()
+      if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement)
+      }
     }
   }, [rotationSpeed, idleSpeed, position])
 
@@ -326,7 +295,7 @@ export default function GlobeBackground({
         zIndex: -1,
         opacity,
         pointerEvents: 'none',
-        backgroundColor: '#000000',
+        backgroundColor: '#0a0f1e',
       }}
     />
   )
