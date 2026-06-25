@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 import TrialPopup from '@/components/TrialPopup'
 import ScrollBackground from '@/components/ScrollBackground'
+import GlobeBackground from '@/components/GlobeBackground'
 import EdgeCarousel from '@/components/EdgeCarousel'
 import Testimonials from '@/components/Testimonials'
 import { prisma } from '@/lib/prisma'
@@ -43,7 +44,8 @@ export default async function LandingPage() {
   const trial = await getTrialEligibility()
 
   return (
-    <div className="min-h-full relative" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <div className="min-h-full relative">
+      <GlobeBackground position="right" />
       <ScrollBackground />
       <TrialPopup eligible={trial.eligible} href={trial.href} />
       <Header />
