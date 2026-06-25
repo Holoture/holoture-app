@@ -9,17 +9,17 @@ const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       'The signal board gives me a clear starting point every morning. Entry zones and stop losses mean I actually know my risk before I enter a trade.',
-    attribution: 'Pro Member',
+    attribution: 'Michael, Pro Member',
   },
   {
     quote:
       "The politician scanner alone is worth the price. Seeing what Congress is actually buying with their own money is information I couldn't easily find anywhere else in one place.",
-    attribution: 'Max Member',
+    attribution: 'Joseph, Max Member',
   },
   {
     quote:
       "Finally a signal platform that shows its reasoning. I don't just get a ticker — I get the full thesis behind every pick.",
-    attribution: 'Active Trader',
+    attribution: 'Gio, Max Member',
   },
 ]
 

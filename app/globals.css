@@ -267,19 +267,19 @@ body {
   .carousel-arrow { width: 34px; height: 34px; }
 }
 
-/* ── Scroll background chart drift (Section 5) ────────────────────────────────*/
-@keyframes sb-drift {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-48px); }
+/* ── Scroll background particle pulse ─────────────────────────────────────────*/
+@keyframes sb-pulse {
+  0%, 100% { opacity: var(--sb-o, 1); }
+  50%      { opacity: calc(var(--sb-o, 1) * 0.9); }
 }
-.sb-drift {
-  animation: sb-drift 20s ease-in-out infinite alternate;
+.sb-pulse {
+  animation: sb-pulse 3.5s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .term-cursor { animation: none; opacity: 1; }
   .trial-slide-in { animation: none; }
-  .sb-drift { animation: none; }
+  .sb-pulse { animation: none; }
   .carousel-fade { animation: none; }
 }
 

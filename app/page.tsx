@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 import TrialPopup from '@/components/TrialPopup'
 import ScrollBackground from '@/components/ScrollBackground'
+import EdgeCarousel from '@/components/EdgeCarousel'
 import Testimonials from '@/components/Testimonials'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
@@ -87,6 +88,9 @@ export default async function LandingPage() {
 
         </div>
       </section>
+
+      {/* One Platform, Four Edges — screenshot carousel */}
+      <EdgeCarousel />
 
       {/* Testimonials / social proof */}
       <Testimonials />

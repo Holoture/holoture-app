@@ -186,7 +186,8 @@
       "Bash(ls -la public/screenshots/)",
       "Bash(node -e \"try{require.resolve\\('puppeteer'\\);console.log\\('puppeteer present'\\)}catch{try{require.resolve\\('puppeteer-core'\\);console.log\\('puppeteer-core present'\\)}catch{console.log\\('no puppeteer'\\)}}\")",
       "Bash(echo \"exit:$?\")",
-      "Bash(grep -rln \"EdgeCarousel\" app components)"
+      "Bash(grep -rln \"EdgeCarousel\" app components)",
+      "Bash(git checkout *)"
     ]
   }
 }
