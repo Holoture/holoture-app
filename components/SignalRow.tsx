@@ -116,7 +116,7 @@ function StockDetailsGrid({ signal, details }: { signal: Signal; details: StockD
           style={{ backgroundColor: 'var(--surf-w4)', border: '1px solid var(--border-faint)' }}
         >
           <div className="text-xs mb-1" style={{ color: 'var(--text-w40)' }}>{label}</div>
-          <div className="text-sm font-semibold text-white truncate">{value}</div>
+          <div className="text-sm font-semibold text-white truncate font-data">{value}</div>
         </div>
       ))}
     </div>
@@ -211,7 +211,7 @@ export default function SignalRow({
               </>
             ) : (
               <>
-                <div className="font-bold text-white leading-tight" style={{ fontSize: 18 }}>
+                <div className="font-bold text-white leading-tight font-data" style={{ fontSize: 18 }}>
                   {signal.ticker}
                 </div>
                 <div className="truncate" style={{ fontSize: 11, color: 'var(--text-w40)', marginTop: 2 }}>
@@ -254,7 +254,7 @@ export default function SignalRow({
             {isObscured ? (
               <Blurred>99%</Blurred>
             ) : (
-              <span className="text-sm font-bold" style={{ color: confidenceColor }}>
+              <span className="text-sm font-bold font-data" style={{ color: confidenceColor }}>
                 {signal.confidence.toFixed(1)}%
               </span>
             )}
@@ -266,7 +266,7 @@ export default function SignalRow({
             {isObscured ? (
               <Blurred>$000.00 – $000.00</Blurred>
             ) : (
-              <span className="text-sm text-white">
+              <span className="text-sm text-white font-data">
                 {formatCurrency(signal.entryZoneLow)} – {formatCurrency(signal.entryZoneHigh)}
               </span>
             )}
@@ -278,7 +278,7 @@ export default function SignalRow({
             {isObscured ? (
               <Blurred>↑ $000.00</Blurred>
             ) : (
-              <span className="text-sm font-semibold" style={{ color: '#1D9E75' }}>
+              <span className="text-sm font-semibold font-data" style={{ color: '#1D9E75' }}>
                 ↑ {formatCurrency(signal.targetPrice)}
               </span>
             )}
@@ -290,7 +290,7 @@ export default function SignalRow({
             {isObscured ? (
               <Blurred>↓ $000.00</Blurred>
             ) : (
-              <span className="text-sm font-semibold" style={{ color: '#E24B4A' }}>
+              <span className="text-sm font-semibold font-data" style={{ color: '#E24B4A' }}>
                 ↓ {formatCurrency(signal.stopLoss)}
               </span>
             )}
@@ -312,7 +312,7 @@ export default function SignalRow({
                 1–3 DAYS
               </span>
             ) : (
-              <span className="text-sm text-white">{signal.timeHorizon}</span>
+              <span className="text-sm text-white font-data">{signal.timeHorizon}</span>
             )}
             <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>Timeframe</div>
           </div>
@@ -358,7 +358,7 @@ export default function SignalRow({
               </>
             ) : (
               <>
-                <span className="font-bold text-white" style={{ fontSize: 18 }}>{signal.ticker}</span>
+                <span className="font-bold text-white font-data" style={{ fontSize: 18 }}>{signal.ticker}</span>
                 <span className="text-xs flex-1 truncate" style={{ color: 'var(--text-w40)' }}>
                   {signal.sector}
                 </span>
@@ -398,7 +398,7 @@ export default function SignalRow({
           <div className="flex items-center gap-5">
             <div>
               {isObscured ? <Blurred>99%</Blurred> : (
-                <span className="text-sm font-bold" style={{ color: confidenceColor }}>
+                <span className="text-sm font-bold font-data" style={{ color: confidenceColor }}>
                   {signal.confidence.toFixed(1)}%
                 </span>
               )}
@@ -406,7 +406,7 @@ export default function SignalRow({
             </div>
             <div>
               {isObscured ? <Blurred>$000 – $000</Blurred> : (
-                <span className="text-sm text-white">
+                <span className="text-sm text-white font-data">
                   {formatCurrency(signal.entryZoneLow)} – {formatCurrency(signal.entryZoneHigh)}
                 </span>
               )}
@@ -418,7 +418,7 @@ export default function SignalRow({
           <div className="flex items-center gap-5">
             <div>
               {isObscured ? <Blurred>↑ $000</Blurred> : (
-                <span className="text-sm font-semibold" style={{ color: '#1D9E75' }}>
+                <span className="text-sm font-semibold font-data" style={{ color: '#1D9E75' }}>
                   ↑ {formatCurrency(signal.targetPrice)}
                 </span>
               )}
@@ -426,7 +426,7 @@ export default function SignalRow({
             </div>
             <div>
               {isObscured ? <Blurred>↓ $000</Blurred> : (
-                <span className="text-sm font-semibold" style={{ color: '#E24B4A' }}>
+                <span className="text-sm font-semibold font-data" style={{ color: '#E24B4A' }}>
                   ↓ {formatCurrency(signal.stopLoss)}
                 </span>
               )}
@@ -444,7 +444,7 @@ export default function SignalRow({
                   1–3 DAYS
                 </span>
               ) : (
-                <span className="text-sm text-white">{signal.timeHorizon}</span>
+                <span className="text-sm text-white font-data">{signal.timeHorizon}</span>
               )}
               <div style={{ fontSize: 10, color: 'var(--text-w35)' }}>Timeframe</div>
             </div>
@@ -559,7 +559,7 @@ export default function SignalRow({
                   exchange={details?.exchange ?? null}
                 />
                 {/* Price-level reference (TradingView widget can't overlay custom lines) */}
-                <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3" style={{ fontSize: 11 }}>
+                <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3 font-data" style={{ fontSize: 11 }}>
                   <span style={{ color: '#009BFF' }}>
                     Entry Zone: {formatCurrency(signal.entryZoneLow)} – {formatCurrency(signal.entryZoneHigh)}
                   </span>

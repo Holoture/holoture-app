@@ -1,39 +1,78 @@
 import Link from 'next/link'
-import { Shield, Zap, BarChart3, Clock, Star, ChevronRight } from 'lucide-react'
+import { auth } from '@clerk/nextjs/server'
+import { Zap, BarChart3, Users, Eye, Star, ChevronRight } from 'lucide-react'
 import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 import ProductPreview from '@/components/ProductPreview'
+import TrialPopup from '@/components/TrialPopup'
+import ScrollBackground from '@/components/ScrollBackground'
 import { getPreviewData } from '@/lib/preview-data'
+import { prisma } from '@/lib/prisma'
+import { hasEverSubscribed } from '@/lib/user'
 
+// The four core products, presented as feature highlights.
 const FEATURES = [
   {
-    icon: Zap,
-    title: 'Data-Driven Signals',
-    desc: 'Every pick is powered by our engine analyzing fundamentals, technicals, and market sentiment.',
-  },
-  {
     icon: BarChart3,
-    title: 'Entry Zones & Targets',
-    desc: 'Get precise entry price zones, price targets, and stop-loss levels for every signal.',
+    title: 'Stock Signals',
+    desc: 'Curated buy/watch/short signals with precise entry zones, price targets, stop losses, confidence scores, and time horizons.',
   },
   {
-    icon: Shield,
-    title: 'Confidence Scores',
-    desc: 'Each signal carries a confidence rating so you always know how strong the setup is.',
+    icon: Zap,
+    title: 'Options Signals',
+    desc: 'Directional CALL & PUT ideas with strikes, expirations, and risk ratings — for traders who want leverage with a plan.',
   },
   {
-    icon: Clock,
-    title: 'Time Horizons',
-    desc: 'Signals are tagged with a clear time horizon — from days to months — so you can plan accordingly.',
+    icon: Users,
+    title: 'Politician Scanner',
+    desc: 'See exactly what members of Congress are buying and selling, with AI commentary and significance ratings.',
+  },
+  {
+    icon: Eye,
+    title: 'Insider Scanner',
+    desc: 'Track significant insider buying as executives and directors put their own money to work — scored for significance.',
   },
 ]
 
+// Determine whether to show the delayed trial popup. Logged-out visitors and
+// users who have never subscribed are eligible; prior/current customers are not.
+async function getTrialEligibility(): Promise<{ eligible: boolean; href: string }> {
+  const { userId } = await auth()
+  if (!userId) return { eligible: true, href: '/sign-up' }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkId: userId },
+      select: {
+        stripeCustomerId: true,
+        stripeSubscriptionId: true,
+        subscriptionStatus: true,
+        trialEndsAt: true,
+        tier: true,
+        isLifetimePro: true,
+        proExpiresAt: true,
+        isLifetimeMax: true,
+        maxExpiresAt: true,
+      },
+    })
+    // No row yet = brand-new account that has never subscribed.
+    if (!user) return { eligible: true, href: '/pricing' }
+    return { eligible: !hasEverSubscribed(user), href: '/pricing' }
+  } catch {
+    return { eligible: false, href: '/pricing' }
+  }
+}
 
 export default async function LandingPage() {
-  const previewData = await getPreviewData()
+  const [previewData, trial] = await Promise.all([
+    getPreviewData(),
+    getTrialEligibility(),
+  ])
 
   return (
-    <div className="min-h-full" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <div className="min-h-full relative" style={{ backgroundColor: 'var(--bg-primary)' }}>
+      <ScrollBackground />
+      <TrialPopup eligible={trial.eligible} href={trial.href} />
       <Header />
 
       {/* Hero */}
@@ -44,7 +83,8 @@ export default async function LandingPage() {
             background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,155,255,0.12) 0%, transparent 60%)',
           }}
         />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center">
+          <p className="term-label mb-5">// LIVE MARKET DATA<span className="term-cursor" /></p>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight">
             Trade with an Edge
             <br />
@@ -77,14 +117,14 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-20" style={{ backgroundColor: 'var(--bg-surface)' }}>
+      {/* Features — the four core products */}
+      <section className="relative z-10 py-20" style={{ backgroundColor: 'var(--bg-surface)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-black text-white">
-              Everything You Need to Invest with Confidence
+              One Platform, Four Edges
             </h2>
-            <p className="mt-4 text-lg text-white">Stop guessing. Start trading with Data-backed conviction.</p>
+            <p className="mt-4 text-lg text-white">Signals, options, and the scanners that show you where the smart money moves.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -111,8 +151,8 @@ export default async function LandingPage() {
       {/* Product Preview */}
       <ProductPreview data={previewData} />
 
-      {/* Pricing Preview */}
-      <section className="py-20">
+      {/* Pricing Preview — kept below the value props so visitors see value first */}
+      <section className="relative z-10 py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-black text-white">Simple, Transparent Pricing</h2>

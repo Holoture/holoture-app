@@ -98,25 +98,25 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
           {trade.ticker.slice(0, 1)}
         </div>
         <div className="min-w-0">
-          <p className="font-semibold text-white truncate">{trade.ticker}</p>
+          <p className="font-semibold text-white truncate font-data">{trade.ticker}</p>
           <p className="text-xs truncate" style={{ color: 'var(--text-w50)' }}>{trade.companyName || 'N/A'}</p>
         </div>
       </div>
 
       {/* Published */}
       <div>
-        <p className="font-semibold text-white">{published.time}</p>
+        <p className="font-semibold text-white font-data">{published.time}</p>
         <p className="text-xs" style={{ color: 'var(--text-w50)' }}>{published.label}</p>
       </div>
 
       {/* Traded */}
       <div>
-        <p className="text-white">{traded}</p>
+        <p className="text-white font-data">{traded}</p>
       </div>
 
       {/* Filed After */}
       <div>
-        <p className="text-white">{filedAfter}</p>
+        <p className="text-white font-data">{filedAfter}</p>
         <p className="text-xs" style={{ color: 'var(--text-w50)' }}>days</p>
       </div>
 
@@ -137,7 +137,7 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
 
       {/* Size */}
       <div>
-        <p className="text-white whitespace-nowrap">{trade.amountRange}</p>
+        <p className="text-white whitespace-nowrap font-data">{trade.amountRange}</p>
       </div>
 
       {/* Significance */}

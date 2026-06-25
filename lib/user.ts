@@ -86,3 +86,32 @@ export async function getUserTier(clerkId: string): Promise<UserTier> {
   if (!user) return 'free'
   return computeTier(user)
 }
+
+/**
+ * Whether the user has ever had a paid relationship with us — an active,
+ * cancelled, or previously-trialed Pro/Max subscription. Used to suppress the
+ * "Start a 7-day free trial" popup for anyone who has already been a customer.
+ */
+export function hasEverSubscribed(user: {
+  stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
+  subscriptionStatus: string | null
+  trialEndsAt: Date | null
+  tier: string
+  isLifetimePro: boolean
+  proExpiresAt: Date | null
+  isLifetimeMax: boolean
+  maxExpiresAt: Date | null
+}): boolean {
+  return Boolean(
+    user.stripeCustomerId ||
+    user.stripeSubscriptionId ||
+    user.subscriptionStatus ||
+    user.trialEndsAt ||
+    user.isLifetimePro ||
+    user.isLifetimeMax ||
+    user.proExpiresAt ||
+    user.maxExpiresAt ||
+    (user.tier && user.tier !== 'free')
+  )
+}

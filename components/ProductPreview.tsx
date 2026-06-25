@@ -150,7 +150,7 @@ function SignalsPanel({ signals, totalSignals }: { signals: PreviewData['signals
       >
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-black text-white text-sm">{s.ticker}</span>
+            <span className="font-black text-white text-sm font-data">{s.ticker}</span>
             <SignalBadge type={s.signalType} />
           </div>
           <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-w40)' }}>
@@ -343,7 +343,7 @@ function CalendarPanel({ calendar }: { calendar: PreviewData['calendar'] }) {
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-black text-white text-sm">{entry.symbol}</span>
+                <span className="font-black text-white text-sm font-data">{entry.symbol}</span>
                 <ImpactBadge rating={entry.impactRating} />
               </div>
               {entry.epsEstimate != null && (

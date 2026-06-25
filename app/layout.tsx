@@ -1,10 +1,25 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import Script from 'next/script'
+import { DM_Sans, JetBrains_Mono } from 'next/font/google'
 import ThemeProvider from '@/components/ThemeProvider'
 import { SessionGuard } from '@/components/SessionGuard'
 import Footer from '@/components/Footer'
 import './globals.css'
+
+// Primary UI / marketing copy font.
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-dm-sans',
+})
+
+// Monospace font for numeric/data display (prices, %, tickers, timestamps).
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-mono-data',
+})
 
 export const metadata: Metadata = {
   title: 'Holoture — Data Stock Signals',
@@ -34,7 +49,7 @@ export default function RootLayout({
       signInFallbackRedirectUrl="/dashboard"
       signUpFallbackRedirectUrl="/dashboard"
     >
-      <html lang="en" className="h-full">
+      <html lang="en" className={`h-full ${dmSans.variable} ${jetbrainsMono.variable}`}>
         <head>
           <link rel="icon" href="/favicon.ico" sizes="any" />
           <link rel="icon" href="/favicon.png?v=2" type="image/png" />

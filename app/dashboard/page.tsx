@@ -69,8 +69,14 @@ async function getLastGenerationLog() {
   } catch { return null }
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
   const { userId } = await auth()
+  const tabParam = (await searchParams).tab
+  const initialTab = tabParam === 'options' ? 'options' : 'all'
 
   // Don't do a hard server-side redirect when Clerk can't validate the session
   // (e.g. during custom-domain SSL provisioning).  Instead, hand off to the
@@ -164,8 +170,11 @@ export default async function DashboardPage() {
         {/* Page header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
+            <p className="term-label mb-1">// SIGNALS_</p>
             <div className="flex items-center gap-2 mb-1">
-              <h1 className="text-2xl sm:text-3xl font-black text-white">Today&apos;s Signals</h1>
+              <h1 className="text-2xl sm:text-3xl font-black text-white">
+                Today&apos;s Signals<span className="term-cursor" />
+              </h1>
               {isMax && (
                 <span
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold"
@@ -228,6 +237,7 @@ export default async function DashboardPage() {
             isAdmin={isAdmin}
             isYesterday={isYesterday}
             lastGenerated={lastLog?.generatedAt.toISOString() ?? null}
+            initialTab={initialTab}
           />
         ) : (
           <div className="space-y-6">
@@ -239,6 +249,7 @@ export default async function DashboardPage() {
               isAdmin={isAdmin}
               isYesterday={isYesterday}
               lastGenerated={lastLog?.generatedAt.toISOString() ?? null}
+              initialTab={initialTab}
             />
           </div>
         )}

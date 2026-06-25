@@ -202,6 +202,7 @@ export default function SignalBoardClient({
   isAdmin   = false,
   isYesterday = false,
   lastGenerated = null,
+  initialTab = 'all',
 }: {
   signals: Signal[]
   tier: 'free' | 'pro' | 'max'
@@ -209,8 +210,9 @@ export default function SignalBoardClient({
   isAdmin?:      boolean
   isYesterday?:  boolean
   lastGenerated?: string | null
+  initialTab?:   CategoryTab
 }) {
-  const [activeTab, setActiveTab]             = useState<CategoryTab>('all')
+  const [activeTab, setActiveTab]             = useState<CategoryTab>(initialTab)
   const [refreshing, setRefreshing]           = useState(false)
   const [typeFilter, setTypeFilter]           = useState<TypeFilter>('all')
   const [timeframeFilter, setTimeframeFilter] = useState<TimeframeFilter>('all')
