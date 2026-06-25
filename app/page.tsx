@@ -3,11 +3,9 @@ import { auth } from '@clerk/nextjs/server'
 import { Zap, Star, ChevronRight } from 'lucide-react'
 import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
-import ProductPreview from '@/components/ProductPreview'
 import TrialPopup from '@/components/TrialPopup'
 import ScrollBackground from '@/components/ScrollBackground'
-import EdgeCarousel from '@/components/EdgeCarousel'
-import { getPreviewData } from '@/lib/preview-data'
+import Testimonials from '@/components/Testimonials'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
 
@@ -41,10 +39,7 @@ async function getTrialEligibility(): Promise<{ eligible: boolean; href: string 
 }
 
 export default async function LandingPage() {
-  const [previewData, trial] = await Promise.all([
-    getPreviewData(),
-    getTrialEligibility(),
-  ])
+  const trial = await getTrialEligibility()
 
   return (
     <div className="min-h-full relative" style={{ backgroundColor: 'var(--bg-primary)' }}>
@@ -61,7 +56,6 @@ export default async function LandingPage() {
           }}
         />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center">
-          <p className="term-label mb-5">// LIVE MARKET DATA<span className="term-cursor" /></p>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight">
             Trade with an Edge
             <br />
@@ -94,11 +88,8 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* One Platform, Four Edges — screenshot carousel */}
-      <EdgeCarousel />
-
-      {/* Product Preview */}
-      <ProductPreview data={previewData} />
+      {/* Testimonials / social proof */}
+      <Testimonials />
 
       {/* Pricing Preview — kept below the value props so visitors see value first */}
       <section className="relative z-10 py-20">

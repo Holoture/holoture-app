@@ -7,6 +7,7 @@ import SignalRow from './SignalRow'
 import SignalHistoryTab from './SignalHistoryTab'
 import OptionsDashboardClient from './OptionsDashboardClient'
 import type { Signal } from './SignalCard'
+import { signalUpside } from '@/lib/signal-upside'
 
 // ─── OptionsSignal type ───────────────────────────────────────────────────────
 
@@ -139,7 +140,7 @@ function getDailyFreePickIds(signals: Signal[]): Set<string> {
 type CategoryTab = 'all' | 'large-cap' | 'small-cap' | 'swing-trade' | 'long-term' | 'momentum' | 'options' | 'history'
 type TypeFilter = 'all' | 'BUY' | 'WATCH' | 'SHORT'
 type TimeframeFilter = 'all' | 'intraday' | '1-3days' | 'swing' | 'long'
-type SortKey = 'confidence-desc' | 'confidence-asc' | 'ticker-asc' | 'recent' | 'time-sensitivity'
+type SortKey = 'confidence-desc' | 'confidence-asc' | 'ticker-asc' | 'recent' | 'time-sensitivity' | 'upside-desc' | 'upside-asc'
 
 const CATEGORY_TABS: { key: CategoryTab; label: string; maxOnly?: boolean }[] = [
   { key: 'all',        label: 'All Signals' },
@@ -295,6 +296,8 @@ export default function SignalBoardClient({
         return diff !== 0 ? diff : b.confidence - a.confidence
       })
     }
+    if (sortKey === 'upside-desc')     return arr.sort((a, b) => signalUpside(b) - signalUpside(a))
+    if (sortKey === 'upside-asc')      return arr.sort((a, b) => signalUpside(a) - signalUpside(b))
     if (sortKey === 'confidence-desc') return arr.sort((a, b) => b.confidence - a.confidence)
     if (sortKey === 'confidence-asc')  return arr.sort((a, b) => a.confidence - b.confidence)
     if (sortKey === 'ticker-asc')      return arr.sort((a, b) => a.ticker.localeCompare(b.ticker))
@@ -362,6 +365,7 @@ export default function SignalBoardClient({
       >
         {[
           { label: 'Ticker',     w: 130 },
+          { label: 'Upside',     w: 76 },
           { label: 'Signal',     w: 72 },
           { label: 'Confidence', w: 68 },
           { label: 'Entry Zone', flex: true },
@@ -734,6 +738,8 @@ export default function SignalBoardClient({
                 >
                   <option value="confidence-desc">Confidence ↓</option>
                   <option value="confidence-asc">Confidence ↑</option>
+                  <option value="upside-desc">Upside ↓</option>
+                  <option value="upside-asc">Upside ↑</option>
                   <option value="ticker-asc">Ticker A–Z</option>
                   <option value="recent">Most Recent</option>
                   <option value="time-sensitivity">Time Sensitivity</option>

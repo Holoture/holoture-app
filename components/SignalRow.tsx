@@ -4,6 +4,7 @@ import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { ChevronDown, Lock, Clock } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
+import { signalUpside } from '@/lib/signal-upside'
 import type { Signal } from './SignalCard'
 import TrackerButton from './TrackerButton'
 
@@ -77,6 +78,32 @@ function LockedBadge() {
     >
       — —
     </span>
+  )
+}
+
+/** Potential upside to target — green for gain, shown left of the signal badge. */
+function UpsideCell({ signal, obscured, compact = false }: { signal: Signal; obscured: boolean; compact?: boolean }) {
+  if (obscured) {
+    return compact ? <Blurred>+00%</Blurred> : (
+      <>
+        <Blurred>+00%</Blurred>
+        <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>upside</div>
+      </>
+    )
+  }
+  const pct = signalUpside(signal)
+  const color = pct >= 0 ? '#1D9E75' : '#E24B4A'
+  const text = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`
+  const label = signal.signalType === 'WATCH' ? 'target' : 'upside'
+
+  if (compact) {
+    return <span className="font-bold font-data shrink-0" style={{ fontSize: 12, color }}>{text}</span>
+  }
+  return (
+    <>
+      <span className="font-bold font-data" style={{ fontSize: 13, color }}>{text}</span>
+      <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>{label}</div>
+    </>
   )
 }
 
@@ -244,6 +271,11 @@ export default function SignalRow({
             )}
           </div>
 
+          {/* Upside */}
+          <div style={{ width: 76, flexShrink: 0 }}>
+            <UpsideCell signal={signal} obscured={isObscured} />
+          </div>
+
           {/* Signal badge */}
           <div style={{ width: 72, flexShrink: 0 }}>
             {isObscured ? <LockedBadge /> : <SignalBadge type={signal.signalType} />}
@@ -362,6 +394,7 @@ export default function SignalRow({
                 <span className="text-xs flex-1 truncate" style={{ color: 'var(--text-w40)' }}>
                   {signal.sector}
                 </span>
+                <UpsideCell signal={signal} obscured={false} compact />
                 <SignalBadge type={signal.signalType} />
               </>
             )}
