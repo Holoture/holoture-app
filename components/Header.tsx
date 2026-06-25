@@ -31,9 +31,12 @@ const MARKETS_MENU: DropdownItemConfig[] = [
   { href: '/calendar', label: 'Calendar', available: true, desc: 'Earnings calendar' },
 ]
 
+const SCANNERS_MENU: DropdownItemConfig[] = [
+  { href: '/politician-scanner', label: 'Politician Scanner', available: true, desc: 'Congressional trades' },
+  { href: '/insider-scanner',    label: 'Insider Scanner',    available: true, desc: 'Insider buying activity' },
+]
+
 const NAV_LINKS = [
-  { href: '/politician-scanner', label: 'Politician Scanner' },
-  { href: '/insider-scanner', label: 'Insider' },
   { href: '/learn', label: 'Learn' },
   { href: '/tracker', label: 'Tracker' },
   { href: '/alerts', label: 'Alerts' },
@@ -58,6 +61,7 @@ export default function Header() {
 
   const signalsActive = pathname === '/dashboard' || pathname.startsWith('/signals')
   const marketsActive = MARKETS_MENU.some((m) => pathname === m.href)
+  const scannersActive = SCANNERS_MENU.some((s) => pathname === s.href)
 
   return (
     <header
@@ -76,6 +80,7 @@ export default function Header() {
           <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
             <NavDropdown label="Signals" items={SIGNALS_MENU} active={signalsActive} />
             <NavDropdown label="Markets" items={MARKETS_MENU} active={marketsActive} />
+            <NavDropdown label="Scanners" items={SCANNERS_MENU} active={scannersActive} />
             {NAV_LINKS.map(({ href, label }) => (
               <NavLink key={href} href={href} active={pathname === href}>
                 {label}
@@ -151,6 +156,13 @@ export default function Header() {
               label="Markets"
               items={MARKETS_MENU}
               defaultExpanded={MARKETS_MENU.some((m) => pathname === m.href)}
+              pathname={pathname}
+              onNavigate={() => setMobileOpen(false)}
+            />
+            <MobileDropdownSection
+              label="Scanners"
+              items={SCANNERS_MENU}
+              defaultExpanded={SCANNERS_MENU.some((s) => pathname === s.href)}
               pathname={pathname}
               onNavigate={() => setMobileOpen(false)}
             />
