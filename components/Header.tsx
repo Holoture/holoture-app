@@ -10,22 +10,32 @@ import { cn } from '@/lib/utils'
 import PromoModal from './PromoModal'
 import { useTheme } from './ThemeProvider'
 
-// "Signals" is a dropdown; the rest stay top-level tabs.
-const SIGNALS_MENU = [
-  { href: '/dashboard',           label: 'Equities', available: true,  desc: 'Stock signal board' },
+type DropdownItemConfig = {
+  href: string
+  label: string
+  available: boolean
+  desc: string
+}
+
+// "Signals" and "Markets" are dropdowns; the rest stay top-level tabs.
+const SIGNALS_MENU: DropdownItemConfig[] = [
+  { href: '/dashboard',             label: 'Equities', available: true,  desc: 'Stock signal board' },
   { href: '/dashboard?tab=options', label: 'Options',  available: true,  desc: 'CALL & PUT ideas' },
-  { href: '/signals/futures',     label: 'Futures',  available: false, desc: 'Coming soon' },
-  { href: '/signals/forex',       label: 'Forex',    available: false, desc: 'Coming soon' },
+  { href: '/signals/futures',       label: 'Futures',  available: false, desc: 'Coming soon' },
+  { href: '/signals/forex',         label: 'Forex',    available: false, desc: 'Coming soon' },
+]
+
+const MARKETS_MENU: DropdownItemConfig[] = [
+  { href: '/news',     label: 'News',     available: true, desc: 'Market news feed' },
+  { href: '/trends',   label: 'Trends',   available: true, desc: 'Sector trends & heat map' },
+  { href: '/calendar', label: 'Calendar', available: true, desc: 'Earnings calendar' },
 ]
 
 const NAV_LINKS = [
-  { href: '/tracker', label: 'Tracker' },
-  { href: '/news', label: 'News' },
-  { href: '/trends', label: 'Trends' },
-  { href: '/calendar', label: 'Calendar' },
   { href: '/politician-scanner', label: 'Politician Scanner' },
   { href: '/insider-scanner', label: 'Insider' },
   { href: '/learn', label: 'Learn' },
+  { href: '/tracker', label: 'Tracker' },
   { href: '/alerts', label: 'Alerts' },
   { href: '/support', label: 'Support' },
   { href: '/pricing', label: 'Pricing' },
@@ -47,6 +57,7 @@ export default function Header() {
   }, [isLoaded, isSignedIn])
 
   const signalsActive = pathname === '/dashboard' || pathname.startsWith('/signals')
+  const marketsActive = MARKETS_MENU.some((m) => pathname === m.href)
 
   return (
     <header
@@ -63,7 +74,8 @@ export default function Header() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
-            <SignalsDropdown active={signalsActive} />
+            <NavDropdown label="Signals" items={SIGNALS_MENU} active={signalsActive} />
+            <NavDropdown label="Markets" items={MARKETS_MENU} active={marketsActive} />
             {NAV_LINKS.map(({ href, label }) => (
               <NavLink key={href} href={href} active={pathname === href}>
                 {label}
@@ -128,7 +140,20 @@ export default function Header() {
           style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}
         >
           <nav className="max-w-7xl mx-auto px-4 py-3">
-            <MobileSignalsSection pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+            <MobileDropdownSection
+              label="Signals"
+              items={SIGNALS_MENU}
+              defaultExpanded={pathname === '/dashboard' || pathname.startsWith('/signals')}
+              pathname={pathname}
+              onNavigate={() => setMobileOpen(false)}
+            />
+            <MobileDropdownSection
+              label="Markets"
+              items={MARKETS_MENU}
+              defaultExpanded={MARKETS_MENU.some((m) => pathname === m.href)}
+              pathname={pathname}
+              onNavigate={() => setMobileOpen(false)}
+            />
             <div className="grid grid-cols-2 gap-1 mt-1">
               {NAV_LINKS.map(({ href, label }) => (
                 <Link
@@ -153,9 +178,17 @@ export default function Header() {
   )
 }
 
-// ── Desktop Signals dropdown ───────────────────────────────────────────────────
+// ── Desktop nav dropdown ────────────────────────────────────────────────────────
 
-function SignalsDropdown({ active }: { active: boolean }) {
+function NavDropdown({
+  label,
+  items,
+  active,
+}: {
+  label: string
+  items: DropdownItemConfig[]
+  active: boolean
+}) {
   const [open, setOpen] = useState(false)
   const wrapRef = useRef<HTMLDivElement>(null)
 
@@ -194,7 +227,7 @@ function SignalsDropdown({ active }: { active: boolean }) {
           active ? 'text-white bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5'
         )}
       >
-        Signals
+        {label}
         <ChevronDown
           className={cn('w-4 h-4 transition-transform', open && 'rotate-180')}
         />
@@ -212,7 +245,7 @@ function SignalsDropdown({ active }: { active: boolean }) {
               boxShadow: '0 12px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,155,255,0.15)',
             }}
           >
-            {SIGNALS_MENU.map((item) => (
+            {items.map((item) => (
               <DropdownItem key={item.href} item={item} onNavigate={() => setOpen(false)} />
             ))}
           </div>
@@ -226,7 +259,7 @@ function DropdownItem({
   item,
   onNavigate,
 }: {
-  item: (typeof SIGNALS_MENU)[number]
+  item: DropdownItemConfig
   onNavigate: () => void
 }) {
   const content = (
@@ -260,18 +293,22 @@ function DropdownItem({
   )
 }
 
-// ── Mobile Signals section ──────────────────────────────────────────────────────
+// ── Mobile dropdown section ──────────────────────────────────────────────────────
 
-function MobileSignalsSection({
+function MobileDropdownSection({
+  label,
+  items,
+  defaultExpanded,
   pathname,
   onNavigate,
 }: {
+  label: string
+  items: DropdownItemConfig[]
+  defaultExpanded: boolean
   pathname: string
   onNavigate: () => void
 }) {
-  const [expanded, setExpanded] = useState(
-    pathname === '/dashboard' || pathname.startsWith('/signals')
-  )
+  const [expanded, setExpanded] = useState(defaultExpanded)
 
   return (
     <div className="mb-1">
@@ -279,22 +316,29 @@ function MobileSignalsSection({
         type="button"
         aria-expanded={expanded}
         onClick={() => setExpanded((e) => !e)}
-        className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-white bg-white/10"
+        className={cn(
+          'w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium',
+          defaultExpanded ? 'text-white bg-white/10' : 'text-white/80 hover:text-white hover:bg-white/5'
+        )}
       >
-        Signals
+        {label}
         <ChevronDown className={cn('w-4 h-4 transition-transform', expanded && 'rotate-180')} />
       </button>
 
       {expanded && (
         <div className="mt-1 ml-2 pl-2 space-y-0.5" style={{ borderLeft: '1px solid var(--border)' }}>
-          {SIGNALS_MENU.map((item) => (
+          {items.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={onNavigate}
               className={cn(
                 'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                item.available ? 'text-white/80 hover:text-white hover:bg-white/5' : 'text-white/40 hover:bg-white/[0.02]'
+                pathname === item.href
+                  ? 'text-white bg-white/10'
+                  : item.available
+                  ? 'text-white/80 hover:text-white hover:bg-white/5'
+                  : 'text-white/40 hover:bg-white/[0.02]'
               )}
             >
               {item.label}
