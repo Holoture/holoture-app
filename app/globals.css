@@ -236,6 +236,36 @@ body {
   .carousel-fade { animation: none; }
 }
 
+/* ── Clerk form input overrides ───────────────────────────────────────────────
+   Clerk renders its own <input> elements. The appearance API handles normal
+   text, but browser autofill (mobile Safari especially) overrides both the
+   background and text color with its own yellow/white highlight. These rules
+   force white text and a dark background in all autofill states. */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="search"] {
+  color: #ffffff;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.40);
+  opacity: 1; /* Firefox reduces placeholder opacity by default */
+}
+
+/* The inset box-shadow paints over the browser's autofill yellow background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset !important;
+  box-shadow: 0 0 0px 1000px #1a1a1a inset !important;
+  caret-color: #ffffff;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;
