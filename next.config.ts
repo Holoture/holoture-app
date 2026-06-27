@@ -42,6 +42,9 @@ const securityHeaders = [
         'https://js.stripe.com',
         // Cloudflare Turnstile — Clerk's built-in CAPTCHA
         'https://challenges.cloudflare.com',
+        // Google OAuth (loaded by Clerk's "Continue with Google" button)
+        'https://accounts.google.com',
+        'https://apis.google.com',
         // TradingView chart widgets
         'https://s3.tradingview.com',
         'https://s.tradingview.com',
@@ -75,6 +78,11 @@ const securityHeaders = [
         'https://checkout.stripe.com',
         // Cloudflare Turnstile — Clerk's built-in CAPTCHA
         'https://challenges.cloudflare.com',
+        // Google OAuth — token exchange and API calls during sign-in flow
+        'https://accounts.google.com',
+        'https://oauth2.googleapis.com',
+        'https://openidconnect.googleapis.com',
+        'https://www.googleapis.com',
         // TradingView — REST data feeds, symbol search, AND real-time WebSocket
         // streams. wss:// is a distinct scheme from https:// in CSP — omitting
         // it blocks every WebSocket the chart opens even when https:// is allowed.
@@ -102,6 +110,8 @@ const securityHeaders = [
         'https://hooks.stripe.com',
         // Cloudflare Turnstile — Clerk's built-in CAPTCHA (renders in an iframe)
         'https://challenges.cloudflare.com',
+        // Google OAuth popup/redirect frames
+        'https://accounts.google.com',
         'https://s.tradingview.com',
         'https://www.tradingview.com',
         'https://*.tradingview.com',
