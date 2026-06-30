@@ -4,33 +4,33 @@ import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 
 const FREE_FEATURES = [
-  '5 curated signals per day',
-  'Large Cap & Small Cap signals only',
-  'Basic ticker and signal type',
+  '5 daily stock signals',
+  'Politician Scanner — full access',
+  'Insider Scanner — full access',
+  'Market News feed',
+  'Sector Trends & heat map',
+  'Earnings Calendar',
   'No credit card required',
 ]
 
 const PRO_FEATURES = [
-  'Full signal board updated daily',
-  'Large Cap & Small Cap signals',
-  'Swing Trade & Long Term signals',
-  'Up to 5 Momentum signals/day',
+  'Everything in Free',
+  'Full signal board — no daily cap',
+  'All signal categories unlocked',
+  'Unlimited Momentum signals',
   'Entry zones, targets & stop-loss',
   'Confidence scores & full thesis',
+  'Intraday & 1–3 day signals',
   'Sector tagging & filtering',
-  'Market news feed',
-  'Sector trends & heat map',
-  'Earnings calendar',
   'Cancel anytime',
 ]
 
 const MAX_FEATURES = [
   'Everything in Pro',
-  'Unlimited Momentum signals',
-  'Options signals (CALL & PUT)',
-  'Politician stock scanner',
+  'Options Signals (CALL & PUT)',
+  'Futures Signals (coming soon)',
+  'Forex Signals (coming soon)',
   'Earliest access to new features',
-  'Priority data refresh',
   'Cancel anytime',
 ]
 

@@ -53,8 +53,8 @@ export function UpgradeBanner() {
       <div className="text-center sm:text-left flex-1">
         <h3 className="font-bold text-white">Unlock the Full Signal Board</h3>
         <p className="text-sm mt-1 text-white">
-          Pro unlocks 15–50 daily signals with entry zones, targets, and confidence scores.
-          Max adds options signals and the politician stock scanner.
+          Pro unlocks unlimited daily signals across all categories — no cap, no limits.
+          Max adds Options signals, Futures, and Forex.
         </p>
       </div>
       <Link

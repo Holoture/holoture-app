@@ -118,9 +118,10 @@ export default async function LandingPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 {[
-                  '5 signals per day',
-                  'Large cap & small cap signals',
-                  'Basic signal info',
+                  '5 daily stock signals',
+                  'Politician Scanner — full access',
+                  'Insider Scanner — full access',
+                  'Market News, Trends & Calendar',
                   'No credit card required',
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-white">
@@ -162,9 +163,10 @@ export default async function LandingPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 {[
-                  'Full signal board (15–50 signals/day)',
-                  'Large cap, small cap, swing & long term signals',
-                  '5 momentum signals per day',
+                  'Everything in Free',
+                  'Full signal board — no daily cap',
+                  'All signal categories unlocked',
+                  'Unlimited Momentum signals',
                   'Entry zones, targets & stop losses',
                   'Confidence scores & full summary',
                   'Cancel anytime',
@@ -208,10 +210,9 @@ export default async function LandingPage() {
               <ul className="space-y-3 mb-8">
                 {[
                   'Everything in Pro',
-                  'Unlimited momentum signals',
-                  'Options signals & analysis',
-                  'Politician stock scanner',
-                  'All signal categories unlocked',
+                  'Options Signals (CALL & PUT)',
+                  'Futures Signals (coming soon)',
+                  'Forex Signals (coming soon)',
                   'Cancel anytime',
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-white">

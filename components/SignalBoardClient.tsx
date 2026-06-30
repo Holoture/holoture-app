@@ -164,8 +164,6 @@ const ALL_SECTIONS: { key: string; label: string; match: (s: Signal) => boolean 
   { key: 'long-term',  label: 'Long Term',   match: (s) => isLongTerm(String(s.timeHorizon)) },
 ]
 
-const PRO_MOMENTUM_LIMIT = 5
-
 // ─── sub-components ───────────────────────────────────────────────────────────
 
 function FilterChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
@@ -390,13 +388,9 @@ export default function SignalBoardClient({
   }
 
   function renderSignalRows(sigs: Signal[], catKey: string) {
-    const isMom = catKey === 'momentum'
-    const momentumHidden = isMom && tier === 'pro' ? Math.max(0, sigs.length - PRO_MOMENTUM_LIMIT) : 0
-    const shown = isMom && tier === 'pro' ? sigs.slice(0, PRO_MOMENTUM_LIMIT) : sigs
-
     return (
       <>
-        {shown.map((s, idx) => {
+        {sigs.map((s, idx) => {
           const h = String(s.timeHorizon)
           const badge: 'intraday' | '1-3days' | null =
             isIntraday(h) ? 'intraday' : is1to3Days(h) ? '1-3days' : null
@@ -416,24 +410,6 @@ export default function SignalBoardClient({
             />
           )
         })}
-
-        {momentumHidden > 0 && (
-          <div
-            className="flex items-center justify-between px-4 py-3"
-            style={{ borderTop: '1px solid var(--border)' }}
-          >
-            <span className="text-sm" style={{ color: 'var(--text-w50)' }}>
-              {momentumHidden} more Momentum signal{momentumHidden > 1 ? 's' : ''} — Max tier only
-            </span>
-            <Link
-              href="/pricing"
-              className="text-xs font-semibold px-3 py-1 rounded-lg hover:opacity-90 transition-opacity"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
-            >
-              Upgrade to Max
-            </Link>
-          </div>
-        )}
       </>
     )
   }
@@ -643,7 +619,7 @@ export default function SignalBoardClient({
                   <span className="font-bold text-white">
                     {Math.min(FREE_SIGNAL_COUNT, activeSignals.filter(s => !isShortTermSignal(s)).length)} free picks.
                   </span>
-                  {' '}Upgrade to unlock all.
+                  {' '}Upgrade to Pro for unlimited signals.
                 </p>
               </div>
               <Link
