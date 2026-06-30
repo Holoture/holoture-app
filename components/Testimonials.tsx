@@ -8,17 +8,17 @@ type Testimonial = {
 const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      'The signal board gives me a clear starting point every morning. Entry zones and stop losses mean I actually know my risk before I enter a trade.',
+      "Honestly didn't expect much but the entry zones and stop losses actually help me sleep at night lol. I know my risk before I even click buy now.",
     attribution: 'Michael, Pro Member',
   },
   {
     quote:
-      "The politician scanner alone is worth the price. Seeing what Congress is actually buying with their own money is information I couldn't easily find anywhere else in one place.",
+      "The insider scanner is slept on. CEOs buying their own stock with real money tells you more than any chart ever could. Wish I found this sooner",
     attribution: 'Joseph, Max Member',
   },
   {
     quote:
-      "Finally a signal platform that shows its reasoning. I don't just get a ticker — I get the full thesis behind every pick.",
+      "Used to just trust random Discord calls and hope for the best. At least here I actually know WHY a stock is a pick instead of just trusting some guy.",
     attribution: 'Gio, Max Member',
   },
 ]
