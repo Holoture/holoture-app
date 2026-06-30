@@ -57,3 +57,5 @@ next-env.d.ts
 
 # Puppeteer screenshot-capture session
 .puppeteer-profile/
+
+.env*

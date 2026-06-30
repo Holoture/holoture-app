@@ -187,7 +187,31 @@
       "Bash(node -e \"try{require.resolve\\('puppeteer'\\);console.log\\('puppeteer present'\\)}catch{try{require.resolve\\('puppeteer-core'\\);console.log\\('puppeteer-core present'\\)}catch{console.log\\('no puppeteer'\\)}}\")",
       "Bash(echo \"exit:$?\")",
       "Bash(grep -rln \"EdgeCarousel\" app components)",
-      "Bash(git checkout *)"
+      "Bash(git checkout *)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('three:', \\(p.dependencies&&p.dependencies.three\\)||\\(p.devDependencies&&p.devDependencies.three\\)||'NOT installed'\\); console.log\\('@types/three:', \\(p.devDependencies&&p.devDependencies['@types/three']\\)||'no'\\)\")",
+      "Bash(ls node_modules/three/build/three.module.js)",
+      "Bash(node -e \"console.log\\('three', require\\('./package.json'\\).dependencies.three\\)\")",
+      "Bash(echo \"---exit $?---\")",
+      "PowerShell(Get-ChildItem C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\ | Where-Object { $_.Name -match 'middle' })",
+      "PowerShell(node \"C:\\\\Users\\\\jaken\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-jaken-Desktop-holoture-app\\\\2e7011fe-0bb0-4d7e-988f-1caefe7fc440\\\\scratchpad\\\\update-upvotes.mjs\" 2>&1)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\app\\\\generated\\\\prisma\\\\\" -Recurse | Where-Object { $_.Name -match '\\\\.js$' -or $_.Name -match 'index' } | Select-Object FullName | Head-Object -First 20)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\app\\\\generated\\\\prisma\\\\\" -Recurse | Where-Object { $_.Name -match '\\\\.js$' -or $_.Name -match 'index' } | Select-Object -First 20 -ExpandProperty FullName)",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\.env.local\" | ForEach-Object { if \\($_ -match \"URL|DB|SQL|PG\"\\) { $_ } } | Select-Object -First 10)",
+      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\.env.local\"\\).Count; Get-Content \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\.env.local\" | Select-Object -Last 10)",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\.env\" | ForEach-Object { if \\($_ -match \"DATABASE|POSTGRES|neon|supabase|PG\"\\) { $_ } } | Select-Object -First 10)",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\.env.production\" | ForEach-Object { if \\($_ -match \"DATABASE|POSTGRES|neon|postgres\"\\) { $_ } })",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\.vercel\\\\.env.preview.local\" | ForEach-Object { if \\($_ -match \"DATABASE|POSTGRES|neon\"\\) { $_ } } | Select-Object -First 3)",
+      "PowerShell(npx vercel env pull --environment=production --yes 2>&1)",
+      "PowerShell(npx vercel env pull .env.vercel-prod --environment=production 2>&1)",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\.env.vercel-prod\" | ForEach-Object { if \\($_ -match \"DATABASE|POSTGRES|neon\"\\) { $_ } })",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\jaken\\\\Desktop\\\\holoture-app\\\\.env.vercel-prod\" | ForEach-Object { if \\($_ -match \"postgres|neon|supabase|PG|SQL|DB_\"\\) { $_ } })",
+      "PowerShell(npx vercel --prod 2>&1)",
+      "PowerShell(npx vercel deploy --prod 2>&1)",
+      "PowerShell(npx vercel ls --scope holoture 2>&1)",
+      "PowerShell($r = Invoke-WebRequest -Method POST -Uri \"https://holoture.com/api/admin/patch-upvotes\" -UseBasicParsing 2>&1; Write-Host $r.StatusCode; Write-Host $r.Content)",
+      "PowerShell(npx vercel logs --scope holoture 2>&1)",
+      "PowerShell(npx vercel logs holoture-6go6keetb-holoture.vercel.app --scope holoture --output raw 2>&1)",
+      "PowerShell(npx vercel logs holoture-6go6keetb-holoture.vercel.app --scope holoture --level error 2>&1)"
     ]
   }
 }
