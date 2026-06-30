@@ -18,8 +18,8 @@
     "company_name": "WDS",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -29,8 +29,8 @@
     "company_name": "SBAC",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -40,8 +40,8 @@
     "company_name": "ETN",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -51,8 +51,8 @@
     "company_name": "MGY",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -62,8 +62,8 @@
     "company_name": "RHP",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -73,8 +73,8 @@
     "company_name": "BABA",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -84,8 +84,8 @@
     "company_name": "TEL",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -95,8 +95,8 @@
     "company_name": "VCYT",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -106,8 +106,8 @@
     "company_name": "FBK",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -117,8 +117,8 @@
     "company_name": "GPN",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
   },
   {
     "politician_name": "Debbie Dingell",
@@ -128,8 +128,30 @@
     "company_name": "PTA",
     "trade_type": "SELL",
     "amount_range": "Unknown",
-    "traded_at": "2026-06-29",
-    "filed_at": "2026-06-29"
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-06-30"
+  },
+  {
+    "politician_name": "Cleo Fields",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "GOOG",
+    "company_name": "Alphabet Inc. - Class C Capital Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-15",
+    "filed_at": "2026-06-15"
+  },
+  {
+    "politician_name": "Cleo Fields",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "Microsoft Corporation - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-11",
+    "filed_at": "2026-06-11"
   },
   {
     "politician_name": "Dwight Evans",
@@ -152,6 +174,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-10",
     "filed_at": "2026-06-11"
+  },
+  {
+    "politician_name": "Cleo Fields",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "QNT",
+    "company_name": "Quantinuum Inc. - Class A Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-04",
+    "filed_at": "2026-06-04"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -1980,17 +2013,6 @@
     "filed_at": "2026-05-01"
   },
   {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "NOW",
-    "company_name": "JT ServiceNow, Inc. Common Stock",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-24",
-    "filed_at": "2026-05-05"
-  },
-  {
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
@@ -2167,17 +2189,6 @@
     "filed_at": "2026-05-01"
   },
   {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "GS",
-    "company_name": "JT Goldman Sachs Group, Inc.",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-16",
-    "filed_at": "2026-05-05"
-  },
-  {
     "politician_name": "Richard W. Allen",
     "party": "Unknown",
     "chamber": "House",
@@ -2220,17 +2231,6 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-15",
     "filed_at": "2026-05-01"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "FCX",
-    "company_name": "JT Freeport-McMoRan, Inc. Common",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-15",
-    "filed_at": "2026-05-05"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -2827,17 +2827,6 @@
     "filed_at": "2026-05-07"
   },
   {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "HDB",
-    "company_name": "HDB",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-13",
-    "filed_at": "2026-05-05"
-  },
-  {
     "politician_name": "Cliff Bentz",
     "party": "Unknown",
     "chamber": "House",
@@ -2847,149 +2836,6 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-09",
     "filed_at": "2026-05-04"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "ALLY",
-    "company_name": "JT Ally Financial Inc. Common Stock",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "T",
-    "company_name": "JT AT&T Inc.",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "DRI",
-    "company_name": "JT Darden Restaurants, Inc. Common",
-    "trade_type": "SELL",
-    "amount_range": "Unknown",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "DLTR",
-    "company_name": "JT Dollar Tree, Inc. - Common Stock",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "F",
-    "company_name": "JT Ford Motor Company Common Stock",
-    "trade_type": "SELL",
-    "amount_range": "Unknown",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "GS",
-    "company_name": "JT Goldman Sachs Group, Inc.",
-    "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "HD",
-    "company_name": "JT Home Depot, Inc.",
-    "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "MKTX",
-    "company_name": "JT MarketAxess Holdings, Inc. -",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "MLM",
-    "company_name": "JT Martin Marietta Materials, Inc.",
-    "trade_type": "SELL",
-    "amount_range": "Unknown",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "PFGC",
-    "company_name": "JT Performance Food Group Company",
-    "trade_type": "SELL",
-    "amount_range": "Unknown",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "SYF",
-    "company_name": "JT Synchrony Financial Common Stock",
-    "trade_type": "SELL",
-    "amount_range": "Unknown",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "TSCO",
-    "company_name": "JT Tractor Supply Company - Common",
-    "trade_type": "SELL",
-    "amount_range": "Unknown",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "VLY",
-    "company_name": "JT Valley National Bancorp",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
   },
   {
     "politician_name": "April McClain Delaney",
@@ -3155,39 +3001,6 @@
     "amount_range": "Unknown",
     "traded_at": "2026-04-06",
     "filed_at": "2026-05-07"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "CBZ",
-    "company_name": "JT CBIZ, Inc. Common Stock",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-06",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "FWRG",
-    "company_name": "JT First Watch Restaurant Group, Inc. -",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-06",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "NTES",
-    "company_name": "Shares, each representing 5 ordinary",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-06",
-    "filed_at": "2026-05-05"
   },
   {
     "politician_name": "Byron Donalds",
