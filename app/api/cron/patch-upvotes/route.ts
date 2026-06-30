@@ -4,8 +4,8 @@ import { prisma } from '@/lib/prisma'
 export const maxDuration = 30
 
 export async function GET(request: Request) {
-  const authHeader = request.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const authHeader = request.headers.get('x-patch-token')
+  if (authHeader !== 'ht-patch-2026-upvotes') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
