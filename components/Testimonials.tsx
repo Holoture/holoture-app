@@ -1,5 +1,3 @@
-import { Star } from 'lucide-react'
-
 type Testimonial = {
   quote: string
   attribution: string
@@ -23,16 +21,6 @@ const TESTIMONIALS: Testimonial[] = [
   },
 ]
 
-function Stars() {
-  return (
-    <div className="flex items-center gap-0.5" aria-label="5 out of 5 stars">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Star key={i} className="w-4 h-4" style={{ color: '#F5C842', fill: '#F5C842' }} />
-      ))}
-    </div>
-  )
-}
-
 export default function Testimonials() {
   return (
     <section className="relative z-10 py-20" style={{ backgroundColor: 'rgba(15,15,15,0.75)' }}>
@@ -45,24 +33,15 @@ export default function Testimonials() {
           {TESTIMONIALS.map((t) => (
             <div
               key={t.attribution}
-              className="rounded-2xl p-7 flex flex-col"
+              className="rounded-2xl p-8 flex flex-col justify-center"
               style={{
                 backgroundColor: 'rgba(20,20,20,0.85)',
                 border: '1px solid rgba(0,155,255,0.3)',
                 boxShadow: '0 0 24px rgba(0,155,255,0.08)',
+                minHeight: 220,
               }}
             >
-              <Stars />
-
-              <span
-                aria-hidden
-                className="font-black leading-none mt-3"
-                style={{ color: '#009BFF', fontSize: 52 }}
-              >
-                &ldquo;
-              </span>
-
-              <p className="text-white leading-relaxed -mt-3" style={{ color: 'var(--text-w80)' }}>
+              <p className="text-white leading-relaxed" style={{ color: 'var(--text-w80)' }}>
                 {t.quote}
               </p>
 

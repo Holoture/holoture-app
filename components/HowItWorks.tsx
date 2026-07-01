@@ -68,21 +68,10 @@ function StepCard({ step, index }: { step: Step; index: number }) {
     <div ref={ref} className="relative group">
       {/* Card */}
       <div
-        className="relative overflow-hidden rounded-2xl p-6 sm:p-10 transition-shadow duration-300"
+        className="relative overflow-hidden rounded-2xl p-6 sm:p-10"
         style={{
           backgroundColor: 'rgba(20,20,20,0.85)',
-          borderTop: '1px solid rgba(0,155,255,0.18)',
-          borderRight: '1px solid rgba(0,155,255,0.18)',
-          borderBottom: '1px solid rgba(0,155,255,0.18)',
-          borderLeft: '3px solid #009BFF',
-          boxShadow: '0 0 0 rgba(0,155,255,0)',
-        }}
-        onMouseEnter={(e) => {
-          ;(e.currentTarget as HTMLDivElement).style.boxShadow =
-            '0 0 32px rgba(0,155,255,0.12), inset 0 0 0 1px rgba(0,155,255,0.25)'
-        }}
-        onMouseLeave={(e) => {
-          ;(e.currentTarget as HTMLDivElement).style.boxShadow = '0 0 0 rgba(0,155,255,0)'
+          border: '1px solid rgba(0,155,255,0.18)',
         }}
       >
         {/* Watermark number */}
