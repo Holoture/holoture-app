@@ -8,6 +8,7 @@ import ScrollBackground from '@/components/ScrollBackground'
 import GlobeBackground from '@/components/GlobeBackground'
 import EdgeCarousel from '@/components/EdgeCarousel'
 import Testimonials from '@/components/Testimonials'
+import HowItWorks from '@/components/HowItWorks'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
 
@@ -93,6 +94,9 @@ export default async function LandingPage() {
 
       {/* One Platform, Four Edges — screenshot carousel */}
       <EdgeCarousel />
+
+      {/* How Holoture Works */}
+      <HowItWorks />
 
       {/* Testimonials / social proof */}
       <Testimonials />
