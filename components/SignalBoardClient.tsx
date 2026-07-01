@@ -347,12 +347,6 @@ export default function SignalBoardClient({
     } catch { } finally { setRefreshing(false) }
   }
 
-  const updatedLabel = lastGenerated
-    ? new Date(lastGenerated).toLocaleTimeString('en-US', {
-        hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York',
-      }) + ' EST'
-    : null
-
   // ─── renderers ──────────────────────────────────────────────────────────────
 
   function renderColumnHeaders() {
@@ -533,11 +527,6 @@ export default function SignalBoardClient({
               <RefreshCw className={`w-3 h-3 ${refreshing ? 'animate-spin' : ''}`} />
               {refreshing ? 'Generating…' : 'Refresh'}
             </button>
-          )}
-          {updatedLabel && !isAdmin && activeTab !== 'history' && activeTab !== 'options' && (
-            <span className="text-xs" style={{ color: 'var(--text-w35)' }}>
-              {isYesterday ? 'Yesterday · ' : ''}{updatedLabel}
-            </span>
           )}
         </div>
       </div>
