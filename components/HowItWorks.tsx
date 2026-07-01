@@ -13,16 +13,14 @@ const STEPS: Step[] = [
     num: '01',
     title: 'We scan the market every day',
     body: [
-      "Before the market opens every morning, Holoture's algorithm runs a full sweep across hundreds of stocks simultaneously. It starts with price action — analyzing candlestick patterns, support and resistance levels, moving average crossovers, RSI, MACD, and Bollinger Bands to identify technically significant setups. It then layers in volume confirmation, because a breakout without volume is just noise. From there it pulls fundamental data — revenue growth, earnings trends, P/E relative to sector, free cash flow, and debt levels — to separate genuinely strong companies from ones that just look good on a chart.",
-      "It doesn't stop there. The algorithm cross-references real-time news sentiment, weighing the ratio of bullish to bearish coverage for each stock in the past seven days. It checks whether any corporate insiders — CEOs, CFOs, board members — have recently bought shares with their own personal money, one of the most historically reliable signals in the market. It also checks congressional trading disclosures to see whether any members of Congress have recently taken positions in the same name. Each of these factors gets scored independently, then combined into a single weighted composite score that determines whether a stock becomes a BUY, WATCH, or SHORT signal — and exactly how confident we are in it.",
+      "Our algorithm analyzes hundreds of stocks across price action, volume, momentum, fundamentals, news sentiment, insider activity, and congressional trades — running every morning before market open.",
     ],
   },
   {
     num: '02',
     title: 'You get actionable signals',
     body: [
-      "Every signal that clears Holoture's quality threshold lands on your dashboard with everything you need to make a real decision — not just a ticker and a direction. Each one comes with a precise entry zone showing you the exact price range where the setup makes sense to enter, so you're not chasing a move that already happened or buying at the wrong level. Below that sits your price target — where the algorithm expects the stock to reach based on technical resistance levels, historical patterns, and the strength of the underlying thesis. And directly beside it, your stop loss — the exact price where the thesis breaks down and you should exit to protect your capital.",
-      "Every signal also carries a confidence score precise to one decimal place, calculated directly from the weighted composite of all the factors the algorithm scored — not a guess, not a vibe, a real number that reflects how strongly the data aligns. Next to it you'll see the upside percentage, showing you the potential gain from entry to target so you can instantly compare opportunities and size your positions accordingly. And underneath all of it sits the full written thesis — a plain English explanation of exactly why this signal was generated, what the main risk is, and what catalyst or price level to watch. You know the reasoning before you risk a dollar.",
+      "Every signal comes with an entry zone, price target, stop loss, confidence score, upside percentage, and the full reasoning behind the pick. No guesswork. No black box.",
     ],
   },
   {
