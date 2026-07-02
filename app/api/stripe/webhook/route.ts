@@ -21,6 +21,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
+  // Log receipt for health monitoring (best-effort — never block the handler).
+  prisma.webhookLog.create({
+    data: { source: 'stripe', eventType: event.type },
+  }).catch(() => {})
+
   try {
     switch (event.type) {
 

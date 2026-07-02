@@ -314,6 +314,24 @@ model UserSession {
   @@index([lastActiveAt])
 }
 
+model HealthCheck {
+  id        String   @id @default(cuid())
+  status    String // "pass" | "warn" | "fail"
+  results   String   @db.Text // JSON array of individual check results
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model WebhookLog {
+  id         String   @id @default(cuid())
+  source     String   @default("stripe")
+  eventType  String
+  receivedAt DateTime @default(now())
+
+  @@index([receivedAt])
+}
+
 model TrialRecord {
   id                String   @id @default(cuid())
   email             String

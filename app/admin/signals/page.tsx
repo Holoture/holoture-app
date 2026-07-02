@@ -11,6 +11,7 @@ import PromoCodeToggle from './PromoCodeToggle'
 import PromoCodeCreateForm from './PromoCodeCreateForm'
 import RefreshSignalsButton from './RefreshSignalsButton'
 import ModerationQueue from './ModerationQueue'
+import SystemHealthCard from './SystemHealthCard'
 
 async function getSignals() {
   return prisma.signal.findMany({ orderBy: { createdAt: 'desc' } })
@@ -45,6 +46,20 @@ async function getLastRefresh() {
   }
 }
 
+async function getLatestHealthCheck() {
+  try {
+    const row = await prisma.healthCheck.findFirst({ orderBy: { createdAt: 'desc' } })
+    if (!row) return null
+    return {
+      status: row.status,
+      results: JSON.parse(row.results) as { name: string; status: 'pass' | 'warn' | 'fail'; detail: string }[],
+      createdAt: row.createdAt.toISOString(),
+    }
+  } catch {
+    return null
+  }
+}
+
 function formatRelativeTime(date: Date): string {
   const h = (Date.now() - date.getTime()) / 3600000
   if (h < 1) return `${Math.round(h * 60)}m ago`
@@ -56,8 +71,8 @@ export default async function AdminSignalsPage() {
   const { userId } = await auth()
   if (!userId || userId !== process.env.ADMIN_USER_ID) redirect('/dashboard')
 
-  const [signals, promoCodes, lastRefresh, flaggedPosts] = await Promise.all([
-    getSignals(), getPromoCodes(), getLastRefresh(), getFlaggedPosts(),
+  const [signals, promoCodes, lastRefresh, flaggedPosts, latestHealth] = await Promise.all([
+    getSignals(), getPromoCodes(), getLastRefresh(), getFlaggedPosts(), getLatestHealthCheck(),
   ])
 
   return (
@@ -99,6 +114,11 @@ export default async function AdminSignalsPage() {
             </div>
             <RefreshSignalsButton />
           </div>
+        </div>
+
+        {/* System Health */}
+        <div className="mb-8">
+          <SystemHealthCard latest={latestHealth} />
         </div>
 
         {signals.length === 0 ? (
