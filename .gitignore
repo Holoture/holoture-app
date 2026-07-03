@@ -58,4 +58,7 @@ next-env.d.ts
 # Puppeteer screenshot-capture session
 .puppeteer-profile/
 
+# graphify knowledge-graph output (tool artifact — reveals internal structure)
+/graphify-out/
+
 .env*
