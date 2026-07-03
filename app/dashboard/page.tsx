@@ -217,11 +217,6 @@ export default async function DashboardPage({
               <p className="text-xs font-semibold text-white">
                 {signals.length} signal{signals.length !== 1 ? 's' : ''}{isYesterday ? ' (yesterday)' : ''}
               </p>
-              <p className="text-xs" style={{ color: 'var(--text-w50)' }}>
-                {lastLog
-                  ? `Updated ${lastLog.generatedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' })} EST`
-                  : 'Generating…'}
-              </p>
             </div>
           </div>
         </div>
