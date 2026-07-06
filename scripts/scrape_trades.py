@@ -335,17 +335,22 @@ def parse_ptr_pdf(pdf_bytes: bytes, member_name: str) -> list[dict]:
 # House scraper
 # ---------------------------------------------------------------------------
 
-def scrape_house(max_filings: int = 100) -> list[dict]:
-    print("=== House PTR filings ===")
-    trades: list[dict] = []
+def _extract_row_filing_date(row) -> str:
+    """Pull a MM/DD/YYYY filing date from a House search-result row, if present."""
+    m = _DATE_RE.search(row.get_text(" ", strip=True))
+    return safe_iso(m.group(1)) if m else ""
 
+
+def _collect_house_filings(filing_year: int) -> list[dict]:
+    """Query the House Clerk PTR search for one filing year and return every
+    filing link (no cap). The search returns the full year in a single table."""
     try:
         resp = SESSION.post(
             "https://disclosures-clerk.house.gov/FinancialDisclosure/ViewMemberSearchResult",
             data={
                 "LastName": "",
                 "State": "",
-                "FilingYear": datetime.now().year,
+                "FilingYear": filing_year,
                 "filingType": "P",
                 "action": "Filter",
             },
@@ -353,7 +358,7 @@ def scrape_house(max_filings: int = 100) -> list[dict]:
         )
         resp.raise_for_status()
     except Exception as exc:
-        print(f"House Clerk search failed: {exc}")
+        print(f"House Clerk search failed ({filing_year}): {exc}")
         return []
 
     soup = BeautifulSoup(resp.text, "lxml")
@@ -367,21 +372,57 @@ def scrape_house(max_filings: int = 100) -> list[dict]:
         if not mm:
             continue
         year, fid = mm.group(1), mm.group(2)
-        # Clean name: "Alford, . Mark" -> "Mark Alford"
         raw_name = re.sub(r"\bHon\.?\b\.?\s*", "", link.text).strip()
-        cleaned = clean_name(raw_name)
         filings.append(
             {
-                "name": cleaned,
+                "name": clean_name(raw_name),
                 "url": f"https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/{year}/{fid}.pdf",
                 "id": fid,
+                "filed_at": _extract_row_filing_date(row),
             }
         )
+    return filings
 
-    print(f"Found {len(filings)} PTR filings; processing up to {max_filings}")
 
-    for idx, entry in enumerate(filings[:max_filings]):
-        print(f"  [{idx+1}/{min(len(filings), max_filings)}] {entry['name']} ({entry['id']})")
+def scrape_house(days: int = 90, safety_cap: int = 800) -> list[dict]:
+    """Scrape House PTR filings from the past `days` days.
+
+    Paginates across filing years if the 90-day window straddles a year
+    boundary (e.g. running in January), collects ALL filings within the
+    window, then downloads each PDF with a polite delay between requests.
+    """
+    print(f"=== House PTR filings (past {days} days) ===")
+    trades: list[dict] = []
+
+    cutoff = (date.today() - timedelta(days=days)).isoformat()
+
+    # Query the current filing year, plus the previous year when the window
+    # reaches back across Jan 1.
+    years = [datetime.now().year]
+    if datetime.strptime(cutoff, "%Y-%m-%d").year < datetime.now().year:
+        years.append(datetime.now().year - 1)
+
+    filings: list[dict] = []
+    for yr in years:
+        found = _collect_house_filings(yr)
+        print(f"  filing year {yr}: {len(found)} PTR filings")
+        filings.extend(found)
+
+    # Keep only filings whose filing date falls inside the window. Rows without
+    # a parseable date are kept (better to over-include and let the PDF's own
+    # transaction dates drive relevance).
+    in_window = [f for f in filings if not f["filed_at"] or f["filed_at"] >= cutoff]
+    # Most-recent first so a safety cap keeps the freshest filings.
+    in_window.sort(key=lambda f: f["filed_at"] or "0000", reverse=True)
+    to_process = in_window[:safety_cap]
+
+    print(
+        f"Found {len(filings)} total filings; {len(in_window)} within {days}-day "
+        f"window; processing {len(to_process)}"
+    )
+
+    for idx, entry in enumerate(to_process):
+        print(f"  [{idx+1}/{len(to_process)}] {entry['name']} ({entry['id']})")
         try:
             r = SESSION.get(entry["url"], timeout=30)
             r.raise_for_status()
@@ -391,7 +432,8 @@ def scrape_house(max_filings: int = 100) -> list[dict]:
                 print(f"    -> {len(found)} trade(s): {[t['ticker'] for t in found]}")
         except Exception as exc:
             print(f"    -> error: {exc}")
-        time.sleep(0.4)
+        # Polite delay to respect the disclosure site's rate limits.
+        time.sleep(0.5)
 
     print(f"House total: {len(trades)} trades\n")
     return trades

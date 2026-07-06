@@ -1,38 +1,25 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import { getOrCreateUser, computeTier } from '@/lib/user'
+import { getOrCreateUser } from '@/lib/user'
 import Header from '@/components/Header'
 import PoliticianTradesClient from '@/components/PoliticianTradesClient'
 import AuthLoadingGate from '@/components/AuthLoadingGate'
 import { Users } from 'lucide-react'
 
-// Cap how many trades from any single politician can appear in the feed so
-// one prolific filer (e.g. a spouse with dozens of trades in a single PTR)
-// doesn't crowd out everyone else.
-const MAX_PER_POLITICIAN = 3
+const PAGE_SIZE = 25
 
-async function getPoliticianTrades(limit = 50) {
-  try {
-    const trades = await prisma.politicianTrade.findMany({
-      orderBy: { filedAt: 'desc' },
-      take: limit * 4,
-    })
+type SearchParams = { [key: string]: string | string[] | undefined }
 
-    const counts = new Map<string, number>()
-    const result: typeof trades = []
-    for (const trade of trades) {
-      const count = counts.get(trade.politicianName) ?? 0
-      if (count >= MAX_PER_POLITICIAN) continue
-      counts.set(trade.politicianName, count + 1)
-      result.push(trade)
-      if (result.length >= limit) break
-    }
-    return result
-  } catch { return [] }
+function firstParam(v: string | string[] | undefined): string {
+  return (Array.isArray(v) ? v[0] : v) ?? ''
 }
 
-export default async function PoliticianScannerPage() {
+export default async function PoliticianScannerPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>
+}) {
   const { userId } = await auth()
 
   // Use client-side AuthLoadingGate instead of an immediate server redirect to
@@ -43,10 +30,41 @@ export default async function PoliticianScannerPage() {
   const user = await getOrCreateUser()
   if (!user) redirect('/sign-in')
 
-  const tier = computeTier(user)
+  // ── Parse filters + page from the URL ──────────────────────────────────────
+  const sp = await searchParams
+  const nameQ  = firstParam(sp.name).trim()
+  const tickerQ = firstParam(sp.ticker).trim().toUpperCase()
+  const partyQ = firstParam(sp.party)
+  const typeQ  = firstParam(sp.type).toUpperCase()
+  const page = Math.max(1, parseInt(firstParam(sp.page) || '1', 10) || 1)
 
-  // All tiers — full access to politician scanner
-  const trades = await getPoliticianTrades(50)
+  // ── Build a Prisma where clause that all filters share ─────────────────────
+  const where: {
+    politicianName?: { contains: string; mode: 'insensitive' }
+    ticker?: { contains: string }
+    party?: string
+    tradeType?: string
+  } = {}
+  if (nameQ) where.politicianName = { contains: nameQ, mode: 'insensitive' }
+  if (tickerQ) where.ticker = { contains: tickerQ }
+  if (partyQ === 'Democrat' || partyQ === 'Republican' || partyQ === 'Independent') where.party = partyQ
+  if (typeQ === 'BUY' || typeQ === 'SELL') where.tradeType = typeQ
+
+  // ── Server-side pagination: only the current page is fetched ───────────────
+  let total = 0
+  let trades: Awaited<ReturnType<typeof prisma.politicianTrade.findMany>> = []
+  try {
+    ;[total, trades] = await Promise.all([
+      prisma.politicianTrade.count({ where }),
+      prisma.politicianTrade.findMany({
+        where,
+        orderBy: { filedAt: 'desc' },
+        skip: (page - 1) * PAGE_SIZE,
+        take: PAGE_SIZE,
+      }),
+    ])
+  } catch { /* leave empty on DB error */ }
+
   const lastFetched = trades[0]?.fetchedAt
 
   // Serialize Dates to strings for the client component
@@ -64,6 +82,8 @@ export default async function PoliticianScannerPage() {
     aiCommentary: t.aiCommentary,
     significance: t.significance,
   }))
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
@@ -88,20 +108,14 @@ export default async function PoliticianScannerPage() {
           </p>
         </div>
 
-        {serialized.length === 0 ? (
-          <div
-            className="rounded-2xl p-16 flex flex-col items-center justify-center text-center"
-            style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
-          >
-            <Users className="w-10 h-10 mb-4" style={{ color: '#a78bfa', opacity: 0.5 }} />
-            <h3 className="text-lg font-bold text-white mb-2">No trades yet</h3>
-            <p className="text-sm text-white" style={{ opacity: 0.6 }}>
-              Check back after the next scheduled refresh.
-            </p>
-          </div>
-        ) : (
-          <PoliticianTradesClient trades={serialized} isPreview={false} />
-        )}
+        <PoliticianTradesClient
+          trades={serialized}
+          total={total}
+          page={page}
+          totalPages={totalPages}
+          pageSize={PAGE_SIZE}
+          filters={{ name: nameQ, ticker: tickerQ, party: partyQ, type: typeQ }}
+        />
 
         <p className="text-xs text-white opacity-30 mt-8 text-center">
           All trades are public disclosures required by the STOCK Act. Not financial advice.

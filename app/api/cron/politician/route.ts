@@ -2,7 +2,13 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
 
-export const maxDuration = 60
+export const maxDuration = 300
+
+// Ingest the full 90-day window (no cap). AI commentary/significance is the
+// only expensive step, so we bound *that* per run — trades still get ingested
+// immediately; commentary backfills over subsequent runs.
+const WINDOW_DAYS = 90
+const COMMENTARY_CAP = 40
 
 function verifyCron(req: Request): boolean {
   const secret = process.env.CRON_SECRET
@@ -75,16 +81,20 @@ async function fetchTrades(): Promise<{ trades: RawTrade[]; diagnostic: string }
     // PDF text extraction occasionally misreads a year and produces a date
     // that's after the filing date / in the future.
     const today = new Date().toISOString().slice(0, 10)
+    const cutoff = new Date(Date.now() - WINDOW_DAYS * 86400000).toISOString().slice(0, 10)
     const valid = data.filter(
       (t) =>
         t.politician_name &&
         t.ticker &&
         t.trade_type &&
         t.traded_at &&
-        t.traded_at <= today
+        t.traded_at <= today &&
+        // Keep anything filed OR traded within the window.
+        ((t.filed_at && t.filed_at >= cutoff) || t.traded_at >= cutoff)
     )
     diagnostic += `records=${data.length} valid=${valid.length}; `
-    return { trades: valid.slice(0, 50), diagnostic }
+    // No cap — ingest the entire 90-day window.
+    return { trades: valid, diagnostic }
   } catch (e) {
     diagnostic += `error=${String(e).slice(0, 120)}`
     return { trades: [], diagnostic }
@@ -226,50 +236,77 @@ export async function GET(req: Request) {
 
     const enrichedTrades = await enrichCompanyNames(trades)
 
-    const batch1 = enrichedTrades.slice(0, 25)
-    const batch2 = enrichedTrades.slice(25)
+    // Compute externalIds and find which already exist so we only spend AI
+    // tokens on trades that are genuinely new to the DB.
+    const externalIdOf = (t: RawTrade) =>
+      `${t.politician_name}|${t.ticker}|${t.traded_at}|${t.trade_type}`
+        .toLowerCase()
+        .replace(/[^a-z0-9|]/g, '-')
+
+    const existing = new Set(
+      (
+        await prisma.politicianTrade.findMany({
+          where: { externalId: { in: enrichedTrades.map(externalIdOf) } },
+          select: { externalId: true },
+        })
+      ).map((r) => r.externalId)
+    )
+
+    // Only new trades need commentary, and only up to COMMENTARY_CAP per run to
+    // stay inside the time budget; the rest ingest now and get commentary on a
+    // later run once they're the "new" ones.
+    const newTrades = enrichedTrades.filter((t) => !existing.has(externalIdOf(t)))
+    const commentaryTargets = newTrades.slice(0, COMMENTARY_CAP)
+
+    const half = Math.ceil(commentaryTargets.length / 2)
     const [map1, map2] = await Promise.all([
-      generateCommentary(batch1),
-      generateCommentary(batch2),
+      generateCommentary(commentaryTargets.slice(0, half)),
+      generateCommentary(commentaryTargets.slice(half)),
     ])
     const commentaryMap = new Map([...map1, ...map2])
 
+    // Upsert in small parallel chunks to keep the whole batch inside the time
+    // budget while ingesting every trade in the window.
     let upserted = 0
-    for (const trade of enrichedTrades) {
-      const externalId = `${trade.politician_name}|${trade.ticker}|${trade.traded_at}|${trade.trade_type}`
-        .toLowerCase()
-        .replace(/[^a-z0-9|]/g, '-')
-      const key = `${trade.politician_name}|${trade.ticker}|${trade.traded_at}`
-      const commentary = commentaryMap.get(key)
+    const CHUNK = 20
+    for (let i = 0; i < enrichedTrades.length; i += CHUNK) {
+      const chunk = enrichedTrades.slice(i, i + CHUNK)
+      await Promise.all(
+        chunk.map(async (trade) => {
+          const externalId = externalIdOf(trade)
+          const key = `${trade.politician_name}|${trade.ticker}|${trade.traded_at}`
+          const commentary = commentaryMap.get(key)
 
-      try {
-        await prisma.politicianTrade.upsert({
-          where: { externalId },
-          create: {
-            externalId,
-            politicianName: trade.politician_name,
-            party: normParty(trade.party),
-            chamber: normChamber(trade.chamber),
-            ticker: trade.ticker.toUpperCase(),
-            companyName: trade.company_name ?? '',
-            tradeType: normTradeType(trade.trade_type),
-            amountRange: trade.amount_range ?? 'Unknown',
-            tradedAt: safeDate(trade.traded_at),
-            filedAt: safeDate(trade.filed_at),
-            aiCommentary: commentary?.commentary ?? '',
-            significance: commentary?.significance ?? 'Low',
-          },
-          update: {
-            aiCommentary: commentary?.commentary ?? '',
-            significance: commentary?.significance ?? 'Low',
-            fetchedAt: new Date(),
-          },
+          try {
+            await prisma.politicianTrade.upsert({
+              where: { externalId },
+              create: {
+                externalId,
+                politicianName: trade.politician_name,
+                party: normParty(trade.party),
+                chamber: normChamber(trade.chamber),
+                ticker: trade.ticker.toUpperCase(),
+                companyName: trade.company_name ?? '',
+                tradeType: normTradeType(trade.trade_type),
+                amountRange: trade.amount_range ?? 'Unknown',
+                tradedAt: safeDate(trade.traded_at),
+                filedAt: safeDate(trade.filed_at),
+                aiCommentary: commentary?.commentary ?? '',
+                significance: commentary?.significance ?? 'Low',
+              },
+              // Only overwrite commentary when we actually generated some this
+              // run — otherwise a re-run would wipe good data with blanks.
+              update: commentary
+                ? { aiCommentary: commentary.commentary, significance: commentary.significance, fetchedAt: new Date() }
+                : { fetchedAt: new Date() },
+            })
+            upserted++
+          } catch { /* skip on constraint error */ }
         })
-        upserted++
-      } catch { /* skip on constraint error */ }
+      )
     }
 
-    return NextResponse.json({ ok: true, count: upserted, total: trades.length, diagnostic })
+    return NextResponse.json({ ok: true, count: upserted, total: trades.length, newTrades: newTrades.length, diagnostic })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('[cron/politician]', msg)

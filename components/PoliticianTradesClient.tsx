@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { TrendingUp, TrendingDown } from 'lucide-react'
-import Link from 'next/link'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Search } from 'lucide-react'
+import { useRouter, usePathname } from 'next/navigation'
 
 type Trade = {
   id: string
@@ -153,63 +153,163 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
   )
 }
 
-type FilterType = 'all' | 'buy' | 'sell'
-type FilterParty = 'all' | 'Democrat' | 'Republican'
+type Filters = { name: string; ticker: string; party: string; type: string }
 
-const PREVIEW_COUNT = 3
+const PARTY_OPTIONS = ['all', 'Democrat', 'Republican', 'Independent'] as const
+const TYPE_OPTIONS = ['all', 'BUY', 'SELL'] as const
 
 export default function PoliticianTradesClient({
   trades,
-  isPreview = false,
+  total,
+  page,
+  totalPages,
+  pageSize,
+  filters,
 }: {
   trades: Trade[]
-  isPreview?: boolean
+  total: number
+  page: number
+  totalPages: number
+  pageSize: number
+  filters: Filters
 }) {
-  const [typeFilter, setTypeFilter] = useState<FilterType>('all')
-  const [partyFilter, setPartyFilter] = useState<FilterParty>('all')
+  const router = useRouter()
+  const pathname = usePathname()
 
-  const filtered = trades.filter((t) => {
-    if (typeFilter === 'buy' && !isBuy(t.tradeType)) return false
-    if (typeFilter === 'sell' && isBuy(t.tradeType)) return false
-    if (partyFilter !== 'all' && t.party !== partyFilter) return false
-    return true
-  })
+  // Local state for the text inputs so typing feels instant; navigation is
+  // debounced. Selects/pagination navigate immediately.
+  const [nameInput, setNameInput] = useState(filters.name)
+  const [tickerInput, setTickerInput] = useState(filters.ticker)
 
-  const displayed = isPreview ? filtered.slice(0, PREVIEW_COUNT) : filtered
+  // Keep inputs in sync when the URL changes underneath us (e.g. back button).
+  // React's recommended "adjust state during render" pattern — cheaper and
+  // safer than a sync effect (no cascading render).
+  const [syncedFilters, setSyncedFilters] = useState({ name: filters.name, ticker: filters.ticker })
+  if (syncedFilters.name !== filters.name || syncedFilters.ticker !== filters.ticker) {
+    setSyncedFilters({ name: filters.name, ticker: filters.ticker })
+    setNameInput(filters.name)
+    setTickerInput(filters.ticker)
+  }
+
+  // Build a URL from a set of filter/page overrides. Any filter change resets
+  // to page 1; only an explicit `page` override paginates.
+  const buildUrl = useCallback(
+    (overrides: Partial<Filters & { page: number }>) => {
+      const next = {
+        name: filters.name,
+        ticker: filters.ticker,
+        party: filters.party,
+        type: filters.type,
+        page: 1,
+        ...overrides,
+      }
+      const params = new URLSearchParams()
+      if (next.name) params.set('name', next.name)
+      if (next.ticker) params.set('ticker', next.ticker)
+      if (next.party && next.party !== 'all') params.set('party', next.party)
+      if (next.type && next.type !== 'all' && next.type !== '') params.set('type', next.type)
+      if (next.page > 1) params.set('page', String(next.page))
+      const qs = params.toString()
+      return qs ? `${pathname}?${qs}` : pathname
+    },
+    [filters, pathname]
+  )
+
+  const navigate = useCallback(
+    (overrides: Partial<Filters & { page: number }>) => {
+      router.push(buildUrl(overrides))
+    },
+    [router, buildUrl]
+  )
+
+  // Debounce text-search navigation (name + ticker).
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    const nameChanged = nameInput.trim() !== filters.name
+    const tickerChanged = tickerInput.trim().toUpperCase() !== filters.ticker
+    if (!nameChanged && !tickerChanged) return
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      navigate({ name: nameInput.trim(), ticker: tickerInput.trim().toUpperCase(), page: 1 })
+    }, 400)
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nameInput, tickerInput])
+
+  const partyValue = PARTY_OPTIONS.includes(filters.party as typeof PARTY_OPTIONS[number]) ? filters.party : 'all'
+  const typeValue = filters.type === 'BUY' || filters.type === 'SELL' ? filters.type : 'all'
 
   const btnBase = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all'
   const btnActive = { backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.4)' }
   const btnInactive = { backgroundColor: 'var(--bg-surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }
 
+  const inputStyle = {
+    backgroundColor: 'var(--bg-surface)',
+    border: '1px solid var(--border)',
+    color: '#ffffff',
+  }
+
+  const rangeStart = total === 0 ? 0 : (page - 1) * pageSize + 1
+  const rangeEnd = Math.min(page * pageSize, total)
+
   return (
     <div className="space-y-5">
-      {/* Filters */}
-      {!isPreview && (
+      {/* ── Filters ─────────────────────────────────────────────────────── */}
+      <div className="flex flex-col gap-3">
         <div className="flex flex-wrap gap-2">
+          {/* Name search */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-w35)' }} />
+            <input
+              value={nameInput}
+              onChange={(e) => setNameInput(e.target.value)}
+              placeholder="Search politician…"
+              className="pl-9 pr-3 py-1.5 rounded-lg text-xs font-semibold w-52 outline-none focus:border-[#009BFF]"
+              style={inputStyle}
+            />
+          </div>
+          {/* Ticker search */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-w35)' }} />
+            <input
+              value={tickerInput}
+              onChange={(e) => setTickerInput(e.target.value)}
+              placeholder="Ticker…"
+              className="pl-9 pr-3 py-1.5 rounded-lg text-xs font-semibold w-32 outline-none focus:border-[#009BFF] font-data uppercase"
+              style={inputStyle}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {/* Trade-type filter */}
           <div className="flex gap-1.5">
-            {(['all', 'buy', 'sell'] as FilterType[]).map((f) => (
+            {TYPE_OPTIONS.map((f) => (
               <button
                 key={f}
-                onClick={() => setTypeFilter(f)}
+                onClick={() => navigate({ type: f, page: 1 })}
                 className={btnBase}
-                style={typeFilter === f ? btnActive : btnInactive}
+                style={typeValue === f ? btnActive : btnInactive}
               >
-                {f === 'all' ? 'All Types' : f === 'buy' ? '🟢 Buy' : '🔴 Sell'}
+                {f === 'all' ? 'All Types' : f === 'BUY' ? '🟢 Buy' : '🔴 Sell'}
               </button>
             ))}
           </div>
+          {/* Party filter */}
           <div className="flex gap-1.5">
-            {(['all', 'Democrat', 'Republican'] as FilterParty[]).map((p) => {
-              const isActive = partyFilter === p
+            {PARTY_OPTIONS.map((p) => {
+              const isActive = partyValue === p
               const partyStyle = p === 'Democrat'
                 ? { backgroundColor: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.4)' }
                 : p === 'Republican'
                 ? { backgroundColor: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.4)' }
+                : p === 'Independent'
+                ? { backgroundColor: 'rgba(168,85,247,0.15)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.4)' }
                 : btnActive
               return (
                 <button
                   key={p}
-                  onClick={() => setPartyFilter(p)}
+                  onClick={() => navigate({ party: p, page: 1 })}
                   className={btnBase}
                   style={isActive ? (p === 'all' ? btnActive : partyStyle) : btnInactive}
                 >
@@ -219,18 +319,18 @@ export default function PoliticianTradesClient({
             })}
           </div>
           <span className="ml-auto text-xs text-white opacity-50 self-center">
-            {filtered.length} trade{filtered.length !== 1 ? 's' : ''}
+            {total === 0 ? '0 trades' : `Showing ${rangeStart}–${rangeEnd} of ${total} trades`}
           </span>
         </div>
-      )}
+      </div>
 
-      {/* Trade table */}
-      {displayed.length === 0 ? (
+      {/* ── Trade table ─────────────────────────────────────────────────── */}
+      {trades.length === 0 ? (
         <div
           className="rounded-xl p-10 text-center"
           style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
         >
-          <p className="text-white font-semibold">No trades match this filter</p>
+          <p className="text-white font-semibold">No trades match these filters</p>
         </div>
       ) : (
         <div
@@ -253,37 +353,89 @@ export default function PoliticianTradesClient({
               <div>Significance</div>
             </div>
 
-            {displayed.map((t, i) => (
-              <TradeRow key={t.id} trade={t} isLast={i === displayed.length - 1} />
+            {trades.map((t, i) => (
+              <TradeRow key={t.id} trade={t} isLast={i === trades.length - 1} />
             ))}
           </div>
         </div>
       )}
 
-      {/* Pro upgrade gate */}
-      {isPreview && (
-        <div
-          className="rounded-xl p-6 text-center"
-          style={{
-            background: 'linear-gradient(135deg, rgba(124,58,237,0.12), rgba(79,70,229,0.08))',
-            border: '1px solid rgba(124,58,237,0.3)',
-          }}
-        >
-          <p className="font-bold text-white mb-1">
-            Showing 3 of {trades.length} trades
-          </p>
-          <p className="text-sm text-white mb-4" style={{ opacity: 0.7 }}>
-            Upgrade to Max to unlock all congressional trades, filters, and significance ratings.
-          </p>
-          <Link
-            href="/pricing"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
-          >
-            Upgrade to Max — $25/month
-          </Link>
-        </div>
+      {/* ── Pagination ──────────────────────────────────────────────────── */}
+      {totalPages > 1 && (
+        <Pagination page={page} totalPages={totalPages} onNavigate={(p) => navigate({ page: p })} />
       )}
+    </div>
+  )
+}
+
+// Compact page-number list with ellipses, e.g. 1 … 4 5 [6] 7 8 … 20
+function pageList(page: number, totalPages: number): (number | '…')[] {
+  const out: (number | '…')[] = []
+  const push = (n: number | '…') => out.push(n)
+  const window = 1
+  const first = 1
+  const last = totalPages
+  push(first)
+  const start = Math.max(2, page - window)
+  const end = Math.min(last - 1, page + window)
+  if (start > 2) push('…')
+  for (let i = start; i <= end; i++) push(i)
+  if (end < last - 1) push('…')
+  if (last > 1) push(last)
+  return out
+}
+
+function Pagination({
+  page,
+  totalPages,
+  onNavigate,
+}: {
+  page: number
+  totalPages: number
+  onNavigate: (p: number) => void
+}) {
+  const arrow = 'inline-flex items-center justify-center w-9 h-9 rounded-lg text-sm font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed'
+  const numBase = 'inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-lg text-sm font-semibold transition-all'
+  const active = { backgroundColor: '#009BFF', color: 'white', border: '1px solid #009BFF' }
+  const inactive = { backgroundColor: 'var(--bg-surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }
+
+  return (
+    <div className="flex items-center justify-center gap-1.5 pt-2">
+      <button
+        onClick={() => onNavigate(page - 1)}
+        disabled={page <= 1}
+        className={arrow}
+        style={inactive}
+        aria-label="Previous page"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+
+      {pageList(page, totalPages).map((p, i) =>
+        p === '…' ? (
+          <span key={`e${i}`} className="px-1 text-sm" style={{ color: 'var(--text-w35)' }}>…</span>
+        ) : (
+          <button
+            key={p}
+            onClick={() => onNavigate(p)}
+            className={numBase}
+            style={p === page ? active : inactive}
+            aria-current={p === page}
+          >
+            {p}
+          </button>
+        )
+      )}
+
+      <button
+        onClick={() => onNavigate(page + 1)}
+        disabled={page >= totalPages}
+        className={arrow}
+        style={inactive}
+        aria-label="Next page"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
     </div>
   )
 }
