@@ -20,31 +20,66 @@
   --color-red-500: #ef4444;
   --color-amber-400: #fbbf24;
   --color-amber-500: #f59e0b;
+
+  /* ── Geometry: terminal-grade sharp corners ─────────────────────────────────
+     Zeroing the box radii (not --radius-full) flattens every rounded-lg/xl/2xl/
+     3xl class site-wide — panels, cards, buttons, inputs, badges, tables — while
+     leaving rounded-full untouched so unaudited circular controls (toggles,
+     switches) elsewhere in the app are not put at risk by this pass. Landing-page
+     rounded-full instances are converted individually below to rounded-none,
+     except the two semantic-circle exceptions (person avatar, freshness dot). */
+  --radius-none: 0px;
+  --radius-xs:   0px;
+  --radius-sm:   0px;
+  --radius-md:   0px;
+  --radius-lg:   0px;
+  --radius-xl:   0px;
+  --radius-2xl:  0px;
+  --radius-3xl:  0px;
 }
 
 :root,
 [data-theme="dark"] {
-  --bg-primary:    #0F0F0F;
-  --bg-surface:    #1a1a1a;
-  --bg-surface-2:  #161616;
-  --bg-surface-3:  #0a0a0a;
+  /* ── Neutral ramp (monotonic, slightly blue-shifted so #009BFF sits in it
+     naturally). Named tokens first, then the existing --bg-*/--border-* aliases
+     are remapped onto this ramp so every component that already consumes them
+     inherits the fix without file-by-file edits. ── */
+  --bg-void:    #0A0B0D;
+  --bg-base:    #0F1012;
+  --bg-raised:  #16181B;
+  --bg-overlay: #1C1F23;
+  --line-faint: #23272C;
+  --line:       #2E333A;
+
+  --bg-primary:    var(--bg-base);
+  --bg-surface:    var(--bg-raised);
+  --bg-surface-2:  var(--bg-overlay);
+  --bg-surface-3:  var(--bg-void);
   --text-primary:  #ffffff;
 
-  /* ── Type-system text tones (Phase 1; full neutral ramp lands in Phase 2) ── */
+  /* ── Type-system text tones (full neutral ramp) ── */
   --text-high: #F2F5F7;  /* headlines — pure #fff vibrates on OLED */
   --text-body: #C9CFD6;  /* body copy */
   --text-mute: #9BA3AE;  /* secondary */
   --text-dim:  #6E7681;  /* de-emphasized labels */
-  --border:        rgba(255,255,255,0.2);
-  --border-subtle: rgba(255,255,255,0.1);
-  --border-faint:  rgba(255,255,255,0.08);
-  --border-15:     rgba(255,255,255,0.15);
-  --overlay:       rgba(15,15,15,0.92);
-  --background:    #0F0F0F;
-  --surface:       #1a1a1a;
-  --surface-hover: #222222;
+
+  /* ── Semantic market-state colors — precise, not Tailwind defaults.
+     Direction only (BUY/SHORT, upside %). Never used for magnitude
+     (confidence, significance) — see .conf-* / .sig-* below. ── */
+  --buy:   #00C776;
+  --short: #E5484D;
+  --watch: #E8A33D;
+
+  --border:        var(--line);
+  --border-subtle: var(--line-faint);
+  --border-faint:  var(--line-faint);
+  --border-15:     var(--line-faint);
+  --overlay:       rgba(10,11,13,0.92);
+  --background:    var(--bg-base);
+  --surface:       var(--bg-raised);
+  --surface-hover: #222530;
   --foreground:    #ffffff;
-  --muted:         #94a3b8;
+  --muted:         var(--text-mute);
   --primary:       #009BFF;
   --primary-hover: #0080e0;
 
@@ -186,6 +221,15 @@ body {
   border-width: 0 1.5px 1.5px 0;
 }
 
+/* ── Magnitude ramp ───────────────────────────────────────────────────────────
+   Confidence and significance are MAGNITUDE, not direction — they must never
+   reuse --buy/--short, which would visually contradict a card's own BUY/SHORT
+   badge (e.g. a 55%-confidence BUY rendering a red bar). One hue, three
+   intensities. */
+.magnitude-high   { color: #009BFF; }
+.magnitude-medium { color: var(--text-mute); }
+.magnitude-low     { color: var(--text-dim); }
+
 /* ── Nav tab glow (Section 3) ─────────────────────────────────────────────────
    Soft #009BFF underline + glow on hover and active state. */
 .nav-tab {
@@ -242,9 +286,8 @@ body {
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 9999px;
   color: #ffffff;
-  background-color: rgba(15, 15, 15, 0.6);
+  background-color: rgba(10, 11, 13, 0.7);
   border: 1px solid rgba(0, 155, 255, 0.35);
   backdrop-filter: blur(4px);
   transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;

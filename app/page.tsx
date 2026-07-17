@@ -112,8 +112,8 @@ export default async function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {/* Free */}
             <div
-              className="rounded-2xl p-8"
-              style={{ backgroundColor: 'rgba(20,20,20,0.85)', border: '1px solid var(--border)' }}
+              className="rounded-none p-8 term-panel"
+              style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--line)' }}
             >
               <p className="eyebrow">Free</p>
               <div className="mt-3 mb-6">
@@ -128,18 +128,16 @@ export default async function LandingPage() {
                   'Market News, Trends & Calendar',
                   'No credit card required',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2" style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-body)' }}>
-                    <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--border)' }}>
-                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#009BFF' }} />
-                    </div>
+                  <li key={item} className="flex items-center gap-2.5" style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-body)' }}>
+                    <div className="w-1 h-1 shrink-0" style={{ backgroundColor: '#009BFF' }} />
                     {item}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/sign-up"
-                className="block w-full text-center py-3 rounded-xl transition-colors"
-                style={{ fontWeight: 500, color: 'var(--text-body)', backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
+                className="rounded-none block w-full text-center py-3 transition-colors"
+                style={{ fontWeight: 500, color: 'var(--text-body)', backgroundColor: 'var(--bg-overlay)', border: '1px solid var(--line)' }}
               >
                 Get Started Free
               </Link>
@@ -147,14 +145,14 @@ export default async function LandingPage() {
 
             {/* Pro */}
             <div
-              className="rounded-2xl p-8 relative"
+              className="rounded-none p-8 relative term-panel"
               style={{
-                background: 'linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-surface-2) 100%)',
-                border: '2px solid rgba(0,155,255,0.5)',
+                background: 'linear-gradient(135deg, var(--bg-raised) 0%, var(--bg-overlay) 100%)',
+                border: '1px solid rgba(0,155,255,0.5)',
               }}
             >
               <div
-                className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold"
+                className="rounded-none absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 text-xs font-bold"
                 style={{ backgroundColor: '#009BFF', color: 'white' }}
               >
                 <Star className="w-3 h-3" />
@@ -175,10 +173,8 @@ export default async function LandingPage() {
                   'Confidence scores & full summary',
                   'Cancel anytime',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2" style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-body)' }}>
-                    <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(0,155,255,0.2)' }}>
-                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#009BFF' }} />
-                    </div>
+                  <li key={item} className="flex items-center gap-2.5" style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-body)' }}>
+                    <div className="w-1 h-1 shrink-0" style={{ backgroundColor: '#009BFF' }} />
                     {item}
                   </li>
                 ))}
@@ -186,21 +182,23 @@ export default async function LandingPage() {
               <CheckoutButton
                 tier="pro"
                 label="Start Pro — $15/month"
-                className="block w-full text-center py-3 rounded-xl hover:opacity-90 transition-opacity"
+                className="rounded-none block w-full text-center py-3 hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: '#009BFF', color: 'white', fontWeight: 600 }}
               />
             </div>
 
-            {/* Max */}
+            {/* Max — CTA and badge use Max's own violet identity, not the site's
+                interactive blue, so #009BFF stays scarce to exactly one meaning
+                (site-wide primary action) per viewport. */}
             <div
-              className="rounded-2xl p-8 relative"
+              className="rounded-none p-8 relative term-panel"
               style={{
-                background: 'linear-gradient(135deg, var(--bg-surface) 0%, rgba(124,58,237,0.08) 100%)',
-                border: '2px solid rgba(124,58,237,0.6)',
+                background: 'linear-gradient(135deg, var(--bg-raised) 0%, rgba(124,58,237,0.08) 100%)',
+                border: '1px solid rgba(124,58,237,0.6)',
               }}
             >
               <div
-                className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold"
+                className="rounded-none absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 text-xs font-bold"
                 style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
               >
                 <Zap className="w-3 h-3" />
@@ -219,10 +217,8 @@ export default async function LandingPage() {
                   'Forex Signals (coming soon)',
                   'Cancel anytime',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2" style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-body)' }}>
-                    <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(124,58,237,0.25)' }}>
-                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#a78bfa' }} />
-                    </div>
+                  <li key={item} className="flex items-center gap-2.5" style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-body)' }}>
+                    <div className="w-1 h-1 shrink-0" style={{ backgroundColor: '#a78bfa' }} />
                     {item}
                   </li>
                 ))}
@@ -230,8 +226,8 @@ export default async function LandingPage() {
               <CheckoutButton
                 tier="max"
                 label="Start Max — $25/month"
-                className="block w-full text-center py-3 rounded-xl hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#009BFF', color: 'white', fontWeight: 600 }}
+                className="rounded-none block w-full text-center py-3 hover:opacity-90 transition-opacity"
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white', fontWeight: 600 }}
               />
             </div>
           </div>

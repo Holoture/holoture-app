@@ -68,10 +68,10 @@ function StepCard({ step, index }: { step: Step; index: number }) {
     <div ref={ref} className="relative group">
       {/* Card */}
       <div
-        className="relative overflow-hidden rounded-2xl p-6 sm:p-10"
+        className="relative rounded-none p-6 sm:p-10 term-panel"
         style={{
-          backgroundColor: 'rgba(20,20,20,0.85)',
-          border: '1px solid rgba(0,155,255,0.18)',
+          backgroundColor: 'var(--bg-raised)',
+          border: '1px solid var(--line)',
         }}
       >
         {/* Watermark number */}

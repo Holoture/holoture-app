@@ -25,10 +25,14 @@ const PARTY_STYLE: Record<string, { bg: string; text: string; border: string; av
   Independent: { bg: 'rgba(168,85,247,0.15)',  text: '#c084fc', border: 'rgba(168,85,247,0.3)', avatar: '#a855f7' },
 }
 
-const SIG_COLOR: Record<string, string> = {
-  High:   '#f87171',
-  Medium: '#fbbf24',
-  Low:    '#64748b',
+// Significance is a MAGNITUDE, not a direction — red/amber/slate here would
+// falsely imply "High significance = bad." One hue (blue), three intensities,
+// matching the same convention as SignalCard's confidence ramp. Precomputed
+// (not string-suffixed) because CSS var() values can't take a hex alpha suffix.
+const SIG_STYLE: Record<string, { bg: string; text: string; border: string }> = {
+  High:   { bg: 'rgba(0,155,255,0.15)', text: '#009BFF',         border: 'rgba(0,155,255,0.35)' },
+  Medium: { bg: 'var(--bg-overlay)',    text: 'var(--text-mute)', border: 'var(--line)' },
+  Low:    { bg: 'var(--bg-overlay)',    text: 'var(--text-dim)',  border: 'var(--line-faint)' },
 }
 
 function isBuy(tradeType: string) {
@@ -63,7 +67,7 @@ function daysBetween(a: string, b: string) {
 function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
   const party = PARTY_STYLE[trade.party] ?? { bg: 'rgba(148,163,184,0.15)', text: '#94a3b8', border: 'rgba(148,163,184,0.3)', avatar: '#64748b' }
   const buy = isBuy(trade.tradeType)
-  const sigColor = SIG_COLOR[trade.significance] ?? '#64748b'
+  const sig = SIG_STYLE[trade.significance] ?? SIG_STYLE.Low
   const published = formatRelativeDate(trade.filedAt)
   const traded = new Date(trade.tradedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   const filedAfter = daysBetween(trade.tradedAt, trade.filedAt)
@@ -73,7 +77,7 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
       className="grid grid-cols-[1.6fr_1.6fr_0.9fr_0.9fr_0.7fr_0.7fr_0.8fr_1fr] items-center gap-3 px-4 py-3 text-sm"
       style={{ borderBottom: isLast ? 'none' : '1px solid var(--border)' }}
     >
-      {/* Politician */}
+      {/* Politician — circle avatar kept: a circle means a person */}
       <div className="flex items-center gap-2.5 min-w-0">
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
@@ -89,11 +93,11 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
         </div>
       </div>
 
-      {/* Traded Issuer */}
+      {/* Traded Issuer — sharp: this slot is a ticker, not a person */}
       <div className="flex items-center gap-2.5 min-w-0">
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-          style={{ backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w60)', border: '1px solid var(--border)' }}
+          className="w-8 h-8 rounded-none flex items-center justify-center text-xs font-bold shrink-0 font-data"
+          style={{ backgroundColor: 'var(--bg-overlay)', color: 'var(--text-mute)', border: '1px solid var(--line)' }}
         >
           {trade.ticker.slice(0, 1)}
         </div>
@@ -120,14 +124,14 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
         <p className="text-xs" style={{ color: 'var(--text-w50)' }}>days</p>
       </div>
 
-      {/* Type */}
+      {/* Type — direction, so green/red is correct here */}
       <div>
         <span
-          className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full"
+          className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-none"
           style={
             buy
-              ? { backgroundColor: 'rgba(74,222,128,0.15)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)' }
-              : { backgroundColor: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }
+              ? { backgroundColor: 'rgba(0,199,118,0.15)', color: 'var(--buy)', border: '1px solid rgba(0,199,118,0.35)' }
+              : { backgroundColor: 'rgba(229,72,77,0.15)', color: 'var(--short)', border: '1px solid rgba(229,72,77,0.35)' }
           }
         >
           {buy ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
@@ -140,11 +144,11 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
         <p className="text-white whitespace-nowrap font-data">{trade.amountRange}</p>
       </div>
 
-      {/* Significance */}
+      {/* Significance — magnitude, not direction */}
       <div>
         <span
-          className="text-xs font-bold px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: `${sigColor}20`, color: sigColor, border: `1px solid ${sigColor}40` }}
+          className="text-xs font-bold px-2 py-0.5 rounded-none"
+          style={{ backgroundColor: sig.bg, color: sig.text, border: `1px solid ${sig.border}` }}
         >
           {trade.significance}
         </span>
@@ -288,10 +292,12 @@ export default function PoliticianTradesClient({
               <button
                 key={f}
                 onClick={() => navigate({ type: f, page: 1 })}
-                className={btnBase}
+                className={`${btnBase} inline-flex items-center gap-1.5`}
                 style={typeValue === f ? btnActive : btnInactive}
               >
-                {f === 'all' ? 'All Types' : f === 'BUY' ? '🟢 Buy' : '🔴 Sell'}
+                {f === 'BUY' && <TrendingUp className="w-3 h-3" style={{ color: 'var(--buy)' }} />}
+                {f === 'SELL' && <TrendingDown className="w-3 h-3" style={{ color: 'var(--short)' }} />}
+                {f === 'all' ? 'All Types' : f === 'BUY' ? 'Buy' : 'Sell'}
               </button>
             ))}
           </div>

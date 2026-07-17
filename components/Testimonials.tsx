@@ -33,11 +33,10 @@ export default function Testimonials() {
           {TESTIMONIALS.map((t) => (
             <div
               key={t.attribution}
-              className="rounded-2xl p-8 flex flex-col justify-center"
+              className="rounded-none p-8 flex flex-col justify-center term-panel"
               style={{
-                backgroundColor: 'rgba(20,20,20,0.85)',
+                backgroundColor: 'var(--bg-raised)',
                 border: '1px solid rgba(0,155,255,0.3)',
-                boxShadow: '0 0 24px rgba(0,155,255,0.08)',
                 minHeight: 220,
               }}
             >

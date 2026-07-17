@@ -107,48 +107,49 @@ export default function EdgeCarousel() {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {/* Screenshot frame */}
-          <div
-            className="relative rounded-2xl overflow-hidden term-panel"
-            style={{
-              border: '1px solid rgba(0,155,255,0.35)',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.45), 0 0 40px rgba(0,155,255,0.15)',
-            }}
-            onTouchStart={onTouchStart}
-            onTouchEnd={onTouchEnd}
-          >
-            {/* Sliding track */}
+          {/* Screenshot frame — term-panel's corner ticks sit at -1px, so they
+              live on this outer (non-clipping) wrapper; a separate inner layer
+              handles overflow-hidden for the sliding track. */}
+          <div className="relative rounded-none term-panel" style={{ border: '1px solid rgba(0,155,255,0.35)' }}>
             <div
-              className="flex transition-transform duration-500 ease-out"
-              style={{ transform: `translateX(-${index * 100}%)` }}
+              className="relative rounded-none overflow-hidden"
+              style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.45), 0 0 40px rgba(0,155,255,0.15)' }}
+              onTouchStart={onTouchStart}
+              onTouchEnd={onTouchEnd}
             >
-              {SLIDES.map((slide) => (
-                <div key={slide.image} className="w-full shrink-0">
-                  <SlideImage slide={slide} />
-                </div>
-              ))}
-            </div>
+              {/* Sliding track */}
+              <div
+                className="flex transition-transform duration-500 ease-out"
+                style={{ transform: `translateX(-${index * 100}%)` }}
+              >
+                {SLIDES.map((slide) => (
+                  <div key={slide.image} className="w-full shrink-0">
+                    <SlideImage slide={slide} />
+                  </div>
+                ))}
+              </div>
 
-            {/* Arrows */}
-            <button
-              type="button"
-              aria-label="Previous slide"
-              onClick={prev}
-              className="carousel-arrow absolute left-2 sm:left-4 top-1/2 -translate-y-1/2"
-            >
-              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
-            <button
-              type="button"
-              aria-label="Next slide"
-              onClick={() => next(true)}
-              className="carousel-arrow absolute right-2 sm:right-4 top-1/2 -translate-y-1/2"
-            >
-              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
+              {/* Arrows */}
+              <button
+                type="button"
+                aria-label="Previous slide"
+                onClick={prev}
+                className="carousel-arrow rounded-none absolute left-2 sm:left-4 top-1/2 -translate-y-1/2"
+              >
+                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+              <button
+                type="button"
+                aria-label="Next slide"
+                onClick={() => next(true)}
+                className="carousel-arrow rounded-none absolute right-2 sm:right-4 top-1/2 -translate-y-1/2"
+              >
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+            </div>
           </div>
 
-          {/* Dots */}
+          {/* Progress bars — sharp, not dots; width already encodes "active" */}
           <div className="flex items-center justify-center gap-2.5 mt-6">
             {SLIDES.map((slide, i) => (
               <button
@@ -157,10 +158,10 @@ export default function EdgeCarousel() {
                 aria-label={`Go to ${slide.title}`}
                 aria-current={i === index}
                 onClick={() => go(i, true)}
-                className="rounded-full transition-all duration-300"
+                className="rounded-none transition-all duration-300"
                 style={{
                   width: i === index ? 28 : 9,
-                  height: 9,
+                  height: 3,
                   backgroundColor: i === index ? '#009BFF' : 'var(--text-w20)',
                   boxShadow: i === index ? '0 0 10px rgba(0,155,255,0.7)' : 'none',
                 }}
@@ -178,7 +179,7 @@ export default function EdgeCarousel() {
               {active.pills.map((pill) => (
                 <span
                   key={pill}
-                  className="px-3 py-1 rounded-full text-xs"
+                  className="px-3 py-1 rounded-none text-xs"
                   style={{
                     fontWeight: 500,
                     backgroundColor: 'rgba(0,155,255,0.1)',
