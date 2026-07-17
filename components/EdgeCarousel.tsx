@@ -11,25 +11,7 @@ type Slide = {
   pills: string[]
 }
 
-// Politician + insider scanners lead: they're the only genuinely
-// non-commodity claim on the site (any signal-board SaaS can claim "entry
-// zones and confidence scores" — none of them track what Congress is
-// buying with their own money). Previously buried as slide 3 of 4.
 const SLIDES: Slide[] = [
-  {
-    image: '/screenshots/politician.png',
-    title: 'Politician Scanner',
-    description:
-      'Every stock trade made by members of Congress, tracked automatically. See exactly what your elected officials are buying and selling with their personal money.',
-    pills: ['Real-Time Filings', 'Party Breakdown', 'Trade History'],
-  },
-  {
-    image: '/screenshots/insider.png',
-    title: 'Insider Buying Scanner',
-    description:
-      'Track when CEOs, CFOs, and board members buy their own company stock with personal money — one of the most bullish signals in the market.',
-    pills: ['Form 4 Filings', 'Significance Score', 'Cluster Buy Detection'],
-  },
   {
     image: '/screenshots/signals.png',
     title: 'Stock Signals',
@@ -43,6 +25,20 @@ const SLIDES: Slide[] = [
     description:
       'Actionable options signals with strike selection, expiration, IV analysis, and full strategy reasoning. Built for traders who want more than just stock direction.',
     pills: ['CALL/PUT', 'Strike Price', 'IV Analysis'],
+  },
+  {
+    image: '/screenshots/politician.png',
+    title: 'Politician Scanner',
+    description:
+      'Every stock trade made by members of Congress, tracked automatically. See exactly what your elected officials are buying and selling with their personal money.',
+    pills: ['Real-Time Filings', 'Party Breakdown', 'Trade History'],
+  },
+  {
+    image: '/screenshots/insider.png',
+    title: 'Insider Buying Scanner',
+    description:
+      'Track when CEOs, CFOs, and board members buy their own company stock with personal money — one of the most bullish signals in the market.',
+    pills: ['Form 4 Filings', 'Significance Score', 'Cluster Buy Detection'],
   },
 ]
 
