@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import SectionHeader from './SectionHeader'
 
 type Step = {
   num: string
@@ -129,16 +130,14 @@ function Connector() {
 
 export default function HowItWorks() {
   return (
-    <section className="relative z-10 py-20">
+    <section className="relative z-10 py-24">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <p className="eyebrow mb-3">How it works</p>
-          <h2 className="type-h2">How Holoture Works</h2>
-          <p className="mt-4 type-subhead">
-            From raw market data to your next trade — in three steps
-          </p>
-        </div>
+        <SectionHeader
+          index="02"
+          eyebrow="How it works"
+          title="How Holoture Works"
+          subhead="From raw market data to your next trade — in three steps"
+        />
 
         {/* Steps */}
         <div>

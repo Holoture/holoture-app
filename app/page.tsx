@@ -172,15 +172,19 @@ export default async function LandingPage() {
       {/* Testimonials / social proof */}
       <Testimonials />
 
-      {/* Pricing Preview — kept below the value props so visitors see value first */}
-      <section className="relative z-10 py-20">
+      {/* Pricing Preview — kept below the value props so visitors see value first.
+          Centered (not left-gutter): this is a grid/action moment, not part of
+          the three-section narrative sequence. */}
+      <section className="relative z-10 py-28">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="type-h2">Simple, Transparent Pricing</h2>
             <p className="mt-4 type-subhead">Start free. Upgrade when you&apos;re ready.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {/* items-start: columns are independent heights so Pro can be taller/
+              denser than Free and Max instead of three identical stretched boxes. */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:items-start">
             {/* Free */}
             <div
               className="rounded-none p-8 term-panel"
@@ -214,12 +218,15 @@ export default async function LandingPage() {
               </Link>
             </div>
 
-            {/* Pro */}
+            {/* Pro — taller and denser than Free/Max: more padding and a
+                vertical overhang (negative margin on desktop), not just an
+                identical box with a pill on top. */}
             <div
-              className="rounded-none p-8 relative term-panel"
+              className="rounded-none p-8 sm:p-10 sm:-my-5 relative term-panel"
               style={{
                 background: 'linear-gradient(135deg, var(--bg-raised) 0%, var(--bg-overlay) 100%)',
                 border: '1px solid rgba(0,155,255,0.5)',
+                boxShadow: '0 12px 40px rgba(0,155,255,0.10)',
               }}
             >
               <div

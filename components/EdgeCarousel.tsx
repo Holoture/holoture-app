@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import SectionHeader from './SectionHeader'
 
 type Slide = {
   image: string
@@ -91,15 +92,14 @@ export default function EdgeCarousel() {
   const active = SLIDES[index]
 
   return (
-    <section className="relative z-10 py-20" style={{ backgroundColor: 'rgba(15,15,15,0.75)' }}>
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <p className="eyebrow mb-3">One platform</p>
-          <h2 className="type-h2">One Platform, Four Edges</h2>
-          <p className="mt-4 type-subhead">
-            Signals, options, and the scanners that show you where the smart money moves.
-          </p>
-        </div>
+    <section className="relative z-10 py-12" style={{ backgroundColor: 'rgba(15,15,15,0.75)' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeader
+          index="01"
+          eyebrow="One platform"
+          title="One Platform, Four Edges"
+          subhead="Signals, options, and the scanners that show you where the smart money moves."
+        />
 
         {/* ── Carousel ── */}
         <div

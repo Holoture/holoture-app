@@ -1,3 +1,5 @@
+import SectionHeader from './SectionHeader'
+
 type Testimonial = {
   quote: string
   attribution: string
@@ -23,11 +25,9 @@ const TESTIMONIALS: Testimonial[] = [
 
 export default function Testimonials() {
   return (
-    <section className="relative z-10 py-20" style={{ backgroundColor: 'rgba(15,15,15,0.75)' }}>
+    <section className="relative z-10 py-14" style={{ backgroundColor: 'rgba(15,15,15,0.75)' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="type-h2">What traders are saying</h2>
-        </div>
+        <SectionHeader index="03" eyebrow="Proof" title="What traders are saying" />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {TESTIMONIALS.map((t) => (
