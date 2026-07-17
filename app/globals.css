@@ -41,7 +41,7 @@
 :root,
 [data-theme="dark"] {
   /* ── Neutral ramp (monotonic, slightly blue-shifted so #009BFF sits in it
-     naturally). Named tokens first, then the existing --bg-*/--border-* aliases
+     naturally). Named tokens first, then the existing bg/border alias tokens
      are remapped onto this ramp so every component that already consumes them
      inherits the fix without file-by-file edits. ── */
   --bg-void:    #0A0B0D;
