@@ -81,37 +81,31 @@ function buildClusters(): Cluster[] {
 const CLUSTERS = buildClusters()
 
 // ── Layer 3 — particle field ────────────────────────────────────────────────────
+// NOTE: no fabricated market data here — particles are abstract shapes only.
+// A fake "NVDA +2.4%" as decoration would undermine the product's core claim
+// (real market data); abstract dots/plusses carry no checkable value.
 type Particle = {
-  kind: 'dot' | 'plus' | 'ticker'
+  kind: 'dot' | 'plus'
   left: number
   top: number
   opacity: number
   sub: number // 0 → 0.5x, 1 → 0.7x
   pulse: boolean
   delay: number
-  text?: string
 }
-const TICKERS = [
-  'NVDA +2.4%', 'AAPL -0.8%', 'TSLA +1.2%', 'AMD +3.1%', 'MSFT +0.6%',
-  'META -1.4%', 'GOOGL +0.9%', 'AMZN +1.7%', 'PLTR +4.2%', 'SMCI -2.1%',
-  'COIN +5.3%', 'HOOD +2.8%',
-]
 function buildParticles(): Particle[] {
   const r = rng(70707)
   const out: Particle[] = []
   for (let i = 0; i < 135; i++) {
-    const roll = r()
-    const kind: Particle['kind'] = roll < 0.6 ? 'dot' : roll < 0.82 ? 'plus' : 'ticker'
+    const kind: Particle['kind'] = r() < 0.73 ? 'dot' : 'plus'
     out.push({
       kind,
       left: r() * 98,
       top: r() * 98,
-      opacity:
-        kind === 'dot' ? 0.5 + r() * 0.2 : kind === 'plus' ? 0.25 : 0.18,
+      opacity: kind === 'dot' ? 0.5 + r() * 0.2 : 0.25,
       sub: r() > 0.5 ? 1 : 0,
       pulse: r() > 0.65,
       delay: r() * 4,
-      text: kind === 'ticker' ? TICKERS[Math.floor(r() * TICKERS.length)] : undefined,
     })
   }
   return out
@@ -303,25 +297,9 @@ function ParticleEl({ p }: { p: Particle }) {
   if (p.kind === 'dot') {
     return <span className={cls} style={{ ...base, width: 2, height: 2, borderRadius: 9999, backgroundColor: '#009BFF' }} />
   }
-  if (p.kind === 'plus') {
-    return (
-      <span className={cls} style={{ ...base, color: '#ffffff', fontSize: 8, lineHeight: 1, fontWeight: 700 }}>
-        +
-      </span>
-    )
-  }
   return (
-    <span
-      className={cls}
-      style={{
-        ...base,
-        color: '#ffffff',
-        fontSize: 10,
-        whiteSpace: 'nowrap',
-        fontFamily: 'var(--font-mono-data), ui-monospace, monospace',
-      }}
-    >
-      {p.text}
+    <span className={cls} style={{ ...base, color: '#ffffff', fontSize: 8, lineHeight: 1, fontWeight: 700 }}>
+      +
     </span>
   )
 }
