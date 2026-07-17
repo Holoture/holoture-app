@@ -9,6 +9,7 @@ import EdgeCarousel from '@/components/EdgeCarousel'
 import Testimonials from '@/components/Testimonials'
 import HowItWorks from '@/components/HowItWorks'
 import SignalCard, { type Signal } from '@/components/SignalCard'
+import OutcomesStrip, { type OutcomesSummary } from '@/components/OutcomesStrip'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
 
@@ -57,6 +58,36 @@ async function getHeroStats(): Promise<{ tradeCount: number; memberCount: number
   }
 }
 
+// Real track record for the outcomes strip — wins AND losses, never hidden.
+// "Last N signals" = the N most recently generated (not most recently
+// resolved), so "still open" reflects an honest, non-circular snapshot.
+async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
+  try {
+    const closedTotal = await prisma.signal.count({
+      where: { outcome: { in: ['HIT_TARGET', 'HIT_STOP', 'EXPIRED'] } },
+    })
+    // Require a real sample before publishing a track record — an
+    // unconvincing number is worse than no number.
+    if (closedTotal < 25) return null
+
+    const recent = await prisma.signal.findMany({
+      orderBy: { signalDate: 'desc' },
+      take: 30,
+      select: { outcome: true },
+    })
+
+    return {
+      hitTarget: recent.filter((s) => s.outcome === 'HIT_TARGET').length,
+      hitStop: recent.filter((s) => s.outcome === 'HIT_STOP').length,
+      expired: recent.filter((s) => s.outcome === 'EXPIRED').length,
+      open: recent.filter((s) => s.outcome === null).length,
+      windowSize: recent.length,
+    }
+  } catch {
+    return null
+  }
+}
+
 // Determine whether to show the delayed trial popup. Logged-out visitors and
 // users who have never subscribed are eligible; prior/current customers are not.
 async function getTrialEligibility(): Promise<{ eligible: boolean; href: string }> {
@@ -87,10 +118,11 @@ async function getTrialEligibility(): Promise<{ eligible: boolean; href: string 
 }
 
 export default async function LandingPage() {
-  const [trial, heroSignal, heroStats] = await Promise.all([
+  const [trial, heroSignal, heroStats, outcomesSummary] = await Promise.all([
     getTrialEligibility(),
     getHeroSignal(),
     getHeroStats(),
+    getOutcomesSummary(),
   ])
 
   return (
@@ -162,6 +194,11 @@ export default async function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Real track record — wins and losses, near the top. Only renders once
+          there's a real sample (25+ closed signals); never shows a thin or
+          fabricated number. */}
+      {outcomesSummary && <OutcomesStrip summary={outcomesSummary} />}
 
       {/* One Platform, Four Edges — screenshot carousel */}
       <EdgeCarousel />
