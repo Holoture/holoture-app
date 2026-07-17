@@ -301,18 +301,8 @@ body {
   .carousel-arrow { width: 34px; height: 34px; }
 }
 
-/* ── Scroll background particle pulse ─────────────────────────────────────────*/
-@keyframes sb-pulse {
-  0%, 100% { opacity: var(--sb-o, 1); }
-  50%      { opacity: calc(var(--sb-o, 1) * 0.9); }
-}
-.sb-pulse {
-  animation: sb-pulse 3.5s ease-in-out infinite;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .trial-slide-in { animation: none; }
-  .sb-pulse { animation: none; }
   .carousel-fade { animation: none; }
 }
 

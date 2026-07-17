@@ -3,25 +3,25 @@
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * Layered parallax landing-page background.
+ * Landing-page background — a single time-axis lattice.
  *
- *   L1 deep grid      — 0.10x scroll, slow rotate (perspective terminal grid)
- *   L2 candle clusters— ~0.25–0.40x scroll, slight horizontal drift
- *   L3 particle field — ~0.50/0.70x scroll, some with independent pulse
- *   L4 ring accents   — 0.80x scroll (fastest)
+ * Concept: the product's claim is "we scan the market every morning before
+ * the open." Scroll position maps to a trading session — as the visitor
+ * scrolls, the lattice drifts horizontally, and three brighter verticals
+ * (open / midday / close) pass through the viewport like session boundaries
+ * on a real chart's time axis. One idea, executed once — no globe, no
+ * particles, no candlesticks, no rings, no decorative glow.
  *
- * Performance: only a handful of wrapper elements are transformed (one per
- * parallax speed), coalesced through a single rAF on a passive scroll listener,
- * so a frame does ~7 compositor-only `transform` writes — comfortably 60fps.
+ * Gridlines are irregularly spaced (the way real chart axes are — session
+ * opens, gaps) using a deterministic PRNG so server and client render the
+ * same layout with no hydration mismatch.
  *
  * Modes (decided client-side after mount):
- *   full — all four layers + parallax (desktop)
- *   lite — only L1 + L2 at reduced opacity, no L3/L4 (mobile/low-power)
- *   off  — reduced motion: static, no scroll listener, pulses disabled by CSS
+ *   full   — lattice + horizontal scroll drift (desktop)
+ *   static — lattice only, no scroll listener (mobile / low-power)
+ *   off    — reduced motion: static, identical to `static`
  */
 
-// Deterministic PRNG (mulberry32) so server and client generate identical
-// layouts — no hydration mismatch despite "random-looking" placement.
 function rng(seed: number) {
   return () => {
     seed = (seed + 0x6d2b79f5) | 0
@@ -31,108 +31,53 @@ function rng(seed: number) {
   }
 }
 
-// ── Layer 1 — perspective grid (radial lines + concentric rings) ────────────────
-function buildGrid() {
-  const lines: { x2: number; y2: number }[] = []
-  const R = 1100
-  for (let i = 0; i < 32; i++) {
-    const a = (i / 32) * Math.PI * 2
-    lines.push({ x2: Math.cos(a) * R, y2: Math.sin(a) * R })
-  }
-  // Geometric ring sizes → denser near the centre vanishing point.
-  const rings: number[] = []
-  let s = 34
-  while (s < 1200) {
-    rings.push(s)
-    s *= 1.42
-  }
-  return { lines, rings }
-}
-const GRID = buildGrid()
+const LATTICE_WIDTH = 1300 // > 100vw so horizontal drift never exposes an edge
+const LATTICE_HEIGHT = 1000
+const REGULAR_LINE = 'rgba(255,255,255,0.035)'
+const BOUNDARY_LINE = 'rgba(255,255,255,0.14)'
 
-// ── Layer 2 — candlestick clusters ──────────────────────────────────────────────
-type Candle = { up: boolean; bodyY: number; bodyH: number; wickY: number; wickH: number }
-type Cluster = { left: number; top: number; opacity: number; sub: number; candles: Candle[] }
+type VLine = { x: number; boundary: boolean }
 
-function buildClusters(): Cluster[] {
-  const r = rng(20260625)
-  const clusters: Cluster[] = []
-  for (let c = 0; c < 22; c++) {
-    const count = 6 + Math.floor(r() * 3) // 6–8 candles
-    const candles: Candle[] = []
-    for (let i = 0; i < count; i++) {
-      const up = r() > 0.5
-      const bodyH = 8 + r() * 26
-      const bodyY = 14 + r() * (60 - bodyH)
-      const wickH = bodyH + 8 + r() * 16
-      const wickY = bodyY - (wickH - bodyH) / 2
-      candles.push({ up, bodyY, bodyH, wickY, wickH })
-    }
-    clusters.push({
-      left: r() * 92,
-      top: r() * 98,
-      opacity: 0.2 + r() * 0.1, // 20%–30%
-      sub: c % 3, // assign to one of three parallax sub-layers
-      candles,
-    })
+function buildVerticalLines(): VLine[] {
+  const r = rng(20260716)
+  const lines: VLine[] = []
+  let x = -40
+  while (x < LATTICE_WIDTH + 40) {
+    lines.push({ x, boundary: false })
+    // Irregular spacing: denser near "open"/"close" activity, sparser midday —
+    // and occasional wider gaps, the way a session actually trades.
+    const gap = r() < 0.12 ? 60 + r() * 70 : 22 + r() * 46
+    x += gap
   }
-  return clusters
-}
-const CLUSTERS = buildClusters()
-
-// ── Layer 3 — particle field ────────────────────────────────────────────────────
-// NOTE: no fabricated market data here — particles are abstract shapes only.
-// A fake "NVDA +2.4%" as decoration would undermine the product's core claim
-// (real market data); abstract dots/plusses carry no checkable value.
-type Particle = {
-  kind: 'dot' | 'plus'
-  left: number
-  top: number
-  opacity: number
-  sub: number // 0 → 0.5x, 1 → 0.7x
-  pulse: boolean
-  delay: number
-}
-function buildParticles(): Particle[] {
-  const r = rng(70707)
-  const out: Particle[] = []
-  for (let i = 0; i < 135; i++) {
-    const kind: Particle['kind'] = r() < 0.73 ? 'dot' : 'plus'
-    out.push({
-      kind,
-      left: r() * 98,
-      top: r() * 98,
-      opacity: kind === 'dot' ? 0.5 + r() * 0.2 : 0.25,
-      sub: r() > 0.5 ? 1 : 0,
-      pulse: r() > 0.65,
-      delay: r() * 4,
-    })
+  // Mark three lines as session boundaries: open, midday, close.
+  const openIdx = Math.floor(lines.length * 0.18)
+  const midIdx = Math.floor(lines.length * 0.5)
+  const closeIdx = Math.floor(lines.length * 0.82)
+  for (const i of [openIdx, midIdx, closeIdx]) {
+    if (lines[i]) lines[i].boundary = true
   }
-  return out
+  return lines
 }
-const PARTICLES = buildParticles()
 
-// ── Layer 4 — ring accents ──────────────────────────────────────────────────────
-const RINGS = [
-  { size: 520, left: 50, top: 12, center: true },  // behind hero headline
-  { size: 360, left: 12, top: 28, center: false },
-  { size: 440, left: 85, top: 40, center: false },
-  { size: 300, left: 70, top: 55, center: false },
-  { size: 480, left: 20, top: 70, center: false },
-  { size: 340, left: 78, top: 84, center: false },
-  { size: 400, left: 45, top: 95, center: false },
-]
+function buildHorizontalLines(): number[] {
+  const r = rng(918273645)
+  const lines: number[] = []
+  let y = 20
+  while (y < LATTICE_HEIGHT) {
+    lines.push(y)
+    // Tighter spacing mid-range (price clusters), wider toward the extremes.
+    const mid = Math.abs(y - LATTICE_HEIGHT / 2) < LATTICE_HEIGHT * 0.3
+    y += (mid ? 34 : 58) + r() * 30
+  }
+  return lines
+}
+
+const V_LINES = buildVerticalLines()
+const H_LINES = buildHorizontalLines()
 
 export default function ScrollBackground() {
-  const [mode, setMode] = useState<'off' | 'lite' | 'full'>('full')
-
-  const gridRef = useRef<HTMLDivElement>(null)
-  const mid0Ref = useRef<HTMLDivElement>(null)
-  const mid1Ref = useRef<HTMLDivElement>(null)
-  const mid2Ref = useRef<HTMLDivElement>(null)
-  const p0Ref = useRef<HTMLDivElement>(null)
-  const p1Ref = useRef<HTMLDivElement>(null)
-  const ringRef = useRef<HTMLDivElement>(null)
+  const [mode, setMode] = useState<'off' | 'static' | 'full'>('full')
+  const latticeRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -142,28 +87,19 @@ export default function ScrollBackground() {
       typeof navigator.hardwareConcurrency === 'number' &&
       navigator.hardwareConcurrency > 0 &&
       navigator.hardwareConcurrency <= 4
-    setMode(reduce ? 'off' : small || lowPower ? 'lite' : 'full')
+    setMode(reduce ? 'off' : small || lowPower ? 'static' : 'full')
   }, [])
 
   useEffect(() => {
-    if (mode === 'off') return
+    if (mode !== 'full') return
 
     let raf = 0
     let y = window.scrollY
-    const full = mode === 'full'
 
     const apply = () => {
       raf = 0
-      if (gridRef.current)
-        gridRef.current.style.transform =
-          `translate3d(0, ${y * 0.1}px, 0) rotate(${y * 0.006}deg) scale(1.08)`
-      if (mid0Ref.current) mid0Ref.current.style.transform = `translate3d(${y * 0.01}px, ${y * 0.25}px, 0)`
-      if (mid1Ref.current) mid1Ref.current.style.transform = `translate3d(${-y * 0.012}px, ${y * 0.32}px, 0)`
-      if (mid2Ref.current) mid2Ref.current.style.transform = `translate3d(${y * 0.008}px, ${y * 0.4}px, 0)`
-      if (full) {
-        if (p0Ref.current) p0Ref.current.style.transform = `translate3d(0, ${y * 0.5}px, 0)`
-        if (p1Ref.current) p1Ref.current.style.transform = `translate3d(0, ${y * 0.7}px, 0)`
-        if (ringRef.current) ringRef.current.style.transform = `translate3d(0, ${y * 0.8}px, 0)`
+      if (latticeRef.current) {
+        latticeRef.current.style.transform = `translate3d(${-y * 0.15}px, 0, 0)`
       }
     }
 
@@ -180,126 +116,43 @@ export default function ScrollBackground() {
     }
   }, [mode])
 
-  const showFull = mode === 'full'
-  const wc = mode === 'full' ? 'transform' : undefined // will-change only when animating
-
   return (
     <div aria-hidden className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-      {/* L1 — deep perspective grid */}
       <div
-        ref={gridRef}
+        ref={latticeRef}
         className="absolute inset-0 flex items-center justify-center"
-        style={{ willChange: wc, opacity: mode === 'lite' ? 0.6 : 1 }}
+        style={{ willChange: mode === 'full' ? 'transform' : undefined }}
       >
-        <svg viewBox="-720 -450 1440 900" className="w-[140%] h-[140%]">
-          <g stroke="#009BFF" strokeWidth="1" fill="none" style={{ opacity: 0.12 }}>
-            {GRID.lines.map((l, i) => (
-              <line key={`gl${i}`} x1="0" y1="0" x2={l.x2} y2={l.y2} />
-            ))}
-            {GRID.rings.map((s, i) => (
-              <rect key={`gr${i}`} x={-s} y={-s * 0.625} width={s * 2} height={s * 1.25} />
-            ))}
-          </g>
+        <svg
+          viewBox={`0 0 ${LATTICE_WIDTH} ${LATTICE_HEIGHT}`}
+          className="w-[130%] h-full"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          {H_LINES.map((y, i) => (
+            <line key={`h${i}`} x1="0" y1={y} x2={LATTICE_WIDTH} y2={y} stroke={REGULAR_LINE} strokeWidth="1" />
+          ))}
+          {V_LINES.map((v, i) => (
+            <line
+              key={`v${i}`}
+              x1={v.x}
+              y1="0"
+              x2={v.x}
+              y2={LATTICE_HEIGHT}
+              stroke={v.boundary ? BOUNDARY_LINE : REGULAR_LINE}
+              strokeWidth={v.boundary ? 1.5 : 1}
+            />
+          ))}
         </svg>
       </div>
 
-      {/* L2 — candlestick clusters across three parallax sub-layers */}
-      {[mid0Ref, mid1Ref, mid2Ref].map((ref, sub) => (
-        <div
-          key={`mid${sub}`}
-          ref={ref}
-          className="absolute inset-0"
-          style={{ willChange: wc, opacity: mode === 'lite' ? 0.6 : 1 }}
-        >
-          {CLUSTERS.filter((c) => c.sub === sub).map((c, i) => (
-            <CandleClusterEl key={`c${sub}-${i}`} cluster={c} />
-          ))}
-        </div>
-      ))}
-
-      {/* L3 — particle field (desktop only) */}
-      {showFull &&
-        [p0Ref, p1Ref].map((ref, sub) => (
-          <div key={`p${sub}`} ref={ref} className="absolute inset-0" style={{ willChange: wc }}>
-            {PARTICLES.filter((p) => p.sub === sub).map((p, i) => (
-              <ParticleEl key={`p${sub}-${i}`} p={p} />
-            ))}
-          </div>
-        ))}
-
-      {/* L4 — ring accents (desktop only) */}
-      {showFull && (
-        <div ref={ringRef} className="absolute inset-0" style={{ willChange: wc }}>
-          {RINGS.map((r, i) => (
-            <div
-              key={`ring${i}`}
-              className="absolute rounded-full"
-              style={{
-                width: r.size,
-                height: r.size,
-                left: `${r.left}%`,
-                top: `${r.top}%`,
-                transform: 'translate(-50%, -50%)',
-                border: '1px solid rgba(0,155,255,0.10)',
-              }}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Readability overlay — darkest at centre (behind headline), clear at edges */}
+      {/* Readability layer — a plain top-to-mid fade, not a decorative glow,
+          so hero text stays legible over the lattice. */}
       <div
         className="absolute inset-0"
         style={{
-          background:
-            'radial-gradient(ellipse 70% 60% at 50% 38%, rgba(15,15,15,0.3) 0%, rgba(15,15,15,0.12) 45%, transparent 75%)',
+          background: 'linear-gradient(to bottom, rgba(15,15,15,0.35) 0%, rgba(15,15,15,0.12) 45%, transparent 75%)',
         }}
       />
     </div>
-  )
-}
-
-function CandleClusterEl({ cluster }: { cluster: Cluster }) {
-  const w = cluster.candles.length * 11
-  return (
-    <div
-      className="absolute"
-      style={{ left: `${cluster.left}%`, top: `${cluster.top}%`, opacity: cluster.opacity }}
-    >
-      <svg width={w} height="76">
-        {cluster.candles.map((c, i) => {
-          const x = i * 11 + 5
-          const color = c.up ? '#1D9E75' : '#E24B4A'
-          return (
-            <g key={i} stroke={color} fill={color}>
-              <line x1={x} y1={c.wickY} x2={x} y2={c.wickY + c.wickH} strokeWidth="1" />
-              <rect x={x - 3} y={c.bodyY} width="6" height={c.bodyH} />
-            </g>
-          )
-        })}
-      </svg>
-    </div>
-  )
-}
-
-function ParticleEl({ p }: { p: Particle }) {
-  const cls = p.pulse ? 'sb-pulse' : undefined
-  const base: React.CSSProperties = {
-    position: 'absolute',
-    left: `${p.left}%`,
-    top: `${p.top}%`,
-    opacity: p.opacity,
-    animationDelay: p.pulse ? `${p.delay}s` : undefined,
-    // Base opacity for the pulse keyframe to oscillate around (~±10%).
-    ...(p.pulse ? ({ ['--sb-o' as string]: p.opacity } as React.CSSProperties) : {}),
-  }
-
-  if (p.kind === 'dot') {
-    return <span className={cls} style={{ ...base, width: 2, height: 2, borderRadius: 9999, backgroundColor: '#009BFF' }} />
-  }
-  return (
-    <span className={cls} style={{ ...base, color: '#ffffff', fontSize: 8, lineHeight: 1, fontWeight: 700 }}>
-      +
-    </span>
   )
 }
