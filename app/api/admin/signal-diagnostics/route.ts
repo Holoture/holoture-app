@@ -1,7 +1,10 @@
 // TEMPORARY DIAGNOSTIC — DELETE AFTER USE
-// (cache-bust: forcing a clean build, see commit history)
 //
-// GET /api/admin/diagnostics/signals
+// GET /api/admin/signal-diagnostics
+// (moved from the nested /api/admin/diagnostics/signals path, which 404'd in
+// production across three separate deployments despite compiling correctly
+// in the build log's route table — flattened to match the single-level path
+// pattern every other working admin route uses.)
 // Read-only report on signal generation reality: category breakdown,
 // classification-function reality check, ticker repetition, outcome data,
 // and dedup impact. No writes, no mutations, no deletes.
