@@ -20,9 +20,9 @@ export default function ComingSoon({
           <Clock className="w-10 h-10" style={{ color: '#009BFF' }} />
         </div>
 
-        <p className="term-label mb-3">// MODULE_PENDING<span className="term-cursor" /></p>
+        <p className="eyebrow mb-3">Coming soon</p>
 
-        <h1 className="text-3xl sm:text-4xl font-black text-white mb-4">
+        <h1 className="type-h2 mb-4">
           {market} signals coming soon
         </h1>
         <p className="text-white mb-10 leading-relaxed" style={{ opacity: 0.7 }}>

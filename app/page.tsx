@@ -60,13 +60,13 @@ export default async function LandingPage() {
           }}
         />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight">
+          <h1 className="type-display" style={{ fontSize: 'clamp(40px, 6vw, 64px)' }}>
             Trade with an Edge
             <br />
-            <span style={{ color: '#009BFF' }}>Algorithmic Trading Made Simple</span>
+            Algorithmic Trading Made Simple
           </h1>
 
-          <p className="mt-6 text-lg sm:text-xl max-w-2xl mx-auto text-white">
+          <p className="mt-6 max-w-2xl mx-auto" style={{ fontSize: 19, fontWeight: 400, lineHeight: 1.5, color: 'var(--text-mute)' }}>
             Stop guessing. Every day Holoture delivers curated stock signals with clear entry zones,
             price targets, and stop losses — backed by real market data and built for traders who want an actual edge.
           </p>
@@ -74,16 +74,16 @@ export default async function LandingPage() {
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/sign-up"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#009BFF', color: 'white' }}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-lg hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: '#009BFF', color: 'white', fontWeight: 600 }}
             >
               Start Free Today
               <ChevronRight className="w-5 h-5" />
             </Link>
             <Link
               href="/pricing"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-colors text-white"
-              style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-lg transition-colors"
+              style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-body)', fontWeight: 500 }}
             >
               View Pricing
             </Link>
@@ -105,8 +105,8 @@ export default async function LandingPage() {
       <section className="relative z-10 py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-black text-white">Simple, Transparent Pricing</h2>
-            <p className="mt-4 text-white">Start free. Upgrade when you&apos;re ready.</p>
+            <h2 className="type-h2">Simple, Transparent Pricing</h2>
+            <p className="mt-4 type-subhead">Start free. Upgrade when you&apos;re ready.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -115,10 +115,10 @@ export default async function LandingPage() {
               className="rounded-2xl p-8"
               style={{ backgroundColor: 'rgba(20,20,20,0.85)', border: '1px solid var(--border)' }}
             >
-              <p className="text-sm font-semibold uppercase tracking-wider text-white">Free</p>
+              <p className="eyebrow">Free</p>
               <div className="mt-3 mb-6">
-                <span className="text-5xl font-black text-white">$0</span>
-                <span className="ml-1 text-white">/month</span>
+                <span className="font-data text-5xl" style={{ fontWeight: 500, letterSpacing: '-0.01em', color: 'var(--text-high)' }}>$0</span>
+                <span className="ml-1" style={{ color: 'var(--text-mute)' }}>/month</span>
               </div>
               <ul className="space-y-3 mb-8">
                 {[
@@ -128,7 +128,7 @@ export default async function LandingPage() {
                   'Market News, Trends & Calendar',
                   'No credit card required',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-white">
+                  <li key={item} className="flex items-center gap-2" style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-body)' }}>
                     <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--border)' }}>
                       <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#009BFF' }} />
                     </div>
@@ -138,8 +138,8 @@ export default async function LandingPage() {
               </ul>
               <Link
                 href="/sign-up"
-                className="block w-full text-center py-3 rounded-xl font-semibold transition-colors text-white"
-                style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
+                className="block w-full text-center py-3 rounded-xl transition-colors"
+                style={{ fontWeight: 500, color: 'var(--text-body)', backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
               >
                 Get Started Free
               </Link>
@@ -160,10 +160,10 @@ export default async function LandingPage() {
                 <Star className="w-3 h-3" />
                 MOST POPULAR
               </div>
-              <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: '#009BFF' }}>Pro</p>
+              <p className="eyebrow" style={{ color: '#009BFF' }}>Pro</p>
               <div className="mt-3 mb-6">
-                <span className="text-5xl font-black text-white">$15</span>
-                <span className="ml-1 text-white">/month</span>
+                <span className="font-data text-5xl" style={{ fontWeight: 500, letterSpacing: '-0.01em', color: 'var(--text-high)' }}>$15</span>
+                <span className="ml-1" style={{ color: 'var(--text-mute)' }}>/month</span>
               </div>
               <ul className="space-y-3 mb-8">
                 {[
@@ -175,7 +175,7 @@ export default async function LandingPage() {
                   'Confidence scores & full summary',
                   'Cancel anytime',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-white">
+                  <li key={item} className="flex items-center gap-2" style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-body)' }}>
                     <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(0,155,255,0.2)' }}>
                       <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#009BFF' }} />
                     </div>
@@ -186,8 +186,8 @@ export default async function LandingPage() {
               <CheckoutButton
                 tier="pro"
                 label="Start Pro — $15/month"
-                className="block w-full text-center py-3 rounded-xl font-bold hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#009BFF', color: 'white' }}
+                className="block w-full text-center py-3 rounded-xl hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#009BFF', color: 'white', fontWeight: 600 }}
               />
             </div>
 
@@ -206,10 +206,10 @@ export default async function LandingPage() {
                 <Zap className="w-3 h-3" />
                 BEST VALUE
               </div>
-              <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: '#a78bfa' }}>Max</p>
+              <p className="eyebrow" style={{ color: '#a78bfa' }}>Max</p>
               <div className="mt-3 mb-6">
-                <span className="text-5xl font-black text-white">$25</span>
-                <span className="ml-1 text-white">/month</span>
+                <span className="font-data text-5xl" style={{ fontWeight: 500, letterSpacing: '-0.01em', color: 'var(--text-high)' }}>$25</span>
+                <span className="ml-1" style={{ color: 'var(--text-mute)' }}>/month</span>
               </div>
               <ul className="space-y-3 mb-8">
                 {[
@@ -219,7 +219,7 @@ export default async function LandingPage() {
                   'Forex Signals (coming soon)',
                   'Cancel anytime',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-white">
+                  <li key={item} className="flex items-center gap-2" style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-body)' }}>
                     <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(124,58,237,0.25)' }}>
                       <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#a78bfa' }} />
                     </div>
@@ -230,8 +230,8 @@ export default async function LandingPage() {
               <CheckoutButton
                 tier="max"
                 label="Start Max — $25/month"
-                className="block w-full text-center py-3 rounded-xl font-bold hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#009BFF', color: 'white' }}
+                className="block w-full text-center py-3 rounded-xl hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#009BFF', color: 'white', fontWeight: 600 }}
               />
             </div>
           </div>

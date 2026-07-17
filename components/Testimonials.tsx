@@ -26,7 +26,7 @@ export default function Testimonials() {
     <section className="relative z-10 py-20" style={{ backgroundColor: 'rgba(15,15,15,0.75)' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-black text-white">What traders are saying</h2>
+          <h2 className="type-h2">What traders are saying</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -41,11 +41,11 @@ export default function Testimonials() {
                 minHeight: 220,
               }}
             >
-              <p className="text-white leading-relaxed" style={{ color: 'var(--text-w80)' }}>
+              <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.6, color: 'var(--text-body)' }}>
                 {t.quote}
               </p>
 
-              <p className="mt-6 text-sm font-semibold" style={{ color: 'var(--text-w50)' }}>
+              <p className="mt-6 text-sm" style={{ fontWeight: 500, color: 'var(--text-mute)' }}>
                 — {t.attribution}
               </p>
             </div>

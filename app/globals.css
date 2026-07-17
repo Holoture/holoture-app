@@ -29,6 +29,12 @@
   --bg-surface-2:  #161616;
   --bg-surface-3:  #0a0a0a;
   --text-primary:  #ffffff;
+
+  /* ── Type-system text tones (Phase 1; full neutral ramp lands in Phase 2) ── */
+  --text-high: #F2F5F7;  /* headlines — pure #fff vibrates on OLED */
+  --text-body: #C9CFD6;  /* body copy */
+  --text-mute: #9BA3AE;  /* secondary */
+  --text-dim:  #6E7681;  /* de-emphasized labels */
   --border:        rgba(255,255,255,0.2);
   --border-subtle: rgba(255,255,255,0.1);
   --border-faint:  rgba(255,255,255,0.08);
@@ -94,33 +100,65 @@ body {
   font-feature-settings: 'tnum' 1;
 }
 
-/* ── Terminal accent layer ────────────────────────────────────────────────────
-   A "light touch" terminal feel — accent only, not a full redesign. */
+/* ── Type system ──────────────────────────────────────────────────────────────
+   Hierarchy comes from tracking + a real 400→500→600 weight ladder, not from
+   weight 900. JetBrains Mono is reserved for machine-produced, checkable
+   values (prices, %, tickers, timestamps, confidence, IDs, counts, indices) —
+   never for marketing copy. */
 
-/* Blinking cursor accent, e.g. next to a section header: <span class="term-cursor" /> */
-.term-cursor {
-  display: inline-block;
-  width: 0.55em;
-  height: 1.05em;
-  margin-left: 0.18em;
-  vertical-align: text-bottom;
-  background-color: #009BFF;
-  box-shadow: 0 0 6px rgba(0,155,255,0.7);
-  animation: term-blink 1.15s steps(1) infinite;
+/* Display — hero headline. Tighter tracking at 600 reads more authoritative
+   than 900 at any size. */
+.type-display {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+  color: var(--text-high);
 }
 
-@keyframes term-blink {
-  0%, 49%   { opacity: 1; }
-  50%, 100% { opacity: 0; }
+/* Headline — section h2. Clearly subordinate to display. */
+.type-h2 {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--text-high);
 }
 
-/* Monospace eyebrow label, e.g. "// LIVE DATA" */
-.term-label {
-  font-family: var(--font-mono-data), ui-monospace, Menlo, monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+/* Subhead — supporting line under a display or h2. */
+.type-subhead {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-mute);
+}
+
+/* Body copy. */
+.type-body {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-body);
+}
+
+/* Marketing eyebrow — DM Sans, NOT mono. Mono on marketing copy is a data
+   costume that destroys mono's ability to signal "this value is real." */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(0,155,255,0.85);
+  color: var(--text-dim);
+}
+
+/* Data label — mono, for labels attached to actual machine-produced values
+   (column headers, step indices, timestamps). */
+.data-label {
+  font-family: var(--font-mono-data), ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.2;
 }
 
 /* Terminal-style framed data panel: thin accent border + corner ticks. */
@@ -230,7 +268,6 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .term-cursor { animation: none; opacity: 1; }
   .trial-slide-in { animation: none; }
   .sb-pulse { animation: none; }
   .carousel-fade { animation: none; }

@@ -85,17 +85,14 @@ function StepCard({ step, index }: { step: Step; index: number }) {
 
         {/* Content */}
         <div className="relative">
-          {/* Small step label */}
-          <p
-            className="font-mono font-bold text-sm tracking-widest mb-3"
-            style={{ color: '#009BFF', letterSpacing: '0.15em' }}
-          >
+          {/* Step index — mono is correct here: an index is machine-produced */}
+          <p className="data-label mb-3" style={{ color: '#009BFF' }}>
             {step.num}
           </p>
 
           <h3
-            className="font-black text-white mb-6"
-            style={{ fontSize: 'clamp(22px, 3vw, 30px)', lineHeight: 1.2 }}
+            className="mb-6"
+            style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 600, letterSpacing: '-0.02em', lineHeight: 1.15, color: 'var(--text-high)' }}
           >
             {step.title}
           </h3>
@@ -104,8 +101,7 @@ function StepCard({ step, index }: { step: Step; index: number }) {
             {step.body.map((para, i) => (
               <p
                 key={i}
-                className="leading-relaxed"
-                style={{ color: '#CCCCCC', fontSize: 'clamp(15px, 1.5vw, 18px)', lineHeight: 1.8 }}
+                style={{ color: 'var(--text-body)', fontSize: 'clamp(15px, 1.5vw, 16px)', fontWeight: 400, lineHeight: 1.6 }}
               >
                 {para}
               </p>
@@ -137,9 +133,9 @@ export default function HowItWorks() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-14">
-          <p className="term-label mb-3">// HOW_IT_WORKS<span className="term-cursor" /></p>
-          <h2 className="text-3xl sm:text-4xl font-black text-white">How Holoture Works</h2>
-          <p className="mt-4 text-lg" style={{ color: '#CCCCCC' }}>
+          <p className="eyebrow mb-3">How it works</p>
+          <h2 className="type-h2">How Holoture Works</h2>
+          <p className="mt-4 type-subhead">
             From raw market data to your next trade — in three steps
           </p>
         </div>

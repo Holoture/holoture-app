@@ -94,9 +94,9 @@ export default function EdgeCarousel() {
     <section className="relative z-10 py-20" style={{ backgroundColor: 'rgba(15,15,15,0.75)' }}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <p className="term-label mb-3">// ONE_PLATFORM<span className="term-cursor" /></p>
-          <h2 className="text-3xl sm:text-4xl font-black text-white">One Platform, Four Edges</h2>
-          <p className="mt-4 text-lg text-white">
+          <p className="eyebrow mb-3">One platform</p>
+          <h2 className="type-h2">One Platform, Four Edges</h2>
+          <p className="mt-4 type-subhead">
             Signals, options, and the scanners that show you where the smart money moves.
           </p>
         </div>
@@ -170,16 +170,17 @@ export default function EdgeCarousel() {
 
           {/* Details (fade in on slide change) */}
           <div key={index} className="carousel-fade mt-8 text-center max-w-2xl mx-auto">
-            <h3 className="text-2xl font-black text-white mb-3">{active.title}</h3>
-            <p className="text-white leading-relaxed" style={{ color: 'var(--text-w75)' }}>
+            <h3 className="mb-3" style={{ fontSize: 22, fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-high)' }}>{active.title}</h3>
+            <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.6, color: 'var(--text-body)' }}>
               {active.description}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
               {active.pills.map((pill) => (
                 <span
                   key={pill}
-                  className="px-3 py-1 rounded-full text-xs font-semibold font-data"
+                  className="px-3 py-1 rounded-full text-xs"
                   style={{
+                    fontWeight: 500,
                     backgroundColor: 'rgba(0,155,255,0.1)',
                     color: '#009BFF',
                     border: '1px solid rgba(0,155,255,0.3)',
@@ -211,8 +212,8 @@ function SlideImage({ slide }: { slide: Slide }) {
             'radial-gradient(ellipse at 50% 0%, rgba(0,155,255,0.12), transparent 60%), var(--bg-primary)',
         }}
       >
-        <p className="term-label mb-2">// PREVIEW_PENDING</p>
-        <p className="text-xl font-black text-white">{slide.title}</p>
+        <p className="eyebrow mb-2">Preview pending</p>
+        <p style={{ fontSize: 20, fontWeight: 600, color: 'var(--text-high)' }}>{slide.title}</p>
       </div>
     )
   }

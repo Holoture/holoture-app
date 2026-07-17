@@ -170,10 +170,10 @@ export default async function DashboardPage({
         {/* Page header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <p className="term-label mb-1">// SIGNALS_</p>
+            <p className="eyebrow mb-1">Signals</p>
             <div className="flex items-center gap-2 mb-1">
-              <h1 className="text-2xl sm:text-3xl font-black text-white">
-                Today&apos;s Signals<span className="term-cursor" />
+              <h1 className="text-2xl sm:text-3xl" style={{ fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-high)' }}>
+                Today&apos;s Signals
               </h1>
               {isMax && (
                 <span
