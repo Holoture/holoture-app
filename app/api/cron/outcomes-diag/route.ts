@@ -22,18 +22,21 @@ export async function GET(req: Request) {
     prisma.signal.findFirst({ orderBy: { outcomeCheckedAt: 'desc' }, select: { outcomeCheckedAt: true } }),
   ])
 
-  // Last-30-closed window (what a "Last 30 signals" strip would actually show).
-  const last30Closed = await prisma.signal.findMany({
-    where: { outcome: { in: ['HIT_TARGET', 'HIT_STOP', 'EXPIRED'] } },
-    orderBy: { outcomeCheckedAt: 'desc' },
+  // "Last 30 signals" = the 30 most recently GENERATED signals (not the 30
+  // most recently resolved) — this is the only reading where an "open" bucket
+  // can be nonzero, matching the strip's template.
+  const last30Generated = await prisma.signal.findMany({
+    orderBy: { signalDate: 'desc' },
     take: 30,
-    select: { outcome: true, outcomeCheckedAt: true },
+    select: { outcome: true, isActive: true, signalDate: true },
   })
   const last30Breakdown = {
-    hitTarget: last30Closed.filter((s) => s.outcome === 'HIT_TARGET').length,
-    hitStop: last30Closed.filter((s) => s.outcome === 'HIT_STOP').length,
-    expired: last30Closed.filter((s) => s.outcome === 'EXPIRED').length,
-    windowSize: last30Closed.length,
+    hitTarget: last30Generated.filter((s) => s.outcome === 'HIT_TARGET').length,
+    hitStop: last30Generated.filter((s) => s.outcome === 'HIT_STOP').length,
+    expired: last30Generated.filter((s) => s.outcome === 'EXPIRED').length,
+    open: last30Generated.filter((s) => s.outcome === null).length,
+    windowSize: last30Generated.length,
+    oldestInWindow: last30Generated[last30Generated.length - 1]?.signalDate ?? null,
   }
 
   return NextResponse.json({
