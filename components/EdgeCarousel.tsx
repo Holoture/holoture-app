@@ -11,21 +11,11 @@ type Slide = {
   pills: string[]
 }
 
+// Politician + insider scanners lead: they're the only genuinely
+// non-commodity claim on the site (any signal-board SaaS can claim "entry
+// zones and confidence scores" — none of them track what Congress is
+// buying with their own money). Previously buried as slide 3 of 4.
 const SLIDES: Slide[] = [
-  {
-    image: '/screenshots/signals.png',
-    title: 'Stock Signals',
-    description:
-      'Daily curated signals across large cap, small cap, swing, momentum, and intraday timeframes. Every signal includes an entry zone, price target, stop loss, and full data-backed reasoning.',
-    pills: ['Entry Zones', 'Price Targets', 'Confidence Scores'],
-  },
-  {
-    image: '/screenshots/options.png',
-    title: 'Options Signals',
-    description:
-      'Actionable options signals with strike selection, expiration, IV analysis, and full strategy reasoning. Built for traders who want more than just stock direction.',
-    pills: ['CALL/PUT', 'Strike Price', 'IV Analysis'],
-  },
   {
     image: '/screenshots/politician.png',
     title: 'Politician Scanner',
@@ -39,6 +29,20 @@ const SLIDES: Slide[] = [
     description:
       'Track when CEOs, CFOs, and board members buy their own company stock with personal money — one of the most bullish signals in the market.',
     pills: ['Form 4 Filings', 'Significance Score', 'Cluster Buy Detection'],
+  },
+  {
+    image: '/screenshots/signals.png',
+    title: 'Stock Signals',
+    description:
+      'Daily curated signals across large cap, small cap, swing, momentum, and intraday timeframes. Every signal includes an entry zone, price target, stop loss, and full data-backed reasoning.',
+    pills: ['Entry Zones', 'Price Targets', 'Confidence Scores'],
+  },
+  {
+    image: '/screenshots/options.png',
+    title: 'Options Signals',
+    description:
+      'Actionable options signals with strike selection, expiration, IV analysis, and full strategy reasoning. Built for traders who want more than just stock direction.',
+    pills: ['CALL/PUT', 'Strike Price', 'IV Analysis'],
   },
 ]
 

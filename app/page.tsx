@@ -140,14 +140,14 @@ export default async function LandingPage() {
             {/* Left — claim, 7 cols, left-aligned */}
             <div className="lg:col-span-7">
               <h1 className="type-display" style={{ fontSize: 'clamp(40px, 5.5vw, 64px)' }}>
-                Trade with an Edge
+                See What Congress And
                 <br />
-                Algorithmic Trading Made Simple
+                Corporate Insiders Are Buying
               </h1>
 
               <p className="mt-6 max-w-xl" style={{ fontSize: 19, fontWeight: 400, lineHeight: 1.5, color: 'var(--text-mute)' }}>
-                Stop guessing. Every day Holoture delivers curated stock signals with clear entry zones,
-                price targets, and stop losses — backed by real market data and built for traders who want an actual edge.
+                Every signal ships with a clear entry zone, price target, and stop loss —
+                backed by real market data, congressional disclosures, and insider filings.
               </p>
 
               <div className="mt-10 flex flex-col sm:flex-row gap-4">
@@ -215,7 +215,7 @@ export default async function LandingPage() {
       <section className="relative z-10 py-28">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="type-h2">Simple, Transparent Pricing</h2>
+            <h2 className="type-h2">Pricing</h2>
             <p className="mt-4 type-subhead">Start free. Upgrade when you&apos;re ready.</p>
           </div>
 
