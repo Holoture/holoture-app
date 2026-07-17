@@ -5,12 +5,57 @@ import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 import TrialPopup from '@/components/TrialPopup'
 import ScrollBackground from '@/components/ScrollBackground'
-import GlobeBackground from '@/components/GlobeBackground'
 import EdgeCarousel from '@/components/EdgeCarousel'
 import Testimonials from '@/components/Testimonials'
 import HowItWorks from '@/components/HowItWorks'
+import SignalCard, { type Signal } from '@/components/SignalCard'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
+
+// The hero shows real, live data — not a mockup. Pulls the highest-confidence
+// complete signal from the most recent signal date so the hero never shows a
+// signal that's gone stale, and never shows placeholder/fabricated data.
+async function getHeroSignal(): Promise<Signal | null> {
+  try {
+    const latest = await prisma.signal.findFirst({
+      where: { isActive: true, ticker: { not: '' }, confidence: { gt: 0 } },
+      orderBy: { signalDate: 'desc' },
+      select: { signalDate: true },
+    })
+    if (!latest) return null
+
+    const dayStart = new Date(latest.signalDate)
+    dayStart.setHours(0, 0, 0, 0)
+    const dayEnd = new Date(dayStart)
+    dayEnd.setDate(dayEnd.getDate() + 1)
+
+    const signal = await prisma.signal.findFirst({
+      where: {
+        isActive: true,
+        ticker: { not: '' },
+        confidence: { gt: 0 },
+        signalDate: { gte: dayStart, lt: dayEnd },
+      },
+      orderBy: { confidence: 'desc' },
+    })
+    return signal
+  } catch {
+    return null
+  }
+}
+
+// Real, checkable counts for the hero's mono micro-line — never hardcoded.
+async function getHeroStats(): Promise<{ tradeCount: number; memberCount: number }> {
+  try {
+    const [tradeCount, members] = await Promise.all([
+      prisma.politicianTrade.count(),
+      prisma.politicianTrade.findMany({ distinct: ['politicianName'], select: { politicianName: true } }),
+    ])
+    return { tradeCount, memberCount: members.length }
+  } catch {
+    return { tradeCount: 0, memberCount: 0 }
+  }
+}
 
 // Determine whether to show the delayed trial popup. Logged-out visitors and
 // users who have never subscribed are eligible; prior/current customers are not.
@@ -42,53 +87,79 @@ async function getTrialEligibility(): Promise<{ eligible: boolean; href: string 
 }
 
 export default async function LandingPage() {
-  const trial = await getTrialEligibility()
+  const [trial, heroSignal, heroStats] = await Promise.all([
+    getTrialEligibility(),
+    getHeroSignal(),
+    getHeroStats(),
+  ])
 
   return (
     <div className="min-h-full relative">
-      <GlobeBackground position="right" />
       <ScrollBackground />
       <TrialPopup eligible={trial.eligible} href={trial.href} />
       <Header />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,155,255,0.12) 0%, transparent 60%)',
-          }}
-        />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center">
-          <h1 className="type-display" style={{ fontSize: 'clamp(40px, 6vw, 64px)' }}>
-            Trade with an Edge
-            <br />
-            Algorithmic Trading Made Simple
-          </h1>
+      {/* Hero — asymmetric 7/5 split. The claim (left) sits next to its proof
+          (right, a live signal from the database) in the same viewport,
+          instead of a centered promise with no evidence. */}
+      <section className="relative overflow-hidden py-28">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            {/* Left — claim, 7 cols, left-aligned */}
+            <div className="lg:col-span-7">
+              <h1 className="type-display" style={{ fontSize: 'clamp(40px, 5.5vw, 64px)' }}>
+                Trade with an Edge
+                <br />
+                Algorithmic Trading Made Simple
+              </h1>
 
-          <p className="mt-6 max-w-2xl mx-auto" style={{ fontSize: 19, fontWeight: 400, lineHeight: 1.5, color: 'var(--text-mute)' }}>
-            Stop guessing. Every day Holoture delivers curated stock signals with clear entry zones,
-            price targets, and stop losses — backed by real market data and built for traders who want an actual edge.
-          </p>
+              <p className="mt-6 max-w-xl" style={{ fontSize: 19, fontWeight: 400, lineHeight: 1.5, color: 'var(--text-mute)' }}>
+                Stop guessing. Every day Holoture delivers curated stock signals with clear entry zones,
+                price targets, and stop losses — backed by real market data and built for traders who want an actual edge.
+              </p>
 
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-lg hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#009BFF', color: 'white', fontWeight: 600 }}
-            >
-              Start Free Today
-              <ChevronRight className="w-5 h-5" />
-            </Link>
-            <Link
-              href="/pricing"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-lg transition-colors"
-              style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-body)', fontWeight: 500 }}
-            >
-              View Pricing
-            </Link>
+              <div className="mt-10 flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/sign-up"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-lg hover:opacity-90 transition-opacity"
+                  style={{ backgroundColor: '#009BFF', color: 'white', fontWeight: 600 }}
+                >
+                  Start Free Today
+                  <ChevronRight className="w-5 h-5" />
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-lg transition-colors"
+                  style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-body)', fontWeight: 500 }}
+                >
+                  View Pricing
+                </Link>
+              </div>
+
+              {heroStats.tradeCount > 0 && (
+                <p className="data-label mt-8" style={{ color: 'var(--text-dim)' }}>
+                  {heroStats.tradeCount.toLocaleString()} congressional trades tracked · {heroStats.memberCount} members · updated daily
+                </p>
+              )}
+            </div>
+
+            {/* Right — proof, 5 cols, a real live signal */}
+            <div className="lg:col-span-5">
+              {heroSignal ? (
+                <>
+                  <p className="eyebrow mb-3" style={{ color: '#009BFF' }}>Live signal</p>
+                  <SignalCard signal={heroSignal} />
+                </>
+              ) : (
+                <div
+                  className="rounded-none p-8 text-center term-panel"
+                  style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--line)' }}
+                >
+                  <p style={{ color: 'var(--text-mute)' }}>Signal board updating — check back shortly.</p>
+                </div>
+              )}
+            </div>
           </div>
-
         </div>
       </section>
 
