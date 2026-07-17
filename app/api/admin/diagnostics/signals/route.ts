@@ -1,4 +1,5 @@
 // TEMPORARY DIAGNOSTIC — DELETE AFTER USE
+// (cache-bust: forcing a clean build, see commit history)
 //
 // GET /api/admin/diagnostics/signals
 // Read-only report on signal generation reality: category breakdown,
