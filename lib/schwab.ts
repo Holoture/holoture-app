@@ -284,3 +284,131 @@ export async function getHistoricalMinuteCandles(symbol: string): Promise<Candle
   if (!data || data.empty || !data.candles) return []
   return data.candles
 }
+
+// ── Options chain ────────────────────────────────────────────────────────────
+
+/**
+ * One real, tradable contract from Schwab's live options chain
+ * (/marketdata/v1/chains). Every field here is what Schwab actually quotes
+ * for that specific strike/expiration right now — nothing in this type is
+ * estimated or computed client-side except `dte`, which is a same-day
+ * calendar-day diff from the exp-date map key Schwab itself provides.
+ */
+export type OptionContract = {
+  symbol: string // real OCC-format contract symbol, e.g. "AAPL  260821C00230000"
+  putCall: 'CALL' | 'PUT'
+  strike: number
+  expirationDate: string // "YYYY-MM-DD"
+  dte: number
+  bid: number
+  ask: number
+  mark: number
+  volatility: number | null // Schwab's per-contract IV, percent
+  openInterest: number
+  totalVolume: number
+  delta: number | null
+  gamma: number | null
+  theta: number | null
+  vega: number | null
+  breakEven: number | null
+  inTheMoney: boolean
+}
+
+type SchwabChainContract = {
+  putCall: 'CALL' | 'PUT'
+  symbol: string
+  bid: number
+  ask: number
+  mark: number
+  volatility: number
+  openInterest: number
+  totalVolume: number
+  delta: number
+  gamma: number
+  theta: number
+  vega: number
+  breakEven: number
+  strikePrice: number
+  expirationDate: string
+  daysToExpiration: number
+  inTheMoney: boolean
+}
+
+type SchwabChainResponse = {
+  symbol: string
+  status: string
+  underlyingPrice?: number
+  callExpDateMap?: Record<string, Record<string, SchwabChainContract[]>>
+  putExpDateMap?: Record<string, Record<string, SchwabChainContract[]>>
+}
+
+function flattenExpDateMap(
+  map: Record<string, Record<string, SchwabChainContract[]>> | undefined
+): OptionContract[] {
+  if (!map) return []
+  const out: OptionContract[] = []
+  for (const strikeMap of Object.values(map)) {
+    for (const contracts of Object.values(strikeMap)) {
+      for (const c of contracts) {
+        out.push({
+          symbol: c.symbol,
+          putCall: c.putCall,
+          strike: c.strikePrice,
+          expirationDate: c.expirationDate.split('T')[0],
+          dte: c.daysToExpiration,
+          bid: c.bid ?? 0,
+          ask: c.ask ?? 0,
+          mark: c.mark ?? 0,
+          volatility: typeof c.volatility === 'number' && c.volatility > 0 ? c.volatility : null,
+          openInterest: c.openInterest ?? 0,
+          totalVolume: c.totalVolume ?? 0,
+          delta: typeof c.delta === 'number' ? c.delta : null,
+          gamma: typeof c.gamma === 'number' ? c.gamma : null,
+          theta: typeof c.theta === 'number' ? c.theta : null,
+          vega: typeof c.vega === 'number' ? c.vega : null,
+          breakEven: typeof c.breakEven === 'number' ? c.breakEven : null,
+          inTheMoney: !!c.inTheMoney,
+        })
+      }
+    }
+  }
+  return out
+}
+
+/**
+ * Real options chain for one underlying — replaces the old fabricated-data
+ * path (a bare stock quote + Claude "estimating" strike/premium/expiration
+ * out of thin air). Every strike/expiration/bid/ask/IV/Greek returned here
+ * is what Schwab is actually quoting for that exact contract right now.
+ *
+ * Scoped with fromDate/toDate (~5-60 DTE) and strikeCount to keep the
+ * payload reasonable — options signals are meant to be near-term
+ * directional trades, not LEAPS or same-day 0DTE noise.
+ */
+export async function getOptionChain(symbol: string): Promise<{
+  underlyingPrice: number | null
+  contracts: OptionContract[]
+} | null> {
+  const today = new Date()
+  const fromDate = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  const toDate = new Date(today.getTime() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+
+  const data = (await schwabGet('/chains', {
+    symbol,
+    contractType: 'ALL',
+    strikeCount: '20',
+    includeUnderlyingQuote: 'true',
+    strategy: 'SINGLE',
+    fromDate,
+    toDate,
+  })) as SchwabChainResponse | null
+
+  if (!data || data.status !== 'SUCCESS') return null
+
+  const contracts = [
+    ...flattenExpDateMap(data.callExpDateMap),
+    ...flattenExpDateMap(data.putExpDateMap),
+  ]
+
+  return { underlyingPrice: data.underlyingPrice ?? null, contracts }
+}
