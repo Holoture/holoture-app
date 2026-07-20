@@ -1,8 +1,22 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
+import {
+  getQuotesWithFundamentals,
+  getInstrumentFundamental,
+  getDailyCandles,
+  type Candle as SchwabCandle,
+} from '@/lib/schwab'
 
 export const maxDuration = 120
+
+// Liquidity floor (Task 4): minimum average daily DOLLAR volume, computed as
+// lastPrice x avg10DaysVolume from Schwab's batch fundamental data. Applied
+// before scoring so illiquid names (where a signal's entry/target/stop can't
+// actually be filled at size) never reach the AI step at all. Separate from
+// the existing quote.c > 2 penny-stock price floor, which stays.
+const LARGE_CAP_MIN_DOLLAR_VOLUME = 20_000_000
+const SMALL_CAP_MIN_DOLLAR_VOLUME = 5_000_000
 
 function verifyCron(req: Request): boolean {
   const secret = process.env.CRON_SECRET
@@ -195,7 +209,7 @@ interface FactorScores {
 
 function computeFactorScores(
   ind: TechnicalIndicators,
-  metrics: FinnhubMetrics | null,
+  metrics: Metrics | null,
   analystRating: number | null, // 1=Strong Buy, 2=Buy, 3=Hold, 4=Sell, 5=Strong Sell
   quote: Quote,
   newsCount: number
@@ -268,9 +282,9 @@ function computeFactorScores(
     else if (ind.volumeRatio > 1.5) momScore += 8
     else if (ind.volumeRatio < 0.7) momScore -= 8
   }
-  // 52-week position
-  const range52w = quote.h - quote.l  // proxy for 52w range using today's h/l isn't accurate but we use what we have
-  // Use % from 52w high (Finnhub quote h/l are daily, not 52w — limited accuracy here)
+  // 52-week position — not currently factored into momScore (pre-existing;
+  // out of scope for this change per Task 4's "don't touch scoring weights").
+  const range52w = quote.h - quote.l
   momScore = Math.max(0, Math.min(100, momScore))
 
   // ── Sentiment (15%) ──
@@ -303,12 +317,17 @@ function computeFactorScores(
   }
 }
 
-// ─── API fetching ─────────────────────────────────────────────────────────────
+// ─── API fetching (Schwab — Finnhub is no longer used anywhere in this file) ──
+//
+// Sentiment factor note: Schwab's public trader API has no analyst-consensus
+// or company-news endpoint (verified against schwab-py's full client surface —
+// only quotes/price-history/option-chains/instruments/market-hours exist).
+// analystRating and newsCount below are always null/0 going forward, same as
+// the existing "if (analystRating !== null)" / "if (newsCount >= N)" guards
+// already handle missing data — sentScore simply stays at its neutral
+// baseline, the same treatment the catalyst+risk placeholder already gets.
 
-type Quote = { c: number; d: number; dp: number; h: number; l: number; o: number; pc: number; t: number }
-type NewsItem = { headline: string; datetime: number; source: string }
-
-interface FinnhubMetrics {
+interface Metrics {
   peBasicExclExtraTTM: number | null
   revenueGrowthTTMYoy: number | null
   epsGrowthTTMYoy: number | null
@@ -316,92 +335,19 @@ interface FinnhubMetrics {
   debtToEquity: number | null
 }
 
-interface AnalystRec {
-  buy: number; hold: number; sell: number; strongBuy: number; strongSell: number
-}
+type Quote = { c: number; dp: number; h: number; l: number; o: number }
 
-async function fetchQuote(symbol: string): Promise<Quote | null> {
-  const key = process.env.FINNHUB_API_KEY
-  if (!key) return null
-  try {
-    const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${key}`, { cache: 'no-store' })
-    if (!res.ok) return null
-    return res.json()
-  } catch { return null }
-}
-
-async function fetchCandles(symbol: string): Promise<Candles | null> {
-  const key = process.env.FINNHUB_API_KEY
-  if (!key) return null
-  const to = Math.floor(Date.now() / 1000)
-  const from = to - 252 * 24 * 3600 // ~1 year of daily candles
-  try {
-    const res = await fetch(
-      `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=${from}&to=${to}&token=${key}`,
-      { cache: 'no-store', signal: AbortSignal.timeout(8000) }
-    )
-    if (!res.ok) return null
-    const data = await res.json()
-    if (data.s !== 'ok' || !data.c || data.c.length < 20) return null
-    return data as Candles
-  } catch { return null }
-}
-
-async function fetchMetrics(symbol: string): Promise<FinnhubMetrics | null> {
-  const key = process.env.FINNHUB_API_KEY
-  if (!key) return null
-  try {
-    const res = await fetch(
-      `https://finnhub.io/api/v1/stock/metric?symbol=${symbol}&metric=all&token=${key}`,
-      { cache: 'no-store', signal: AbortSignal.timeout(5000) }
-    )
-    if (!res.ok) return null
-    const data = await res.json()
-    const m = data.metric || {}
-    return {
-      peBasicExclExtraTTM: m.peBasicExclExtraTTM ?? null,
-      revenueGrowthTTMYoy: m.revenueGrowthTTMYoy ?? null,
-      epsGrowthTTMYoy: m.epsGrowthTTMYoy ?? null,
-      roeTTM: m.roeTTM ?? null,
-      debtToEquity: m['totalDebt/totalEquityAnnual'] ?? null,
-    }
-  } catch { return null }
-}
-
-async function fetchAnalystRec(symbol: string): Promise<number | null> {
-  const key = process.env.FINNHUB_API_KEY
-  if (!key) return null
-  try {
-    const res = await fetch(
-      `https://finnhub.io/api/v1/stock/recommendation?symbol=${symbol}&token=${key}`,
-      { cache: 'no-store', signal: AbortSignal.timeout(5000) }
-    )
-    if (!res.ok) return null
-    const data: AnalystRec[] = await res.json()
-    if (!data || data.length === 0) return null
-    const latest = data[0]
-    const total = (latest.strongBuy + latest.buy + latest.hold + latest.sell + latest.strongSell) || 1
-    // Weighted score: strongBuy=1, buy=2, hold=3, sell=4, strongSell=5
-    const score =
-      (latest.strongBuy * 1 + latest.buy * 2 + latest.hold * 3 + latest.sell * 4 + latest.strongSell * 5) / total
-    return Math.round(score * 100) / 100
-  } catch { return null }
-}
-
-async function fetchRecentNews(symbol: string): Promise<NewsItem[]> {
-  const key = process.env.FINNHUB_API_KEY
-  if (!key) return []
-  const to = new Date().toISOString().split('T')[0]
-  const from = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0]
-  try {
-    const res = await fetch(
-      `https://finnhub.io/api/v1/company-news?symbol=${symbol}&from=${from}&to=${to}&token=${key}`,
-      { cache: 'no-store' }
-    )
-    if (!res.ok) return []
-    const data: NewsItem[] = await res.json()
-    return data.slice(0, 3)
-  } catch { return [] }
+function toIndicatorCandles(schwabCandles: SchwabCandle[]): Candles | null {
+  if (schwabCandles.length < 20) return null
+  return {
+    c: schwabCandles.map((c) => c.close),
+    h: schwabCandles.map((c) => c.high),
+    l: schwabCandles.map((c) => c.low),
+    o: schwabCandles.map((c) => c.open),
+    v: schwabCandles.map((c) => c.volume),
+    t: schwabCandles.map((c) => Math.floor(c.datetime / 1000)),
+    s: 'ok',
+  }
 }
 
 // ─── Enriched stock data ──────────────────────────────────────────────────────
@@ -415,65 +361,94 @@ type EnrichedStockData = {
   recentHeadlines: string[]
   isLargeCap: boolean
   indicators: TechnicalIndicators | null
-  metrics: FinnhubMetrics | null
+  metrics: Metrics | null
   analystRating: number | null
   factorScores: FactorScores | null
 }
 
 async function fetchStockData(watchlist: string[], isLargeCap: boolean): Promise<EnrichedStockData[]> {
-  // Fetch quotes for all tickers first (cheap, 1 call each)
-  const quotesRaw = await Promise.all(watchlist.map((sym) => fetchQuote(sym)))
+  // One batch call for quotes + slim fundamentals (price, %, 52w range, avg
+  // volume) across the whole watchlist — replaces what was a per-ticker
+  // Finnhub /quote call for every symbol.
+  const quoteMap = await getQuotesWithFundamentals(watchlist)
+
   const withQuotes = watchlist
-    .map((sym, i) => ({ sym, quote: quotesRaw[i] }))
-    .filter(({ quote }) => quote && quote.c > 2) // filter penny stocks / no data
+    .map((sym) => ({ sym, data: quoteMap.get(sym) }))
+    .filter((x): x is { sym: string; data: NonNullable<typeof x.data> } => !!x.data && x.data.quote.lastPrice > 2)
 
   if (withQuotes.length === 0) return []
 
-  // Enrich top 20 large cap / top 20 small cap with candles + metrics + analyst ratings
-  // (stay within 60 req/min: 20 candles + 20 metrics + 20 recs = 60 calls)
-  const toEnrich = withQuotes.slice(0, 20)
-  const toSkip = withQuotes.slice(20)
+  // Liquidity floor (Task 4) — reject before scoring, not after. A ticker
+  // with no avg-volume data at all is kept rather than penalized (Schwab
+  // doesn't expose this for every symbol); it's still subject to every other
+  // filter downstream.
+  const minDollarVolume = isLargeCap ? LARGE_CAP_MIN_DOLLAR_VOLUME : SMALL_CAP_MIN_DOLLAR_VOLUME
+  const withLiquidity = withQuotes.filter(({ data }) => {
+    const avgVol = data.fundamental.avg10DaysVolume
+    if (avgVol == null) return true
+    return data.quote.lastPrice * avgVol >= minDollarVolume
+  })
 
-  // Fetch all enrichment data in parallel
-  const [candleResults, metricsResults, analystResults, newsResults] = await Promise.all([
-    Promise.all(toEnrich.map(({ sym }) => fetchCandles(sym))),
-    Promise.all(toEnrich.map(({ sym }) => fetchMetrics(sym))),
-    Promise.all(toEnrich.map(({ sym }) => fetchAnalystRec(sym))),
-    Promise.all(toEnrich.map(({ sym }) => fetchRecentNews(sym))),
+  if (withLiquidity.length === 0) return []
+
+  // Enrich top 20 with daily candles (technicals) + the richer per-symbol
+  // fundamental set (revenue growth, EPS growth, ROE, debt/equity — not
+  // present in the batch call above) — same call-count pattern as the
+  // original Finnhub design (per-ticker, capped at 20).
+  const toEnrich = withLiquidity.slice(0, 20)
+  const toSkip = withLiquidity.slice(20)
+
+  const [candleResults, fundamentalResults] = await Promise.all([
+    Promise.all(toEnrich.map(({ sym }) => getDailyCandles(sym))),
+    Promise.all(toEnrich.map(({ sym }) => getInstrumentFundamental(sym))),
   ])
 
-  const enriched: EnrichedStockData[] = toEnrich.map(({ sym, quote }, i) => {
-    const candles = candleResults[i]
-    const indicators = candles ? computeIndicators(candles) : null
-    const metrics = metricsResults[i]
-    const analystRating = analystResults[i]
-    const news = newsResults[i]
-    const factorScores = indicators && quote
-      ? computeFactorScores(indicators, metrics, analystRating, quote!, news.length)
+  const enriched: EnrichedStockData[] = toEnrich.map(({ sym, data }, i) => {
+    const indicators = toIndicatorCandles(candleResults[i])
+      ? computeIndicators(toIndicatorCandles(candleResults[i])!)
+      : null
+    const inst = fundamentalResults[i]
+    const metrics: Metrics | null = inst
+      ? {
+          peBasicExclExtraTTM: inst.peRatio,
+          revenueGrowthTTMYoy: null, // not present in Schwab's fundamental payload
+          epsGrowthTTMYoy: null,     // not present in Schwab's fundamental payload
+          roeTTM: null,              // not present in Schwab's fundamental payload
+          debtToEquity: null,        // not present in Schwab's fundamental payload
+        }
+      : null
+    const quote: Quote = {
+      c: data.quote.lastPrice,
+      dp: data.quote.netPercentChange,
+      h: data.quote.highPrice,
+      l: data.quote.lowPrice,
+      o: data.quote.openPrice,
+    }
+    const factorScores = indicators
+      ? computeFactorScores(indicators, metrics, null, quote, 0)
       : null
 
     return {
       symbol: sym,
-      price: quote!.c,
-      changePct: quote!.dp,
-      high52w: quote!.h,
-      low52w: quote!.l,
-      recentHeadlines: news.map((n) => n.headline),
+      price: quote.c,
+      changePct: quote.dp,
+      high52w: data.quote.week52High ?? quote.h,
+      low52w: data.quote.week52Low ?? quote.l,
+      recentHeadlines: [],
       isLargeCap,
       indicators,
       metrics,
-      analystRating,
+      analystRating: null,
       factorScores,
     }
   })
 
-  // Append unenriched tickers (quote-only)
-  const unenriched: EnrichedStockData[] = toSkip.map(({ sym, quote }) => ({
+  const unenriched: EnrichedStockData[] = toSkip.map(({ sym, data }) => ({
     symbol: sym,
-    price: quote!.c,
-    changePct: quote!.dp,
-    high52w: quote!.h,
-    low52w: quote!.l,
+    price: data.quote.lastPrice,
+    changePct: data.quote.netPercentChange,
+    high52w: data.quote.week52High ?? data.quote.highPrice,
+    low52w: data.quote.week52Low ?? data.quote.lowPrice,
     recentHeadlines: [],
     isLargeCap,
     indicators: null,

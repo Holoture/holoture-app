@@ -12,6 +12,7 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 import { prisma } from '@/lib/prisma'
+import { getQuotes } from '@/lib/schwab'
 
 export type CheckStatus = 'pass' | 'warn' | 'fail'
 
@@ -157,23 +158,24 @@ async function checkInsiderScanner(): Promise<CheckResult> {
   return { name: 'Insider scanner', status: 'pass', detail: `${weekCount} trades fetched in past 7 days` }
 }
 
-async function checkFinnhub(): Promise<CheckResult> {
-  const key = process.env.FINNHUB_API_KEY
-  if (!key) return { name: 'Finnhub API', status: 'fail', detail: 'FINNHUB_API_KEY not set' }
+async function checkSchwab(): Promise<CheckResult> {
+  if (!process.env.SCHWAB_APP_KEY || !process.env.SCHWAB_APP_SECRET || !process.env.SCHWAB_REFRESH_TOKEN) {
+    return { name: 'Schwab API', status: 'fail', detail: 'SCHWAB_APP_KEY/APP_SECRET/REFRESH_TOKEN not set' }
+  }
   const t0 = Date.now()
   try {
-    const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=AAPL&token=${key}`, {
-      signal: AbortSignal.timeout(8000),
-    })
+    const quotes = await getQuotes(['AAPL'])
     const ms = Date.now() - t0
-    if (!res.ok) return { name: 'Finnhub API', status: 'fail', detail: `HTTP ${res.status} (${ms}ms)` }
-    const data = await res.json()
-    if (typeof data.c !== 'number' || data.c <= 0) {
-      return { name: 'Finnhub API', status: 'fail', detail: `Empty/invalid quote response (${ms}ms)` }
+    const q = quotes.get('AAPL')
+    if (!q || q.lastPrice <= 0) {
+      // Schwab's refresh token expires 7 days after issuance and can't be
+      // renewed automatically — this is the most likely real-world cause of
+      // a failure here. See scripts/schwab-reauth.md.
+      return { name: 'Schwab API', status: 'fail', detail: `Empty/invalid quote response (${ms}ms) — check whether SCHWAB_REFRESH_TOKEN has expired (7-day lifetime, see scripts/schwab-reauth.md)` }
     }
-    return { name: 'Finnhub API', status: 'pass', detail: `AAPL quote OK in ${ms}ms` }
+    return { name: 'Schwab API', status: 'pass', detail: `AAPL quote OK in ${ms}ms` }
   } catch (e) {
-    return { name: 'Finnhub API', status: 'fail', detail: `Request failed: ${e instanceof Error ? e.message : 'unknown'}` }
+    return { name: 'Schwab API', status: 'fail', detail: `Request failed: ${e instanceof Error ? e.message : 'unknown'}` }
   }
 }
 
@@ -282,8 +284,8 @@ export async function runHealthCheck(): Promise<HealthReport> {
   }
 
   // External API checks run in parallel — independent of the DB.
-  const [finnhub, anthropic] = await Promise.all([checkFinnhub(), checkAnthropic()])
-  results.push(finnhub, anthropic)
+  const [schwab, anthropic] = await Promise.all([checkSchwab(), checkAnthropic()])
+  results.push(schwab, anthropic)
 
   // Explicit DB health line.
   results.push(

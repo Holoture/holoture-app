@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
+import { getQuotes } from '@/lib/schwab'
 
 export const maxDuration = 60
 
@@ -16,18 +17,6 @@ const INTRADAY_WATCHLIST = [
   'SOFI', 'AFRM', 'HOOD', 'UBER', 'SQ', 'SNAP',
   'BBAI', 'IONQ', 'ASTS', 'LUNR', 'ACHR', 'SMCI', 'CRWD', 'DDOG',
 ]
-
-type Quote = { c: number; dp: number; h: number; l: number; o: number }
-
-async function fetchQuote(symbol: string): Promise<Quote | null> {
-  const key = process.env.FINNHUB_API_KEY
-  if (!key) return null
-  try {
-    const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${key}`, { cache: 'no-store' })
-    if (!res.ok) return null
-    return res.json()
-  } catch { return null }
-}
 
 type IntradaySignal = {
   ticker: string
@@ -111,15 +100,15 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: true, count: 0, skipped: true })
     }
 
-    const stockData = await Promise.all(
-      INTRADAY_WATCHLIST.map(async (symbol) => {
-        const q = await fetchQuote(symbol)
-        return q && q.c > 0
-          ? { symbol, price: q.c, changePct: q.dp, open: q.o, high: q.h, low: q.l }
+    const quotes = await getQuotes(INTRADAY_WATCHLIST)
+    const withData = INTRADAY_WATCHLIST
+      .map((symbol) => {
+        const q = quotes.get(symbol)
+        return q && q.lastPrice > 0
+          ? { symbol, price: q.lastPrice, changePct: q.netPercentChange, open: q.openPrice, high: q.highPrice, low: q.lowPrice }
           : null
       })
-    )
-    const withData = stockData.filter(Boolean) as { symbol: string; price: number; changePct: number; open: number; high: number; low: number }[]
+      .filter(Boolean) as { symbol: string; price: number; changePct: number; open: number; high: number; low: number }[]
 
     if (withData.length === 0) {
       return NextResponse.json({ ok: true, count: 0 })

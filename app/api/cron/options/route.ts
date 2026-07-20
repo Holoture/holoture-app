@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
+import { getQuotes } from '@/lib/schwab'
 
 export const maxDuration = 60
 
@@ -15,18 +16,6 @@ const OPTIONS_TICKERS = [
   'AAPL', 'MSFT', 'NVDA', 'TSLA', 'META', 'AMZN', 'GOOGL', 'AMD', 'SPY', 'QQQ',
   'PLTR', 'COIN', 'NFLX', 'UBER', 'CRM', 'AVGO', 'V', 'JPM', 'BAC', 'XOM',
 ]
-
-type Quote = { c: number; dp: number; h: number; l: number }
-
-async function fetchQuote(symbol: string): Promise<Quote | null> {
-  const key = process.env.FINNHUB_API_KEY
-  if (!key) return null
-  try {
-    const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${key}`, { cache: 'no-store' })
-    if (!res.ok) return null
-    return res.json()
-  } catch { return null }
-}
 
 type GeneratedOption = {
   ticker: string
@@ -86,18 +75,17 @@ export async function GET(req: Request) {
   if (!verifyCron(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
-    const stockData = await Promise.all(
-      OPTIONS_TICKERS.map(async (symbol) => {
-        const q = await fetchQuote(symbol)
-        return {
-          symbol,
-          price: q?.c ?? 0,
-          changePct: q?.dp ?? 0,
-          high52w: q?.h ?? 0,
-          low52w: q?.l ?? 0,
-        }
-      })
-    )
+    const quotes = await getQuotes(OPTIONS_TICKERS)
+    const stockData = OPTIONS_TICKERS.map((symbol) => {
+      const q = quotes.get(symbol)
+      return {
+        symbol,
+        price: q?.lastPrice ?? 0,
+        changePct: q?.netPercentChange ?? 0,
+        high52w: q?.week52High ?? 0,
+        low52w: q?.week52Low ?? 0,
+      }
+    })
 
     const withData = stockData.filter((s) => s.price > 0)
     if (withData.length === 0) return NextResponse.json({ ok: true, count: 0 })

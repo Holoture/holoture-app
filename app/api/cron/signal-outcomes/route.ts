@@ -1,24 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getQuotes } from '@/lib/schwab'
 
 export const maxDuration = 60
-
-const FINNHUB_KEY = process.env.FINNHUB_API_KEY
-
-async function getQuote(ticker: string): Promise<number | null> {
-  if (!FINNHUB_KEY) return null
-  try {
-    const res = await fetch(
-      `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${FINNHUB_KEY}`,
-      { signal: AbortSignal.timeout(5000) }
-    )
-    if (!res.ok) return null
-    const data = await res.json()
-    return typeof data.c === 'number' && data.c > 0 ? data.c : null
-  } catch {
-    return null
-  }
-}
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization')
@@ -56,14 +40,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ message: 'No signals to evaluate', evaluated: 0 })
     }
 
-    // Deduplicate tickers to minimize API calls
+    // Deduplicate tickers, fetch all prices in one batch call.
     const uniqueTickers = [...new Set(signals.map((s) => s.ticker))]
+    const quotes = await getQuotes(uniqueTickers)
     const priceMap: Record<string, number | null> = {}
-
-    // Fetch prices with small delay to avoid rate limiting
     for (const ticker of uniqueTickers) {
-      priceMap[ticker] = await getQuote(ticker)
-      await new Promise((r) => setTimeout(r, 150))
+      const q = quotes.get(ticker)
+      priceMap[ticker] = q && q.lastPrice > 0 ? q.lastPrice : null
     }
 
     let evaluated = 0
