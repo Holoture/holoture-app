@@ -8,16 +8,9 @@ import {
   type Candle as SchwabCandle,
 } from '@/lib/schwab'
 import { isValidTimeframeCategory, classifyLegacyTimeHorizon, type TimeframeCategory } from '@/lib/timeframe'
+import { LARGE_CAP_MIN_DOLLAR_VOLUME, SMALL_CAP_MIN_DOLLAR_VOLUME } from '@/lib/liquidityFloor'
 
 export const maxDuration = 120
-
-// Liquidity floor (Task 4): minimum average daily DOLLAR volume, computed as
-// lastPrice x avg10DaysVolume from Schwab's batch fundamental data. Applied
-// before scoring so illiquid names (where a signal's entry/target/stop can't
-// actually be filled at size) never reach the AI step at all. Separate from
-// the existing quote.c > 2 penny-stock price floor, which stays.
-const LARGE_CAP_MIN_DOLLAR_VOLUME = 20_000_000
-const SMALL_CAP_MIN_DOLLAR_VOLUME = 5_000_000
 
 function verifyCron(req: Request): boolean {
   const secret = process.env.CRON_SECRET
@@ -25,23 +18,15 @@ function verifyCron(req: Request): boolean {
   return req.headers.get('authorization') === `Bearer ${secret}`
 }
 
-// ─── Ticker universe ──────────────────────────────────────────────────────────
-
-const LARGE_CAP = new Set([
-  'AAPL', 'MSFT', 'NVDA', 'GOOGL', 'META', 'AMZN', 'TSLA', 'AVGO', 'AMD', 'QCOM',
-  'INTC', 'TXN', 'MU', 'AMAT', 'ADBE', 'CRM', 'ORCL', 'SNOW', 'CRWD', 'DDOG',
-  'JPM', 'BAC', 'GS', 'V', 'MA', 'C', 'WFC', 'MS', 'BLK', 'AXP', 'SCHW', 'ICE',
-  'JNJ', 'UNH', 'LLY', 'PFE', 'ABT', 'TMO', 'ISRG', 'MDT', 'AMGN', 'GILD',
-  'XOM', 'CVX', 'COP', 'EOG', 'SLB',
-  'WMT', 'COST', 'MCD', 'SBUX', 'TGT', 'KO', 'PEP', 'NKE', 'PM', 'MO',
-  'CAT', 'HON', 'RTX', 'LMT', 'GE', 'DE', 'MMM', 'EMR',
-  'NFLX', 'DIS', 'CMCSA', 'T', 'VZ',
-  'NEE', 'DUK', 'D', 'AMT', 'PLD', 'EQIX',
-  'PLTR', 'COIN', 'AXON', 'UBER', 'DASH', 'RBLX', 'HWM', 'TDG',
-  'S', 'ZS', 'PATH', 'SOFI', 'AFRM',
-])
-
-const LARGE_CAP_WATCHLIST = [
+// ─── Ticker universe (Universe Expansion) ─────────────────────────────────────
+//
+// Primary source is now the TickerUniverse table, populated weekly by
+// cron/universe-screen (NASDAQ market-cap+sector screen, verified against
+// Schwab's live liquidity floor). The static arrays below are kept, not
+// deleted, purely as a fallback path used only when the table is empty or
+// the DB read errors — see getUniverse() below. They are not the default
+// candidate source anymore.
+const LARGE_CAP_WATCHLIST_FALLBACK = [
   'AAPL', 'MSFT', 'NVDA', 'GOOGL', 'META', 'AMZN', 'TSLA', 'AVGO', 'AMD', 'QCOM',
   'INTC', 'TXN', 'MU', 'AMAT', 'ADBE', 'CRM', 'ORCL', 'SNOW', 'CRWD', 'DDOG',
   'JPM', 'BAC', 'GS', 'V', 'MA', 'C', 'WFC', 'MS', 'BLK', 'SCHW', 'AXP',
@@ -53,7 +38,7 @@ const LARGE_CAP_WATCHLIST = [
   'PLTR', 'COIN', 'AXON', 'UBER', 'SOFI', 'AFRM',
 ]
 
-const SMALL_CAP_WATCHLIST = [
+const SMALL_CAP_WATCHLIST_FALLBACK = [
   'RXRX', 'BEAM', 'NTLA', 'PACB', 'ARWR', 'EDIT',
   'HIMS', 'ACCD', 'PRVA', 'GDRX',
   'RKLB', 'ACHR', 'JOBY', 'LUNR', 'ASTS',
@@ -69,6 +54,20 @@ const SMALL_CAP_WATCHLIST = [
   'CIVI', 'MGY', 'VTLE', 'CHRD',
   'LYFT', 'U', 'TTWO',
 ]
+
+async function getUniverse(): Promise<{ large: string[]; small: string[]; source: 'db' | 'fallback' }> {
+  try {
+    const rows = await prisma.tickerUniverse.findMany({ select: { ticker: true, marketCapBand: true } })
+    const large = rows.filter((r) => r.marketCapBand === 'large').map((r) => r.ticker)
+    const small = rows.filter((r) => r.marketCapBand === 'small_mid').map((r) => r.ticker)
+    if (large.length > 0 || small.length > 0) {
+      return { large, small, source: 'db' }
+    }
+  } catch (e) {
+    console.error('[cron/signals] TickerUniverse read failed, using fallback watchlists', e)
+  }
+  return { large: LARGE_CAP_WATCHLIST_FALLBACK, small: SMALL_CAP_WATCHLIST_FALLBACK, source: 'fallback' }
+}
 
 // ─── Technical indicator computation ─────────────────────────────────────────
 
@@ -643,8 +642,10 @@ export async function GET(req: Request) {
     })
     const freshTickers = new Set(freshSignals.map((s) => s.ticker))
 
-    const filteredLargeCap = LARGE_CAP_WATCHLIST.filter((t) => !freshTickers.has(t))
-    const filteredSmallCap = SMALL_CAP_WATCHLIST.filter((t) => !freshTickers.has(t))
+    const { large: largeUniverse, small: smallUniverse } = await getUniverse()
+    const largeCapSet = new Set(largeUniverse)
+    const filteredLargeCap = largeUniverse.filter((t) => !freshTickers.has(t))
+    const filteredSmallCap = smallUniverse.filter((t) => !freshTickers.has(t))
 
     if (filteredLargeCap.length === 0 && filteredSmallCap.length === 0) {
       await prisma.signalGenerationLog.create({ data: { signalCount: 0, status: 'skipped' } })
@@ -694,7 +695,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: true, count: 0, largeCap: 0, smallCap: 0 })
     }
 
-    const largeCapCount = allSignals.filter((s) => LARGE_CAP.has(s.ticker)).length
+    const largeCapCount = allSignals.filter((s) => largeCapSet.has(s.ticker)).length
     const smallCapCount = allSignals.length - largeCapCount
 
     const cutoff48h = new Date(Date.now() - 48 * 60 * 60 * 1000)
@@ -719,9 +720,9 @@ export async function GET(req: Request) {
             thesis: s.thesis,
             aiSummary: s.aiSummary,
             sector: s.sector,
-            signalCategory: LARGE_CAP.has(s.ticker) ? 'large_cap' : 'small_cap',
+            signalCategory: largeCapSet.has(s.ticker) ? 'large_cap' : 'small_cap',
             timeframeCategory: resolveTimeframeCategory(s),
-            marketCap: LARGE_CAP.has(s.ticker) ? 15 : 2,
+            marketCap: largeCapSet.has(s.ticker) ? 15 : 2,
             isActive: true,
             autoGenerated: true,
           },

@@ -345,6 +345,22 @@ model WebhookLog {
   @@index([receivedAt])
 }
 
+// Weekly-screened ticker pool (Universe Expansion) — replaces the old
+// hardcoded LARGE_CAP_WATCHLIST/SMALL_CAP_WATCHLIST arrays in
+// cron/signals/route.ts as the daily generator's candidate source. Screened
+// from NASDAQ's public market-cap+sector filterable listing, then verified
+// against Schwab's live liquidity floor (Task 4 thresholds) before storage.
+model TickerUniverse {
+  id              String   @id @default(cuid())
+  ticker          String   @unique
+  marketCapBand   String // "large" | "small_mid"
+  sector          String
+  avgDollarVolume Float
+  lastScreenedAt  DateTime @default(now())
+
+  @@index([marketCapBand])
+}
+
 model TrialRecord {
   id                String   @id @default(cuid())
   email             String
