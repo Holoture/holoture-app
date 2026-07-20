@@ -146,6 +146,7 @@ export async function GET(req: Request) {
             stopLoss: s.stopLoss,
             confidence: s.confidence,
             timeHorizon: 'Intraday',
+            timeframeCategory: 'intraday',
             thesis: s.thesis,
             aiSummary: s.aiSummary,
             sector: s.sector,

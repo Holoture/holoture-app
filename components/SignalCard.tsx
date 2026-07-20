@@ -16,6 +16,11 @@ export type Signal = {
   aiSummary: string
   sector: string
   signalCategory?: string
+  // Server-assigned category — 'intraday' | 'days_1_3' | 'swing' | 'long_term'
+  // | 'momentum' (see lib/timeframe.ts). Optional only because pre-migration
+  // rows may not have it backfilled yet.
+  timeframeCategory?: string | null
+  isMomentumSpike?: boolean
   marketCap?: number
   signalDate: Date | string
   bestEntryTime?: string | null

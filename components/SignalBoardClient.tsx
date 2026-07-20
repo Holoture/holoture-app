@@ -48,30 +48,24 @@ const LARGE_CAP = new Set([
 function isLargeCapTicker(s: Signal): boolean {
   return s.signalCategory === 'large_cap' || LARGE_CAP.has(s.ticker)
 }
-function isLongTerm(h: string): boolean {
-  const lower = h.toLowerCase()
-  if (lower.includes('year')) return true
-  if (lower.includes('month')) {
-    const m = lower.match(/(\d+)/)
-    return m != null && parseInt(m[1]) >= 3
-  }
-  return false
+// Server-assigned timeframeCategory (lib/timeframe.ts), not parsed from
+// timeHorizon text — the regex classifiers this replaced orphaned real
+// signals (e.g. "1-3 months" matched none of them). Falls back to 'swing'
+// only for pre-migration rows that predate the backfill.
+function isLongTerm(s: Signal): boolean {
+  return s.timeframeCategory === 'long_term'
 }
-function isSwingTrade(h: string): boolean {
-  return h.toLowerCase().includes('week')
+function isSwingTrade(s: Signal): boolean {
+  return s.timeframeCategory === 'swing' || !s.timeframeCategory
 }
-function isMomentum(s: Signal): boolean {
-  return s.signalType === 'BUY' && s.confidence >= 75
+function isIntraday(s: Signal): boolean {
+  return s.timeframeCategory === 'intraday'
 }
-function isIntraday(h: string): boolean {
-  return /intraday|hour/i.test(h)
-}
-function is1to3Days(h: string): boolean {
-  return /1[-–]3\s*day|1-3\s*day/i.test(h)
+function is1to3Days(s: Signal): boolean {
+  return s.timeframeCategory === 'days_1_3'
 }
 function isShortTermSignal(s: Signal): boolean {
-  const h = String(s.timeHorizon)
-  return isIntraday(h) || is1to3Days(h)
+  return isIntraday(s) || is1to3Days(s)
 }
 
 // ─── market hours helpers ─────────────────────────────────────────────────────
@@ -117,10 +111,9 @@ function getDailyFreePickIds(signals: Signal[]): Set<string> {
   const sorted = [...eligible].sort((a, b) => a.id.localeCompare(b.id))
   const pools: Signal[][] = [
     sorted.filter(s => isLargeCapTicker(s) && s.signalType === 'BUY'),
-    sorted.filter(s => !isLargeCapTicker(s) && !isMomentum(s)),
-    sorted.filter(s => isSwingTrade(String(s.timeHorizon))),
-    sorted.filter(s => isLongTerm(String(s.timeHorizon))),
-    sorted.filter(s => isMomentum(s)),
+    sorted.filter(s => !isLargeCapTicker(s)),
+    sorted.filter(s => isSwingTrade(s)),
+    sorted.filter(s => isLongTerm(s)),
   ]
 
   const picked = new Set<string>()
@@ -137,7 +130,13 @@ function getDailyFreePickIds(signals: Signal[]): Set<string> {
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
-type CategoryTab = 'all' | 'large-cap' | 'small-cap' | 'swing-trade' | 'long-term' | 'momentum' | 'options' | 'history'
+// 'momentum' tab removed: it was isMomentum(BUY && confidence>=75) — ordinary
+// high-confidence daily BUYs mislabeled as momentum trades, with no relation
+// to actual price/volume action. Real momentum spikes (isMomentumSpike, from
+// the quantitatively-gated intraday scanner) still appear on the board under
+// their large-cap/small-cap section — this task removes the fake tab, it
+// does not add a UI surface for the real one.
+type CategoryTab = 'all' | 'large-cap' | 'small-cap' | 'swing-trade' | 'long-term' | 'options' | 'history'
 type TypeFilter = 'all' | 'BUY' | 'WATCH' | 'SHORT'
 type TimeframeFilter = 'all' | 'intraday' | '1-3days' | 'swing' | 'long'
 type SortKey = 'confidence-desc' | 'confidence-asc' | 'ticker-asc' | 'recent' | 'time-sensitivity' | 'upside-desc' | 'upside-asc'
@@ -148,20 +147,18 @@ const CATEGORY_TABS: { key: CategoryTab; label: string; maxOnly?: boolean }[] = 
   { key: 'small-cap',  label: 'Small Cap' },
   { key: 'swing-trade', label: 'Swing Trade' },
   { key: 'long-term',  label: 'Long Term' },
-  { key: 'momentum',   label: 'Momentum' },
   { key: 'options',    label: 'Options', maxOnly: true },
   { key: 'history',    label: 'History' },
 ]
 
 // Sections for "All Signals" tab — first-match-wins, time-priority order
 const ALL_SECTIONS: { key: string; label: string; match: (s: Signal) => boolean }[] = [
-  { key: 'intraday',    label: 'Intraday',    match: (s) => isIntraday(String(s.timeHorizon)) },
-  { key: '1-3-days',   label: '1–3 Days',    match: (s) => is1to3Days(String(s.timeHorizon)) },
-  { key: 'momentum',   label: 'Momentum',    match: isMomentum },
+  { key: 'intraday',    label: 'Intraday',    match: isIntraday },
+  { key: '1-3-days',   label: '1–3 Days',    match: is1to3Days },
   { key: 'large-cap',  label: 'Large Cap',   match: isLargeCapTicker },
   { key: 'small-cap',  label: 'Small Cap',   match: (s) => !isLargeCapTicker(s) },
-  { key: 'swing-trade', label: 'Swing Trade', match: (s) => isSwingTrade(String(s.timeHorizon)) },
-  { key: 'long-term',  label: 'Long Term',   match: (s) => isLongTerm(String(s.timeHorizon)) },
+  { key: 'swing-trade', label: 'Swing Trade', match: isSwingTrade },
+  { key: 'long-term',  label: 'Long Term',   match: isLongTerm },
 ]
 
 // ─── sub-components ───────────────────────────────────────────────────────────
@@ -251,17 +248,15 @@ export default function SignalBoardClient({
   // Hide intraday signals after market close (4pm EST) — no longer actionable
   const activeSignals = useMemo(() => {
     if (!afterClose) return signals
-    return signals.filter(s => !isIntraday(String(s.timeHorizon)))
+    return signals.filter(s => !isIntraday(s))
   }, [signals, afterClose])
 
   // Time-sensitivity score for sorting
   function timeSensitivityScore(s: Signal): number {
-    const h = String(s.timeHorizon)
-    if (isIntraday(h)) return 0
-    if (is1to3Days(h)) return 1
-    if (isMomentum(s)) return 2
-    if (isSwingTrade(h)) return 3
-    return 4
+    if (isIntraday(s)) return 0
+    if (is1to3Days(s)) return 1
+    if (isSwingTrade(s)) return 2
+    return 3
   }
 
   const filtered = useMemo(() => {
@@ -277,10 +272,10 @@ export default function SignalBoardClient({
         const q = search.toLowerCase()
         if (!s.ticker.toLowerCase().includes(q) && !s.companyName.toLowerCase().includes(q)) return false
       }
-      if (timeframeFilter === 'intraday' && !isIntraday(String(s.timeHorizon))) return false
-      if (timeframeFilter === '1-3days'  && !is1to3Days(String(s.timeHorizon))) return false
-      if (timeframeFilter === 'swing'    && !isSwingTrade(String(s.timeHorizon))) return false
-      if (timeframeFilter === 'long'     && !isLongTerm(String(s.timeHorizon))) return false
+      if (timeframeFilter === 'intraday' && !isIntraday(s)) return false
+      if (timeframeFilter === '1-3days'  && !is1to3Days(s)) return false
+      if (timeframeFilter === 'swing'    && !isSwingTrade(s)) return false
+      if (timeframeFilter === 'long'     && !isLongTerm(s)) return false
       return true
     })
   }, [activeSignals, typeFilter, search, timeframeFilter, isFree])
@@ -318,9 +313,8 @@ export default function SignalBoardClient({
     const matchFns: Partial<Record<CategoryTab, (s: Signal) => boolean>> = {
       'large-cap':  isLargeCapTicker,
       'small-cap':  s => !isLargeCapTicker(s),
-      'swing-trade': s => isSwingTrade(String(s.timeHorizon)),
-      'long-term':  s => isLongTerm(String(s.timeHorizon)),
-      'momentum':   isMomentum,
+      'swing-trade': isSwingTrade,
+      'long-term':  isLongTerm,
     }
     const fn = matchFns[activeTab]
     if (!fn) return sorted
@@ -385,9 +379,8 @@ export default function SignalBoardClient({
     return (
       <>
         {sigs.map((s, idx) => {
-          const h = String(s.timeHorizon)
           const badge: 'intraday' | '1-3days' | null =
-            isIntraday(h) ? 'intraday' : is1to3Days(h) ? '1-3days' : null
+            isIntraday(s) ? 'intraday' : is1to3Days(s) ? '1-3days' : null
           const isSTLocked = isFree && isShortTermSignal(s)
           return (
             <SignalRow

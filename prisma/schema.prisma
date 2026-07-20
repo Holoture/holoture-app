@@ -60,6 +60,14 @@ model Signal {
   aiSummary      String
   sector         String
   signalCategory String          @default("large_cap")
+  // Server-assigned at generation time — replaces client-side regex parsing
+  // of the free-text timeHorizon string (which orphaned real signals, e.g.
+  // "1-3 months" matched none of isSwingTrade/isLongTerm/isIntraday/
+  // is1to3Days). One of: 'intraday' | 'days_1_3' | 'swing' | 'long_term' |
+  // 'momentum'. 'momentum' is populated only by the real intraday spike
+  // scanner (isMomentumSpike below) — never backfilled onto pre-existing
+  // signals and never assigned by the daily/options/intraday crons.
+  timeframeCategory String?
   marketCap      Float           @default(0)
   bestEntryTime  String?
   expectedMove   String?

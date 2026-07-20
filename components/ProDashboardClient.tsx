@@ -12,37 +12,29 @@ const LARGE_CAP = new Set([
   'NKE', 'CAT', 'HON', 'RTX', 'LMT', 'GE', 'NFLX', 'DIS', 'CMCSA', 'T', 'VZ',
 ])
 
-type FilterKey = 'all' | 'large-cap' | 'small-cap' | 'long-term' | 'swing-trade' | 'momentum'
+// Note: this component is currently unused (not imported anywhere in the
+// app) — fixed for consistency with SignalBoardClient.tsx's removal of the
+// same fake Momentum tab, in case it's ever wired up.
+type FilterKey = 'all' | 'large-cap' | 'small-cap' | 'long-term' | 'swing-trade'
 
 function isLargeCapTicker(s: Signal): boolean {
   return s.signalCategory === 'large_cap' || LARGE_CAP.has(s.ticker)
 }
 
-function isLongTerm(h: string): boolean {
-  const lower = h.toLowerCase()
-  if (lower.includes('year')) return true
-  if (lower.includes('month')) {
-    const m = lower.match(/(\d+)/)
-    if (m && parseInt(m[1]) >= 3) return true
-  }
-  return false
+function isLongTerm(s: Signal): boolean {
+  return s.timeframeCategory === 'long_term'
 }
 
-function isSwingTrade(h: string): boolean {
-  return h.toLowerCase().includes('day') || h.toLowerCase().includes('week')
-}
-
-function isMomentum(s: Signal): boolean {
-  return s.signalType === 'BUY' && s.confidence >= 75
+function isSwingTrade(s: Signal): boolean {
+  return s.timeframeCategory === 'swing' || !s.timeframeCategory
 }
 
 function matchesFilter(s: Signal, f: FilterKey): boolean {
   if (f === 'all') return true
   if (f === 'large-cap') return isLargeCapTicker(s)
   if (f === 'small-cap') return !isLargeCapTicker(s)
-  if (f === 'long-term') return isLongTerm(String(s.timeHorizon))
-  if (f === 'swing-trade') return isSwingTrade(String(s.timeHorizon))
-  if (f === 'momentum') return isMomentum(s)
+  if (f === 'long-term') return isLongTerm(s)
+  if (f === 'swing-trade') return isSwingTrade(s)
   return true
 }
 
@@ -52,30 +44,17 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: 'small-cap', label: 'Small Cap' },
   { key: 'long-term', label: 'Long Term' },
   { key: 'swing-trade', label: 'Swing Trade' },
-  { key: 'momentum', label: 'Momentum' },
 ]
-
-const PRO_MOMENTUM_LIMIT = 5
 
 export default function ProDashboardClient({
   signals,
-  tier,
 }: {
   signals: Signal[]
   tier: 'pro' | 'max'
 }) {
   const [filter, setFilter] = useState<FilterKey>('all')
 
-  const filtered = signals.filter((s) => matchesFilter(s, filter))
-
-  // Pro users see only first 5 Momentum signals
-  const displayed =
-    filter === 'momentum' && tier === 'pro'
-      ? filtered.slice(0, PRO_MOMENTUM_LIMIT)
-      : filtered
-
-  const momentumTotal = signals.filter(isMomentum).length
-  const showMomentumLimit = filter === 'momentum' && tier === 'pro' && momentumTotal > PRO_MOMENTUM_LIMIT
+  const displayed = signals.filter((s) => matchesFilter(s, filter))
 
   return (
     <div className="space-y-6">
@@ -100,24 +79,6 @@ export default function ProDashboardClient({
           )
         })}
       </div>
-
-      {showMomentumLimit && (
-        <div
-          className="rounded-lg px-4 py-3 text-sm flex items-center justify-between gap-4"
-          style={{ backgroundColor: 'rgba(0,155,255,0.08)', border: '1px solid rgba(0,155,255,0.25)' }}
-        >
-          <span className="text-white">
-            Showing 5 of {momentumTotal} Momentum signals. Upgrade to Max for unlimited access.
-          </span>
-          <a
-            href="/pricing"
-            className="shrink-0 text-xs font-semibold px-3 py-1 rounded-lg hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
-          >
-            Upgrade to Max
-          </a>
-        </div>
-      )}
 
       {displayed.length === 0 ? (
         <div

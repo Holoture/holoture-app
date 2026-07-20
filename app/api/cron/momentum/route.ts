@@ -330,6 +330,9 @@ export async function GET(req: Request) {
           stopLoss,
           confidence: Math.min(95, 60 + Math.round(c.relativeVolume * 3)), // magnitude-driven, not AI-guessed
           timeHorizon: 'Intraday',
+          // 'momentum' is reserved exclusively for this cron — the only
+          // legitimate producer of real, quantitatively-gated spike signals.
+          timeframeCategory: 'momentum',
           thesis: `MOMENTUM SPIKE — HIGH RISK, TIGHT STOP. ${thesis.thesis} | Up ${c.pctFromOpen}% from open on ${c.relativeVolume}x relative volume, trading above VWAP ($${c.vwap}). This is a fast-moving chase trade, not a multi-day setup — size small, expect failure to be normal, exit on any reversal below VWAP.`,
           aiSummary: thesis.aiSummary,
           sector: thesis.sector,
