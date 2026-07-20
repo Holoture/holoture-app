@@ -19,11 +19,11 @@ const FAQS = [
   },
   {
     q: 'What are the different plans?',
-    a: 'Holoture has three tiers:\n\n• Free — 5 curated signals per day with basic access to the signal board.\n\n• Pro ($15/month) — Full signal board with all entry zones, confidence scores, price targets, stop-losses, and AI thesis. Includes Swing Trade and Long Term signals, plus News, Trends, and Earnings Calendar.\n\n• Max ($25/month) — Everything in Pro, plus Options Signals (CALL/PUT setups) and the Politician Stock Scanner (real-time Congress trade disclosures).',
+    a: 'Holoture has three tiers:\n\n• Free — 5 curated signals per day with basic access to the signal board, plus full access to the Politician Scanner and Insider Scanner.\n\n• Pro ($15/month) — Full signal board with all entry zones, confidence scores, price targets, stop-losses, and AI thesis. Includes Swing Trade and Long Term signals, plus News, Trends, and Earnings Calendar.\n\n• Max ($25/month) — Everything in Pro, plus Options Signals (CALL/PUT setups).',
   },
   {
     q: 'What is Holoture Max?',
-    a: 'Holoture Max is our premium tier at $25/month. It includes everything in Pro, plus two exclusive features:\n\n• Options Signals — curated CALL and PUT contract setups with strike prices, expiration dates, and risk ratings.\n\n• Politician Stock Scanner — track real-time stock purchase and sale disclosures filed by US Congress members, with commentary and significance ratings.\n\nMax is designed for active traders who want the full Holoture data stack.',
+    a: 'Holoture Max is our premium tier at $25/month. It includes everything in Pro, plus one exclusive feature:\n\n• Options Signals — curated CALL and PUT contract setups with strike prices, expiration dates, and risk ratings.\n\n(The Politician Scanner and Insider Scanner are available to every tier, including Free — not Max-exclusive.)\n\nMax is designed for active traders who want the full Holoture data stack.',
   },
   {
     q: 'How do I upgrade to Pro or Max?',
@@ -68,7 +68,8 @@ const TIERS = [
     features: [
       '5 signals per day',
       'Basic signal board access',
-      'Signal type & ticker visible',
+      'Politician Scanner — full access',
+      'Insider Scanner — full access',
     ],
   },
   {
@@ -96,8 +97,6 @@ const TIERS = [
     features: [
       'Everything in Pro',
       'Options Signals (CALL & PUT)',
-      'Politician Stock Scanner',
-      'Congress trade disclosures + AI',
     ],
   },
 ]
