@@ -1,37 +1,29 @@
 // TEMPORARY DIAGNOSTIC — DELETE AFTER USE
 //
-// GET /api/admin/signal-diagnostics
-// (moved from the nested /api/admin/diagnostics/signals path, which 404'd in
-// production across three separate deployments despite compiling correctly
-// in the build log's route table — flattened to match the single-level path
-// pattern every other working admin route uses.)
+// GET /api/cron/signal-diagnostics
+// (moved here after every /api/admin/* route — including old, previously
+// working ones like /api/admin/health-check — 404'd consistently in
+// production, while every /api/cron/* route worked 100% of the time all
+// session. Root cause was ultimately a Vercel domain conflict: www.holoture.com
+// was assigned to two projects at once (holoture-app + a stale, abandoned
+// holoture-website), which was fixed separately, but this route still 404'd
+// under /api/admin/ afterward — moved here rather than sink more time into it,
+// since this is a throwaway diagnostic, not a permanent route.)
 // Read-only report on signal generation reality: category breakdown,
 // classification-function reality check, ticker repetition, outcome data,
 // and dedup impact. No writes, no mutations, no deletes.
 //
-// Auth: same pattern as cron routes — Bearer CRON_SECRET, OR a logged-in
-// Clerk admin (ADMIN_USER_ID), matching /api/admin/refresh-signals.
+// Auth: Bearer CRON_SECRET only, matching every other /api/cron/* route.
 
 import { NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 
-// Root cause of the earlier 404s across multiple deployments: without this,
-// Next/Turbopack attempted to statically pre-render this GET route at build
-// time, which silently failed (no request context for auth()/DB calls) and
-// produced no deployable output. og-signals/route.ts sets the same export.
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
-async function isAuthorized(req: Request): Promise<boolean> {
+function isAuthorized(req: Request): boolean {
   const secret = process.env.CRON_SECRET
-  if (secret && req.headers.get('authorization') === `Bearer ${secret}`) return true
-  try {
-    const { userId } = await auth()
-    return !!userId && userId === process.env.ADMIN_USER_ID
-  } catch {
-    return false
-  }
+  return !!secret && req.headers.get('authorization') === `Bearer ${secret}`
 }
 
 // ── Exact copies of the client's classification functions
@@ -93,7 +85,7 @@ function dateKeyET(d: Date): string {
 }
 
 export async function GET(req: Request) {
-  if (!(await isAuthorized(req))) {
+  if (!isAuthorized(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

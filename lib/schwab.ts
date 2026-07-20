@@ -89,6 +89,16 @@ export type SchwabQuote = {
   highPrice: number
   lowPrice: number
   closePrice: number // prior day's close
+  week52High?: number
+  week52Low?: number
+}
+
+export type SchwabFundamental = {
+  peRatio: number | null
+  eps: number | null
+  avg10DaysVolume: number | null
+  avg1YearVolume: number | null
+  divYield: number | null
 }
 
 /** Batch quote fetch — one call for up to ~500 symbols. */
@@ -115,9 +125,101 @@ export async function getQuotes(symbols: string[]): Promise<Map<string, SchwabQu
       highPrice: q.highPrice ?? 0,
       lowPrice: q.lowPrice ?? 0,
       closePrice: q.closePrice ?? 0,
+      week52High: q['52WeekHigh'],
+      week52Low: q['52WeekLow'],
     })
   }
   return out
+}
+
+/**
+ * Batch quote + fundamental fetch — one call for the whole universe, per-
+ * ticker P/E, EPS, avg volume, dividend yield. Replaces Finnhub's per-ticker
+ * /quote + /stock/metric round trips (2 calls x N tickers) with a single
+ * batch call for all of them.
+ */
+export async function getQuotesWithFundamentals(
+  symbols: string[]
+): Promise<Map<string, { quote: SchwabQuote; fundamental: SchwabFundamental }>> {
+  const out = new Map<string, { quote: SchwabQuote; fundamental: SchwabFundamental }>()
+  if (symbols.length === 0) return out
+
+  const data = (await schwabGet('/quotes', {
+    symbols: symbols.join(','),
+    fields: 'quote,fundamental',
+  })) as Record<string, { symbol: string; quote?: Record<string, number>; fundamental?: Record<string, number> }> | null
+  if (!data) return out
+
+  for (const [sym, entry] of Object.entries(data)) {
+    const q = entry.quote
+    if (!q) continue
+    const f = entry.fundamental ?? {}
+    out.set(sym, {
+      quote: {
+        symbol: entry.symbol ?? sym,
+        lastPrice: q.lastPrice ?? 0,
+        netChange: q.netChange ?? 0,
+        netPercentChange: q.netPercentChange ?? 0,
+        totalVolume: q.totalVolume ?? 0,
+        openPrice: q.openPrice ?? 0,
+        highPrice: q.highPrice ?? 0,
+        lowPrice: q.lowPrice ?? 0,
+        closePrice: q.closePrice ?? 0,
+        week52High: q['52WeekHigh'],
+        week52Low: q['52WeekLow'],
+      },
+      fundamental: {
+        peRatio: f.peRatio ?? null,
+        eps: f.eps ?? null,
+        avg10DaysVolume: f.avg10DaysVolume ?? null,
+        avg1YearVolume: f.avg1YearVolume ?? null,
+        divYield: f.divYield ?? null,
+      },
+    })
+  }
+  return out
+}
+
+/**
+ * Single-symbol lookup with company description/exchange — the batch /quotes
+ * endpoint doesn't return the `reference` block, so this is used only where
+ * a display name is actually needed (e.g. the signal-details endpoint), not
+ * in the daily generation cron (Claude already supplies companyName there).
+ * Schwab's API has no sector/industry classification field at all — unlike
+ * Finnhub's profile2, `industry` will always come back null here.
+ */
+export async function getInstrumentFundamental(symbol: string): Promise<{
+  description: string | null
+  exchange: string | null
+  peRatio: number | null
+  beta: number | null
+  marketCap: number | null
+  avg10DaysVolume: number | null
+  high52: number | null
+  low52: number | null
+  dividendYield: number | null
+} | null> {
+  const data = (await schwabGet('/instruments', { symbol, projection: 'fundamental' })) as {
+    instruments?: Array<{
+      description?: string
+      exchange?: string
+      fundamental?: Record<string, number>
+    }>
+  } | null
+  const inst = data?.instruments?.[0]
+  if (!inst) return null
+  const f = inst.fundamental ?? {}
+  return {
+    description: inst.description ?? null,
+    exchange: inst.exchange ?? null,
+    peRatio: f.peRatio ?? null,
+    beta: f.beta ?? null,
+    marketCap: f.marketCap ?? null,
+    avg10DaysVolume: f.avg10DaysVolume ?? null,
+    high52: f.high52 ?? null,
+    low52: f.low52 ?? null,
+    dividendYield: f.dividendYield ?? null,
+  }
 }
 
 // ── Intraday candles ─────────────────────────────────────────────────────────
@@ -135,6 +237,25 @@ export async function getTodayMinuteCandles(symbol: string): Promise<Candle[]> {
     periodType: 'day',
     period: '1',
     frequencyType: 'minute',
+    frequency: '1',
+    needExtendedHoursData: 'false',
+  })) as { candles?: Candle[]; empty?: boolean } | null
+  if (!data || data.empty || !data.candles) return []
+  return data.candles
+}
+
+/**
+ * ~1 year of daily candles for a symbol — replaces Finnhub's
+ * /stock/candle?resolution=D. Feeds the same RSI/MACD/SMA/Bollinger
+ * computation the daily signals cron already has (unchanged math, just a
+ * different data source).
+ */
+export async function getDailyCandles(symbol: string): Promise<Candle[]> {
+  const data = (await schwabGet('/pricehistory', {
+    symbol,
+    periodType: 'year',
+    period: '1',
+    frequencyType: 'daily',
     frequency: '1',
     needExtendedHoursData: 'false',
   })) as { candles?: Candle[]; empty?: boolean } | null
