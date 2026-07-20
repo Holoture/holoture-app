@@ -61,4 +61,7 @@ next-env.d.ts
 # graphify knowledge-graph output (tool artifact — reveals internal structure)
 /graphify-out/
 
+# Schwab OAuth token cache (contains a live refresh token)
+scripts/.schwab_token.json
+
 .env*

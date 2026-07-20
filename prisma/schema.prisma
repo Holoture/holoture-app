@@ -64,6 +64,11 @@ model Signal {
   bestEntryTime  String?
   expectedMove   String?
   catalyst       String?
+  // Real intraday spike detection (volume + volatility, quantitatively gated
+  // — not the old client-side isMomentum(BUY && confidence>=75) mislabeling).
+  // Distinct from that legacy tab so real and fake "momentum" signals never
+  // mix while the old classifier still exists.
+  isMomentumSpike  Boolean        @default(false)
   outcome          String?
   outcomeCheckedAt DateTime?
   outcomePrice     Float?
