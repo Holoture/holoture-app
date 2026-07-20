@@ -59,29 +59,45 @@ async function getHeroStats(): Promise<{ tradeCount: number; memberCount: number
 }
 
 // Real track record for the outcomes strip — wins AND losses, never hidden.
-// "Last N signals" = the N most recently generated (not most recently
-// resolved), so "still open" reflects an honest, non-circular snapshot.
+// "Last 30" = the 30 most recently CLOSED signals (ordered by
+// outcomeCheckedAt), not the 30 most recently generated — every signal in
+// this window has a real, resolved outcome, so there is no "still open"
+// bucket to show (it would always be 0 by construction). All-time totals
+// are queried separately and live, never hardcoded.
 async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
   try {
-    const closedTotal = await prisma.signal.count({
-      where: { outcome: { in: ['HIT_TARGET', 'HIT_STOP', 'EXPIRED'] } },
-    })
+    const closedWhere = { outcome: { in: ['HIT_TARGET', 'HIT_STOP', 'EXPIRED'] } }
+
+    const [allTimeHitTarget, allTimeHitStop, allTimeExpired] = await Promise.all([
+      prisma.signal.count({ where: { outcome: 'HIT_TARGET' } }),
+      prisma.signal.count({ where: { outcome: 'HIT_STOP' } }),
+      prisma.signal.count({ where: { outcome: 'EXPIRED' } }),
+    ])
+    const allTimeClosedTotal = allTimeHitTarget + allTimeHitStop + allTimeExpired
+
     // Require a real sample before publishing a track record — an
     // unconvincing number is worse than no number.
-    if (closedTotal < 25) return null
+    if (allTimeClosedTotal < 25) return null
 
-    const recent = await prisma.signal.findMany({
-      orderBy: { signalDate: 'desc' },
+    const recentClosed = await prisma.signal.findMany({
+      where: closedWhere,
+      orderBy: { outcomeCheckedAt: 'desc' },
       take: 30,
       select: { outcome: true },
     })
 
     return {
-      hitTarget: recent.filter((s) => s.outcome === 'HIT_TARGET').length,
-      hitStop: recent.filter((s) => s.outcome === 'HIT_STOP').length,
-      expired: recent.filter((s) => s.outcome === 'EXPIRED').length,
-      open: recent.filter((s) => s.outcome === null).length,
-      windowSize: recent.length,
+      window: {
+        hitTarget: recentClosed.filter((s) => s.outcome === 'HIT_TARGET').length,
+        hitStop: recentClosed.filter((s) => s.outcome === 'HIT_STOP').length,
+        expired: recentClosed.filter((s) => s.outcome === 'EXPIRED').length,
+        size: recentClosed.length,
+      },
+      allTime: {
+        hitTarget: allTimeHitTarget,
+        hitStop: allTimeHitStop,
+        expired: allTimeExpired,
+      },
     }
   } catch {
     return null
