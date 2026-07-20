@@ -283,7 +283,6 @@ export default async function LandingPage() {
                   'Everything in Free',
                   'Full signal board — no daily cap',
                   'All signal categories unlocked',
-                  'Unlimited Momentum signals',
                   'Entry zones, targets & stop losses',
                   'Confidence scores & full summary',
                   'Cancel anytime',

@@ -19,11 +19,11 @@ const FAQS = [
   },
   {
     q: 'What are the different plans?',
-    a: 'Holoture has three tiers:\n\n• Free — 5 curated signals per day with basic access to the signal board.\n\n• Pro ($15/month) — Full signal board with all entry zones, confidence scores, price targets, stop-losses, and AI thesis. Includes Swing Trade and Long Term signals, up to 5 Momentum signals per day, plus News, Trends, and Earnings Calendar.\n\n• Max ($25/month) — Everything in Pro, plus unlimited Momentum signals, Options Signals (CALL/PUT setups), and the Politician Stock Scanner (real-time Congress trade disclosures).',
+    a: 'Holoture has three tiers:\n\n• Free — 5 curated signals per day with basic access to the signal board.\n\n• Pro ($15/month) — Full signal board with all entry zones, confidence scores, price targets, stop-losses, and AI thesis. Includes Swing Trade and Long Term signals, plus News, Trends, and Earnings Calendar.\n\n• Max ($25/month) — Everything in Pro, plus Options Signals (CALL/PUT setups) and the Politician Stock Scanner (real-time Congress trade disclosures).',
   },
   {
     q: 'What is Holoture Max?',
-    a: 'Holoture Max is our premium tier at $25/month. It includes everything in Pro, plus three exclusive features:\n\n• Unlimited Momentum Signals — no 5-signal cap, see every high-conviction BUY setup.\n\n• Options Signals — curated CALL and PUT contract setups with strike prices, expiration dates, and risk ratings.\n\n• Politician Stock Scanner — track real-time stock purchase and sale disclosures filed by US Congress members, with commentary and significance ratings.\n\nMax is designed for active traders who want the full Holoture data stack.',
+    a: 'Holoture Max is our premium tier at $25/month. It includes everything in Pro, plus two exclusive features:\n\n• Options Signals — curated CALL and PUT contract setups with strike prices, expiration dates, and risk ratings.\n\n• Politician Stock Scanner — track real-time stock purchase and sale disclosures filed by US Congress members, with commentary and significance ratings.\n\nMax is designed for active traders who want the full Holoture data stack.',
   },
   {
     q: 'How do I upgrade to Pro or Max?',
@@ -82,7 +82,6 @@ const TIERS = [
       'Full signal board (10+ signals)',
       'Entry zones, targets & stop-losses',
       'AI thesis & confidence scores',
-      'Up to 5 Momentum signals/day',
       'News, Trends & Earnings Calendar',
       'Swing Trade & Long Term signals',
     ],
@@ -96,7 +95,6 @@ const TIERS = [
     bg:    'linear-gradient(135deg, rgba(124,58,237,0.1), rgba(79,70,229,0.07))',
     features: [
       'Everything in Pro',
-      'Unlimited Momentum signals',
       'Options Signals (CALL & PUT)',
       'Politician Stock Scanner',
       'Congress trade disclosures + AI',

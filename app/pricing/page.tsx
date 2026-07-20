@@ -17,7 +17,6 @@ const PRO_FEATURES = [
   'Everything in Free',
   'Full signal board — no daily cap',
   'All signal categories unlocked',
-  'Unlimited Momentum signals',
   'Entry zones, targets & stop-loss',
   'Confidence scores & full thesis',
   'Intraday & 1–3 day signals',
