@@ -16,6 +16,11 @@ import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 
+// Root cause of the earlier 404s across multiple deployments: without this,
+// Next/Turbopack attempted to statically pre-render this GET route at build
+// time, which silently failed (no request context for auth()/DB calls) and
+// produced no deployable output. og-signals/route.ts sets the same export.
+export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 async function isAuthorized(req: Request): Promise<boolean> {
