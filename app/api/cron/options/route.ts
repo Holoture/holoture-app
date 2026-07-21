@@ -178,8 +178,11 @@ export async function GET(req: Request) {
     // fetched chain. This is the hard guarantee against fabrication: no
     // signal is stored unless its exact contract was present in Schwab's
     // live chain response for that ticker.
+    const MIN_CONFIDENCE = 55
+
     const validated = picks
       .map((p) => {
+        if (p.confidence < MIN_CONFIDENCE) return null
         const ticker = perTicker.find((t) => t.symbol === p.ticker)
         if (!ticker) return null
         const contract = ticker.candidates.find((c) => c.symbol === p.optionSymbol)
@@ -189,7 +192,7 @@ export async function GET(req: Request) {
       .filter((x): x is NonNullable<typeof x> => x !== null)
 
     if (validated.length === 0) {
-      return NextResponse.json({ ok: true, count: 0, reason: 'all_picks_failed_chain_validation', rawPickCount: picks.length })
+      return NextResponse.json({ ok: true, count: 0, reason: 'all_picks_failed_chain_validation_or_confidence', rawPickCount: picks.length })
     }
 
     await prisma.$transaction([

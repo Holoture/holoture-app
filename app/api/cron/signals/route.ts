@@ -611,9 +611,12 @@ function applySectorDiversity(signals: GeneratedSignal[], maxPerSector = 3): Gen
   })
 }
 
+const MIN_CONFIDENCE = 55
+
 function validateSignal(s: GeneratedSignal): boolean {
   if (!s.ticker || !s.entryZoneLow || !s.entryZoneHigh || !s.targetPrice || !s.stopLoss) return false
   if (s.entryZoneLow <= 0 || s.entryZoneHigh <= 0 || s.targetPrice <= 0 || s.stopLoss <= 0) return false
+  if (s.confidence < MIN_CONFIDENCE) return false
   return true
 }
 
