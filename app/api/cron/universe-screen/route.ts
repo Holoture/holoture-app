@@ -2,7 +2,13 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getQuotesWithFundamentals } from '@/lib/schwab'
 import { screenBand, type ScreenedTicker } from '@/lib/nasdaqScreener'
-import { LARGE_CAP_MIN_DOLLAR_VOLUME, SMALL_CAP_MIN_DOLLAR_VOLUME } from '@/lib/liquidityFloor'
+import {
+  LARGE_CAP_MIN_DOLLAR_VOLUME,
+  SMALL_CAP_MIN_DOLLAR_VOLUME,
+  LARGE_CAP_MIN_MARKET_CAP,
+  SMALL_MID_MIN_MARKET_CAP,
+  SMALL_MID_MAX_MARKET_CAP,
+} from '@/lib/liquidityFloor'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 120
@@ -17,8 +23,17 @@ function verifyCron(req: Request): boolean {
 // sizes while keeping every sector well under the ~15-20% diversity cap:
 //   large-cap:    11 x 9  = up to 99   (target 80-100)
 //   small/mid:    11 x 20 = up to 220  (target 150-250)
+// Unchanged by the market-cap-band/liquidity-floor update below — the cap
+// is on how many candidates get FETCHED per sector, which bounds the pool
+// size regardless of how loose the downstream liquidity floor is.
 const LARGE_PER_SECTOR_CAP = 9
 const SMALL_MID_PER_SECTOR_CAP = 20
+
+// NASDAQ's fixed buckets our two bands must fetch from, since the $1B
+// boundary falls inside NASDAQ's own "small" bucket (300M-2B) and the $10M
+// floor falls inside "nano" (<50M) — screenBand does the exact numeric cut.
+const LARGE_CAP_BUCKETS = ['mega', 'large', 'mid', 'small'] as const
+const SMALL_MID_BUCKETS = ['small', 'micro', 'nano'] as const
 
 async function applyLiquidityFloor(
   candidates: ScreenedTicker[],
@@ -47,16 +62,49 @@ async function applyLiquidityFloor(
 export async function GET(req: Request) {
   if (!verifyCron(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  // Threshold-change verification: skips the DB write, only reports
+  // diagnostics. Not part of the scheduled cron's normal invocation —
+  // used to sanity-check new bands/floors before they go live.
+  const dryRun = new URL(req.url).searchParams.get('dryRun') === 'true'
+
   try {
     const [largeCandidates, smallMidCandidates] = await Promise.all([
-      screenBand(['mega', 'large'], LARGE_PER_SECTOR_CAP),
-      screenBand(['mid', 'small'], SMALL_MID_PER_SECTOR_CAP),
+      screenBand([...LARGE_CAP_BUCKETS], LARGE_PER_SECTOR_CAP, {
+        min: LARGE_CAP_MIN_MARKET_CAP, minInclusive: false, max: Infinity, maxInclusive: true,
+      }),
+      screenBand([...SMALL_MID_BUCKETS], SMALL_MID_PER_SECTOR_CAP, {
+        min: SMALL_MID_MIN_MARKET_CAP, minInclusive: true, max: SMALL_MID_MAX_MARKET_CAP, maxInclusive: true,
+      }),
     ])
 
     const [largeQualified, smallMidQualified] = await Promise.all([
       applyLiquidityFloor(largeCandidates, LARGE_CAP_MIN_DOLLAR_VOLUME),
       applyLiquidityFloor(smallMidCandidates, SMALL_CAP_MIN_DOLLAR_VOLUME),
     ])
+
+    // Diagnostics requested for the threshold change: rejection counts and
+    // how thin the newly-admitted small/mid pool actually is.
+    const largeRejectedByLiquidity = largeCandidates.length - largeQualified.length
+    const smallMidRejectedByLiquidity = smallMidCandidates.length - smallMidQualified.length
+    const smallMidUnder50MDollarVolume = smallMidQualified.filter((t) => t.avgDollarVolume < 50_000_000).length
+
+    if (dryRun) {
+      return NextResponse.json({
+        ok: true,
+        dryRun: true,
+        largeCandidatesFetched: largeCandidates.length,
+        largeQualified: largeQualified.length,
+        largeRejectedByLiquidity,
+        smallMidCandidatesFetched: smallMidCandidates.length,
+        smallMidQualified: smallMidQualified.length,
+        smallMidRejectedByLiquidity,
+        smallMidUnder50MDollarVolume,
+        smallMidUnder50MDollarVolumePct: smallMidQualified.length > 0
+          ? Math.round((smallMidUnder50MDollarVolume / smallMidQualified.length) * 1000) / 10
+          : 0,
+        totalUniverseSize: largeQualified.length + smallMidQualified.length,
+      })
+    }
 
     if (largeQualified.length === 0 && smallMidQualified.length === 0) {
       // Screen returned nothing usable — leave the existing TickerUniverse

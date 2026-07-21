@@ -32,10 +32,13 @@ export const NASDAQ_SECTORS = [
 
 export type NasdaqSector = (typeof NASDAQ_SECTORS)[number]
 
-// NASDAQ's own bands. Our two target bands are unions of these:
-//   large-cap ( >$10B )     = 'large' + 'mega'
-//   small/mid-cap ($300M-$10B) = 'small' + 'mid'
-type NasdaqMarketCapBucket = 'mega' | 'large' | 'mid' | 'small'
+// NASDAQ's own fixed bucket categories. Our target bands ($1B boundary,
+// $10M floor) don't align to these boundaries, so callers fetch whichever
+// buckets can contain their band and then filter by the real numeric
+// marketCap value returned per ticker (see screenBand's min/max params) —
+// bucket selection here is just "which pages to fetch," not the actual
+// admission filter.
+type NasdaqMarketCapBucket = 'mega' | 'large' | 'mid' | 'small' | 'micro' | 'nano'
 
 export type ScreenedTicker = {
   ticker: string
@@ -96,14 +99,22 @@ async function mapWithConcurrency<T, R>(
 }
 
 /**
- * Screen one target band (large-cap or small/mid-cap) across all 11 sectors,
- * capping each sector at `perSectorCap` candidates (by market cap desc, as
- * NASDAQ already returns them) so no sector can dominate the pool.
+ * Screen one target band across all 11 sectors, capping each sector at
+ * `perSectorCap` candidates (by market cap desc) so no sector can dominate
+ * the pool. `buckets` controls which NASDAQ pages to fetch (coarse — must
+ * be a superset of the target range); `minMarketCap`/`maxMarketCap` do the
+ * real, exact admission filtering against each ticker's actual returned
+ * market cap, since our band boundaries don't line up with NASDAQ's own
+ * bucket edges.
  */
 export async function screenBand(
   buckets: NasdaqMarketCapBucket[],
-  perSectorCap: number
+  perSectorCap: number,
+  bounds: { min: number; minInclusive: boolean; max: number; maxInclusive: boolean }
 ): Promise<ScreenedTicker[]> {
+  const { min, minInclusive, max, maxInclusive } = bounds
+  const passesLowerBound = (mc: number) => (minInclusive ? mc >= min : mc > min)
+  const passesUpperBound = (mc: number) => (maxInclusive ? mc <= max : mc < max)
   const jobs: Array<{ bucket: NasdaqMarketCapBucket; sector: NasdaqSector }> = []
   for (const bucket of buckets) {
     for (const sector of NASDAQ_SECTORS) {
@@ -112,14 +123,16 @@ export async function screenBand(
   }
 
   const pages = await mapWithConcurrency(jobs, 6, ({ bucket, sector }) =>
-    fetchScreenerPage(bucket, sector, perSectorCap * 2) // over-fetch, dedupe+trim after
+    fetchScreenerPage(bucket, sector, perSectorCap * 3) // over-fetch, dedupe+filter+trim after
   )
 
-  // Merge multi-bucket results per sector (e.g. large + mega), keep top
-  // perSectorCap by market cap, dedupe by ticker.
+  // Merge multi-bucket results per sector (e.g. large + mega), apply the
+  // real market-cap band filter, keep top perSectorCap by market cap,
+  // dedupe by ticker.
   const bySector = new Map<NasdaqSector, Map<string, ScreenedTicker>>()
   for (const page of pages) {
     for (const t of page) {
+      if (!passesLowerBound(t.marketCap) || !passesUpperBound(t.marketCap)) continue
       if (!bySector.has(t.sector)) bySector.set(t.sector, new Map())
       const m = bySector.get(t.sector)!
       const existing = m.get(t.ticker)
