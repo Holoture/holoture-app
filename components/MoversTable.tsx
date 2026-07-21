@@ -28,7 +28,7 @@ export default function MoversTable({ rows }: { rows: MoverRow[] }) {
 
   return (
     <div>
-      <div className="flex items-center justify-end gap-2 mb-2">
+      <div className="flex flex-wrap items-center justify-end gap-2 mb-2">
         <span className="text-xs font-semibold" style={{ color: 'var(--text-w40)' }}>Sort:</span>
         <button
           onClick={() => setSortDir('desc')}
@@ -69,30 +69,46 @@ export default function MoversTable({ rows }: { rows: MoverRow[] }) {
         {sorted.map((m, idx) => {
           const isUp = m.pctChange >= 0
           const color = isUp ? '#4ade80' : '#f87171'
+          const rowStyle = {
+            borderBottom: idx < sorted.length - 1 ? '1px solid var(--border)' : 'none',
+            backgroundColor: idx % 2 === 0 ? 'var(--surf-w18)' : 'transparent',
+          }
           return (
-            <div
-              key={m.ticker}
-              className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 px-4 py-3"
-              style={{
-                borderBottom: idx < sorted.length - 1 ? '1px solid var(--border)' : 'none',
-                backgroundColor: idx % 2 === 0 ? 'var(--surf-w18)' : 'transparent',
-              }}
-            >
-              <div className="flex items-center gap-2 sm:block" style={{ width: 130, flexShrink: 0 }}>
-                <span className="font-bold text-white font-data" style={{ fontSize: 16 }}>{m.ticker}</span>
-                <span className="sm:hidden text-xs" style={{ color: 'var(--text-w40)' }}>{m.companyName ?? ''}</span>
+            <div key={m.ticker}>
+              {/* Mobile — two compact lines, no fixed-width columns */}
+              <div className="flex sm:hidden flex-col gap-1 px-4 py-3" style={rowStyle}>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-white font-data" style={{ fontSize: 15 }}>{m.ticker}</span>
+                  <span className="truncate text-xs" style={{ color: 'var(--text-w40)' }}>{m.companyName ?? ''}</span>
+                </div>
+                <div className="flex items-center gap-4 text-sm font-data">
+                  <span className="text-white">{formatCurrency(m.extendedLastPrice)}</span>
+                  <span className="font-bold" style={{ color }}>
+                    {isUp ? '+' : ''}{formatCurrency(m.dollarChange)}
+                  </span>
+                  <span className="font-bold" style={{ color }}>
+                    {isUp ? '+' : ''}{m.pctChange.toFixed(2)}%
+                  </span>
+                </div>
               </div>
-              <div className="hidden sm:block truncate text-sm text-white" style={{ flex: 1, minWidth: 0, opacity: 0.75 }}>
-                {m.companyName ?? '—'}
-              </div>
-              <div className="text-sm font-data text-white sm:text-right" style={{ width: 100, flexShrink: 0 }}>
-                {formatCurrency(m.extendedLastPrice)}
-              </div>
-              <div className="font-data font-bold text-sm sm:text-right" style={{ width: 90, flexShrink: 0, color }}>
-                {isUp ? '+' : ''}{formatCurrency(m.dollarChange)}
-              </div>
-              <div className="font-data font-bold text-sm sm:text-right" style={{ width: 90, flexShrink: 0, color }}>
-                {isUp ? '+' : ''}{m.pctChange.toFixed(2)}%
+
+              {/* Desktop — fixed-width columns matching the header row */}
+              <div className="hidden sm:flex sm:items-center gap-3 px-4 py-3" style={rowStyle}>
+                <div style={{ width: 130, flexShrink: 0 }}>
+                  <span className="font-bold text-white font-data" style={{ fontSize: 16 }}>{m.ticker}</span>
+                </div>
+                <div className="truncate text-sm text-white" style={{ flex: 1, minWidth: 0, opacity: 0.75 }}>
+                  {m.companyName ?? '—'}
+                </div>
+                <div className="text-sm font-data text-white text-right" style={{ width: 100, flexShrink: 0 }}>
+                  {formatCurrency(m.extendedLastPrice)}
+                </div>
+                <div className="font-data font-bold text-sm text-right" style={{ width: 90, flexShrink: 0, color }}>
+                  {isUp ? '+' : ''}{formatCurrency(m.dollarChange)}
+                </div>
+                <div className="font-data font-bold text-sm text-right" style={{ width: 90, flexShrink: 0, color }}>
+                  {isUp ? '+' : ''}{m.pctChange.toFixed(2)}%
+                </div>
               </div>
             </div>
           )

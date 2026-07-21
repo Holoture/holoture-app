@@ -22,8 +22,18 @@ function getSessionWindows(): { premarketLive: boolean; afterhoursLive: boolean 
   }
 }
 
+// Minimum |% change| for a ticker to appear on the movers list at all —
+// a magnitude cutoff on the display, not a liquidity/volume filter, so it
+// doesn't reintroduce the liquidity floor this section deliberately skips.
+const MIN_ABS_PCT_CHANGE = 4
+
 async function getSnapshot(session: 'premarket' | 'afterhours') {
-  const rows = await prisma.moverSnapshot.findMany({ where: { session } })
+  const rows = await prisma.moverSnapshot.findMany({
+    where: {
+      session,
+      OR: [{ pctChange: { gte: MIN_ABS_PCT_CHANGE } }, { pctChange: { lte: -MIN_ABS_PCT_CHANGE } }],
+    },
+  })
   const capturedAt = rows.length > 0 ? rows.reduce((max, r) => (r.capturedAt > max ? r.capturedAt : max), rows[0].capturedAt) : null
   return { rows, capturedAt }
 }
@@ -73,7 +83,9 @@ function SessionSection({
 
       {rows.length === 0 ? (
         <div className="rounded-xl p-8 text-center mt-3" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
-          <p className="text-sm text-white" style={{ opacity: 0.6 }}>No data captured yet for this session.</p>
+          <p className="text-sm text-white" style={{ opacity: 0.6 }}>
+            No movers of at least ±{MIN_ABS_PCT_CHANGE}% captured yet for this session.
+          </p>
         </div>
       ) : (
         <div className="mt-3">
