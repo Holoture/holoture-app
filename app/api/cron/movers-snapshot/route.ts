@@ -88,15 +88,23 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: true, session, universeSize: tickers.length, capturedRows: 0 })
     }
 
-    await prisma.$transaction(
-      rows.map((r) =>
-        prisma.moverSnapshot.upsert({
+    // Plain (non-transactional) upserts with bounded concurrency — this is
+    // a soft-cache table refreshed every 5 minutes, not a place atomicity
+    // matters, and a single interactive transaction times out well before
+    // ~1,000+ sequential upserts complete.
+    const CONCURRENCY = 20
+    let cursor = 0
+    async function worker() {
+      while (cursor < rows.length) {
+        const r = rows[cursor++]
+        await prisma.moverSnapshot.upsert({
           where: { session_ticker: { session: r.session, ticker: r.ticker } },
           update: r,
           create: r,
         })
-      )
-    )
+      }
+    }
+    await Promise.all(Array.from({ length: Math.min(CONCURRENCY, rows.length) }, worker))
 
     return NextResponse.json({ ok: true, session, universeSize: tickers.length, capturedRows: rows.length })
   } catch (err) {
