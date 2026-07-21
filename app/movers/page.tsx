@@ -46,7 +46,7 @@ function SessionSection({
     : null
 
   return (
-    <div className="mb-10">
+    <div>
       <div className="flex items-center gap-3 mb-1">
         <Icon className="w-5 h-5" style={{ color: '#009BFF' }} />
         <h2 className="text-xl font-bold text-white">{title}</h2>
@@ -97,7 +97,7 @@ export default async function MoversPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-3">
           <h1 className="text-2xl font-black text-white mb-1">Premarket &amp; After-Hours Movers</h1>
           <p className="text-sm text-white" style={{ opacity: 0.6 }}>
@@ -116,20 +116,22 @@ export default async function MoversPage() {
           </p>
         </div>
 
-        <SessionSection
-          title="Premarket Movers"
-          icon={Sunrise}
-          isLive={premarketLive}
-          capturedAt={premarket.capturedAt}
-          rows={premarket.rows}
-        />
-        <SessionSection
-          title="After-Hours Movers"
-          icon={Moon}
-          isLive={afterhoursLive}
-          capturedAt={afterhours.capturedAt}
-          rows={afterhours.rows}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <SessionSection
+            title="Premarket Movers"
+            icon={Sunrise}
+            isLive={premarketLive}
+            capturedAt={premarket.capturedAt}
+            rows={premarket.rows}
+          />
+          <SessionSection
+            title="After-Hours Movers"
+            icon={Moon}
+            isLive={afterhoursLive}
+            capturedAt={afterhours.capturedAt}
+            rows={afterhours.rows}
+          />
+        </div>
 
         <p className="text-center mt-6 text-xs" style={{ color: 'var(--text-w30)' }}>
           $ and % change measured against the previous regular-session closing price. Not financial advice.
