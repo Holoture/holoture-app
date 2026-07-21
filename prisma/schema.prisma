@@ -384,7 +384,7 @@ model MoverSnapshot {
   // Reference price the change is measured against — prior regular
   // session's close for premarket, today's regular-session close for
   // after-hours (NOT always literally "close", hence the generic name).
-  referencePrice    Float
+  referencePrice    Float    @default(0)
   extendedLastPrice Float
   pctChange         Float
   dollarChange      Float
