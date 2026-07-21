@@ -661,40 +661,43 @@ export default function SignalBoardClient({
                 <FilterChip label="Momentum" active={timeframeFilter === 'momentum'} onClick={() => setTimeframeFilter('momentum')} />
                 <FilterChip label="Swing"    active={timeframeFilter === 'swing'}    onClick={() => setTimeframeFilter('swing')} />
                 <FilterChip label="Long Term" active={timeframeFilter === 'long'}    onClick={() => setTimeframeFilter('long')} />
-                <button
-                  onClick={() => setFilterPanelOpen(v => !v)}
-                  className="flex items-center gap-1.5 text-xs font-semibold rounded-lg px-3 py-1.5 transition-colors"
-                  style={
-                    activeFilterCount > 0
-                      ? { backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.4)' }
-                      : { backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w60)', border: '1px solid var(--border)' }
-                  }
-                >
-                  <SlidersHorizontal className="w-3.5 h-3.5" />
-                  Filter
-                  {activeFilterCount > 0 && (
-                    <span
-                      className="text-xs font-bold px-1.5 rounded-full"
-                      style={{ backgroundColor: '#009BFF', color: 'white' }}
-                    >
-                      {activeFilterCount}
-                    </span>
-                  )}
-                </button>
-                <select
-                  value={sortKey}
-                  onChange={e => setSortKey(e.target.value as SortKey)}
-                  className="ml-auto text-xs rounded-lg px-3 py-1.5 outline-none cursor-pointer"
-                  style={{ backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w80)', border: '1px solid var(--border)' }}
-                >
-                  <option value="confidence-desc">Confidence ↓</option>
-                  <option value="confidence-asc">Confidence ↑</option>
-                  <option value="upside-desc">Upside ↓</option>
-                  <option value="upside-asc">Upside ↑</option>
-                  <option value="ticker-asc">Ticker A–Z</option>
-                  <option value="recent">Most Recent</option>
-                  <option value="time-sensitivity">Time Sensitivity</option>
-                </select>
+
+                <div className="ml-auto flex items-center gap-2">
+                  <button
+                    onClick={() => setFilterPanelOpen(v => !v)}
+                    className="flex items-center gap-1.5 text-xs font-semibold rounded-lg px-3 py-1.5 transition-colors"
+                    style={
+                      activeFilterCount > 0
+                        ? { backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.4)' }
+                        : { backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w60)', border: '1px solid var(--border)' }
+                    }
+                  >
+                    <SlidersHorizontal className="w-3.5 h-3.5" />
+                    Filter
+                    {activeFilterCount > 0 && (
+                      <span
+                        className="text-xs font-bold px-1.5 rounded-full"
+                        style={{ backgroundColor: '#009BFF', color: 'white' }}
+                      >
+                        {activeFilterCount}
+                      </span>
+                    )}
+                  </button>
+                  <select
+                    value={sortKey}
+                    onChange={e => setSortKey(e.target.value as SortKey)}
+                    className="text-xs rounded-lg px-3 py-1.5 outline-none cursor-pointer"
+                    style={{ backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w80)', border: '1px solid var(--border)' }}
+                  >
+                    <option value="confidence-desc">Confidence ↓</option>
+                    <option value="confidence-asc">Confidence ↑</option>
+                    <option value="upside-desc">Upside ↓</option>
+                    <option value="upside-asc">Upside ↑</option>
+                    <option value="ticker-asc">Ticker A–Z</option>
+                    <option value="recent">Most Recent</option>
+                    <option value="time-sensitivity">Time Sensitivity</option>
+                  </select>
+                </div>
               </div>
 
               {/* Filter panel — separate control from Sort, combines with tabs/sort/search */}
