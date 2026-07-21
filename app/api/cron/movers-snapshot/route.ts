@@ -48,8 +48,13 @@ export async function GET(req: Request) {
   if (!verifyCron(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
+    // TEMP: manual verification override, to be removed after testing.
+    const forceSession = new URL(req.url).searchParams.get('forceSession')
     const { premarketLive, afterhoursLive } = getSessionWindows()
-    const session: 'premarket' | 'afterhours' | null = premarketLive ? 'premarket' : afterhoursLive ? 'afterhours' : null
+    const session: 'premarket' | 'afterhours' | null =
+      forceSession === 'premarket' || forceSession === 'afterhours'
+        ? forceSession
+        : premarketLive ? 'premarket' : afterhoursLive ? 'afterhours' : null
     if (!session) {
       return NextResponse.json({ ok: true, skipped: 'outside_both_extended_sessions' })
     }
