@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
 import { getQuotes } from '@/lib/schwab'
+import { classifyByMarketCap } from '@/lib/marketCapClassification'
 
 export const maxDuration = 60
 
@@ -128,10 +129,9 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: true, count: 0 })
     }
 
-    const LARGE_CAP = new Set([
-      'NVDA', 'TSLA', 'AMD', 'META', 'AMZN', 'GOOGL', 'MSFT', 'AAPL',
-      'PLTR', 'COIN', 'UBER', 'CRWD', 'DDOG', 'SMCI',
-    ])
+    // Real live market-cap check (>$1B) — not a hardcoded ticker list,
+    // which goes stale the moment a name crosses the $1B line.
+    const capCategories = await classifyByMarketCap(valid.map((s) => s.ticker))
 
     await prisma.$transaction(
       valid.map(s =>
@@ -150,8 +150,8 @@ export async function GET(req: Request) {
             thesis: s.thesis,
             aiSummary: s.aiSummary,
             sector: s.sector,
-            signalCategory: LARGE_CAP.has(s.ticker) ? 'large_cap' : 'small_cap',
-            marketCap: LARGE_CAP.has(s.ticker) ? 15 : 2,
+            signalCategory: capCategories.get(s.ticker) === 'large_cap' ? 'large_cap' : 'small_cap',
+            marketCap: capCategories.get(s.ticker) === 'large_cap' ? 15 : 2,
             bestEntryTime: s.bestEntryTime,
             expectedMove: s.expectedMove,
             catalyst: s.catalyst,

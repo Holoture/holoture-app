@@ -28,6 +28,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
 import { getQuotes, getTodayMinuteCandles, getHistoricalMinuteCandles, type Candle } from '@/lib/schwab'
+import { classifyByMarketCap } from '@/lib/marketCapClassification'
 
 export const maxDuration = 60
 
@@ -73,7 +74,10 @@ const INTRADAY_WATCHLIST = [
   'BBAI', 'IONQ', 'ASTS', 'LUNR', 'ACHR', 'SMCI', 'CRWD', 'DDOG',
 ]
 const UNIVERSE = [...new Set([...LARGE_CAP_WATCHLIST, ...SMALL_CAP_WATCHLIST, ...INTRADAY_WATCHLIST])]
-const LARGE_CAP = new Set(LARGE_CAP_WATCHLIST)
+// Large/small classification for signalCategory is done via a real live
+// market-cap check (classifyByMarketCap) at signal-creation time below —
+// not via a hardcoded ticker list, which goes stale the moment a name's
+// market cap crosses the $1B line.
 
 // ── Thresholds — starting points per the feasibility writeup; tune after
 //    live data, not gospel. ──
@@ -306,7 +310,10 @@ export async function GET(req: Request) {
     }
 
     // ── Claude: thesis only, inclusion already decided ──────────────────────
-    const theses = await writeThesis(confirmed)
+    const [theses, capCategories] = await Promise.all([
+      writeThesis(confirmed),
+      classifyByMarketCap(confirmed.map((c) => c.ticker)),
+    ])
 
     // Mechanically-computed stop — not AI-guessed. Tighter than the daily
     // board: 3% below entry, or the recent 5-bar swing low, whichever is
@@ -336,8 +343,8 @@ export async function GET(req: Request) {
           thesis: `MOMENTUM SPIKE — HIGH RISK, TIGHT STOP. ${thesis.thesis} | Up ${c.pctFromOpen}% from open on ${c.relativeVolume}x relative volume, trading above VWAP ($${c.vwap}). This is a fast-moving chase trade, not a multi-day setup — size small, expect failure to be normal, exit on any reversal below VWAP.`,
           aiSummary: thesis.aiSummary,
           sector: thesis.sector,
-          signalCategory: LARGE_CAP.has(c.ticker) ? 'large_cap' : 'small_cap',
-          marketCap: LARGE_CAP.has(c.ticker) ? 15 : 2,
+          signalCategory: capCategories.get(c.ticker) === 'large_cap' ? 'large_cap' : 'small_cap',
+          marketCap: capCategories.get(c.ticker) === 'large_cap' ? 15 : 2,
           bestEntryTime: 'Now — spike in progress',
           expectedMove: `${c.pctFromOpen}% so far, still extending`,
           catalyst: thesis.catalyst,

@@ -35,18 +35,14 @@ const MOCK_OPTIONS: OptionsSignal[] = [
 
 // ─── category helpers ─────────────────────────────────────────────────────────
 
-const LARGE_CAP = new Set([
-  'AAPL', 'MSFT', 'NVDA', 'GOOGL', 'META', 'AMZN', 'TSLA', 'AVGO', 'AMD', 'QCOM',
-  'INTC', 'TXN', 'MU', 'AMAT', 'ADBE', 'CRM', 'ORCL', 'JPM', 'BAC', 'GS',
-  'V', 'MA', 'C', 'WFC', 'MS', 'BLK', 'AXP', 'SCHW', 'JNJ', 'UNH',
-  'LLY', 'PFE', 'ABT', 'TMO', 'ISRG', 'MDT', 'AMGN', 'GILD', 'XOM', 'CVX',
-  'COP', 'EOG', 'SLB', 'WMT', 'COST', 'MCD', 'SBUX', 'TGT', 'KO', 'PEP',
-  'NKE', 'CAT', 'HON', 'RTX', 'LMT', 'GE', 'NFLX', 'DIS', 'CMCSA', 'T', 'VZ',
-  'PLTR', 'COIN', 'AXON', 'UBER', 'SOFI', 'AFRM', 'SNOW', 'CRWD', 'DDOG',
-])
-
+// Trusts the server-assigned signalCategory only — it's now computed from a
+// real live market-cap check at signal-creation time (see
+// lib/marketCapClassification.ts), not a hardcoded ticker list. A second,
+// independent hardcoded list here used to mask some misclassifications
+// (e.g. mega-caps) while leaving others (anything not on either list)
+// wrong; removed rather than kept as a redundant, driftable source of truth.
 function isLargeCapTicker(s: Signal): boolean {
-  return s.signalCategory === 'large_cap' || LARGE_CAP.has(s.ticker)
+  return s.signalCategory === 'large_cap'
 }
 // Server-assigned timeframeCategory (lib/timeframe.ts), not parsed from
 // timeHorizon text — the regex classifiers this replaced orphaned real
