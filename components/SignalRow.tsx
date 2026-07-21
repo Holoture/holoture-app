@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { ChevronDown, Lock, Clock } from 'lucide-react'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrency, formatDateTimeEST } from '@/lib/utils'
 import { signalUpside } from '@/lib/signal-upside'
 import type { Signal } from './SignalCard'
 import TrackerButton from './TrackerButton'
@@ -244,6 +244,11 @@ export default function SignalRow({
                 <div className="truncate" style={{ fontSize: 11, color: 'var(--text-w40)', marginTop: 2 }}>
                   {signal.sector}
                 </div>
+                {signal.createdAt && (
+                  <div className="font-data truncate" style={{ fontSize: 9.5, color: 'var(--text-w30)', marginTop: 2 }}>
+                    {formatDateTimeEST(signal.createdAt)}
+                  </div>
+                )}
                 {timeframeBadge === 'intraday' && (
                   <div className="flex items-center gap-1 mt-1" style={{ fontSize: 9, color: '#f97316', fontWeight: 700 }}>
                     <Clock className="w-2.5 h-2.5" />
@@ -407,6 +412,13 @@ export default function SignalRow({
             />
           </div>
 
+          {/* Posted timestamp (mobile) */}
+          {!isObscured && signal.createdAt && (
+            <div className="font-data" style={{ fontSize: 9.5, color: 'var(--text-w30)' }}>
+              {formatDateTimeEST(signal.createdAt)}
+            </div>
+          )}
+
           {/* Free pick badge (mobile) */}
           {isFreePick && (
             <div style={{ fontSize: 10, color: '#1D9E75', fontWeight: 700 }}>
@@ -529,6 +541,11 @@ export default function SignalRow({
             <>
               {/* Section A — Summary */}
               <section>
+                {signal.createdAt && (
+                  <p className="font-data mb-3" style={{ fontSize: 11, color: 'var(--text-w40)' }}>
+                    Posted {formatDateTimeEST(signal.createdAt)}
+                  </p>
+                )}
                 {isFreePick && (
                   <div
                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold mb-3"

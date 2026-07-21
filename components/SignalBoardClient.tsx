@@ -1,37 +1,12 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
-import { ChevronDown, Search, TrendingUp, History, RefreshCw, Clock, Zap, Lock } from 'lucide-react'
+import { ChevronDown, Search, TrendingUp, History, RefreshCw, Clock, SlidersHorizontal, X } from 'lucide-react'
 import Link from 'next/link'
 import SignalRow from './SignalRow'
 import SignalHistoryTab from './SignalHistoryTab'
-import OptionsDashboardClient from './OptionsDashboardClient'
 import type { Signal } from './SignalCard'
 import { signalUpside } from '@/lib/signal-upside'
-
-// ─── OptionsSignal type ───────────────────────────────────────────────────────
-
-type OptionsSignal = {
-  id: string
-  ticker: string
-  companyName: string
-  contractType: string
-  strikePrice: number
-  expirationDate: string
-  premiumEstimate: number
-  confidence: number
-  reasoning: string
-  summary: string
-  riskLevel: string
-  createdAt: string
-}
-
-// Placeholder options shown blurred for non-max users when no real data is available
-const MOCK_OPTIONS: OptionsSignal[] = [
-  { id: 'm1', ticker: 'NVDA', companyName: 'NVIDIA Corporation', contractType: 'CALL', strikePrice: 125, expirationDate: '2026-07-18', premiumEstimate: 4.20, confidence: 82.3, reasoning: '', summary: 'Strong AI momentum play with technical breakout above key resistance.', riskLevel: 'Medium', createdAt: new Date().toISOString() },
-  { id: 'm2', ticker: 'TSLA', companyName: 'Tesla Inc', contractType: 'PUT', strikePrice: 240, expirationDate: '2026-07-11', premiumEstimate: 3.75, confidence: 71.5, reasoning: '', summary: 'Bearish technical setup with distribution pattern on the daily chart.', riskLevel: 'High', createdAt: new Date().toISOString() },
-  { id: 'm3', ticker: 'META', companyName: 'Meta Platforms Inc', contractType: 'CALL', strikePrice: 580, expirationDate: '2026-07-25', premiumEstimate: 8.50, confidence: 78.1, reasoning: '', summary: 'Strong ad revenue growth catalyst ahead of earnings season.', riskLevel: 'Low', createdAt: new Date().toISOString() },
-]
 
 // ─── category helpers ─────────────────────────────────────────────────────────
 
@@ -62,6 +37,15 @@ function is1to3Days(s: Signal): boolean {
 }
 function isShortTermSignal(s: Signal): boolean {
   return isIntraday(s) || is1to3Days(s)
+}
+// Display/filter-only union — the stored timeframeCategory enum values
+// (intraday, days_1_3, momentum) are untouched; this just groups them
+// under one "Momentum" tab since all three are short-fuse, high-risk
+// setups from the user's perspective. Real spike-scanner signals
+// (timeframeCategory === 'momentum') previously had no matching section
+// on the "All Signals" tab at all — this also fixes that gap.
+function isMomentumGroup(s: Signal): boolean {
+  return isIntraday(s) || is1to3Days(s) || s.timeframeCategory === 'momentum'
 }
 
 // ─── market hours helpers ─────────────────────────────────────────────────────
@@ -126,31 +110,26 @@ function getDailyFreePickIds(signals: Signal[]): Set<string> {
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
-// 'momentum' tab removed: it was isMomentum(BUY && confidence>=75) — ordinary
-// high-confidence daily BUYs mislabeled as momentum trades, with no relation
-// to actual price/volume action. Real momentum spikes (isMomentumSpike, from
-// the quantitatively-gated intraday scanner) still appear on the board under
-// their large-cap/small-cap section — this task removes the fake tab, it
-// does not add a UI surface for the real one.
-type CategoryTab = 'all' | 'large-cap' | 'small-cap' | 'swing-trade' | 'long-term' | 'options' | 'history'
+// 'options' tab removed — options signals now live at their own /options
+// route (see app/options/page.tsx), not on the main dashboard.
+type CategoryTab = 'all' | 'large-cap' | 'small-cap' | 'swing-trade' | 'long-term' | 'momentum' | 'history'
 type TypeFilter = 'all' | 'BUY' | 'WATCH' | 'SHORT'
-type TimeframeFilter = 'all' | 'intraday' | '1-3days' | 'swing' | 'long'
+type TimeframeFilter = 'all' | 'momentum' | 'swing' | 'long'
 type SortKey = 'confidence-desc' | 'confidence-asc' | 'ticker-asc' | 'recent' | 'time-sensitivity' | 'upside-desc' | 'upside-asc'
 
 const CATEGORY_TABS: { key: CategoryTab; label: string; maxOnly?: boolean }[] = [
-  { key: 'all',        label: 'All Signals' },
-  { key: 'large-cap',  label: 'Large Cap' },
-  { key: 'small-cap',  label: 'Small Cap' },
+  { key: 'all',         label: 'All Signals' },
+  { key: 'large-cap',   label: 'Large Cap' },
+  { key: 'small-cap',   label: 'Small Cap' },
   { key: 'swing-trade', label: 'Swing Trade' },
-  { key: 'long-term',  label: 'Long Term' },
-  { key: 'options',    label: 'Options', maxOnly: true },
-  { key: 'history',    label: 'History' },
+  { key: 'long-term',   label: 'Long Term' },
+  { key: 'momentum',    label: 'Momentum' },
+  { key: 'history',     label: 'History' },
 ]
 
 // Sections for "All Signals" tab — first-match-wins, time-priority order
 const ALL_SECTIONS: { key: string; label: string; match: (s: Signal) => boolean }[] = [
-  { key: 'intraday',    label: 'Intraday',    match: isIntraday },
-  { key: '1-3-days',   label: '1–3 Days',    match: is1to3Days },
+  { key: 'momentum',    label: 'Momentum',    match: isMomentumGroup },
   { key: 'large-cap',  label: 'Large Cap',   match: isLargeCapTicker },
   { key: 'small-cap',  label: 'Small Cap',   match: (s) => !isLargeCapTicker(s) },
   { key: 'swing-trade', label: 'Swing Trade', match: isSwingTrade },
@@ -190,21 +169,20 @@ function EmptyFilter() {
 export default function SignalBoardClient({
   signals,
   tier,
-  optionsSignals = [],
   isAdmin   = false,
   isYesterday = false,
   lastGenerated = null,
-  initialTab = 'all',
+  volumeByTicker = {},
 }: {
   signals: Signal[]
   tier: 'free' | 'pro' | 'max'
-  optionsSignals?: OptionsSignal[]
   isAdmin?:      boolean
   isYesterday?:  boolean
   lastGenerated?: string | null
-  initialTab?:   CategoryTab
+  /** ticker -> real avg 10-day dollar volume, from TickerUniverse (weekly screen). Missing for signals sourced outside the screened universe — those show "—" and are never dropped by a volume filter unless one is explicitly set. */
+  volumeByTicker?: Record<string, number>
 }) {
-  const [activeTab, setActiveTab]             = useState<CategoryTab>(initialTab)
+  const [activeTab, setActiveTab]             = useState<CategoryTab>('all')
   const [refreshing, setRefreshing]           = useState(false)
   const [typeFilter, setTypeFilter]           = useState<TypeFilter>('all')
   const [timeframeFilter, setTimeframeFilter] = useState<TimeframeFilter>('all')
@@ -214,6 +192,15 @@ export default function SignalBoardClient({
   const [trackedMap, setTrackedMap]           = useState<Map<string, string>>(new Map())
   const [marketOpen, setMarketOpen]           = useState(false)
   const [afterClose, setAfterClose]           = useState(false)
+
+  // ── Filter panel state (separate from the Sort dropdown and the tab bar) ──
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false)
+  const [priceMin, setPriceMin]               = useState('')
+  const [priceMax, setPriceMax]               = useState('')
+  const [capBands, setCapBands]               = useState<Set<'large_cap' | 'small_cap'>>(new Set())
+  const [volMin, setVolMin]                   = useState('')
+  const [volMax, setVolMax]                   = useState('')
+  const [sectorFilter, setSectorFilter]       = useState<Set<string>>(new Set())
 
   useEffect(() => {
     setMarketOpen(checkMarketOpen())
@@ -255,6 +242,33 @@ export default function SignalBoardClient({
     return 3
   }
 
+  // Representative price for the price filter — Signal has no standalone
+  // "current price" field, so the entry-zone midpoint is the closest real
+  // number available (not fabricated — both bounds come from the AI-set
+  // entry zone Schwab-priced at generation time).
+  function signalPrice(s: Signal): number {
+    return (s.entryZoneLow + s.entryZoneHigh) / 2
+  }
+
+  // Sectors available to filter by — derived from what's actually on the
+  // board right now, not a hardcoded list.
+  const sectorOptions = useMemo(() => {
+    return [...new Set(activeSignals.map(s => s.sector).filter(Boolean))].sort()
+  }, [activeSignals])
+
+  const activeFilterCount =
+    (priceMin !== '' || priceMax !== '' ? 1 : 0) +
+    (capBands.size > 0 ? 1 : 0) +
+    (volMin !== '' || volMax !== '' ? 1 : 0) +
+    (sectorFilter.size > 0 ? 1 : 0)
+
+  function clearAllFilters() {
+    setPriceMin(''); setPriceMax('')
+    setCapBands(new Set())
+    setVolMin(''); setVolMax('')
+    setSectorFilter(new Set())
+  }
+
   const filtered = useMemo(() => {
     if (isFree) return activeSignals
     return activeSignals.filter(s => {
@@ -268,13 +282,40 @@ export default function SignalBoardClient({
         const q = search.toLowerCase()
         if (!s.ticker.toLowerCase().includes(q) && !s.companyName.toLowerCase().includes(q)) return false
       }
-      if (timeframeFilter === 'intraday' && !isIntraday(s)) return false
-      if (timeframeFilter === '1-3days'  && !is1to3Days(s)) return false
+      if (timeframeFilter === 'momentum' && !isMomentumGroup(s)) return false
       if (timeframeFilter === 'swing'    && !isSwingTrade(s)) return false
       if (timeframeFilter === 'long'     && !isLongTerm(s)) return false
+
+      // Price range (entry-zone midpoint)
+      if (priceMin !== '' || priceMax !== '') {
+        const price = signalPrice(s)
+        if (priceMin !== '' && price < Number(priceMin)) return false
+        if (priceMax !== '' && price > Number(priceMax)) return false
+      }
+
+      // Market-cap band — real signalCategory from TickerUniverse-driven
+      // classification, not a fabricated numeric range.
+      if (capBands.size > 0) {
+        if (!s.signalCategory || !capBands.has(s.signalCategory as 'large_cap' | 'small_cap')) return false
+      }
+
+      // Avg dollar volume — only known for tickers currently in the
+      // screened universe. A signal missing this data fails an explicitly
+      // set volume filter (can't be verified to pass) but is never dropped
+      // when no volume filter is active.
+      if (volMin !== '' || volMax !== '') {
+        const vol = volumeByTicker[s.ticker]
+        if (vol == null) return false
+        if (volMin !== '' && vol < Number(volMin)) return false
+        if (volMax !== '' && vol > Number(volMax)) return false
+      }
+
+      // Sector multi-select
+      if (sectorFilter.size > 0 && !sectorFilter.has(s.sector)) return false
+
       return true
     })
-  }, [activeSignals, typeFilter, search, timeframeFilter, isFree])
+  }, [activeSignals, typeFilter, search, timeframeFilter, isFree, priceMin, priceMax, capBands, volMin, volMax, sectorFilter, volumeByTicker])
 
   const sorted = useMemo(() => {
     if (isFree) return filtered
@@ -305,12 +346,13 @@ export default function SignalBoardClient({
 
   // Signals for a specific category tab
   const categorySignals = useMemo(() => {
-    if (activeTab === 'all' || activeTab === 'options' || activeTab === 'history') return []
+    if (activeTab === 'all' || activeTab === 'history') return []
     const matchFns: Partial<Record<CategoryTab, (s: Signal) => boolean>> = {
       'large-cap':  isLargeCapTicker,
       'small-cap':  s => !isLargeCapTicker(s),
       'swing-trade': isSwingTrade,
       'long-term':  isLongTerm,
+      'momentum':   isMomentumGroup,
     }
     const fn = matchFns[activeTab]
     if (!fn) return sorted
@@ -399,8 +441,7 @@ export default function SignalBoardClient({
 
   function renderSection(sec: { key: string; label: string; signals: Signal[] }) {
     const isCollapsed = collapsedSections.has(sec.key)
-    const isIntradaySec = sec.key === 'intraday'
-    const is1to3Sec = sec.key === '1-3-days'
+    const isMomentumSec = sec.key === 'momentum'
 
     return (
       <div
@@ -414,26 +455,10 @@ export default function SignalBoardClient({
           className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/[0.02] transition-colors"
         >
           <div className="flex items-center gap-2 flex-wrap">
-            {isIntradaySec && <Clock className="w-4 h-4 shrink-0" style={{ color: '#f97316' }} />}
+            {isMomentumSec && <Clock className="w-4 h-4 shrink-0" style={{ color: '#f97316' }} />}
             <span className="font-bold text-white">{sec.label}</span>
 
-            {isIntradaySec && (
-              <span
-                className="text-xs font-bold px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: 'rgba(249,115,22,0.15)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)' }}
-              >
-                INTRADAY
-              </span>
-            )}
-            {is1to3Sec && (
-              <span
-                className="text-xs font-bold px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: 'rgba(168,85,247,0.15)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.3)' }}
-              >
-                1–3 DAYS
-              </span>
-            )}
-            {isIntradaySec && marketOpen && (
+            {isMomentumSec && marketOpen && (
               <span className="inline-flex items-center gap-1">
                 <span className="relative flex w-2 h-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#4ade80' }} />
@@ -442,7 +467,7 @@ export default function SignalBoardClient({
                 <span className="text-xs font-bold" style={{ color: '#4ade80' }}>LIVE</span>
               </span>
             )}
-            {(isIntradaySec || is1to3Sec) && !marketOpen && (
+            {isMomentumSec && !marketOpen && (
               <span className="text-xs" style={{ color: 'var(--text-w35)' }}>Time sensitive</span>
             )}
 
@@ -505,7 +530,7 @@ export default function SignalBoardClient({
 
         {/* Admin refresh + timestamp */}
         <div className="ml-auto pl-3 flex items-center gap-2 shrink-0">
-          {isAdmin && activeTab !== 'history' && activeTab !== 'options' && (
+          {isAdmin && activeTab !== 'history' && (
             <button
               onClick={handleAdminRefresh}
               disabled={refreshing}
@@ -523,55 +548,8 @@ export default function SignalBoardClient({
       {/* ── HISTORY TAB ── */}
       {activeTab === 'history' && <SignalHistoryTab tier={tier} />}
 
-      {/* ── OPTIONS TAB ── */}
-      {activeTab === 'options' && (
-        tier === 'max' ? (
-          <OptionsDashboardClient signals={optionsSignals} />
-        ) : (
-          <div className="relative">
-            {/* Blurred preview */}
-            <div className="pointer-events-none select-none" style={{ filter: 'blur(7px)', opacity: 0.55 }}>
-              <OptionsDashboardClient
-                signals={optionsSignals.length > 0 ? optionsSignals.slice(0, 3) : MOCK_OPTIONS}
-              />
-            </div>
-            {/* Upgrade overlay */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div
-                className="rounded-2xl p-8 flex flex-col items-center gap-4 text-center mx-4"
-                style={{
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid rgba(234,179,8,0.4)',
-                  maxWidth: 380,
-                }}
-              >
-                <div
-                  className="w-14 h-14 rounded-full flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.1))' }}
-                >
-                  <Zap className="w-7 h-7" style={{ color: '#eab308' }} />
-                </div>
-                <div>
-                  <p className="font-bold text-white text-lg">Options Signals</p>
-                  <p className="text-sm mt-1" style={{ color: 'var(--text-w60)' }}>
-                    Options signals are exclusive to Holoture Max — $25/month
-                  </p>
-                </div>
-                <Link
-                  href="/pricing"
-                  className="px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
-                  style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
-                >
-                  Upgrade to Max
-                </Link>
-              </div>
-            </div>
-          </div>
-        )
-      )}
-
       {/* ── SIGNAL TABS (All + category tabs) ── */}
-      {activeTab !== 'history' && activeTab !== 'options' && (
+      {activeTab !== 'history' && (
         <>
           {/* Free user — main upgrade banner */}
           {isFree && (
@@ -679,11 +657,30 @@ export default function SignalBoardClient({
               {/* Row 2: timeframe filters + sort */}
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-semibold shrink-0" style={{ color: 'var(--text-w40)' }}>Timeframe:</span>
-                <FilterChip label="All"      active={timeframeFilter === 'all'}     onClick={() => setTimeframeFilter('all')} />
-                <FilterChip label="Intraday" active={timeframeFilter === 'intraday'} onClick={() => setTimeframeFilter('intraday')} />
-                <FilterChip label="1-3 Days" active={timeframeFilter === '1-3days'} onClick={() => setTimeframeFilter('1-3days')} />
-                <FilterChip label="Swing"    active={timeframeFilter === 'swing'}   onClick={() => setTimeframeFilter('swing')} />
-                <FilterChip label="Long Term" active={timeframeFilter === 'long'}   onClick={() => setTimeframeFilter('long')} />
+                <FilterChip label="All"      active={timeframeFilter === 'all'}      onClick={() => setTimeframeFilter('all')} />
+                <FilterChip label="Momentum" active={timeframeFilter === 'momentum'} onClick={() => setTimeframeFilter('momentum')} />
+                <FilterChip label="Swing"    active={timeframeFilter === 'swing'}    onClick={() => setTimeframeFilter('swing')} />
+                <FilterChip label="Long Term" active={timeframeFilter === 'long'}    onClick={() => setTimeframeFilter('long')} />
+                <button
+                  onClick={() => setFilterPanelOpen(v => !v)}
+                  className="flex items-center gap-1.5 text-xs font-semibold rounded-lg px-3 py-1.5 transition-colors"
+                  style={
+                    activeFilterCount > 0
+                      ? { backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.4)' }
+                      : { backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w60)', border: '1px solid var(--border)' }
+                  }
+                >
+                  <SlidersHorizontal className="w-3.5 h-3.5" />
+                  Filter
+                  {activeFilterCount > 0 && (
+                    <span
+                      className="text-xs font-bold px-1.5 rounded-full"
+                      style={{ backgroundColor: '#009BFF', color: 'white' }}
+                    >
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </button>
                 <select
                   value={sortKey}
                   onChange={e => setSortKey(e.target.value as SortKey)}
@@ -699,6 +696,119 @@ export default function SignalBoardClient({
                   <option value="time-sensitivity">Time Sensitivity</option>
                 </select>
               </div>
+
+              {/* Filter panel — separate control from Sort, combines with tabs/sort/search */}
+              {filterPanelOpen && (
+                <div
+                  className="rounded-lg p-4 space-y-4"
+                  style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {/* Share price */}
+                    <div>
+                      <p className="text-xs font-semibold mb-1.5" style={{ color: 'var(--text-w40)' }}>Share Price ($)</p>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number" placeholder="Min" value={priceMin}
+                          onChange={e => setPriceMin(e.target.value)}
+                          className="w-full text-sm rounded-lg px-2.5 py-1.5 outline-none"
+                          style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'white' }}
+                        />
+                        <span style={{ color: 'var(--text-w30)' }}>–</span>
+                        <input
+                          type="number" placeholder="Max" value={priceMax}
+                          onChange={e => setPriceMax(e.target.value)}
+                          className="w-full text-sm rounded-lg px-2.5 py-1.5 outline-none"
+                          style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'white' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Avg dollar volume */}
+                    <div>
+                      <p className="text-xs font-semibold mb-1.5" style={{ color: 'var(--text-w40)' }}>Avg Daily Volume ($)</p>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number" placeholder="Min" value={volMin}
+                          onChange={e => setVolMin(e.target.value)}
+                          className="w-full text-sm rounded-lg px-2.5 py-1.5 outline-none"
+                          style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'white' }}
+                        />
+                        <span style={{ color: 'var(--text-w30)' }}>–</span>
+                        <input
+                          type="number" placeholder="Max" value={volMax}
+                          onChange={e => setVolMax(e.target.value)}
+                          className="w-full text-sm rounded-lg px-2.5 py-1.5 outline-none"
+                          style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'white' }}
+                        />
+                      </div>
+                      <p className="text-xs mt-1" style={{ color: 'var(--text-w30)' }}>
+                        Only known for tickers in the screened universe — others show &ldquo;—&rdquo;
+                      </p>
+                    </div>
+
+                    {/* Market cap band */}
+                    <div>
+                      <p className="text-xs font-semibold mb-1.5" style={{ color: 'var(--text-w40)' }}>Market Cap</p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <FilterChip
+                          label="Large Cap"
+                          active={capBands.has('large_cap')}
+                          onClick={() => setCapBands(prev => {
+                            const next = new Set(prev)
+                            if (next.has('large_cap')) next.delete('large_cap')
+                            else next.add('large_cap')
+                            return next
+                          })}
+                        />
+                        <FilterChip
+                          label="Small/Mid Cap"
+                          active={capBands.has('small_cap')}
+                          onClick={() => setCapBands(prev => {
+                            const next = new Set(prev)
+                            if (next.has('small_cap')) next.delete('small_cap')
+                            else next.add('small_cap')
+                            return next
+                          })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sector multi-select */}
+                  <div>
+                    <p className="text-xs font-semibold mb-1.5" style={{ color: 'var(--text-w40)' }}>Sector</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {sectorOptions.map(sec => (
+                        <FilterChip
+                          key={sec}
+                          label={sec}
+                          active={sectorFilter.has(sec)}
+                          onClick={() => setSectorFilter(prev => {
+                            const next = new Set(prev)
+                            if (next.has(sec)) next.delete(sec)
+                            else next.add(sec)
+                            return next
+                          })}
+                        />
+                      ))}
+                      {sectorOptions.length === 0 && (
+                        <span className="text-xs" style={{ color: 'var(--text-w30)' }}>No sectors available</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {activeFilterCount > 0 && (
+                    <button
+                      onClick={clearAllFilters}
+                      className="flex items-center gap-1 text-xs font-semibold hover:opacity-75 transition-opacity"
+                      style={{ color: '#009BFF' }}
+                    >
+                      <X className="w-3 h-3" /> Clear all filters
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

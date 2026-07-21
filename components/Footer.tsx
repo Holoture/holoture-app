@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 const PRODUCT_LINKS = [
   { href: '/dashboard', label: 'Dashboard' },
-  { href: '/pricing', label: 'Pricing' },
+  { href: '/pricing', label: 'Subscription' },
   { href: '/learn', label: 'Learn' },
   { href: '/support', label: 'Support' },
 ]

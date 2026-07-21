@@ -1,5 +1,5 @@
 import { TrendingUp, TrendingDown, Minus, Target, Shield, Clock, ChevronRight } from 'lucide-react'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrency, formatDateTimeEST } from '@/lib/utils'
 
 export type Signal = {
   id: string
@@ -23,6 +23,7 @@ export type Signal = {
   isMomentumSpike?: boolean
   marketCap?: number
   signalDate: Date | string
+  createdAt?: Date | string
   bestEntryTime?: string | null
   expectedMove?: string | null
   catalyst?: string | null
@@ -92,6 +93,11 @@ export default function SignalCard({ signal }: { signal: Signal }) {
           </div>
           <p className="text-sm mt-0.5 truncate" style={{ color: 'var(--text-body)' }}>{signal.companyName}</p>
           <p className="text-xs mt-0.5" style={{ color: 'var(--text-mute)' }}>{signal.sector}</p>
+          {signal.createdAt && (
+            <p className="font-data text-xs mt-0.5" style={{ color: 'var(--text-mute)' }}>
+              {formatDateTimeEST(signal.createdAt)}
+            </p>
+          )}
         </div>
         <div className="flex items-center gap-1 text-xs shrink-0" style={{ color: 'var(--text-mute)' }}>
           <Clock className="w-3 h-3" />

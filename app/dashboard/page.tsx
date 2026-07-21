@@ -53,11 +53,14 @@ async function getSignals() {
   return { signals, isYesterday }
 }
 
-async function getOptionsSignals() {
-  return prisma.optionsSignal.findMany({
-    where: { isActive: true },
-    orderBy: { createdAt: 'desc' },
+/** ticker -> real avg 10-day dollar volume, joined from the weekly-screened TickerUniverse. */
+async function getVolumeByTicker(tickers: string[]): Promise<Record<string, number>> {
+  if (tickers.length === 0) return {}
+  const rows = await prisma.tickerUniverse.findMany({
+    where: { ticker: { in: [...new Set(tickers)] } },
+    select: { ticker: true, avgDollarVolume: true },
   })
+  return Object.fromEntries(rows.map((r) => [r.ticker, r.avgDollarVolume]))
 }
 
 async function getLastGenerationLog() {
@@ -69,14 +72,8 @@ async function getLastGenerationLog() {
   } catch { return null }
 }
 
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
+export default async function DashboardPage() {
   const { userId } = await auth()
-  const tabParam = (await searchParams).tab
-  const initialTab = tabParam === 'options' ? 'options' : 'all'
 
   // Don't do a hard server-side redirect when Clerk can't validate the session
   // (e.g. during custom-domain SSL provisioning).  Instead, hand off to the
@@ -87,14 +84,12 @@ export default async function DashboardPage({
 
   let user: Awaited<ReturnType<typeof getOrCreateUser>> = null
   let signalResult: Awaited<ReturnType<typeof getSignals>> = { signals: [], isYesterday: false }
-  let optionsSignals: Awaited<ReturnType<typeof getOptionsSignals>> = []
   let lastLog: Awaited<ReturnType<typeof getLastGenerationLog>> = null
 
   try {
-    ;[user, signalResult, optionsSignals, lastLog] = await Promise.all([
+    ;[user, signalResult, lastLog] = await Promise.all([
       getOrCreateUser(),
       getSignals(),
-      getOptionsSignals(),
       getLastGenerationLog(),
     ])
   } catch (e) {
@@ -103,6 +98,8 @@ export default async function DashboardPage({
   }
 
   if (!user) redirect('/sign-in')
+
+  const volumeByTicker = await getVolumeByTicker(signalResult.signals.map((s) => s.ticker))
 
   const tier = computeTier(user)
   const isPro = tier === 'pro' || tier === 'max'
@@ -119,12 +116,7 @@ export default async function DashboardPage({
   const serializedSignals = signals.map(s => ({
     ...s,
     signalDate: s.signalDate instanceof Date ? s.signalDate.toISOString() : String(s.signalDate),
-  }))
-
-  const serializedOptions = optionsSignals.map(s => ({
-    ...s,
     createdAt: s.createdAt instanceof Date ? s.createdAt.toISOString() : String(s.createdAt),
-    updatedAt: s.updatedAt instanceof Date ? s.updatedAt.toISOString() : String(s.updatedAt),
   }))
 
   // ── Trial banner data (Pro only — Max has no trial) ─────────────────────────
@@ -228,11 +220,10 @@ export default async function DashboardPage({
           <SignalBoardClient
             signals={serializedSignals}
             tier={tier}
-            optionsSignals={serializedOptions}
             isAdmin={isAdmin}
             isYesterday={isYesterday}
             lastGenerated={lastLog?.generatedAt.toISOString() ?? null}
-            initialTab={initialTab}
+            volumeByTicker={volumeByTicker}
           />
         ) : (
           <div className="space-y-6">
@@ -240,11 +231,10 @@ export default async function DashboardPage({
             <SignalBoardClient
               signals={serializedSignals}
               tier="free"
-              optionsSignals={serializedOptions}
               isAdmin={isAdmin}
               isYesterday={isYesterday}
               lastGenerated={lastLog?.generatedAt.toISOString() ?? null}
-              initialTab={initialTab}
+              volumeByTicker={volumeByTicker}
             />
           </div>
         )}

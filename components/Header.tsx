@@ -18,8 +18,8 @@ type DropdownItemConfig = {
 
 // "Signals" and "Markets" are dropdowns; the rest stay top-level tabs.
 const SIGNALS_MENU: DropdownItemConfig[] = [
-  { href: '/dashboard',             label: 'Equities', available: true,  desc: 'Stock signal board' },
-  { href: '/dashboard?tab=options', label: 'Options',  available: true,  desc: 'CALL & PUT ideas' },
+  { href: '/dashboard', label: 'Equities', available: true,  desc: 'Stock signal board' },
+  { href: '/options',   label: 'Options',  available: true,  desc: 'CALL & PUT ideas' },
   { href: '/signals/futures',       label: 'Futures',  available: false, desc: 'Coming soon' },
   { href: '/signals/forex',         label: 'Forex',    available: false, desc: 'Coming soon' },
 ]
@@ -39,7 +39,7 @@ const NAV_LINKS = [
   { href: '/learn', label: 'Learn' },
   { href: '/tracker', label: 'Tracker' },
   { href: '/support', label: 'Support' },
-  { href: '/pricing', label: 'Pricing' },
+  { href: '/pricing', label: 'Subscription' },
 ]
 
 export default function Header() {
@@ -56,7 +56,7 @@ export default function Header() {
     fetch('/api/user/sync', { method: 'POST' }).catch(() => {/* silent — non-critical */})
   }, [isLoaded, isSignedIn])
 
-  const signalsActive = pathname === '/dashboard' || pathname.startsWith('/signals')
+  const signalsActive = pathname === '/dashboard' || pathname === '/options' || pathname.startsWith('/signals')
   const marketsActive = MARKETS_MENU.some((m) => pathname === m.href)
   const scannersActive = SCANNERS_MENU.some((s) => pathname === s.href)
 
@@ -138,7 +138,7 @@ export default function Header() {
             <MobileDropdownSection
               label="Signals"
               items={SIGNALS_MENU}
-              defaultExpanded={pathname === '/dashboard' || pathname.startsWith('/signals')}
+              defaultExpanded={pathname === '/dashboard' || pathname === '/options' || pathname.startsWith('/signals')}
               pathname={pathname}
               onNavigate={() => setMobileOpen(false)}
             />

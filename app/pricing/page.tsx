@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { Check, Star, TrendingUp, Zap, Clock } from 'lucide-react'
 import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
+import ManageBillingButtons from '@/components/ManageBillingButtons'
+import { getOrCreateUser, computeTier } from '@/lib/user'
 
 const FREE_FEATURES = [
   '5 daily stock signals',
@@ -45,10 +47,54 @@ function TrialBadge() {
   )
 }
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const user = await getOrCreateUser().catch(() => null)
+  const tier = user ? computeTier(user) : 'free'
+
+  // Real, Stripe-managed paid subscription — the portal has something to
+  // manage. Lifetime grants (isLifetimePro/isLifetimeMax) have no Stripe
+  // subscription behind them, so they fall through to the plain plan cards
+  // instead of showing billing-management buttons that would error.
+  const hasManageableSubscription =
+    !!user?.stripeCustomerId &&
+    (tier === 'pro' || tier === 'max') &&
+    (user.subscriptionStatus === 'active' || user.subscriptionStatus === 'trialing')
+
+  const isLifetimeGrant = tier !== 'free' && !hasManageableSubscription
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
+
+      {hasManageableSubscription && (
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+          <div
+            className="rounded-2xl p-6"
+            style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
+          >
+            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#009BFF' }}>
+              Your Subscription
+            </p>
+            <p className="text-sm mb-4" style={{ color: 'var(--text-w60)' }}>
+              You&apos;re on the {tier === 'max' ? 'Max' : 'Pro'} plan
+              {user!.subscriptionStatus === 'trialing' ? ' (free trial)' : ''}.
+              Manage your billing below — both options open Stripe&apos;s secure billing portal.
+            </p>
+            <ManageBillingButtons />
+          </div>
+        </div>
+      )}
+
+      {isLifetimeGrant && (
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+          <div
+            className="rounded-2xl p-6 text-sm"
+            style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-w60)' }}
+          >
+            You have complimentary lifetime {tier === 'max' ? 'Max' : 'Pro'} access — there&apos;s no billing to manage.
+          </div>
+        </div>
+      )}
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
