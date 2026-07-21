@@ -66,17 +66,31 @@ export async function GET(req: Request) {
       quoteEntries.push(await getExtendedHoursQuotes(tickers.slice(i, i + CHUNK)))
     }
 
-    const rows: { session: string; ticker: string; companyName: string | null; regularClosePrice: number; extendedLastPrice: number; pctChange: number; dollarChange: number }[] = []
+    // Reference price differs by session — see getExtendedHoursQuotes'
+    // doc comment in lib/schwab.ts for the full reasoning. In short:
+    // Schwab's quote.closePrice is always the PRIOR completed regular
+    // session's close (verified live — it does not update to reflect
+    // today's own close once today's regular session ends). That makes it
+    // the correct baseline for premarket (today hasn't opened yet, so
+    // "previous regular close" really is closePrice), but the WRONG
+    // baseline for after-hours — using it there would measure the after-
+    // hours price against yesterday's close, silently folding today's
+    // entire regular-session move into what's supposed to be an
+    // after-hours-only number. quote.lastPrice (today's final regular-
+    // session print, frozen once the session ends) is the correct
+    // after-hours baseline instead.
+    const rows: { session: string; ticker: string; companyName: string | null; referencePrice: number; extendedLastPrice: number; pctChange: number; dollarChange: number }[] = []
     for (const map of quoteEntries) {
       for (const q of map.values()) {
-        if (q.regularClosePrice <= 0) continue
-        const dollarChange = q.extendedLastPrice - q.regularClosePrice
-        const pctChange = (dollarChange / q.regularClosePrice) * 100
+        const reference = session === 'premarket' ? q.regularClosePrice : q.regularLastPrice
+        if (reference <= 0) continue
+        const dollarChange = q.extendedLastPrice - reference
+        const pctChange = (dollarChange / reference) * 100
         rows.push({
           session,
           ticker: q.symbol,
           companyName: q.companyName,
-          regularClosePrice: q.regularClosePrice,
+          referencePrice: reference,
           extendedLastPrice: q.extendedLastPrice,
           pctChange,
           dollarChange,
