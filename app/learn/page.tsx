@@ -316,11 +316,15 @@ const ARTICLES: Article[] = [
     title: 'Understanding Momentum Signals',
     difficulty: 'Intermediate',
     readTime: '4 min',
-    summary: 'Momentum signals flag stocks in the middle of a real, in-progress volume and volatility spike — not a routine high-confidence pick. They are the highest-risk signal type on the board, and they are built differently from the rest.',
+    summary: 'Momentum signals flag stocks in the middle of a real, in-progress volume and volatility spike — not a routine high-confidence pick. They are the highest-risk signal type on the board, they appear only when the market actually produces one, and they are built differently from the rest.',
     sections: [
       {
+        heading: 'How Often These Appear',
+        body: 'There is no daily count or schedule for momentum signals, and there never will be — promising a number would mean inventing spikes on days the market simply does not produce one. A dedicated scanner checks the market every 5 minutes it is open, but on plenty of days it finds nothing that clears its bar and generates zero. On a volatile day it might catch two or three. Zero is the normal, expected outcome on a quiet day, not a sign anything is broken.',
+      },
+      {
         heading: 'What Triggers a Momentum Signal',
-        body: 'A dedicated scanner checks the market every 5 minutes while it is open, looking for stocks that are already up meaningfully from the day\'s open on volume that is unusually high compared to that same stock\'s own history at that specific time of day — not just "more volume than usual," but more volume than it typically sees by, say, 11:15am specifically. The scan also checks that the move is still extending (making new highs, not yet reversing) and that price is trading above the day\'s volume-weighted average price (VWAP).',
+        body: 'When the scanner does find something, it is looking for stocks that are already up meaningfully from the day\'s open on volume that is unusually high compared to that same stock\'s own history at that specific time of day — not just "more volume than usual," but more volume than it typically sees by, say, 11:15am specifically. The scan also checks that the move is still extending (making new highs, not yet reversing) and that price is trading above the day\'s volume-weighted average price (VWAP).',
       },
       {
         heading: 'A Quantitative Gate, Not an AI Guess',
@@ -342,6 +346,7 @@ const ARTICLES: Article[] = [
       },
     ],
     takeaways: [
+      'These appear only when the market actually produces a real spike — zero on a quiet day is normal, not broken',
       'Momentum signals are gated by hard numeric thresholds first — the AI only writes up names that already passed',
       'This is the highest-risk signal type on the board — failure is expected and normal, not a sign something is broken',
       'Confidence here measures spike size, not win probability',
