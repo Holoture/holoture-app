@@ -367,6 +367,30 @@ model WebhookLog {
   @@index([receivedAt])
 }
 
+// Persisted premarket/after-hours mover data — captured by
+// cron/movers-snapshot every 5 min while its session is active. Needed
+// because Schwab's quote API only exposes ONE `extended` snapshot per
+// ticker at any moment (whichever extended session most recently had
+// activity) — the other session's last-completed data would already be
+// overwritten by the time a user looks at it without this persistence.
+// Deliberately NOT filtered through lib/liquidityFloor.ts or
+// TickerUniverse's market-cap bands — this is the unfiltered movers view,
+// signal generation's liquidity floor is untouched by this model.
+model MoverSnapshot {
+  id                String   @id @default(cuid())
+  session           String // 'premarket' | 'afterhours'
+  ticker            String
+  companyName       String?
+  regularClosePrice Float
+  extendedLastPrice Float
+  pctChange         Float
+  dollarChange      Float
+  capturedAt        DateTime @updatedAt
+
+  @@unique([session, ticker])
+  @@index([session])
+}
+
 // Weekly-screened ticker pool (Universe Expansion) — replaces the old
 // hardcoded LARGE_CAP_WATCHLIST/SMALL_CAP_WATCHLIST arrays in
 // cron/signals/route.ts as the daily generator's candidate source. Screened

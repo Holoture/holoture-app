@@ -38,7 +38,7 @@ export type NasdaqSector = (typeof NASDAQ_SECTORS)[number]
 // marketCap value returned per ticker (see screenBand's min/max params) —
 // bucket selection here is just "which pages to fetch," not the actual
 // admission filter.
-type NasdaqMarketCapBucket = 'mega' | 'large' | 'mid' | 'small' | 'micro' | 'nano'
+export type NasdaqMarketCapBucket = 'mega' | 'large' | 'mid' | 'small' | 'micro' | 'nano'
 
 export type ScreenedTicker = {
   ticker: string
