@@ -28,6 +28,7 @@ const MARKETS_MENU: DropdownItemConfig[] = [
   { href: '/news',     label: 'News',     available: true, desc: 'Market news feed' },
   { href: '/trends',   label: 'Trends',   available: true, desc: 'Sector trends & heat map' },
   { href: '/calendar', label: 'Calendar', available: true, desc: 'Earnings calendar' },
+  { href: '/movers',   label: 'Movers',   available: true, desc: 'Premarket & after-hours movers' },
 ]
 
 const SCANNERS_MENU: DropdownItemConfig[] = [

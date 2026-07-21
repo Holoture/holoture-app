@@ -4,17 +4,21 @@
  * softens the stop-outs. This is the strongest anti-guru credibility signal
  * available: nobody fabricating results publishes their misses.
  *
- * "Last 30" = the 30 most recently CLOSED signals (by outcomeCheckedAt), not
- * the 30 most recently generated. Every signal in this window already has a
- * resolved outcome, so there's no "still open" bucket — showing one would
- * always read 0 by construction, which is worse than not showing it at all.
+ * "Last 100" = the 100 most recently CLOSED signals (by outcomeCheckedAt),
+ * not the 100 most recently generated. Every signal in this window already
+ * has a resolved outcome, so there's no "still open" bucket — showing one
+ * would always read 0 by construction, which is worse than not showing it
+ * at all.
  *
- * No win-rate percentage is computed or displayed here — a bare percentage
- * without its sample size is exactly the kind of soft-sell stat this strip
- * exists to avoid.
+ * The "expired" count is intentionally not rendered as its own stat below
+ * (hit target / hit stop only), but `expired` is still carried on the type
+ * and still included in `window.size` — any win-rate math must divide by
+ * the full `size`, never just `hitTarget + hitStop`, or a window with real
+ * expired signals would read a falsely inflated rate. See the comment next
+ * to `windowWinRatePct` in app/page.tsx for the exact calculation.
  */
 export type OutcomesSummary = {
-  window: { hitTarget: number; hitStop: number; expired: number; size: number }
+  window: { hitTarget: number; hitStop: number; expired: number; size: number; winRatePct: number }
   allTime: { hitTarget: number; hitStop: number; expired: number }
 }
 
@@ -44,7 +48,6 @@ export default function OutcomesStrip({ summary }: { summary: OutcomesSummary })
           </span>
           <Stat label="hit target" value={summary.window.hitTarget} color="var(--buy)" />
           <Stat label="stopped out" value={summary.window.hitStop} color="var(--short)" />
-          <Stat label="expired" value={summary.window.expired} color="var(--text-mute)" />
           <span className="hidden sm:inline" style={{ color: 'var(--line)' }}>|</span>
           <span className="font-data text-xs" style={{ color: 'var(--text-dim)' }}>
             all-time: {summary.allTime.hitTarget} / {summary.allTime.hitStop} / {summary.allTime.expired}

@@ -575,7 +575,7 @@ export default function SignalBoardClient({
                   <span className="font-bold text-white">
                     {Math.min(FREE_SIGNAL_COUNT, activeSignals.filter(s => !isShortTermSignal(s)).length)} free picks.
                   </span>
-                  {' '}Upgrade to Pro for unlimited signals.
+                  {' '}Upgrade to Pro for the full signal board.
                 </p>
               </div>
               <Link

@@ -180,6 +180,82 @@ export async function getQuotesWithFundamentals(
   return out
 }
 
+export type ExtendedHoursQuote = {
+  symbol: string
+  companyName: string | null
+  regularLastPrice: number
+  regularClosePrice: number
+  extendedLastPrice: number
+  extendedVolume: number
+  extendedTradeTime: number // epoch ms
+  pctChange: number // vs regularLastPrice — see getExtendedHoursQuotes doc
+}
+
+/**
+ * Batch premarket/after-hours quote fetch. Schwab's /quotes endpoint
+ * exposes a dedicated `extended` object (lastPrice, totalVolume, tradeTime)
+ * alongside the regular `quote` block, populated with whichever extended
+ * session is currently active or most recently completed — the same field
+ * works for both premarket and after-hours, no separate endpoint or
+ * session-specific field needed. `reference.description` supplies the
+ * company name the batch /quotes call otherwise omits.
+ *
+ * % change is computed here as (extended.lastPrice - quote.lastPrice) /
+ * quote.lastPrice, NOT against quote.closePrice (the prior COMPLETED
+ * regular session's close, always — verified against a live response).
+ * During premarket, quote.lastPrice already equals the prior day's last
+ * trade (today's regular session hasn't opened yet), so this is
+ * equivalent to comparing against yesterday's close. During after-hours,
+ * quote.lastPrice is today's actual regular-session close, which is the
+ * correct baseline for an after-hours move (using closePrice there would
+ * incorrectly measure against the day-BEFORE-today's close instead).
+ *
+ * Tickers with no real extended-session trade yet (extendedTradeTime = 0)
+ * are omitted — a 0.0 last price is "no data," not a real quote.
+ */
+export async function getExtendedHoursQuotes(symbols: string[]): Promise<Map<string, ExtendedHoursQuote>> {
+  const out = new Map<string, ExtendedHoursQuote>()
+  if (symbols.length === 0) return out
+
+  const data = (await schwabGet('/quotes', {
+    symbols: symbols.join(','),
+    fields: 'quote,extended,reference',
+  })) as Record<
+    string,
+    {
+      symbol: string
+      quote?: Record<string, number>
+      extended?: Record<string, number>
+      reference?: { description?: string }
+    }
+  > | null
+  if (!data) return out
+
+  for (const [sym, entry] of Object.entries(data)) {
+    const q = entry.quote
+    const ext = entry.extended
+    if (!q || !ext) continue
+    const extendedTradeTime = ext.tradeTime ?? 0
+    const extendedLastPrice = ext.lastPrice ?? 0
+    if (extendedTradeTime === 0 || extendedLastPrice === 0) continue
+
+    const regularLastPrice = q.lastPrice ?? 0
+    if (regularLastPrice === 0) continue
+
+    out.set(sym, {
+      symbol: entry.symbol ?? sym,
+      companyName: entry.reference?.description ?? null,
+      regularLastPrice,
+      regularClosePrice: q.closePrice ?? 0,
+      extendedLastPrice,
+      extendedVolume: ext.totalVolume ?? 0,
+      extendedTradeTime,
+      pctChange: ((extendedLastPrice - regularLastPrice) / regularLastPrice) * 100,
+    })
+  }
+  return out
+}
+
 /**
  * Single-symbol lookup with company description/exchange — the batch /quotes
  * endpoint doesn't return the `reference` block, so this is used only where

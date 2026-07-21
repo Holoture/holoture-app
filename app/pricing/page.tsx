@@ -17,7 +17,7 @@ const FREE_FEATURES = [
 
 const PRO_FEATURES = [
   'Everything in Free',
-  'Full signal board — no daily cap',
+  'Full signal board',
   'All signal categories unlocked',
   'Entry zones, targets & stop-loss',
   'Confidence scores & full thesis',

@@ -82,16 +82,33 @@ async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
     const recentClosed = await prisma.signal.findMany({
       where: closedWhere,
       orderBy: { outcomeCheckedAt: 'desc' },
-      take: 30,
+      take: 100,
       select: { outcome: true },
     })
 
+    const windowHitTarget = recentClosed.filter((s) => s.outcome === 'HIT_TARGET').length
+    const windowHitStop = recentClosed.filter((s) => s.outcome === 'HIT_STOP').length
+    const windowExpired = recentClosed.filter((s) => s.outcome === 'EXPIRED').length
+
+    // Win rate is NOT rendered by OutcomesStrip.tsx today (it intentionally
+    // shows only raw counts), but is computed here so the correct formula
+    // lives in exactly one place if it's ever surfaced later. `expired`
+    // MUST stay in the denominator even though its own count is no longer
+    // displayed as a separate stat — e.g. 82 hit-target out of 136 total
+    // closed (82 target / 54 stop / 0 expired in this dataset) is a true
+    // 60.3% rate; dropping expired from the denominator would silently
+    // inflate the rate on any window that actually has expired signals.
+    const windowWinRatePct = recentClosed.length > 0
+      ? Math.round((windowHitTarget / recentClosed.length) * 1000) / 10
+      : 0
+
     return {
       window: {
-        hitTarget: recentClosed.filter((s) => s.outcome === 'HIT_TARGET').length,
-        hitStop: recentClosed.filter((s) => s.outcome === 'HIT_STOP').length,
-        expired: recentClosed.filter((s) => s.outcome === 'EXPIRED').length,
+        hitTarget: windowHitTarget,
+        hitStop: windowHitStop,
+        expired: windowExpired,
         size: recentClosed.length,
+        winRatePct: windowWinRatePct,
       },
       allTime: {
         hitTarget: allTimeHitTarget,
@@ -297,7 +314,7 @@ export default async function LandingPage() {
               <ul className="space-y-3 mb-8">
                 {[
                   'Everything in Free',
-                  'Full signal board — no daily cap',
+                  'Full signal board',
                   'All signal categories unlocked',
                   'Entry zones, targets & stop losses',
                   'Confidence scores & full summary',

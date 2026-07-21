@@ -29,8 +29,8 @@ const SECTIONS = [
     heading: 'Subscription Terms',
     body: [
       'Free Tier: Free accounts receive one curated signal per day with basic signal information. No credit card is required.',
-      'Pro Tier ($15/month): Pro subscribers receive access to the full signal board (15–50 signals per day), including entry zones, targets, stop-losses, confidence scores, and full investment theses. Billed monthly via Stripe.',
-      'Max Tier ($25/month): Max subscribers receive everything in Pro, plus access to options signals, the Politician Stock Scanner, unlimited momentum signals, and all signal categories. Billed monthly via Stripe.',
+      'Pro Tier ($15/month): Pro subscribers receive access to the full signal board, including entry zones, targets, stop-losses, confidence scores, and full investment theses. Billed monthly via Stripe.',
+      'Max Tier ($25/month): Max subscribers receive everything in Pro, plus access to options signals, the Politician Stock Scanner, momentum signals, and all signal categories. Billed monthly via Stripe.',
       'Subscriptions renew automatically each month unless cancelled. You may cancel at any time through your account settings or by emailing support@holoture.com. Upon cancellation, your access continues through the end of the current billing period, then reverts to the Free tier.',
       'We reserve the right to change subscription pricing with 30 days\' notice. Price changes will not affect your current billing period.',
     ],

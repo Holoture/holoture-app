@@ -80,7 +80,7 @@ const TIERS = [
     border: 'rgba(0,155,255,0.4)',
     bg:    'rgba(0,155,255,0.07)',
     features: [
-      'Full signal board (10+ signals)',
+      'Full signal board',
       'Entry zones, targets & stop-losses',
       'AI thesis & confidence scores',
       'News, Trends & Earnings Calendar',

@@ -283,7 +283,7 @@ const ARTICLES: Article[] = [
       },
       {
         heading: 'Step 3 — Upgrade to Pro When Ready',
-        body: 'Pro unlocks the full signal board (15–50 signals daily), the sector trends page, and the earnings calendar. Once you have paper-traded a few signals and understand the mechanics, the full board gives you more opportunities to find setups that match your style.',
+        body: 'Pro unlocks the full signal board, the sector trends page, and the earnings calendar. Once you have paper-traded a few signals and understand the mechanics, the full board gives you more opportunities to find setups that match your style.',
       },
       {
         heading: 'Step 4 — Trade Small and Consistent',
