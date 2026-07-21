@@ -79,7 +79,7 @@ export async function GET(req: Request) {
     // after-hours-only number. quote.lastPrice (today's final regular-
     // session print, frozen once the session ends) is the correct
     // after-hours baseline instead.
-    const rows: { session: string; ticker: string; companyName: string | null; referencePrice: number; extendedLastPrice: number; pctChange: number; dollarChange: number }[] = []
+    const rows: { session: string; ticker: string; companyName: string | null; regularClosePrice: number; extendedLastPrice: number; pctChange: number; dollarChange: number }[] = []
     for (const map of quoteEntries) {
       for (const q of map.values()) {
         const reference = session === 'premarket' ? q.regularClosePrice : q.regularLastPrice
@@ -90,7 +90,7 @@ export async function GET(req: Request) {
           session,
           ticker: q.symbol,
           companyName: q.companyName,
-          referencePrice: reference,
+          regularClosePrice: reference, // holds the correct per-session reference price, see schema comment
           extendedLastPrice: q.extendedLastPrice,
           pctChange,
           dollarChange,

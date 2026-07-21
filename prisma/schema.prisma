@@ -381,10 +381,13 @@ model MoverSnapshot {
   session           String // 'premarket' | 'afterhours'
   ticker            String
   companyName       String?
-  // Reference price the change is measured against — prior regular
-  // session's close for premarket, today's regular-session close for
-  // after-hours (NOT always literally "close", hence the generic name).
-  referencePrice    Float    @default(0)
+  // Despite the field name, this is the REFERENCE PRICE the change is
+  // measured against, not always literally "close": prior regular
+  // session's close for premarket, but today's regular-session close for
+  // after-hours (see cron/movers-snapshot for why). Kept the original
+  // field name to avoid a destructive `prisma db push --accept-data-loss`
+  // column rename on a table with live rows.
+  regularClosePrice Float
   extendedLastPrice Float
   pctChange         Float
   dollarChange      Float
