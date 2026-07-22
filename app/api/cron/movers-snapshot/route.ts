@@ -4,7 +4,7 @@ import { getExtendedHoursQuotes } from '@/lib/schwab'
 import { screenBand, type NasdaqMarketCapBucket } from '@/lib/nasdaqScreener'
 
 export const dynamic = 'force-dynamic'
-export const maxDuration = 120
+export const maxDuration = 300
 
 function verifyCron(req: Request): boolean {
   const secret = process.env.CRON_SECRET
@@ -18,14 +18,36 @@ function verifyCron(req: Request): boolean {
 // numeric floor at all, since Schwab has no screener of its own (same
 // limitation found during the earlier universe-expansion work) — this is
 // the broadest practically fetchable set without a hardcoded list.
+//
+// IMPORTANT: each bucket is screened in its OWN call, then unioned — never
+// pass multiple buckets into a single screenBand() call here. screenBand
+// applies its per-sector cap to the MERGED result of whatever buckets it's
+// given, so mega/large-cap names in a sector crowd out that sector's
+// nano/micro names entirely before the cap is ever applied per-bucket.
+// Verified live: e.g. a real nano-cap health_care mover ranked 169th
+// within the nano bucket alone (328 nano health_care names total) — it
+// never had a chance in a merged top-150 that also includes every
+// mega/large/mid health_care name. Capping per bucket instead gives every
+// size tier its own fair allocation.
 const ALL_BUCKETS: NasdaqMarketCapBucket[] = ['mega', 'large', 'mid', 'small', 'micro', 'nano']
-const PER_SECTOR_CAP = 150 // 11 sectors x 150 = up to 1,650 tickers before de-dup
+const PER_SECTOR_CAP = 300 // per bucket, per sector — 6 buckets x 11 sectors x 300 ceiling (most combos have far fewer)
 
 async function getBroadMoverUniverse(): Promise<{ ticker: string }[]> {
-  const rows = await screenBand(ALL_BUCKETS, PER_SECTOR_CAP, {
-    min: 0, minInclusive: true, max: Infinity, maxInclusive: true,
-  })
-  return rows.map((r) => ({ ticker: r.ticker }))
+  const allRows = await Promise.all(
+    ALL_BUCKETS.map((bucket) =>
+      screenBand([bucket], PER_SECTOR_CAP, { min: 0, minInclusive: true, max: Infinity, maxInclusive: true })
+    )
+  )
+  const seen = new Set<string>()
+  const out: { ticker: string }[] = []
+  for (const rows of allRows) {
+    for (const r of rows) {
+      if (seen.has(r.ticker)) continue
+      seen.add(r.ticker)
+      out.push({ ticker: r.ticker })
+    }
+  }
+  return out
 }
 
 function getSessionWindows(): { premarketLive: boolean; afterhoursLive: boolean } {
@@ -61,10 +83,9 @@ export async function GET(req: Request) {
 
     const tickers = universe.map((u) => u.ticker)
     const CHUNK = 400
-    const quoteEntries: Awaited<ReturnType<typeof getExtendedHoursQuotes>>[] = []
-    for (let i = 0; i < tickers.length; i += CHUNK) {
-      quoteEntries.push(await getExtendedHoursQuotes(tickers.slice(i, i + CHUNK)))
-    }
+    const chunks: string[][] = []
+    for (let i = 0; i < tickers.length; i += CHUNK) chunks.push(tickers.slice(i, i + CHUNK))
+    const quoteEntries = await Promise.all(chunks.map((c) => getExtendedHoursQuotes(c)))
 
     // Reference price differs by session — see getExtendedHoursQuotes'
     // doc comment in lib/schwab.ts for the full reasoning. In short:
