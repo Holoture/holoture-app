@@ -9,12 +9,12 @@ function verifyCron(req: Request): boolean {
   return req.headers.get('authorization') === `Bearer ${secret}`
 }
 
+const TICKERS = ['SNDK', 'NBIS', 'MRVL', 'MU', 'IREN', 'WDC', 'BE', 'CRDO', 'STX', 'INTC']
+
 export async function GET(req: Request) {
   if (!verifyCron(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const rows = await prisma.moverSnapshot.findMany({
-    where: { session: 'afterhours' },
-    orderBy: { pctChange: 'desc' },
-    take: 10,
+    where: { session: 'afterhours', ticker: { in: TICKERS } },
   })
   return NextResponse.json(rows)
 }
