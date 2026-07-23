@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getQuotes } from '@/lib/schwab'
 
 export const dynamic = 'force-dynamic'
 
@@ -155,7 +156,36 @@ export async function GET(req: Request) {
     pendingByCategory[tf] = (pendingByCategory[tf] ?? 0) + 1
   }
 
+  // ── Live freshness check: how far has price already moved from the entry
+  // zone for currently-open short-horizon signals right now? ──
+  const openShortHorizon = await prisma.signal.findMany({
+    where: { isActive: true, outcome: null, timeframeCategory: { in: ['intraday', 'days_1_3'] } },
+    orderBy: { createdAt: 'desc' },
+    take: 15,
+    select: { ticker: true, entryZoneLow: true, entryZoneHigh: true, createdAt: true, signalType: true, timeframeCategory: true },
+  })
+  let freshnessCheck: unknown[] = []
+  if (openShortHorizon.length > 0) {
+    const quotes = await getQuotes([...new Set(openShortHorizon.map((s) => s.ticker))])
+    freshnessCheck = openShortHorizon.map((s) => {
+      const q = quotes.get(s.ticker)
+      const mid = (s.entryZoneLow + s.entryZoneHigh) / 2
+      const currentPrice = q?.lastPrice ?? null
+      const ageHours = (Date.now() - s.createdAt.getTime()) / (1000 * 60 * 60)
+      const driftPct = currentPrice != null && mid > 0 ? ((currentPrice - mid) / mid) * 100 : null
+      const stillInZone = currentPrice != null ? (currentPrice >= s.entryZoneLow && currentPrice <= s.entryZoneHigh) : null
+      return {
+        ticker: s.ticker, timeframeCategory: s.timeframeCategory, signalType: s.signalType,
+        ageHours: Math.round(ageHours * 10) / 10,
+        entryZoneLow: s.entryZoneLow, entryZoneHigh: s.entryZoneHigh, currentPrice,
+        driftPct: driftPct !== null ? Math.round(driftPct * 100) / 100 : null,
+        stillInEntryZone: stillInZone,
+      }
+    })
+  }
+
   return NextResponse.json({
+    freshnessCheck,
     composition30d: {
       totalSignals: signals30d.length,
       byTimeframe,
