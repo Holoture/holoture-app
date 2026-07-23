@@ -297,11 +297,6 @@ export default function SignalRow({
                     {formatDateTimeEST(signal.createdAt)}
                   </div>
                 )}
-                {isShortHorizonRow && (
-                  <div className="mt-1" style={{ fontSize: 9, color: '#f97316', fontWeight: 600, lineHeight: 1.3 }}>
-                    Short-horizon — historically higher failure rate, size small
-                  </div>
-                )}
                 {timeframeBadge === 'intraday' && (
                   <div className="flex items-center gap-1 mt-1" style={{ fontSize: 9, color: '#f97316', fontWeight: 700 }}>
                     <Clock className="w-2.5 h-2.5" />
@@ -483,13 +478,6 @@ export default function SignalRow({
           {!isObscured && signal.createdAt && (
             <div className="font-data" style={{ fontSize: 9.5, color: 'var(--text-w30)' }}>
               {formatDateTimeEST(signal.createdAt)}
-            </div>
-          )}
-
-          {/* Risk label (mobile, short-horizon rows only) */}
-          {!isObscured && isShortHorizonRow && (
-            <div style={{ fontSize: 10, color: '#f97316', fontWeight: 600, lineHeight: 1.3 }}>
-              Short-horizon — historically higher failure rate, size small
             </div>
           )}
 
