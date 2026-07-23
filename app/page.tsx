@@ -10,7 +10,6 @@ import Testimonials from '@/components/Testimonials'
 import HowItWorks from '@/components/HowItWorks'
 import SignalCard, { type Signal } from '@/components/SignalCard'
 import OutcomesStrip, { type OutcomesSummary } from '@/components/OutcomesStrip'
-import ShortHorizonOutcomesStrip, { type ShortHorizonOutcomesSummary } from '@/components/ShortHorizonOutcomesStrip'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
 
@@ -74,7 +73,6 @@ async function getHeroStats(): Promise<{ tradeCount: number; memberCount: number
 // entered its zone). Neither represents a resolved thesis outcome.
 const CLOSED_OUTCOMES = ['HIT_TARGET', 'HIT_STOP', 'EXPIRED'] as const
 const SWING_LONG_TERM_CATEGORIES = ['swing', 'long_term']
-const SHORT_HORIZON_CATEGORIES = ['intraday', 'days_1_3', 'momentum']
 const MIN_SAMPLE = 25 // an unconvincing number is worse than no number
 
 async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
@@ -125,48 +123,11 @@ async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
   }
 }
 
-async function getShortHorizonOutcomesSummary(): Promise<ShortHorizonOutcomesSummary | null> {
-  try {
-    const catFilter = { timeframeCategory: { in: SHORT_HORIZON_CATEGORIES } }
-    const rows = await prisma.signal.findMany({
-      where: { outcome: { in: [...CLOSED_OUTCOMES] }, ...catFilter },
-      select: {
-        outcome: true, outcomePrice: true, signalType: true,
-        entryZoneLow: true, entryZoneHigh: true,
-      },
-    })
-    if (rows.length < MIN_SAMPLE) return null
-
-    const unverifiableCount = await prisma.signal.count({ where: { outcome: 'UNVERIFIABLE', ...catFilter } })
-
-    const hitTarget = rows.filter((r) => r.outcome === 'HIT_TARGET')
-    const hitStop = rows.filter((r) => r.outcome === 'HIT_STOP')
-    const winRatePct = Math.round((hitTarget.length / rows.length) * 1000) / 10
-
-    function pctMove(r: (typeof rows)[number]): number | null {
-      if (r.outcomePrice == null) return null
-      const mid = (r.entryZoneLow + r.entryZoneHigh) / 2
-      if (mid <= 0) return null
-      const raw = ((r.outcomePrice - mid) / mid) * 100
-      return (r.signalType === 'SHORT' || r.signalType === 'SELL') ? -raw : raw
-    }
-    const winMoves = hitTarget.map(pctMove).filter((v): v is number => v !== null)
-    const lossMoves = hitStop.map(pctMove).filter((v): v is number => v !== null)
-    const avgWinPct = winMoves.length > 0 ? winMoves.reduce((a, b) => a + b, 0) / winMoves.length : 0
-    const avgLossPct = lossMoves.length > 0 ? lossMoves.reduce((a, b) => a + b, 0) / lossMoves.length : 0
-    const lossRatePct = hitStop.length / rows.length
-    const expectancyPct = (hitTarget.length / rows.length) * avgWinPct - lossRatePct * Math.abs(avgLossPct)
-
-    return {
-      size: rows.length,
-      winRatePct,
-      expectancyPct: Math.round(expectancyPct * 100) / 100,
-      unverifiableCount,
-    }
-  } catch {
-    return null
-  }
-}
+// The short-horizon outcomes strip was removed from the landing page per
+// request. components/ShortHorizonOutcomesStrip.tsx (and the query logic
+// that fed it — filter timeframeCategory in ('intraday','days_1_3',
+// 'momentum'), exclude LEFT_ZONE/UNVERIFIABLE from every denominator) is
+// left in place, unused, in case this is revisited later.
 
 // Determine whether to show the delayed trial popup. Logged-out visitors and
 // users who have never subscribed are eligible; prior/current customers are not.
@@ -198,12 +159,11 @@ async function getTrialEligibility(): Promise<{ eligible: boolean; href: string 
 }
 
 export default async function LandingPage() {
-  const [trial, heroSignal, heroStats, outcomesSummary, shortHorizonSummary] = await Promise.all([
+  const [trial, heroSignal, heroStats, outcomesSummary] = await Promise.all([
     getTrialEligibility(),
     getHeroSignal(),
     getHeroStats(),
     getOutcomesSummary(),
-    getShortHorizonOutcomesSummary(),
   ])
 
   return (
@@ -280,7 +240,6 @@ export default async function LandingPage() {
           there's a real sample (25+ closed signals); never shows a thin or
           fabricated number. */}
       {outcomesSummary && <OutcomesStrip summary={outcomesSummary} />}
-      {shortHorizonSummary && <ShortHorizonOutcomesStrip summary={shortHorizonSummary} />}
 
       {/* One Platform, Four Edges — screenshot carousel */}
       <EdgeCarousel />
