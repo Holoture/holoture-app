@@ -119,6 +119,33 @@ function Blurred({ children }: { children: React.ReactNode }) {
   )
 }
 
+/** Live current price + entry-zone distance, intraday/1-3day rows only. */
+function LiveZoneCell({
+  livePrice, zoneDistancePct, inZone,
+}: { livePrice: number | null; zoneDistancePct: number | null; inZone: boolean | null }) {
+  if (livePrice == null) {
+    return <span className="text-xs" style={{ color: 'var(--text-w30)' }}>—</span>
+  }
+  const color = inZone ? '#1D9E75' : '#f97316'
+  return (
+    <div>
+      <div className="flex items-center gap-1">
+        <span
+          className="w-1.5 h-1.5 rounded-full shrink-0"
+          style={{ backgroundColor: color }}
+          title={inZone ? 'In entry zone' : 'Outside entry zone'}
+        />
+        <span className="font-data text-sm" style={{ color: 'var(--text-w80)' }}>{formatCurrency(livePrice)}</span>
+      </div>
+      {zoneDistancePct !== null && (
+        <div className="font-data" style={{ fontSize: 10, color, marginTop: 2 }}>
+          {zoneDistancePct >= 0 ? '+' : ''}{zoneDistancePct.toFixed(2)}% {inZone ? 'in zone' : 'from zone'}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function StockDetailsGrid({ signal, details }: { signal: Signal; details: StockDetails | null }) {
   const rows = [
     { label: 'Company',        value: details?.companyName ?? signal.companyName },
@@ -167,6 +194,8 @@ interface Props {
   timeframeBadge?: 'intraday' | '1-3days' | null
   /** Whether market is currently open — drives LIVE indicator */
   isMarketOpen?: boolean
+  /** Batched current price for this ticker (intraday/days_1_3 rows only) — never fetched per-row, see SignalBoardClient */
+  livePrice?: number | null
 }
 
 export default function SignalRow({
@@ -179,6 +208,7 @@ export default function SignalRow({
   isShortTermLocked = false,
   timeframeBadge = null,
   isMarketOpen = false,
+  livePrice = null,
 }: Props) {
   const [expanded, setExpanded]           = useState(false)
   const [details, setDetails]             = useState<StockDetails | null>(null)
@@ -192,6 +222,17 @@ export default function SignalRow({
   const confidenceColor =
     signal.confidence >= 75 ? '#1D9E75' : signal.confidence >= 55 ? '#BA7517' : '#E24B4A'
   const rowBg = isEven ? 'var(--surf-w18)' : 'transparent'
+
+  // Live zone status (intraday/1-3day rows only) — distance from the
+  // entry-zone midpoint using the batched livePrice, never a per-row fetch.
+  const isShortHorizonRow = timeframeBadge === 'intraday' || timeframeBadge === '1-3days'
+  const zoneMid = (signal.entryZoneLow + signal.entryZoneHigh) / 2
+  const zoneDistancePct = (isShortHorizonRow && livePrice != null && zoneMid > 0)
+    ? ((livePrice - zoneMid) / zoneMid) * 100
+    : null
+  const inZone = (isShortHorizonRow && livePrice != null)
+    ? livePrice >= signal.entryZoneLow && livePrice <= signal.entryZoneHigh
+    : null
 
   async function handleToggle() {
     const opening = !expanded
@@ -310,6 +351,15 @@ export default function SignalRow({
             <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>Entry Zone</div>
           </div>
 
+          {/* Live price + zone distance (intraday/1-3day only) */}
+          <div style={{ width: 110, flexShrink: 0 }}>
+            {isObscured ? (
+              <Blurred>$000.00</Blurred>
+            ) : (
+              <LiveZoneCell livePrice={livePrice} zoneDistancePct={zoneDistancePct} inZone={inZone} />
+            )}
+          </div>
+
           {/* Target */}
           <div style={{ width: 104, flexShrink: 0 }}>
             {isObscured ? (
@@ -416,6 +466,13 @@ export default function SignalRow({
           {!isObscured && signal.createdAt && (
             <div className="font-data" style={{ fontSize: 9.5, color: 'var(--text-w30)' }}>
               {formatDateTimeEST(signal.createdAt)}
+            </div>
+          )}
+
+          {/* Live price + zone distance (mobile, intraday/1-3day only) */}
+          {!isObscured && isShortHorizonRow && livePrice != null && (
+            <div className="flex items-center gap-2">
+              <LiveZoneCell livePrice={livePrice} zoneDistancePct={zoneDistancePct} inZone={inZone} />
             </div>
           )}
 

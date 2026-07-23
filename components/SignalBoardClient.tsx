@@ -201,11 +201,38 @@ export default function SignalBoardClient({
   const [volMin, setVolMin]                   = useState('')
   const [volMax, setVolMax]                   = useState('')
   const [sectorFilter, setSectorFilter]       = useState<Set<string>>(new Set())
+  const [livePrices, setLivePrices]           = useState<Record<string, number>>({})
+  const isFree = tier === 'free'
 
   useEffect(() => {
     setMarketOpen(checkMarketOpen())
     setAfterClose(checkAfterClose())
   }, [])
+
+  // Batched live price poll for intraday/1-3day rows only — one request for
+  // every visible short-horizon ticker, never per-row. 30s interval matches
+  // the server-side cache TTL in /api/signals/live-prices, so concurrent
+  // viewers of the same board share a single upstream Schwab call per
+  // window rather than each triggering their own.
+  const shortHorizonTickers = useMemo(() => {
+    return [...new Set(signals.filter(isShortTermSignal).map(s => s.ticker))].sort()
+  }, [signals])
+
+  useEffect(() => {
+    if (shortHorizonTickers.length === 0 || isFree) return
+    let cancelled = false
+    async function poll() {
+      try {
+        const res = await fetch(`/api/signals/live-prices?tickers=${shortHorizonTickers.join(',')}`)
+        if (!res.ok || cancelled) return
+        const data: Record<string, number> = await res.json()
+        if (!cancelled) setLivePrices(data)
+      } catch { /* silent — rows fall back to "—" */ }
+    }
+    poll()
+    const interval = setInterval(poll, 30_000)
+    return () => { cancelled = true; clearInterval(interval) }
+  }, [shortHorizonTickers, isFree])
 
   useEffect(() => {
     fetch('/api/tracker')
@@ -225,7 +252,6 @@ export default function SignalBoardClient({
     })
   }, [])
 
-  const isFree = tier === 'free'
   const freePickIds = useMemo(() => (isFree ? getDailyFreePickIds(signals) : new Set<string>()), [signals, isFree])
 
   // Hide intraday signals after market close (4pm EST) — no longer actionable
@@ -393,6 +419,7 @@ export default function SignalBoardClient({
           { label: 'Signal',     w: 72 },
           { label: 'Confidence', w: 68 },
           { label: 'Entry Zone', flex: true },
+          { label: 'Live',       w: 110 },
           { label: 'Target',     w: 104 },
           { label: 'Stop Loss',  w: 104 },
           { label: 'Timeframe',  w: 90 },
@@ -432,6 +459,7 @@ export default function SignalBoardClient({
               isShortTermLocked={isSTLocked}
               timeframeBadge={badge}
               isMarketOpen={marketOpen}
+              livePrice={livePrices[s.ticker] ?? null}
             />
           )
         })}
