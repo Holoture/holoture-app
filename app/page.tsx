@@ -10,6 +10,7 @@ import Testimonials from '@/components/Testimonials'
 import HowItWorks from '@/components/HowItWorks'
 import SignalCard, { type Signal } from '@/components/SignalCard'
 import OutcomesStrip, { type OutcomesSummary } from '@/components/OutcomesStrip'
+import ShortHorizonOutcomesStrip, { type ShortHorizonOutcomesSummary } from '@/components/ShortHorizonOutcomesStrip'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
 
@@ -59,28 +60,36 @@ async function getHeroStats(): Promise<{ tradeCount: number; memberCount: number
 }
 
 // Real track record for the outcomes strip — wins AND losses, never hidden.
-// "Last 30" = the 30 most recently CLOSED signals (ordered by
-// outcomeCheckedAt), not the 30 most recently generated — every signal in
-// this window has a real, resolved outcome, so there is no "still open"
-// bucket to show (it would always be 0 by construction). All-time totals
-// are queried separately and live, never hardcoded.
+// SPLIT IN TWO as of Phase 3: swing/long_term never gets blended with
+// intraday/days_1_3/momentum again — the two groups have measurably
+// different performance (see ShortHorizonOutcomesStrip's doc comment for
+// the actual numbers) and averaging them would misrepresent both. Each
+// group is queried by timeframeCategory directly, on outcome data
+// corrected by the Phase 1 SHORT-direction backfill.
+//
+// UNVERIFIABLE outcomes (Phase 1b — a stored single price snapshot that
+// didn't resolve to a definitive win/loss/expired under the corrected
+// SHORT-direction logic) are excluded from every count and denominator
+// below, exactly like LEFT_ZONE (Phase 2a — a signal that never validly
+// entered its zone). Neither represents a resolved thesis outcome.
+const CLOSED_OUTCOMES = ['HIT_TARGET', 'HIT_STOP', 'EXPIRED'] as const
+const SWING_LONG_TERM_CATEGORIES = ['swing', 'long_term']
+const SHORT_HORIZON_CATEGORIES = ['intraday', 'days_1_3', 'momentum']
+const MIN_SAMPLE = 25 // an unconvincing number is worse than no number
+
 async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
   try {
-    const closedWhere = { outcome: { in: ['HIT_TARGET', 'HIT_STOP', 'EXPIRED'] } }
-
+    const catFilter = { timeframeCategory: { in: SWING_LONG_TERM_CATEGORIES } }
     const [allTimeHitTarget, allTimeHitStop, allTimeExpired] = await Promise.all([
-      prisma.signal.count({ where: { outcome: 'HIT_TARGET' } }),
-      prisma.signal.count({ where: { outcome: 'HIT_STOP' } }),
-      prisma.signal.count({ where: { outcome: 'EXPIRED' } }),
+      prisma.signal.count({ where: { outcome: 'HIT_TARGET', ...catFilter } }),
+      prisma.signal.count({ where: { outcome: 'HIT_STOP', ...catFilter } }),
+      prisma.signal.count({ where: { outcome: 'EXPIRED', ...catFilter } }),
     ])
     const allTimeClosedTotal = allTimeHitTarget + allTimeHitStop + allTimeExpired
-
-    // Require a real sample before publishing a track record — an
-    // unconvincing number is worse than no number.
-    if (allTimeClosedTotal < 25) return null
+    if (allTimeClosedTotal < MIN_SAMPLE) return null
 
     const recentClosed = await prisma.signal.findMany({
-      where: closedWhere,
+      where: { outcome: { in: [...CLOSED_OUTCOMES] }, ...catFilter },
       orderBy: { outcomeCheckedAt: 'desc' },
       take: 100,
       select: { outcome: true },
@@ -90,13 +99,8 @@ async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
     const windowHitStop = recentClosed.filter((s) => s.outcome === 'HIT_STOP').length
     const windowExpired = recentClosed.filter((s) => s.outcome === 'EXPIRED').length
 
-    // Win rate is NOT rendered by OutcomesStrip.tsx today (it intentionally
-    // shows only raw counts), but is computed here so the correct formula
-    // lives in exactly one place if it's ever surfaced later. `expired`
-    // MUST stay in the denominator even though its own count is no longer
-    // displayed as a separate stat — e.g. 82 hit-target out of 136 total
-    // closed (82 target / 54 stop / 0 expired in this dataset) is a true
-    // 60.3% rate; dropping expired from the denominator would silently
+    // `expired` MUST stay in the denominator even though its own count is
+    // no longer displayed as a separate stat — dropping it would silently
     // inflate the rate on any window that actually has expired signals.
     const windowWinRatePct = recentClosed.length > 0
       ? Math.round((windowHitTarget / recentClosed.length) * 1000) / 10
@@ -115,6 +119,49 @@ async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
         hitStop: allTimeHitStop,
         expired: allTimeExpired,
       },
+    }
+  } catch {
+    return null
+  }
+}
+
+async function getShortHorizonOutcomesSummary(): Promise<ShortHorizonOutcomesSummary | null> {
+  try {
+    const catFilter = { timeframeCategory: { in: SHORT_HORIZON_CATEGORIES } }
+    const rows = await prisma.signal.findMany({
+      where: { outcome: { in: [...CLOSED_OUTCOMES] }, ...catFilter },
+      select: {
+        outcome: true, outcomePrice: true, signalType: true,
+        entryZoneLow: true, entryZoneHigh: true,
+      },
+    })
+    if (rows.length < MIN_SAMPLE) return null
+
+    const unverifiableCount = await prisma.signal.count({ where: { outcome: 'UNVERIFIABLE', ...catFilter } })
+
+    const hitTarget = rows.filter((r) => r.outcome === 'HIT_TARGET')
+    const hitStop = rows.filter((r) => r.outcome === 'HIT_STOP')
+    const winRatePct = Math.round((hitTarget.length / rows.length) * 1000) / 10
+
+    function pctMove(r: (typeof rows)[number]): number | null {
+      if (r.outcomePrice == null) return null
+      const mid = (r.entryZoneLow + r.entryZoneHigh) / 2
+      if (mid <= 0) return null
+      const raw = ((r.outcomePrice - mid) / mid) * 100
+      return (r.signalType === 'SHORT' || r.signalType === 'SELL') ? -raw : raw
+    }
+    const winMoves = hitTarget.map(pctMove).filter((v): v is number => v !== null)
+    const lossMoves = hitStop.map(pctMove).filter((v): v is number => v !== null)
+    const avgWinPct = winMoves.length > 0 ? winMoves.reduce((a, b) => a + b, 0) / winMoves.length : 0
+    const avgLossPct = lossMoves.length > 0 ? lossMoves.reduce((a, b) => a + b, 0) / lossMoves.length : 0
+    const lossRatePct = hitStop.length / rows.length
+    const expectancyPct = (hitTarget.length / rows.length) * avgWinPct - lossRatePct * Math.abs(avgLossPct)
+
+    return {
+      size: rows.length,
+      winRatePct,
+      expectancyPct: Math.round(expectancyPct * 100) / 100,
+      unverifiableCount,
     }
   } catch {
     return null
@@ -151,11 +198,12 @@ async function getTrialEligibility(): Promise<{ eligible: boolean; href: string 
 }
 
 export default async function LandingPage() {
-  const [trial, heroSignal, heroStats, outcomesSummary] = await Promise.all([
+  const [trial, heroSignal, heroStats, outcomesSummary, shortHorizonSummary] = await Promise.all([
     getTrialEligibility(),
     getHeroSignal(),
     getHeroStats(),
     getOutcomesSummary(),
+    getShortHorizonOutcomesSummary(),
   ])
 
   return (
@@ -232,6 +280,7 @@ export default async function LandingPage() {
           there's a real sample (25+ closed signals); never shows a thin or
           fabricated number. */}
       {outcomesSummary && <OutcomesStrip summary={outcomesSummary} />}
+      {shortHorizonSummary && <ShortHorizonOutcomesStrip summary={shortHorizonSummary} />}
 
       {/* One Platform, Four Edges — screenshot carousel */}
       <EdgeCarousel />

@@ -252,7 +252,14 @@ export default function SignalRow({
   }
 
   return (
-    <div style={{ borderBottom: '1px solid var(--border)' }}>
+    <div
+      style={{
+        borderBottom: '1px solid var(--border)',
+        // Distinct visual treatment for short-horizon rows — never mistake
+        // a chase trade for a thesis-driven swing/long-term position.
+        borderLeft: isShortHorizonRow ? '3px solid #f97316' : '3px solid transparent',
+      }}
+    >
       {/* ── CLICKABLE ROW ── */}
       <button
         onClick={handleToggle}
@@ -288,6 +295,11 @@ export default function SignalRow({
                 {signal.createdAt && (
                   <div className="font-data truncate" style={{ fontSize: 9.5, color: 'var(--text-w30)', marginTop: 2 }}>
                     {formatDateTimeEST(signal.createdAt)}
+                  </div>
+                )}
+                {isShortHorizonRow && (
+                  <div className="mt-1" style={{ fontSize: 9, color: '#f97316', fontWeight: 600, lineHeight: 1.3 }}>
+                    Short-horizon — historically higher failure rate, size small
                   </div>
                 )}
                 {timeframeBadge === 'intraday' && (
@@ -327,10 +339,15 @@ export default function SignalRow({
             {isObscured ? <LockedBadge /> : <SignalBadge type={signal.signalType} />}
           </div>
 
-          {/* Confidence */}
+          {/* Confidence — hidden for intraday/1-3day rows (Phase 1c: confidence
+              is not predictive of outcome — 10.9% win rate at 70-80 confidence
+              vs 8.1% at 80+, both reliable samples n=110/148). Still shown for
+              swing/long_term pending a fix to the underlying scoring model. */}
           <div style={{ width: 68, flexShrink: 0 }}>
             {isObscured ? (
               <Blurred>99%</Blurred>
+            ) : isShortHorizonRow ? (
+              <span className="text-sm" style={{ color: 'var(--text-w30)' }}>—</span>
             ) : (
               <span className="text-sm font-bold font-data" style={{ color: confidenceColor }}>
                 {signal.confidence.toFixed(1)}%
@@ -469,6 +486,13 @@ export default function SignalRow({
             </div>
           )}
 
+          {/* Risk label (mobile, short-horizon rows only) */}
+          {!isObscured && isShortHorizonRow && (
+            <div style={{ fontSize: 10, color: '#f97316', fontWeight: 600, lineHeight: 1.3 }}>
+              Short-horizon — historically higher failure rate, size small
+            </div>
+          )}
+
           {/* Live price + zone distance (mobile, intraday/1-3day only) */}
           {!isObscured && isShortHorizonRow && livePrice != null && (
             <div className="flex items-center gap-2">
@@ -499,7 +523,9 @@ export default function SignalRow({
           {/* Line 2: confidence + entry zone */}
           <div className="flex items-center gap-5">
             <div>
-              {isObscured ? <Blurred>99%</Blurred> : (
+              {isObscured ? <Blurred>99%</Blurred> : isShortHorizonRow ? (
+                <span className="text-sm" style={{ color: 'var(--text-w30)' }}>—</span>
+              ) : (
                 <span className="text-sm font-bold font-data" style={{ color: confidenceColor }}>
                   {signal.confidence.toFixed(1)}%
                 </span>
