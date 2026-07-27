@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from 'react'
 import { formatCurrency } from '@/lib/utils'
+import { useLiveQuotes } from '@/lib/useLiveQuotes'
+import LiveIndicator from './LiveIndicator'
 
 export type MoverRow = {
   ticker: string
@@ -9,6 +11,8 @@ export type MoverRow = {
   extendedLastPrice: number
   pctChange: number
   dollarChange: number
+  /** Reference price the change is measured against — needed to recompute $/% change from a fresher live quote between cron snapshots. */
+  referencePrice: number
 }
 
 type SortDir = 'desc' | 'asc'
@@ -18,11 +22,26 @@ export default function MoversTable({ rows }: { rows: MoverRow[] }) {
   // sort/filter, which only applies to the signal board.
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
+  // Overlay the server-cached live quote on top of the last cron snapshot —
+  // reads LiveQuoteCache via /api/live/quotes, never Schwab directly.
+  const tickers = useMemo(() => rows.map((r) => r.ticker), [rows])
+  const liveQuotes = useLiveQuotes(tickers, 12_000)
+
+  const merged = useMemo(() => {
+    return rows.map((r) => {
+      const live = liveQuotes[r.ticker]
+      if (!live || r.referencePrice <= 0) return { ...r, liveUpdatedAt: null as string | null }
+      const dollarChange = live.price - r.referencePrice
+      const pctChange = (dollarChange / r.referencePrice) * 100
+      return { ...r, extendedLastPrice: live.price, dollarChange, pctChange, liveUpdatedAt: live.lastUpdated }
+    })
+  }, [rows, liveQuotes])
+
   const sorted = useMemo(() => {
-    const arr = [...rows]
+    const arr = [...merged]
     arr.sort((a, b) => (sortDir === 'desc' ? b.pctChange - a.pctChange : a.pctChange - b.pctChange))
     return arr
-  }, [rows, sortDir])
+  }, [merged, sortDir])
 
   if (rows.length === 0) return null
 
@@ -64,6 +83,7 @@ export default function MoversTable({ rows }: { rows: MoverRow[] }) {
           <div className="text-xs font-semibold text-right" style={{ width: 100, flexShrink: 0, color: 'var(--text-w40)' }}>Price</div>
           <div className="text-xs font-semibold text-right" style={{ width: 90, flexShrink: 0, color: 'var(--text-w40)' }}>$ Change</div>
           <div className="text-xs font-semibold text-right" style={{ width: 90, flexShrink: 0, color: 'var(--text-w40)' }}>% Change</div>
+          <div className="text-xs font-semibold text-right" style={{ width: 80, flexShrink: 0, color: 'var(--text-w40)' }}>Status</div>
         </div>
 
         {sorted.map((m, idx) => {
@@ -90,6 +110,7 @@ export default function MoversTable({ rows }: { rows: MoverRow[] }) {
                     {isUp ? '+' : ''}{m.pctChange.toFixed(2)}%
                   </span>
                 </div>
+                <LiveIndicator lastUpdated={m.liveUpdatedAt} />
               </div>
 
               {/* Desktop — fixed-width columns matching the header row */}
@@ -108,6 +129,9 @@ export default function MoversTable({ rows }: { rows: MoverRow[] }) {
                 </div>
                 <div className="font-data font-bold text-sm text-right" style={{ width: 90, flexShrink: 0, color }}>
                   {isUp ? '+' : ''}{m.pctChange.toFixed(2)}%
+                </div>
+                <div className="flex justify-end" style={{ width: 80, flexShrink: 0 }}>
+                  <LiveIndicator lastUpdated={m.liveUpdatedAt} />
                 </div>
               </div>
             </div>

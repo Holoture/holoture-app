@@ -1,6 +1,10 @@
 'use client'
 
+import { useMemo } from 'react'
 import { TrendingUp, TrendingDown, AlertTriangle, Target } from 'lucide-react'
+import { useLiveQuotes } from '@/lib/useLiveQuotes'
+import LiveIndicator from './LiveIndicator'
+import { formatCurrency } from '@/lib/utils'
 
 type OptionsSignal = {
   id: string
@@ -35,6 +39,12 @@ function RiskBadge({ level }: { level: string }) {
 }
 
 export default function OptionsDashboardClient({ signals }: { signals: OptionsSignal[] }) {
+  // Live underlying price per card — reads the server-side LiveQuoteCache
+  // via /api/live/quotes, never Schwab directly (cron/live-quotes is the
+  // only Schwab caller).
+  const tickers = useMemo(() => signals.map((s) => s.ticker), [signals])
+  const liveQuotes = useLiveQuotes(tickers, 12_000)
+
   if (signals.length === 0) {
     return (
       <div>
@@ -62,7 +72,9 @@ export default function OptionsDashboardClient({ signals }: { signals: OptionsSi
         <span className="text-xs font-normal px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(124,58,237,0.2)', color: '#a78bfa' }}>MAX</span>
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {signals.map((s) => (
+        {signals.map((s) => {
+          const live = liveQuotes[s.ticker]
+          return (
           <div
             key={s.id}
             className="rounded-xl p-5 flex flex-col gap-4"
@@ -88,6 +100,20 @@ export default function OptionsDashboardClient({ signals }: { signals: OptionsSi
                   </span>
                 </div>
                 <p className="text-sm mt-0.5 text-white">{s.companyName}</p>
+                {live ? (
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="font-data text-sm text-white">{formatCurrency(live.price)}</span>
+                    <span
+                      className="font-data text-xs font-semibold"
+                      style={{ color: live.dayChangePercent >= 0 ? '#4ade80' : '#f87171' }}
+                    >
+                      {live.dayChangePercent >= 0 ? '+' : ''}{live.dayChangePercent.toFixed(2)}%
+                    </span>
+                    <LiveIndicator lastUpdated={live.lastUpdated} />
+                  </div>
+                ) : (
+                  <div className="mt-1" style={{ fontSize: 9, color: 'var(--text-w30)' }}>—</div>
+                )}
               </div>
               <RiskBadge level={s.riskLevel} />
             </div>
@@ -123,7 +149,8 @@ export default function OptionsDashboardClient({ signals }: { signals: OptionsSi
               <p className="text-sm leading-relaxed text-white">{s.summary}</p>
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

@@ -7,6 +7,7 @@ import SignalRow from './SignalRow'
 import SignalHistoryTab from './SignalHistoryTab'
 import type { Signal } from './SignalCard'
 import { signalUpside } from '@/lib/signal-upside'
+import { useLiveQuotes } from '@/lib/useLiveQuotes'
 
 // ─── category helpers ─────────────────────────────────────────────────────────
 
@@ -201,7 +202,6 @@ export default function SignalBoardClient({
   const [volMin, setVolMin]                   = useState('')
   const [volMax, setVolMax]                   = useState('')
   const [sectorFilter, setSectorFilter]       = useState<Set<string>>(new Set())
-  const [livePrices, setLivePrices]           = useState<Record<string, number>>({})
   const isFree = tier === 'free'
 
   useEffect(() => {
@@ -209,30 +209,16 @@ export default function SignalBoardClient({
     setAfterClose(checkAfterClose())
   }, [])
 
-  // Batched live price poll for intraday/1-3day rows only — one request for
-  // every visible short-horizon ticker, never per-row. 30s interval matches
-  // the server-side cache TTL in /api/signals/live-prices, so concurrent
-  // viewers of the same board share a single upstream Schwab call per
-  // window rather than each triggering their own.
+  // Batched live price poll for intraday/1-3day rows only — reads the
+  // server-side LiveQuoteCache via /api/live/quotes, never Schwab directly
+  // (cron/live-quotes is the only Schwab caller). 12s client poll; the
+  // cache itself refreshes every 1-5 min depending on session, so this
+  // just keeps the UI current with whatever the cache already has —
+  // concurrent viewers never multiply upstream Schwab calls.
   const shortHorizonTickers = useMemo(() => {
-    return [...new Set(signals.filter(isShortTermSignal).map(s => s.ticker))].sort()
+    return signals.filter(isShortTermSignal).map(s => s.ticker)
   }, [signals])
-
-  useEffect(() => {
-    if (shortHorizonTickers.length === 0 || isFree) return
-    let cancelled = false
-    async function poll() {
-      try {
-        const res = await fetch(`/api/signals/live-prices?tickers=${shortHorizonTickers.join(',')}`)
-        if (!res.ok || cancelled) return
-        const data: Record<string, number> = await res.json()
-        if (!cancelled) setLivePrices(data)
-      } catch { /* silent — rows fall back to "—" */ }
-    }
-    poll()
-    const interval = setInterval(poll, 30_000)
-    return () => { cancelled = true; clearInterval(interval) }
-  }, [shortHorizonTickers, isFree])
+  const liveQuotes = useLiveQuotes(isFree ? [] : shortHorizonTickers, 12_000)
 
   useEffect(() => {
     fetch('/api/tracker')
@@ -459,7 +445,8 @@ export default function SignalBoardClient({
               isShortTermLocked={isSTLocked}
               timeframeBadge={badge}
               isMarketOpen={marketOpen}
-              livePrice={livePrices[s.ticker] ?? null}
+              livePrice={liveQuotes[s.ticker]?.price ?? null}
+              liveUpdatedAt={liveQuotes[s.ticker]?.lastUpdated ?? null}
             />
           )
         })}

@@ -7,6 +7,7 @@ import { formatCurrency, formatDateTimeEST } from '@/lib/utils'
 import { signalUpside } from '@/lib/signal-upside'
 import type { Signal } from './SignalCard'
 import TrackerButton from './TrackerButton'
+import LiveIndicator from './LiveIndicator'
 
 const SignalChart = dynamic(() => import('./SignalChart'), { ssr: false })
 
@@ -121,8 +122,8 @@ function Blurred({ children }: { children: React.ReactNode }) {
 
 /** Live current price + entry-zone distance, intraday/1-3day rows only. */
 function LiveZoneCell({
-  livePrice, zoneDistancePct, inZone,
-}: { livePrice: number | null; zoneDistancePct: number | null; inZone: boolean | null }) {
+  livePrice, zoneDistancePct, inZone, liveUpdatedAt,
+}: { livePrice: number | null; zoneDistancePct: number | null; inZone: boolean | null; liveUpdatedAt: string | null }) {
   if (livePrice == null) {
     return <span className="text-xs" style={{ color: 'var(--text-w30)' }}>—</span>
   }
@@ -142,6 +143,7 @@ function LiveZoneCell({
           {zoneDistancePct >= 0 ? '+' : ''}{zoneDistancePct.toFixed(2)}% {inZone ? 'in zone' : 'from zone'}
         </div>
       )}
+      <div className="mt-0.5"><LiveIndicator lastUpdated={liveUpdatedAt} /></div>
     </div>
   )
 }
@@ -194,8 +196,10 @@ interface Props {
   timeframeBadge?: 'intraday' | '1-3days' | null
   /** Whether market is currently open — drives LIVE indicator */
   isMarketOpen?: boolean
-  /** Batched current price for this ticker (intraday/days_1_3 rows only) — never fetched per-row, see SignalBoardClient */
+  /** Batched current price for this ticker (intraday/days_1_3 rows only) — reads the server-side LiveQuoteCache via /api/live/quotes, never Schwab directly */
   livePrice?: number | null
+  /** ISO timestamp the cached quote was last refreshed — drives the Live/Delayed indicator */
+  liveUpdatedAt?: string | null
 }
 
 export default function SignalRow({
@@ -209,6 +213,7 @@ export default function SignalRow({
   timeframeBadge = null,
   isMarketOpen = false,
   livePrice = null,
+  liveUpdatedAt = null,
 }: Props) {
   const [expanded, setExpanded]           = useState(false)
   const [details, setDetails]             = useState<StockDetails | null>(null)
@@ -368,7 +373,7 @@ export default function SignalRow({
             {isObscured ? (
               <Blurred>$000.00</Blurred>
             ) : (
-              <LiveZoneCell livePrice={livePrice} zoneDistancePct={zoneDistancePct} inZone={inZone} />
+              <LiveZoneCell livePrice={livePrice} zoneDistancePct={zoneDistancePct} inZone={inZone} liveUpdatedAt={liveUpdatedAt} />
             )}
           </div>
 
@@ -484,7 +489,7 @@ export default function SignalRow({
           {/* Live price + zone distance (mobile, intraday/1-3day only) */}
           {!isObscured && isShortHorizonRow && livePrice != null && (
             <div className="flex items-center gap-2">
-              <LiveZoneCell livePrice={livePrice} zoneDistancePct={zoneDistancePct} inZone={inZone} />
+              <LiveZoneCell livePrice={livePrice} zoneDistancePct={zoneDistancePct} inZone={inZone} liveUpdatedAt={liveUpdatedAt} />
             </div>
           )}
 

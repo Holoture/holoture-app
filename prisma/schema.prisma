@@ -404,6 +404,22 @@ model MoverSnapshot {
   @@index([session])
 }
 
+// Server-side live-price cache. cron/live-quotes is the ONLY place that
+// calls Schwab for this feature — every user-facing surface (dashboard
+// rows, options cards, movers section) reads this table via the read-only
+// /api/live/quotes route instead, so N concurrent viewers never multiply
+// Schwab calls. session mirrors lib/marketSession.ts's MarketSession type.
+model LiveQuoteCache {
+  id               String   @id @default(cuid())
+  ticker           String   @unique
+  price            Float
+  dayChange        Float
+  dayChangePercent Float
+  volume           Float
+  session          String // 'regular' | 'premarket' | 'afterhours' | 'closed'
+  lastUpdated      DateTime @updatedAt
+}
+
 // Weekly-screened ticker pool (Universe Expansion) — replaces the old
 // hardcoded LARGE_CAP_WATCHLIST/SMALL_CAP_WATCHLIST arrays in
 // cron/signals/route.ts as the daily generator's candidate source. Screened

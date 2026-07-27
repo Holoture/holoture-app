@@ -52,7 +52,7 @@ function SessionSection({
   icon: typeof Sunrise
   isLive: boolean
   capturedAt: Date | null
-  rows: { ticker: string; companyName: string | null; extendedLastPrice: number; pctChange: number; dollarChange: number }[]
+  rows: { ticker: string; companyName: string | null; extendedLastPrice: number; pctChange: number; dollarChange: number; regularClosePrice: number }[]
 }) {
   const dateLabel = capturedAt
     ? new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric' }).format(capturedAt)
@@ -92,7 +92,7 @@ function SessionSection({
         </div>
       ) : (
         <div className="mt-3">
-          <MoversTable rows={rows.map((r) => ({ ticker: r.ticker, companyName: r.companyName, extendedLastPrice: r.extendedLastPrice, pctChange: r.pctChange, dollarChange: r.dollarChange }))} />
+          <MoversTable rows={rows.map((r) => ({ ticker: r.ticker, companyName: r.companyName, extendedLastPrice: r.extendedLastPrice, pctChange: r.pctChange, dollarChange: r.dollarChange, referencePrice: r.regularClosePrice }))} />
         </div>
       )}
     </div>
