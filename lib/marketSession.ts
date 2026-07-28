@@ -5,11 +5,12 @@
  */
 export type MarketSession = 'premarket' | 'regular' | 'afterhours' | 'closed'
 
-export function getMarketSession(): MarketSession {
+/** Same window logic as getMarketSession(), parameterized so callers can classify an arbitrary past timestamp (e.g. which session a signal was created in), not just "right now". */
+export function getMarketSessionAt(date: Date): MarketSession {
   const parts = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/New_York',
     hour: 'numeric', minute: 'numeric', weekday: 'short', hour12: false,
-  }).formatToParts(new Date())
+  }).formatToParts(date)
   const weekday = parts.find((p) => p.type === 'weekday')?.value ?? ''
   const hour = parseInt(parts.find((p) => p.type === 'hour')?.value ?? '0', 10)
   const minute = parseInt(parts.find((p) => p.type === 'minute')?.value ?? '0', 10)
@@ -20,4 +21,8 @@ export function getMarketSession(): MarketSession {
   if (mins >= 9 * 60 + 30 && mins < 16 * 60) return 'regular'
   if (mins >= 16 * 60 && mins < 20 * 60) return 'afterhours'
   return 'closed'
+}
+
+export function getMarketSession(): MarketSession {
+  return getMarketSessionAt(new Date())
 }

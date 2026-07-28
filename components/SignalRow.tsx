@@ -203,8 +203,8 @@ interface Props {
   isShortTermLocked?: boolean
   /** Show colored timeframe badge instead of plain text */
   timeframeBadge?: 'intraday' | '1-3days' | null
-  /** Whether market is currently open — drives LIVE indicator */
-  isMarketOpen?: boolean
+  /** Session-aware "TIME SENSITIVE" replacement for Momentum-group rows (intraday/1-3day/momentum-spike) — names the session explicitly (e.g. "PREMARKET SIGNAL") so it's never confused with the separate premarket/after-hours Movers page, which uses bare session words. Null for non-Momentum rows. */
+  sessionBadge?: { label: string; pulsing: boolean } | null
   /** Batched current price for this ticker (intraday/days_1_3 rows only) — reads the server-side LiveQuoteCache via /api/live/quotes, never Schwab directly */
   livePrice?: number | null
   /** ISO timestamp the cached quote was last refreshed — drives the Live/Delayed indicator */
@@ -220,7 +220,7 @@ export default function SignalRow({
   onTrackToggle,
   isShortTermLocked = false,
   timeframeBadge = null,
-  isMarketOpen = false,
+  sessionBadge = null,
   livePrice = null,
   liveUpdatedAt = null,
 }: Props) {
@@ -311,19 +311,20 @@ export default function SignalRow({
                     {formatDateTimeEST(signal.createdAt)}
                   </div>
                 )}
-                {timeframeBadge === 'intraday' && (
-                  <div className="flex items-center gap-1 mt-1" style={{ fontSize: 9, color: '#f97316', fontWeight: 700 }}>
-                    <Clock className="w-2.5 h-2.5" />
-                    TIME SENSITIVE
-                  </div>
-                )}
-                {timeframeBadge === 'intraday' && isMarketOpen && (
-                  <div className="inline-flex items-center gap-1 mt-0.5">
-                    <span className="relative flex w-1.5 h-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#4ade80' }} />
-                      <span className="relative inline-flex rounded-full w-1.5 h-1.5" style={{ backgroundColor: '#22c55e' }} />
-                    </span>
-                    <span style={{ fontSize: 9, color: '#4ade80', fontWeight: 700 }}>LIVE</span>
+                {sessionBadge && (
+                  <div
+                    className="flex items-center gap-1 mt-1"
+                    style={{ fontSize: 9, color: sessionBadge.pulsing ? '#4ade80' : '#f97316', fontWeight: 700 }}
+                  >
+                    {sessionBadge.pulsing ? (
+                      <span className="relative flex w-2 h-2 shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#4ade80' }} />
+                        <span className="relative inline-flex rounded-full w-2 h-2" style={{ backgroundColor: '#22c55e' }} />
+                      </span>
+                    ) : (
+                      <Clock className="w-2.5 h-2.5" />
+                    )}
+                    {sessionBadge.label}
                   </div>
                 )}
                 {isFreePick && (

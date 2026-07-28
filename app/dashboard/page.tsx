@@ -136,8 +136,8 @@ export default async function DashboardPage() {
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
 
-      {/* ── Trial banner ── */}
-      {isTrialing && trialEndsAt && (
+      {/* ── Single slim notice slot — Trial and Yesterday notices never stack; trial wins when both apply ── */}
+      {isTrialing && trialEndsAt ? (
         <div
           className="px-4 py-3 text-sm text-center font-semibold"
           style={{ backgroundColor: 'rgba(29,158,117,0.12)', borderBottom: '1px solid rgba(29,158,117,0.25)', color: '#1D9E75' }}
@@ -152,14 +152,11 @@ export default async function DashboardPage() {
             Manage plan
           </a>
         </div>
-      )}
-
-      {/* ── Yesterday banner ── */}
-      {isYesterday && (
+      ) : isYesterday ? (
         <div className="px-4 py-3 text-sm text-center font-semibold" style={{ backgroundColor: 'rgba(251,191,36,0.1)', borderBottom: '1px solid rgba(251,191,36,0.25)', color: '#fbbf24' }}>
           ⏳ Today&apos;s signals are being generated — showing yesterday&apos;s picks. Updates at 6:30 am EST.
         </div>
-      )}
+      ) : null}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <MarketStatusBanner {...marketStatus} />

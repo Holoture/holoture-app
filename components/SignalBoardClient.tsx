@@ -8,6 +8,7 @@ import SignalHistoryTab from './SignalHistoryTab'
 import type { Signal } from './SignalCard'
 import { signalUpside } from '@/lib/signal-upside'
 import { useLiveQuotes } from '@/lib/useLiveQuotes'
+import { getMarketSession, getMarketSessionAt, type MarketSession } from '@/lib/marketSession'
 
 // ─── category helpers ─────────────────────────────────────────────────────────
 
@@ -49,22 +50,16 @@ function isMomentumGroup(s: Signal): boolean {
   return isIntraday(s) || is1to3Days(s) || s.timeframeCategory === 'momentum'
 }
 
-// ─── market hours helpers ─────────────────────────────────────────────────────
-
-function checkMarketOpen(): boolean {
-  try {
-    const parts = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/New_York',
-      hour: 'numeric', minute: 'numeric', weekday: 'short', hour12: false,
-    }).formatToParts(new Date())
-    const weekday = parts.find(p => p.type === 'weekday')?.value ?? ''
-    if (weekday === 'Sat' || weekday === 'Sun') return false
-    const h = parseInt(parts.find(p => p.type === 'hour')?.value ?? '0', 10)
-    const m = parseInt(parts.find(p => p.type === 'minute')?.value ?? '0', 10)
-    const mins = h * 60 + m
-    return mins >= 9 * 60 + 30 && mins < 16 * 60
-  } catch { return false }
+// Which session a signal was actually CREATED in — distinct from "is the
+// market open right now" (used for the row's live/pulsing badge). This is
+// what the Momentum tab's session filter chips slice on, computed honestly
+// from signal.createdAt rather than inventing a stored "session" field that
+// doesn't exist on the Signal model.
+function signalSession(s: Signal): MarketSession {
+  return getMarketSessionAt(s.createdAt ? new Date(s.createdAt) : new Date())
 }
+
+// ─── market hours helpers ─────────────────────────────────────────────────────
 
 function checkAfterClose(): boolean {
   try {
@@ -112,29 +107,45 @@ function getDailyFreePickIds(signals: Signal[]): Set<string> {
 // ─── types ────────────────────────────────────────────────────────────────────
 
 // 'options' tab removed — options signals now live at their own /options
-// route (see app/options/page.tsx), not on the main dashboard.
+// route (see app/options/page.tsx), not on the main dashboard. 'history'
+// stays a valid tab value (SignalHistoryTab still renders the same way)
+// but is no longer listed in CATEGORY_TABS — it's a demoted link next to
+// the tab bar now, not a peer signal-type tab.
 type CategoryTab = 'all' | 'large-cap' | 'small-cap' | 'swing-trade' | 'long-term' | 'momentum' | 'history'
 type TypeFilter = 'all' | 'BUY' | 'WATCH' | 'SHORT'
 type TimeframeFilter = 'all' | 'momentum' | 'swing' | 'long'
 type SortKey = 'confidence-desc' | 'confidence-asc' | 'ticker-asc' | 'recent' | 'time-sensitivity' | 'upside-desc' | 'upside-asc'
+type SessionFilter = 'all' | 'premarket' | 'regular' | 'afterhours'
 
-const CATEGORY_TABS: { key: CategoryTab; label: string; maxOnly?: boolean }[] = [
+const CATEGORY_TABS: { key: CategoryTab; label: string }[] = [
   { key: 'all',         label: 'All Signals' },
+  { key: 'momentum',    label: 'Momentum' },
   { key: 'large-cap',   label: 'Large Cap' },
   { key: 'small-cap',   label: 'Small Cap' },
   { key: 'swing-trade', label: 'Swing Trade' },
   { key: 'long-term',   label: 'Long Term' },
-  { key: 'momentum',    label: 'Momentum' },
-  { key: 'history',     label: 'History' },
 ]
 
-// Sections for "All Signals" tab — first-match-wins, time-priority order
+// Sections for the "All Signals" overview — first-match-wins, Momentum
+// leads since it's the most time-sensitive bucket (see IA recommendation:
+// signal type is primary nav, Momentum first within it).
 const ALL_SECTIONS: { key: string; label: string; match: (s: Signal) => boolean }[] = [
   { key: 'momentum',    label: 'Momentum',    match: isMomentumGroup },
   { key: 'large-cap',  label: 'Large Cap',   match: isLargeCapTicker },
   { key: 'small-cap',  label: 'Small Cap',   match: (s) => !isLargeCapTicker(s) },
   { key: 'swing-trade', label: 'Swing Trade', match: isSwingTrade },
   { key: 'long-term',  label: 'Long Term',   match: isLongTerm },
+]
+
+// Capped preview size for the "All Signals" overview — enough to be useful,
+// short enough that landing on "All" is no longer a full-stack scroll.
+const PREVIEW_CAP = 6
+
+const SESSION_CHIPS: { key: SessionFilter; label: string }[] = [
+  { key: 'all',        label: 'All' },
+  { key: 'premarket',  label: 'Premarket' },
+  { key: 'regular',    label: 'Regular Hours' },
+  { key: 'afterhours', label: 'After-Hours' },
 ]
 
 // ─── sub-components ───────────────────────────────────────────────────────────
@@ -165,6 +176,15 @@ function EmptyFilter() {
   )
 }
 
+/** Honest "nothing qualified" message for an empty category or session slice — never hidden, never force-filled. */
+function EmptyCategory({ message }: { message: string }) {
+  return (
+    <div className="px-4 py-6 text-center">
+      <p className="text-sm" style={{ color: 'var(--text-w35)' }}>{message}</p>
+    </div>
+  )
+}
+
 // ─── main component ───────────────────────────────────────────────────────────
 
 export default function SignalBoardClient({
@@ -187,15 +207,16 @@ export default function SignalBoardClient({
   const [refreshing, setRefreshing]           = useState(false)
   const [typeFilter, setTypeFilter]           = useState<TypeFilter>('all')
   const [timeframeFilter, setTimeframeFilter] = useState<TimeframeFilter>('all')
+  const [sessionFilter, setSessionFilter]     = useState<SessionFilter>('all')
   const [sortKey, setSortKey]                 = useState<SortKey>('confidence-desc')
   const [search, setSearch]                   = useState('')
-  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set())
   const [trackedMap, setTrackedMap]           = useState<Map<string, string>>(new Map())
-  const [marketOpen, setMarketOpen]           = useState(false)
   const [afterClose, setAfterClose]           = useState(false)
+  const [marketSession, setMarketSessionState] = useState<MarketSession>('closed')
 
-  // ── Filter panel state (separate from the Sort dropdown and the tab bar) ──
+  // ── Filter panel state (Advanced filters — separate from the always-visible Type/Timeframe/Sort row) ──
   const [filterPanelOpen, setFilterPanelOpen] = useState(false)
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [priceMin, setPriceMin]               = useState('')
   const [priceMax, setPriceMax]               = useState('')
   const [capBands, setCapBands]               = useState<Set<'large_cap' | 'small_cap'>>(new Set())
@@ -205,8 +226,8 @@ export default function SignalBoardClient({
   const isFree = tier === 'free'
 
   useEffect(() => {
-    setMarketOpen(checkMarketOpen())
     setAfterClose(checkAfterClose())
+    setMarketSessionState(getMarketSession())
   }, [])
 
   // Batched live price poll for every signal on the board — reads the
@@ -347,17 +368,20 @@ export default function SignalBoardClient({
     return arr.sort((a, b) => new Date(b.signalDate).getTime() - new Date(a.signalDate).getTime())
   }, [filtered, sortKey, isFree])
 
-  // Sections for the "All Signals" tab (first-match-wins)
+  // Sections for the "All Signals" overview (first-match-wins) — every
+  // section is kept even when empty (never filtered out), so an honest
+  // "nothing qualified" message can render instead of silently vanishing.
   const allSections = useMemo(() => {
     const used = new Set<string>()
     return ALL_SECTIONS.map(sec => {
       const sigs = sorted.filter(s => !used.has(s.id) && sec.match(s))
       sigs.forEach(s => used.add(s.id))
       return { ...sec, signals: sigs }
-    }).filter(sec => sec.signals.length > 0)
+    })
   }, [sorted])
 
-  // Signals for a specific category tab
+  // Signals for a specific category tab — Momentum additionally honors the
+  // session filter chips (classified by each signal's own createdAt session).
   const categorySignals = useMemo(() => {
     if (activeTab === 'all' || activeTab === 'history') return []
     const matchFns: Partial<Record<CategoryTab, (s: Signal) => boolean>> = {
@@ -369,20 +393,15 @@ export default function SignalBoardClient({
     }
     const fn = matchFns[activeTab]
     if (!fn) return sorted
-    return [...sorted.filter(fn)].sort((a, b) => {
+    let list = sorted.filter(fn)
+    if (activeTab === 'momentum' && sessionFilter !== 'all') {
+      list = list.filter(s => signalSession(s) === sessionFilter)
+    }
+    return [...list].sort((a, b) => {
       const diff = timeSensitivityScore(a) - timeSensitivityScore(b)
       return diff !== 0 ? diff : 0
     })
-  }, [sorted, activeTab])
-
-  function toggleSection(key: string) {
-    setCollapsedSections(prev => {
-      const next = new Set(prev)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
-      return next
-    })
-  }
+  }, [sorted, activeTab, sessionFilter])
 
   async function handleAdminRefresh() {
     setRefreshing(true)
@@ -390,6 +409,18 @@ export default function SignalBoardClient({
       await fetch('/api/admin/refresh-signals', { method: 'POST' })
       window.location.reload()
     } catch { } finally { setRefreshing(false) }
+  }
+
+  // Session-aware badge for Momentum-group rows — replaces the old bare
+  // "TIME SENSITIVE" text + separate market-open dot with one label that
+  // names the current session explicitly, so it's never confused with the
+  // Movers page's own (differently-styled) premarket/after-hours labels.
+  function sessionBadgeFor(s: Signal): { label: string; pulsing: boolean } | null {
+    if (!isMomentumGroup(s)) return null
+    if (marketSession === 'premarket')  return { label: 'PREMARKET SIGNAL', pulsing: false }
+    if (marketSession === 'regular')    return { label: 'LIVE NOW', pulsing: true }
+    if (marketSession === 'afterhours') return { label: 'AFTER-HOURS SIGNAL', pulsing: false }
+    return { label: 'TIME SENSITIVE', pulsing: false }
   }
 
   // ─── renderers ──────────────────────────────────────────────────────────────
@@ -427,7 +458,7 @@ export default function SignalBoardClient({
     )
   }
 
-  function renderSignalRows(sigs: Signal[], catKey: string) {
+  function renderSignalRows(sigs: Signal[]) {
     return (
       <>
         {sigs.map((s, idx) => {
@@ -445,7 +476,7 @@ export default function SignalBoardClient({
               onTrackToggle={handleTrackToggle}
               isShortTermLocked={isSTLocked}
               timeframeBadge={badge}
-              isMarketOpen={marketOpen}
+              sessionBadge={sessionBadgeFor(s)}
               livePrice={liveQuotes[s.ticker]?.price ?? null}
               liveUpdatedAt={liveQuotes[s.ticker]?.lastUpdated ?? null}
             />
@@ -455,9 +486,11 @@ export default function SignalBoardClient({
     )
   }
 
-  function renderSection(sec: { key: string; label: string; signals: Signal[] }) {
-    const isCollapsed = collapsedSections.has(sec.key)
+  /** "All Signals" overview — capped preview per category, Momentum first, with a "See all N →" hop to the full tab and an honest empty message when a category has nothing right now. */
+  function renderOverviewSection(sec: { key: string; label: string; signals: Signal[] }) {
     const isMomentumSec = sec.key === 'momentum'
+    const preview = sec.signals.slice(0, PREVIEW_CAP)
+    const remaining = sec.signals.length - preview.length
 
     return (
       <div
@@ -465,28 +498,10 @@ export default function SignalBoardClient({
         className="rounded-xl overflow-hidden"
         style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
       >
-        {/* Section header */}
-        <button
-          onClick={() => toggleSection(sec.key)}
-          className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/[0.02] transition-colors"
-        >
+        <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2 flex-wrap">
             {isMomentumSec && <Clock className="w-4 h-4 shrink-0" style={{ color: '#f97316' }} />}
             <span className="font-bold text-white">{sec.label}</span>
-
-            {isMomentumSec && marketOpen && (
-              <span className="inline-flex items-center gap-1">
-                <span className="relative flex w-2 h-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#4ade80' }} />
-                  <span className="relative inline-flex rounded-full w-2 h-2" style={{ backgroundColor: '#22c55e' }} />
-                </span>
-                <span className="text-xs font-bold" style={{ color: '#4ade80' }}>LIVE</span>
-              </span>
-            )}
-            {isMomentumSec && !marketOpen && (
-              <span className="text-xs" style={{ color: 'var(--text-w35)' }}>Time sensitive</span>
-            )}
-
             <span
               className="text-xs px-2 py-0.5 rounded-full font-semibold"
               style={{ backgroundColor: 'rgba(0,155,255,0.1)', color: '#009BFF' }}
@@ -494,16 +509,32 @@ export default function SignalBoardClient({
               {sec.signals.length}
             </span>
           </div>
-          <ChevronDown
-            className="w-4 h-4 shrink-0 transition-transform duration-200"
-            style={{ color: 'var(--text-w40)', transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)' }}
-          />
-        </button>
+          {sec.signals.length > 0 && (
+            <button
+              onClick={() => setActiveTab(sec.key as CategoryTab)}
+              className="text-xs font-semibold shrink-0 hover:opacity-75 transition-opacity"
+              style={{ color: '#009BFF' }}
+            >
+              See all {sec.signals.length} →
+            </button>
+          )}
+        </div>
 
-        {!isCollapsed && (
+        {sec.signals.length === 0 ? (
+          <EmptyCategory message={`No ${sec.label.toLowerCase()} signals qualify right now.`} />
+        ) : (
           <div>
             {renderColumnHeaders()}
-            {renderSignalRows(sec.signals, sec.key)}
+            {renderSignalRows(preview)}
+            {remaining > 0 && (
+              <button
+                onClick={() => setActiveTab(sec.key as CategoryTab)}
+                className="w-full text-center px-4 py-2.5 text-xs font-semibold hover:opacity-75 transition-opacity"
+                style={{ color: '#009BFF', borderTop: '1px solid var(--border)' }}
+              >
+                See {remaining} more {sec.label.toLowerCase()} signal{remaining !== 1 ? 's' : ''} →
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -515,7 +546,7 @@ export default function SignalBoardClient({
   return (
     <div className="space-y-5">
 
-      {/* ── TAB BAR ── */}
+      {/* ── TAB BAR (signal type — the primary navigation axis) ── */}
       <div
         className="flex items-center gap-0 border-b overflow-x-auto"
         style={{ borderColor: 'var(--border)' }}
@@ -531,18 +562,19 @@ export default function SignalBoardClient({
               marginBottom: -1,
             }}
           >
-            {tab.key === 'history' && <History className="w-3.5 h-3.5" />}
             {tab.label}
-            {tab.maxOnly && (
-              <span
-                className="text-xs font-bold px-1.5 py-0.5 rounded"
-                style={{ backgroundColor: 'rgba(234,179,8,0.15)', color: '#eab308', border: '1px solid rgba(234,179,8,0.3)' }}
-              >
-                MAX
-              </span>
-            )}
           </button>
         ))}
+
+        {/* History — demoted to a small link/toggle, not a peer signal-type tab */}
+        <button
+          onClick={() => setActiveTab('history')}
+          className="flex items-center gap-1 px-3 py-2.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0"
+          style={{ color: activeTab === 'history' ? '#009BFF' : 'var(--text-w35)' }}
+        >
+          <History className="w-3.5 h-3.5" />
+          History
+        </button>
 
         {/* Admin refresh + timestamp */}
         <div className="ml-auto pl-3 flex items-center gap-2 shrink-0">
@@ -567,76 +599,50 @@ export default function SignalBoardClient({
       {/* ── SIGNAL TABS (All + category tabs) ── */}
       {activeTab !== 'history' && (
         <>
-          {/* Free user — main upgrade banner */}
-          {isFree && (
-            <div
-              className="rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0 sm:justify-between"
-              style={{
-                background: 'linear-gradient(135deg, rgba(0,155,255,0.08) 0%, rgba(0,155,255,0.04) 100%)',
-                border: '1px solid rgba(0,155,255,0.25)',
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}
-                >
-                  <TrendingUp className="w-4 h-4" style={{ color: '#009BFF' }} />
-                </div>
-                <p className="text-sm text-white">
-                  <span className="font-bold" style={{ color: '#009BFF' }}>
-                    {activeSignals.length} signal{activeSignals.length !== 1 ? 's' : ''}
-                  </span>
-                  {' '}available today — you&apos;re seeing{' '}
-                  <span className="font-bold text-white">
-                    {Math.min(FREE_SIGNAL_COUNT, activeSignals.filter(s => !isShortTermSignal(s)).length)} free picks.
-                  </span>
-                  {' '}Upgrade to Pro for the full signal board.
-                </p>
-              </div>
-              <Link
-                href="/pricing"
-                className="text-xs font-bold px-4 py-2 rounded-lg shrink-0 hover:opacity-90 transition-opacity self-start sm:self-auto"
-                style={{ backgroundColor: '#009BFF', color: 'white' }}
-              >
-                View Plans
-              </Link>
-            </div>
-          )}
-
-          {/* Free user — short-term signals upsell */}
+          {/* Free user — single combined upsell banner (was two stacked banners) */}
           {isFree && (() => {
             const stCount = activeSignals.filter(isShortTermSignal).length
-            if (stCount === 0) return null
             return (
               <div
                 className="rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0 sm:justify-between"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(249,115,22,0.08) 0%, rgba(249,115,22,0.04) 100%)',
-                  border: '1px solid rgba(249,115,22,0.25)',
+                  background: 'linear-gradient(135deg, rgba(0,155,255,0.08) 0%, rgba(0,155,255,0.04) 100%)',
+                  border: '1px solid rgba(0,155,255,0.25)',
                 }}
               >
                 <div className="flex items-center gap-3">
                   <div
                     className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: 'rgba(249,115,22,0.15)' }}
+                    style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}
                   >
-                    <Clock className="w-4 h-4" style={{ color: '#f97316' }} />
+                    <TrendingUp className="w-4 h-4" style={{ color: '#009BFF' }} />
                   </div>
                   <p className="text-sm text-white">
-                    <span className="font-bold" style={{ color: '#f97316' }}>
-                      {stCount} short-term signal{stCount !== 1 ? 's' : ''}
+                    <span className="font-bold" style={{ color: '#009BFF' }}>
+                      {activeSignals.length} signal{activeSignals.length !== 1 ? 's' : ''}
                     </span>
-                    {' '}available — Intraday &amp; 1–3 day signals require{' '}
-                    <span className="font-bold text-white">Pro or Max.</span>
+                    {' '}available today — you&apos;re seeing{' '}
+                    <span className="font-bold text-white">
+                      {Math.min(FREE_SIGNAL_COUNT, activeSignals.filter(s => !isShortTermSignal(s)).length)} free picks.
+                    </span>
+                    {stCount > 0 && (
+                      <>
+                        {' '}Plus{' '}
+                        <span className="font-bold" style={{ color: '#f97316' }}>
+                          {stCount} Momentum signal{stCount !== 1 ? 's' : ''}
+                        </span>
+                        {' '}locked to Pro/Max.
+                      </>
+                    )}
+                    {' '}Upgrade to Pro for the full signal board.
                   </p>
                 </div>
                 <Link
                   href="/pricing"
                   className="text-xs font-bold px-4 py-2 rounded-lg shrink-0 hover:opacity-90 transition-opacity self-start sm:self-auto"
-                  style={{ backgroundColor: '#f97316', color: 'white' }}
+                  style={{ backgroundColor: '#009BFF', color: 'white' }}
                 >
-                  Upgrade
+                  View Plans
                 </Link>
               </div>
             )
@@ -648,75 +654,155 @@ export default function SignalBoardClient({
               className="rounded-xl p-4 space-y-3"
               style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
             >
-              {/* Row 1: type filters + search */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-semibold shrink-0" style={{ color: 'var(--text-w40)' }}>Type:</span>
-                <FilterChip label="All"   active={typeFilter === 'all'}   onClick={() => setTypeFilter('all')} />
-                <FilterChip label="BUY"   active={typeFilter === 'BUY'}   onClick={() => setTypeFilter('BUY')} />
-                <FilterChip label="WATCH" active={typeFilter === 'WATCH'} onClick={() => setTypeFilter('WATCH')} />
-                <FilterChip label="SHORT" active={typeFilter === 'SHORT'} onClick={() => setTypeFilter('SHORT')} />
-                <div
-                  className="flex items-center gap-2 ml-auto rounded-lg px-3 py-1.5"
-                  style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
+              {/* Desktop — always-visible Type/Timeframe/Sort rows */}
+              <div className="hidden sm:block space-y-3">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-semibold shrink-0" style={{ color: 'var(--text-w40)' }}>Type:</span>
+                  <FilterChip label="All"   active={typeFilter === 'all'}   onClick={() => setTypeFilter('all')} />
+                  <FilterChip label="BUY"   active={typeFilter === 'BUY'}   onClick={() => setTypeFilter('BUY')} />
+                  <FilterChip label="WATCH" active={typeFilter === 'WATCH'} onClick={() => setTypeFilter('WATCH')} />
+                  <FilterChip label="SHORT" active={typeFilter === 'SHORT'} onClick={() => setTypeFilter('SHORT')} />
+                  <div
+                    className="flex items-center gap-2 ml-auto rounded-lg px-3 py-1.5"
+                    style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
+                  >
+                    <Search className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-w35)' }} />
+                    <input
+                      type="text"
+                      placeholder="Search ticker…"
+                      value={search}
+                      onChange={e => setSearch(e.target.value)}
+                      className="bg-transparent text-sm text-white placeholder:text-white/30 outline-none w-28"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-semibold shrink-0" style={{ color: 'var(--text-w40)' }}>Timeframe:</span>
+                  <FilterChip label="All"      active={timeframeFilter === 'all'}      onClick={() => setTimeframeFilter('all')} />
+                  <FilterChip label="Momentum" active={timeframeFilter === 'momentum'} onClick={() => setTimeframeFilter('momentum')} />
+                  <FilterChip label="Swing"    active={timeframeFilter === 'swing'}    onClick={() => setTimeframeFilter('swing')} />
+                  <FilterChip label="Long Term" active={timeframeFilter === 'long'}    onClick={() => setTimeframeFilter('long')} />
+
+                  <div className="ml-auto flex items-center gap-2">
+                    <button
+                      onClick={() => setFilterPanelOpen(v => !v)}
+                      className="flex items-center gap-1.5 text-xs font-semibold rounded-lg px-3 py-1.5 transition-colors"
+                      style={
+                        activeFilterCount > 0
+                          ? { backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.4)' }
+                          : { backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w60)', border: '1px solid var(--border)' }
+                      }
+                    >
+                      <SlidersHorizontal className="w-3.5 h-3.5" />
+                      Advanced Filters
+                      {activeFilterCount > 0 && (
+                        <span
+                          className="text-xs font-bold px-1.5 rounded-full"
+                          style={{ backgroundColor: '#009BFF', color: 'white' }}
+                        >
+                          {activeFilterCount}
+                        </span>
+                      )}
+                    </button>
+                    <select
+                      value={sortKey}
+                      onChange={e => setSortKey(e.target.value as SortKey)}
+                      className="text-xs rounded-lg px-3 py-1.5 outline-none cursor-pointer"
+                      style={{ backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w80)', border: '1px solid var(--border)' }}
+                    >
+                      <option value="confidence-desc">Confidence ↓</option>
+                      <option value="confidence-asc">Confidence ↑</option>
+                      <option value="upside-desc">Upside ↓</option>
+                      <option value="upside-asc">Upside ↑</option>
+                      <option value="ticker-asc">Ticker A–Z</option>
+                      <option value="recent">Most Recent</option>
+                      <option value="time-sensitivity">Time Sensitivity</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile — single "Filters" trigger, all controls collapse behind it instead of wrapping across lines */}
+              <div className="sm:hidden">
+                <button
+                  onClick={() => setMobileFiltersOpen(v => !v)}
+                  className="w-full flex items-center justify-between text-xs font-semibold rounded-lg px-3 py-2 transition-colors"
+                  style={{ backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w70)', border: '1px solid var(--border)' }}
                 >
-                  <Search className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-w35)' }} />
-                  <input
-                    type="text"
-                    placeholder="Search ticker…"
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    className="bg-transparent text-sm text-white placeholder:text-white/30 outline-none w-28"
-                  />
-                </div>
-              </div>
-
-              {/* Row 2: timeframe filters + sort */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-semibold shrink-0" style={{ color: 'var(--text-w40)' }}>Timeframe:</span>
-                <FilterChip label="All"      active={timeframeFilter === 'all'}      onClick={() => setTimeframeFilter('all')} />
-                <FilterChip label="Momentum" active={timeframeFilter === 'momentum'} onClick={() => setTimeframeFilter('momentum')} />
-                <FilterChip label="Swing"    active={timeframeFilter === 'swing'}    onClick={() => setTimeframeFilter('swing')} />
-                <FilterChip label="Long Term" active={timeframeFilter === 'long'}    onClick={() => setTimeframeFilter('long')} />
-
-                <div className="ml-auto flex items-center gap-2">
-                  <button
-                    onClick={() => setFilterPanelOpen(v => !v)}
-                    className="flex items-center gap-1.5 text-xs font-semibold rounded-lg px-3 py-1.5 transition-colors"
-                    style={
-                      activeFilterCount > 0
-                        ? { backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.4)' }
-                        : { backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w60)', border: '1px solid var(--border)' }
-                    }
-                  >
+                  <span className="flex items-center gap-1.5">
                     <SlidersHorizontal className="w-3.5 h-3.5" />
-                    Filter
-                    {activeFilterCount > 0 && (
-                      <span
-                        className="text-xs font-bold px-1.5 rounded-full"
-                        style={{ backgroundColor: '#009BFF', color: 'white' }}
+                    Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
+                  </span>
+                  <ChevronDown
+                    className="w-3.5 h-3.5 transition-transform duration-200"
+                    style={{ transform: mobileFiltersOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
+
+                {mobileFiltersOpen && (
+                  <div className="mt-3 space-y-3">
+                    <div
+                      className="flex items-center gap-2 rounded-lg px-3 py-1.5"
+                      style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border)' }}
+                    >
+                      <Search className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-w35)' }} />
+                      <input
+                        type="text"
+                        placeholder="Search ticker…"
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        className="bg-transparent text-sm text-white placeholder:text-white/30 outline-none w-full"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold mb-1.5" style={{ color: 'var(--text-w40)' }}>Type</p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <FilterChip label="All"   active={typeFilter === 'all'}   onClick={() => setTypeFilter('all')} />
+                        <FilterChip label="BUY"   active={typeFilter === 'BUY'}   onClick={() => setTypeFilter('BUY')} />
+                        <FilterChip label="WATCH" active={typeFilter === 'WATCH'} onClick={() => setTypeFilter('WATCH')} />
+                        <FilterChip label="SHORT" active={typeFilter === 'SHORT'} onClick={() => setTypeFilter('SHORT')} />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold mb-1.5" style={{ color: 'var(--text-w40)' }}>Timeframe</p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <FilterChip label="All"       active={timeframeFilter === 'all'}      onClick={() => setTimeframeFilter('all')} />
+                        <FilterChip label="Momentum"  active={timeframeFilter === 'momentum'} onClick={() => setTimeframeFilter('momentum')} />
+                        <FilterChip label="Swing"     active={timeframeFilter === 'swing'}    onClick={() => setTimeframeFilter('swing')} />
+                        <FilterChip label="Long Term" active={timeframeFilter === 'long'}     onClick={() => setTimeframeFilter('long')} />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold mb-1.5" style={{ color: 'var(--text-w40)' }}>Sort</p>
+                      <select
+                        value={sortKey}
+                        onChange={e => setSortKey(e.target.value as SortKey)}
+                        className="w-full text-xs rounded-lg px-3 py-1.5 outline-none cursor-pointer"
+                        style={{ backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w80)', border: '1px solid var(--border)' }}
                       >
-                        {activeFilterCount}
-                      </span>
-                    )}
-                  </button>
-                  <select
-                    value={sortKey}
-                    onChange={e => setSortKey(e.target.value as SortKey)}
-                    className="text-xs rounded-lg px-3 py-1.5 outline-none cursor-pointer"
-                    style={{ backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w80)', border: '1px solid var(--border)' }}
-                  >
-                    <option value="confidence-desc">Confidence ↓</option>
-                    <option value="confidence-asc">Confidence ↑</option>
-                    <option value="upside-desc">Upside ↓</option>
-                    <option value="upside-asc">Upside ↑</option>
-                    <option value="ticker-asc">Ticker A–Z</option>
-                    <option value="recent">Most Recent</option>
-                    <option value="time-sensitivity">Time Sensitivity</option>
-                  </select>
-                </div>
+                        <option value="confidence-desc">Confidence ↓</option>
+                        <option value="confidence-asc">Confidence ↑</option>
+                        <option value="upside-desc">Upside ↓</option>
+                        <option value="upside-asc">Upside ↑</option>
+                        <option value="ticker-asc">Ticker A–Z</option>
+                        <option value="recent">Most Recent</option>
+                        <option value="time-sensitivity">Time Sensitivity</option>
+                      </select>
+                    </div>
+                    <button
+                      onClick={() => setFilterPanelOpen(v => !v)}
+                      className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-75 transition-opacity"
+                      style={{ color: '#009BFF' }}
+                    >
+                      <SlidersHorizontal className="w-3.5 h-3.5" />
+                      Advanced Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
+                    </button>
+                  </div>
+                )}
               </div>
 
-              {/* Filter panel — separate control from Sort, combines with tabs/sort/search */}
+              {/* Advanced filters panel — Share Price / Avg Volume / Market Cap / Sector, collapsed by default on every breakpoint */}
               {filterPanelOpen && (
                 <div
                   className="rounded-lg p-4 space-y-4"
@@ -831,28 +917,40 @@ export default function SignalBoardClient({
             </div>
           )}
 
+          {/* Momentum tab only — session filter chips (All / Premarket / Regular Hours / After-Hours), classified honestly by each signal's own createdAt session. Never promoted to a top-level tab — that's exactly the axis collision the IA review flagged. */}
+          {!isFree && activeTab === 'momentum' && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-semibold shrink-0" style={{ color: 'var(--text-w40)' }}>Session:</span>
+              {SESSION_CHIPS.map(c => (
+                <FilterChip key={c.key} label={c.label} active={sessionFilter === c.key} onClick={() => setSessionFilter(c.key)} />
+              ))}
+            </div>
+          )}
+
           {/* Signal content */}
           {activeTab === 'all' ? (
-            allSections.length === 0 ? (
-              <EmptyFilter />
-            ) : (
-              <div className="space-y-4">
-                {allSections.map(sec => renderSection(sec))}
-              </div>
-            )
+            <div className="space-y-4">
+              {allSections.map(sec => renderOverviewSection(sec))}
+            </div>
           ) : (
-            /* Category tab — flat list */
-            categorySignals.length === 0 ? (
-              <EmptyFilter />
-            ) : (
-              <div
-                className="rounded-xl overflow-hidden"
-                style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
-              >
-                {renderColumnHeaders()}
-                {renderSignalRows(categorySignals, activeTab)}
-              </div>
-            )
+            /* Category tab — flat list, capped-free (this IS the "see all" destination) */
+            <div
+              className="rounded-xl overflow-hidden"
+              style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
+            >
+              {categorySignals.length === 0 ? (
+                activeTab === 'momentum' && sessionFilter !== 'all' ? (
+                  <EmptyCategory message={`No ${SESSION_CHIPS.find(c => c.key === sessionFilter)?.label.toLowerCase()} momentum signals right now.`} />
+                ) : (
+                  <EmptyFilter />
+                )
+              ) : (
+                <>
+                  {renderColumnHeaders()}
+                  {renderSignalRows(categorySignals)}
+                </>
+              )}
+            </div>
           )}
         </>
       )}
