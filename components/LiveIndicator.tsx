@@ -4,8 +4,13 @@ import { useState, useEffect } from 'react'
 
 const FRESH_THRESHOLD_MS = 2 * 60 * 1000 // 2 minutes
 
-/** Pulsing "LIVE" dot when lastUpdated is under ~2 min old; "Delayed" + timestamp otherwise. */
-export default function LiveIndicator({ lastUpdated }: { lastUpdated: string | null | undefined }) {
+/**
+ * Pulsing dot when lastUpdated is under ~2 min old; "Delayed" + timestamp
+ * otherwise. `hideLabel` drops the "LIVE" word in the fresh state (dot only)
+ * — used wherever a "LIVE" word would be redundant right under a price —
+ * the "DELAYED Xm" staleness text is a distinct signal and always shown.
+ */
+export default function LiveIndicator({ lastUpdated, hideLabel = false }: { lastUpdated: string | null | undefined; hideLabel?: boolean }) {
   const [now, setNow] = useState(() => Date.now())
 
   useEffect(() => {
@@ -24,7 +29,7 @@ export default function LiveIndicator({ lastUpdated }: { lastUpdated: string | n
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#4ade80' }} />
           <span className="relative inline-flex rounded-full w-1.5 h-1.5" style={{ backgroundColor: '#4ade80' }} />
         </span>
-        <span style={{ fontSize: 9, color: '#4ade80', fontWeight: 700 }}>LIVE</span>
+        {!hideLabel && <span style={{ fontSize: 9, color: '#4ade80', fontWeight: 700 }}>LIVE</span>}
       </span>
     )
   }

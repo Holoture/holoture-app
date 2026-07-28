@@ -120,30 +120,37 @@ function Blurred({ children }: { children: React.ReactNode }) {
   )
 }
 
-/** Live current price + entry-zone distance, intraday/1-3day rows only. */
+/**
+ * Current price for every row, sourced from LiveQuoteCache (via
+ * /api/live/quotes). Entry-zone distance (colored dot + "% from zone") only
+ * applies to intraday/1-3day rows where an entry zone is actively being
+ * chased — showZoneInfo gates that, plain rows just show the price.
+ */
 function LiveZoneCell({
-  livePrice, zoneDistancePct, inZone, liveUpdatedAt,
-}: { livePrice: number | null; zoneDistancePct: number | null; inZone: boolean | null; liveUpdatedAt: string | null }) {
+  livePrice, zoneDistancePct, inZone, liveUpdatedAt, showZoneInfo,
+}: { livePrice: number | null; zoneDistancePct: number | null; inZone: boolean | null; liveUpdatedAt: string | null; showZoneInfo: boolean }) {
   if (livePrice == null) {
     return <span className="text-xs" style={{ color: 'var(--text-w30)' }}>—</span>
   }
-  const color = inZone ? '#1D9E75' : '#f97316'
+  const color = showZoneInfo ? (inZone ? '#1D9E75' : '#f97316') : 'var(--text-w80)'
   return (
     <div>
       <div className="flex items-center gap-1">
-        <span
-          className="w-1.5 h-1.5 rounded-full shrink-0"
-          style={{ backgroundColor: color }}
-          title={inZone ? 'In entry zone' : 'Outside entry zone'}
-        />
+        {showZoneInfo && (
+          <span
+            className="w-1.5 h-1.5 rounded-full shrink-0"
+            style={{ backgroundColor: color }}
+            title={inZone ? 'In entry zone' : 'Outside entry zone'}
+          />
+        )}
         <span className="font-data text-sm" style={{ color: 'var(--text-w80)' }}>{formatCurrency(livePrice)}</span>
       </div>
-      {zoneDistancePct !== null && (
+      {showZoneInfo && zoneDistancePct !== null && (
         <div className="font-data" style={{ fontSize: 10, color, marginTop: 2 }}>
           {zoneDistancePct >= 0 ? '+' : ''}{zoneDistancePct.toFixed(2)}% {inZone ? 'in zone' : 'from zone'}
         </div>
       )}
-      <div className="mt-0.5"><LiveIndicator lastUpdated={liveUpdatedAt} /></div>
+      <div className="mt-0.5"><LiveIndicator lastUpdated={liveUpdatedAt} hideLabel /></div>
     </div>
   )
 }
@@ -368,12 +375,12 @@ export default function SignalRow({
             <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>Entry Zone</div>
           </div>
 
-          {/* Live price + zone distance (intraday/1-3day only) */}
+          {/* Current price — every row; zone distance overlay for intraday/1-3day only */}
           <div style={{ width: 110, flexShrink: 0 }}>
             {isObscured ? (
               <Blurred>$000.00</Blurred>
             ) : (
-              <LiveZoneCell livePrice={livePrice} zoneDistancePct={zoneDistancePct} inZone={inZone} liveUpdatedAt={liveUpdatedAt} />
+              <LiveZoneCell livePrice={livePrice} zoneDistancePct={zoneDistancePct} inZone={inZone} liveUpdatedAt={liveUpdatedAt} showZoneInfo={isShortHorizonRow} />
             )}
           </div>
 
@@ -486,10 +493,10 @@ export default function SignalRow({
             </div>
           )}
 
-          {/* Live price + zone distance (mobile, intraday/1-3day only) */}
-          {!isObscured && isShortHorizonRow && livePrice != null && (
+          {/* Current price + zone distance (mobile) — every row shows price; zone overlay for intraday/1-3day only */}
+          {!isObscured && (
             <div className="flex items-center gap-2">
-              <LiveZoneCell livePrice={livePrice} zoneDistancePct={zoneDistancePct} inZone={inZone} liveUpdatedAt={liveUpdatedAt} />
+              <LiveZoneCell livePrice={livePrice} zoneDistancePct={zoneDistancePct} inZone={inZone} liveUpdatedAt={liveUpdatedAt} showZoneInfo={isShortHorizonRow} />
             </div>
           )}
 

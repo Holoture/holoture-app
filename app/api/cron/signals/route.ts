@@ -616,6 +616,13 @@ const MIN_CONFIDENCE = 55
 function validateSignal(s: GeneratedSignal): boolean {
   if (!s.ticker || !s.entryZoneLow || !s.entryZoneHigh || !s.targetPrice || !s.stopLoss) return false
   if (s.entryZoneLow <= 0 || s.entryZoneHigh <= 0 || s.targetPrice <= 0 || s.stopLoss <= 0) return false
+  // Explicit typeof/NaN check — `s.confidence < MIN_CONFIDENCE` alone lets a
+  // missing/null confidence from a malformed Claude response silently pass,
+  // since `undefined < 55` and `null < 55` are both false in JS. That would
+  // otherwise reach prisma.signal.create() with an invalid confidence and
+  // either crash the whole batch insert or (if the column ever loosens)
+  // persist a signal with no usable confidence value.
+  if (typeof s.confidence !== 'number' || Number.isNaN(s.confidence)) return false
   if (s.confidence < MIN_CONFIDENCE) return false
   return true
 }

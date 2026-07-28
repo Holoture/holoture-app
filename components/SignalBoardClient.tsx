@@ -209,16 +209,17 @@ export default function SignalBoardClient({
     setAfterClose(checkAfterClose())
   }, [])
 
-  // Batched live price poll for intraday/1-3day rows only — reads the
-  // server-side LiveQuoteCache via /api/live/quotes, never Schwab directly
-  // (cron/live-quotes is the only Schwab caller). 12s client poll; the
-  // cache itself refreshes every 1-5 min depending on session, so this
-  // just keeps the UI current with whatever the cache already has —
-  // concurrent viewers never multiply upstream Schwab calls.
-  const shortHorizonTickers = useMemo(() => {
-    return signals.filter(isShortTermSignal).map(s => s.ticker)
+  // Batched live price poll for every signal on the board — reads the
+  // server-side LiveQuoteCache via /api/live/quotes (falls back to an
+  // on-demand Schwab fetch there for genuine cache misses, so a row never
+  // shows blank). 12s client poll; the cache itself refreshes every 1-5 min
+  // depending on session, so this just keeps the UI current with whatever
+  // the cache already has — concurrent viewers never multiply upstream
+  // Schwab calls beyond the rare cache-miss fallback.
+  const allTickers = useMemo(() => {
+    return [...new Set(signals.map(s => s.ticker))]
   }, [signals])
-  const liveQuotes = useLiveQuotes(isFree ? [] : shortHorizonTickers, 12_000)
+  const liveQuotes = useLiveQuotes(isFree ? [] : allTickers, 12_000)
 
   useEffect(() => {
     fetch('/api/tracker')
@@ -405,7 +406,7 @@ export default function SignalBoardClient({
           { label: 'Signal',     w: 72 },
           { label: 'Confidence', w: 68 },
           { label: 'Entry Zone', flex: true },
-          { label: 'Live',       w: 110 },
+          { label: 'Price',      w: 110 },
           { label: 'Target',     w: 104 },
           { label: 'Stop Loss',  w: 104 },
           { label: 'Timeframe',  w: 90 },
