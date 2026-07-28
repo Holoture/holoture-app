@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { getOrCreateUser, computeTier } from '@/lib/user'
 import Header from '@/components/Header'
+import MarketStatusBanner from '@/components/MarketStatusBanner'
+import { getMarketStatus } from '@/lib/marketStatus'
 import SignalBoardClient from '@/components/SignalBoardClient'
 import { UpgradeBanner } from '@/components/FreeSignalCard'
 import AuthLoadingGate from '@/components/AuthLoadingGate'
@@ -120,6 +122,7 @@ export default async function DashboardPage() {
   }))
 
   // ── Trial banner data (Pro only — Max has no trial) ─────────────────────────
+  const marketStatus = getMarketStatus()
   const isTrialing   = user.subscriptionStatus === 'trialing' && tier === 'pro'
   const trialEndsAt  = (user as { trialEndsAt?: Date | null }).trialEndsAt ?? null
   const daysLeft     = trialEndsAt
@@ -159,6 +162,7 @@ export default async function DashboardPage() {
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <MarketStatusBanner {...marketStatus} />
         {/* Page header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>

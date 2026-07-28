@@ -1,6 +1,8 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Header from '@/components/Header'
+import MarketStatusBanner from '@/components/MarketStatusBanner'
+import { getMarketStatus } from '@/lib/marketStatus'
 import { prisma } from '@/lib/prisma'
 import { CalendarDays, AlertCircle } from 'lucide-react'
 
@@ -41,6 +43,7 @@ export default async function CalendarPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
+  const marketStatus = getMarketStatus()
   const entries = await getCalendarEntries()
 
   const byDate: Record<string, typeof entries> = {}
@@ -54,6 +57,7 @@ export default async function CalendarPage() {
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <MarketStatusBanner {...marketStatus} />
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-1">
             <CalendarDays className="w-6 h-6" style={{ color: '#009BFF' }} />

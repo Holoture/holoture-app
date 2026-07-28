@@ -1,6 +1,8 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Header from '@/components/Header'
+import MarketStatusBanner from '@/components/MarketStatusBanner'
+import { getMarketStatus } from '@/lib/marketStatus'
 import { prisma } from '@/lib/prisma'
 import MoversTable from '@/components/MoversTable'
 import { Sunrise, Moon, AlertTriangle } from 'lucide-react'
@@ -103,6 +105,7 @@ export default async function MoversPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
+  const marketStatus = getMarketStatus()
   const { premarketLive, afterhoursLive } = getSessionWindows()
   const [premarket, afterhours] = await Promise.all([
     getSnapshot('premarket'),
@@ -113,6 +116,7 @@ export default async function MoversPage() {
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <MarketStatusBanner {...marketStatus} />
         <div className="mb-3">
           <h1 className="text-2xl font-black text-white mb-1">Premarket &amp; After-Hours Movers</h1>
           <p className="text-sm text-white" style={{ opacity: 0.6 }}>

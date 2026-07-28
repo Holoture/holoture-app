@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { getOrCreateUser, computeTier } from '@/lib/user'
 import Header from '@/components/Header'
+import MarketStatusBanner from '@/components/MarketStatusBanner'
+import { getMarketStatus } from '@/lib/marketStatus'
 import AuthLoadingGate from '@/components/AuthLoadingGate'
 import OptionsDashboardClient from '@/components/OptionsDashboardClient'
 import Link from 'next/link'
@@ -33,6 +35,7 @@ export default async function OptionsPage() {
 
   const tier = computeTier(user)
   const isMax = tier === 'max'
+  const marketStatus = getMarketStatus()
 
   const optionsSignals = await getOptionsSignals()
   const serialized = optionsSignals.map((s) => ({
@@ -45,6 +48,7 @@ export default async function OptionsPage() {
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <MarketStatusBanner {...marketStatus} />
         <div className="mb-8">
           <p className="eyebrow mb-1">Signals</p>
           <div className="flex items-center gap-2">

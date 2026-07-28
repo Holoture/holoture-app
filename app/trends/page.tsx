@@ -1,6 +1,8 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Header from '@/components/Header'
+import MarketStatusBanner from '@/components/MarketStatusBanner'
+import { getMarketStatus } from '@/lib/marketStatus'
 import AutoRefresh from '@/components/AutoRefresh'
 import RefreshBanner from '@/components/RefreshBanner'
 import { prisma } from '@/lib/prisma'
@@ -20,6 +22,7 @@ export default async function TrendsPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
+  const marketStatus = getMarketStatus()
   const { snapshots, summary } = await getSectorData()
 
   const sorted = [...snapshots].sort((a, b) => b.change - a.change)
@@ -39,6 +42,7 @@ export default async function TrendsPage() {
       <Header />
       <AutoRefresh intervalMs={30 * 60 * 1000} />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <MarketStatusBanner {...marketStatus} />
         <RefreshBanner lastUpdatedAt={updatedAt ? updatedAt.toISOString() : null} intervalLabel="30 minutes" />
         <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
           <div>
