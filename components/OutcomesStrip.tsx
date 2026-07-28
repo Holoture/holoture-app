@@ -34,8 +34,6 @@ function Stat({ label, value, color }: { label: string; value: number; color: st
 export default function OutcomesStrip({ summary }: { summary: OutcomesSummary }) {
   if (summary.window.size === 0) return null
 
-  const allTimeTotal = summary.allTime.hitTarget + summary.allTime.hitStop + summary.allTime.expired
-
   return (
     <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
       <div
@@ -44,15 +42,10 @@ export default function OutcomesStrip({ summary }: { summary: OutcomesSummary })
       >
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           <span className="data-label" style={{ color: 'var(--text-dim)' }}>
-            Last {summary.window.size} signals
+            Recent Signals
           </span>
           <Stat label="hit target" value={summary.window.hitTarget} color="var(--buy)" />
           <Stat label="stopped out" value={summary.window.hitStop} color="var(--short)" />
-          <span className="hidden sm:inline" style={{ color: 'var(--line)' }}>|</span>
-          <span className="font-data text-xs" style={{ color: 'var(--text-dim)' }}>
-            all-time: {summary.allTime.hitTarget} / {summary.allTime.hitStop} / {summary.allTime.expired}
-            {' '}({allTimeTotal} closed)
-          </span>
         </div>
         <p className="text-center mt-3 text-xs" style={{ color: 'var(--text-w35)' }}>
           Past performance does not guarantee future results. Not financial advice.
