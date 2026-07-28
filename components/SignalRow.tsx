@@ -8,6 +8,7 @@ import { signalUpside } from '@/lib/signal-upside'
 import type { Signal } from './SignalCard'
 import TrackerButton from './TrackerButton'
 import LiveIndicator from './LiveIndicator'
+import LivePulseDot from './LivePulseDot'
 
 const SignalChart = dynamic(() => import('./SignalChart'), { ssr: false })
 
@@ -143,6 +144,7 @@ function LiveZoneCell({
             title={inZone ? 'In entry zone' : 'Outside entry zone'}
           />
         )}
+        <LivePulseDot lastUpdated={liveUpdatedAt} />
         <span className="font-data text-sm" style={{ color: 'var(--text-w80)' }}>{formatCurrency(livePrice)}</span>
       </div>
       {showZoneInfo && zoneDistancePct !== null && (
@@ -150,7 +152,7 @@ function LiveZoneCell({
           {zoneDistancePct >= 0 ? '+' : ''}{zoneDistancePct.toFixed(2)}% {inZone ? 'in zone' : 'from zone'}
         </div>
       )}
-      <div className="mt-0.5"><LiveIndicator lastUpdated={liveUpdatedAt} hideLabel /></div>
+      <div className="mt-0.5"><LiveIndicator lastUpdated={liveUpdatedAt} hideLabel staleOnly /></div>
     </div>
   )
 }

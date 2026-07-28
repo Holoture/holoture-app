@@ -9,8 +9,12 @@ const FRESH_THRESHOLD_MS = 2 * 60 * 1000 // 2 minutes
  * otherwise. `hideLabel` drops the "LIVE" word in the fresh state (dot only)
  * — used wherever a "LIVE" word would be redundant right under a price —
  * the "DELAYED Xm" staleness text is a distinct signal and always shown.
+ * `staleOnly` (used on the signals page, where the fresh dot is rendered
+ * separately to the left of the price via LivePulseDot) suppresses the
+ * fresh-state rendering here entirely — this component then only ever
+ * shows the "DELAYED Xm" state.
  */
-export default function LiveIndicator({ lastUpdated, hideLabel = false }: { lastUpdated: string | null | undefined; hideLabel?: boolean }) {
+export default function LiveIndicator({ lastUpdated, hideLabel = false, staleOnly = false }: { lastUpdated: string | null | undefined; hideLabel?: boolean; staleOnly?: boolean }) {
   const [now, setNow] = useState(() => Date.now())
 
   useEffect(() => {
@@ -23,6 +27,7 @@ export default function LiveIndicator({ lastUpdated, hideLabel = false }: { last
   const isLive = ageMs >= 0 && ageMs < FRESH_THRESHOLD_MS
 
   if (isLive) {
+    if (staleOnly) return null
     return (
       <span className="inline-flex items-center gap-1">
         <span className="relative flex w-1.5 h-1.5">
