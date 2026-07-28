@@ -23,6 +23,7 @@
     "@remotion/lambda": "^4.0.471",
     "@remotion/player": "^4.0.471",
     "@stripe/stripe-js": "^9.6.0",
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
     "lightweight-charts": "^5.2.0",
