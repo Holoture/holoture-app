@@ -43,10 +43,7 @@ export default function MarketStatusBanner({
 
   if (state === 'OPEN') {
     return (
-      <div
-        className="term-panel flex items-center gap-2 px-4 py-2 mb-6"
-        style={{ backgroundColor: 'rgba(74,222,128,0.06)' }}
-      >
+      <div className="flex items-center gap-2 mb-6">
         <span className="relative flex w-2 h-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#4ade80' }} />
           <span className="relative inline-flex rounded-full w-2 h-2" style={{ backgroundColor: '#4ade80' }} />
