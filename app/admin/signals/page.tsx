@@ -84,6 +84,13 @@ export default async function AdminSignalsPage() {
           <div className="flex flex-col items-end gap-3">
             <div className="flex items-center gap-3">
               <Link
+                href="/admin/console"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: 'rgba(0,155,255,0.12)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.5)' }}
+              >
+                Ops Console
+              </Link>
+              <Link
                 href="/admin/content"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: 'var(--bg-surface)', color: 'white', border: '1px solid var(--border)' }}

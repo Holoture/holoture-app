@@ -12,6 +12,7 @@ import SignalCard, { type Signal } from '@/components/SignalCard'
 import OutcomesStrip, { type OutcomesSummary } from '@/components/OutcomesStrip'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
+import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
 
 // The hero shows real, live data — not a mockup. Pulls the highest-confidence
 // complete signal from the most recent signal date so the hero never shows a
@@ -19,7 +20,7 @@ import { hasEverSubscribed } from '@/lib/user'
 async function getHeroSignal(): Promise<Signal | null> {
   try {
     const latest = await prisma.signal.findFirst({
-      where: { isActive: true, ticker: { not: '' }, confidence: { gt: 0 } },
+      where: { isActive: true, ticker: { not: '' }, confidence: { gt: 0 }, ...PUBLIC_TRACK_RECORD_FILTER },
       orderBy: { signalDate: 'desc' },
       select: { signalDate: true },
     })
@@ -36,6 +37,7 @@ async function getHeroSignal(): Promise<Signal | null> {
         ticker: { not: '' },
         confidence: { gt: 0 },
         signalDate: { gte: dayStart, lt: dayEnd },
+        ...PUBLIC_TRACK_RECORD_FILTER,
       },
       orderBy: { confidence: 'desc' },
     })
@@ -77,7 +79,10 @@ const MIN_SAMPLE = 25 // an unconvincing number is worse than no number
 
 async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
   try {
-    const catFilter = { timeframeCategory: { in: SWING_LONG_TERM_CATEGORIES } }
+    // PUBLIC_TRACK_RECORD_FILTER excludes hand-created/hand-edited signals
+    // from every count and denominator below — they are not algorithm
+    // output and would misrepresent the published track record.
+    const catFilter = { timeframeCategory: { in: SWING_LONG_TERM_CATEGORIES }, ...PUBLIC_TRACK_RECORD_FILTER }
     const [allTimeHitTarget, allTimeHitStop, allTimeExpired] = await Promise.all([
       prisma.signal.count({ where: { outcome: 'HIT_TARGET', ...catFilter } }),
       prisma.signal.count({ where: { outcome: 'HIT_STOP', ...catFilter } }),

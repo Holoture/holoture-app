@@ -350,3 +350,114 @@ input:-webkit-autofill:active {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
+
+/* ── Admin operations console ──────────────────────────────────────────────
+   Scoped entirely under .ops-console so none of this leaks into the public
+   site. Denser than the marketing pages by design: this is an operator
+   surface, not a conversion surface. */
+
+.ops-console {
+  font-family: var(--font-mono-data), ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  /* Faint grid texture. Kept very low-contrast so it never competes with
+     the data sitting on top of it. */
+  background-color: var(--bg-void);
+  background-image:
+    linear-gradient(rgba(46, 51, 58, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46, 51, 58, 0.16) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Terminal-style section header: "// SIGNALS" */
+.ops-section-label {
+  font-family: var(--font-mono-data), ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-w45);
+}
+.ops-section-label::before {
+  content: '// ';
+  color: #009BFF;
+}
+
+/* Panel — squared, hairline, with the site's corner-tick treatment. */
+.ops-panel {
+  position: relative;
+  background-color: rgba(22, 24, 27, 0.82);
+  border: 1px solid var(--line);
+}
+
+/* Dense table rows */
+.ops-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ops-table th {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-w35);
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.ops-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--line-faint);
+  color: var(--text-w80);
+  white-space: nowrap;
+}
+.ops-table tbody tr:hover td {
+  background-color: rgba(0, 155, 255, 0.045);
+}
+
+/* Inputs */
+.ops-input {
+  background-color: var(--bg-void);
+  border: 1px solid var(--line);
+  color: #fff;
+  padding: 5px 8px;
+  font-family: var(--font-mono-data), ui-monospace, Menlo, monospace;
+  font-size: 12px;
+  width: 100%;
+  outline: none;
+}
+.ops-input:focus {
+  border-color: #009BFF;
+}
+
+/* Buttons */
+.ops-btn {
+  font-family: var(--font-mono-data), ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  background-color: var(--bg-overlay);
+  color: var(--text-w70);
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s, background-color 0.12s;
+}
+.ops-btn:hover:not(:disabled) {
+  border-color: #009BFF;
+  color: #009BFF;
+}
+.ops-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ops-btn-primary {
+  border-color: rgba(0, 155, 255, 0.5);
+  background-color: rgba(0, 155, 255, 0.12);
+  color: #009BFF;
+}
+.ops-btn-danger:hover:not(:disabled) {
+  border-color: #E24B4A;
+  color: #E24B4A;
+}

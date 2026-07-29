@@ -23,6 +23,28 @@ const API_BASE = 'https://api.schwabapi.com/marketdata/v1'
 
 let cachedAccessToken: { token: string; expiresAt: number } | null = null
 
+/**
+ * The live refresh token: DB first (written by the admin panel's Schwab
+ * re-auth flow), env var as fallback. The DB path exists because Schwab's
+ * refresh token expires every 7 days with no programmatic renewal — routing
+ * it through SchwabToken lets a re-auth take effect immediately, instead of
+ * requiring a Vercel env-var edit plus a redeploy. The env fallback keeps
+ * everything working before the first admin re-auth ever writes a row.
+ *
+ * Imported lazily so this module stays usable in any context that doesn't
+ * already have a Prisma connection available.
+ */
+async function getRefreshToken(): Promise<string | null> {
+  try {
+    const { prisma } = await import('./prisma')
+    const row = await prisma.schwabToken.findUnique({ where: { singleton: 'main' } })
+    if (row?.refreshToken) return row.refreshToken
+  } catch {
+    // DB unavailable — fall through to the env var.
+  }
+  return process.env.SCHWAB_REFRESH_TOKEN ?? null
+}
+
 async function getAccessToken(): Promise<string | null> {
   if (cachedAccessToken && cachedAccessToken.expiresAt > Date.now() + 30_000) {
     return cachedAccessToken.token
@@ -30,7 +52,7 @@ async function getAccessToken(): Promise<string | null> {
 
   const appKey = process.env.SCHWAB_APP_KEY
   const appSecret = process.env.SCHWAB_APP_SECRET
-  const refreshToken = process.env.SCHWAB_REFRESH_TOKEN
+  const refreshToken = await getRefreshToken()
   if (!appKey || !appSecret || !refreshToken) return null
 
   try {
