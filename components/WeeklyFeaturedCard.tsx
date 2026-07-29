@@ -17,9 +17,21 @@ export type WeeklyFeatured = {
   weekStartDate: string
 }
 
+/** Real timestamps (opened/closed) — rendered in market time. */
 function fmtDate(iso: string): string {
   return new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/New_York', month: 'short', day: 'numeric',
+  }).format(new Date(iso))
+}
+
+/**
+ * weekStartDate is a DATE-ONLY value stored at UTC midnight, so it must be
+ * formatted in UTC. Rendering it in America/New_York shifts it back 4-5
+ * hours into the previous day — Monday Jul 27 would print as "Jul 26".
+ */
+function fmtWeekStart(iso: string): string {
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: 'UTC', month: 'short', day: 'numeric',
   }).format(new Date(iso))
 }
 
@@ -48,7 +60,7 @@ export default function WeeklyFeaturedCard({ featured }: { featured: WeeklyFeatu
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         <p className="eyebrow" style={{ color: 'var(--text-dim)' }}>
           {featured
-            ? `Best performing signal — week of ${fmtDate(featured.weekStartDate)}`
+            ? `Best performing signal — week of ${fmtWeekStart(featured.weekStartDate)}`
             : 'Best performing signal'}
         </p>
         <span
