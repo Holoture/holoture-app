@@ -15,14 +15,15 @@ import { hasEverSubscribed } from '@/lib/user'
 import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
 
 /**
- * The hero's weekly showcase: the best-performing CLOSED signal of the
- * trailing week, chosen once by cron/weekly-featured and read back here.
+ * The hero's showcase: the highest-gaining CLOSED signal recorded to date,
+ * chosen by cron/weekly-featured (which re-runs weekly to pick up a new
+ * record) and read back here.
  *
- * Reads the stored selection rather than recomputing — the ranking must not
- * shift under a visitor mid-week, or the "week of X" label stops being true.
+ * Reads the stored selection rather than recomputing per render — one query
+ * instead of scanning every closed signal on every landing-page hit.
  * Returns null when the cron found nothing worth featuring, which the card
- * renders as an explicit empty state rather than falling back to an older
- * or weaker winner.
+ * renders as an explicit empty state rather than falling back to a weaker
+ * result.
  */
 async function getWeeklyFeatured(): Promise<WeeklyFeatured | null> {
   try {

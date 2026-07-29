@@ -24,16 +24,6 @@ function fmtDate(iso: string): string {
   }).format(new Date(iso))
 }
 
-/**
- * weekStartDate is a DATE-ONLY value stored at UTC midnight, so it must be
- * formatted in UTC. Rendering it in America/New_York shifts it back 4-5
- * hours into the previous day — Monday Jul 27 would print as "Jul 26".
- */
-function fmtWeekStart(iso: string): string {
-  return new Intl.DateTimeFormat('en-US', {
-    timeZone: 'UTC', month: 'short', day: 'numeric',
-  }).format(new Date(iso))
-}
 
 /** First two sentences of the thesis, so free users see reasoning quality without the full paywalled write-up. */
 function condense(thesis: string, maxLen = 240): string {
@@ -45,12 +35,13 @@ function condense(thesis: string, maxLen = 240): string {
 }
 
 /**
- * The landing page's weekly showcase. This is a PAST RESULT, and the whole
- * design job here is making that impossible to misread as a live pick:
- * a CLOSED tag, a muted/dashed border instead of the active-signal
- * treatment, an explicit "this signal has closed" line, no live price
- * anywhere, and a link out to the full win/loss record so a single winner
- * is never presented in isolation.
+ * The landing page's showcase of the highest-gaining signal recorded to
+ * date. This is a PAST RESULT and, being an all-time maximum, the single
+ * most favourable number the data contains — so the design job is making
+ * both facts impossible to miss: a CLOSED tag, a muted/dashed border
+ * instead of the active-signal treatment, an explicit "closed … not a
+ * typical result" line, no live price anywhere, and a link to the full
+ * win/loss record so the best case is never shown in isolation.
  */
 export default function WeeklyFeaturedCard({ featured }: { featured: WeeklyFeatured | null }) {
   const isShort = featured?.signalType === 'SHORT' || featured?.signalType === 'SELL'
@@ -59,9 +50,7 @@ export default function WeeklyFeaturedCard({ featured }: { featured: WeeklyFeatu
     <div>
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         <p className="eyebrow" style={{ color: 'var(--text-dim)' }}>
-          {featured
-            ? `Best performing signal — week of ${fmtWeekStart(featured.weekStartDate)}`
-            : 'Best performing signal'}
+          Best result to date
         </p>
         <span
           className="data-label"
@@ -129,7 +118,8 @@ export default function WeeklyFeaturedCard({ featured }: { featured: WeeklyFeatu
           </p>
 
           <p className="mt-4 pt-3" style={{ fontSize: 12, color: 'var(--text-mute)', borderTop: '1px solid var(--line-faint)' }}>
-            This signal has closed. Past result shown for illustration.
+            This signal has closed. Past result shown for illustration — this is
+            the single best result to date, not a typical one.
           </p>
 
           <p className="mt-2" style={{ fontSize: 12, color: 'var(--text-mute)' }}>
@@ -145,7 +135,7 @@ export default function WeeklyFeaturedCard({ featured }: { featured: WeeklyFeatu
           style={{ backgroundColor: 'var(--bg-raised)', border: '1px dashed var(--line)' }}
         >
           <p style={{ color: 'var(--text-body)', fontSize: 14 }}>
-            No signals closed at target this week.
+            No signals have closed at target yet.
           </p>
           <p className="mt-2" style={{ color: 'var(--text-mute)', fontSize: 12 }}>
             Nothing is shown rather than featuring a weaker result.{' '}

@@ -279,15 +279,20 @@ model TrackedSignal {
 // look up the User row first just to satisfy the FK. isRead/createdAt are
 // composite-indexed with userId since every read path is "this user's
 // unread, newest first."
-// The weekly "best performing signal" showcase on the landing page.
+// The landing page's "best result to date" showcase.
 //
-// Persisted rather than recomputed per render so the selection is STABLE for
-// the whole week — a live query would let the featured signal change under a
-// visitor mid-week as newer outcomes land, which would make a "week of X"
-// label a lie.
+// NAME IS ABOUT CADENCE, NOT WINDOW: the selection pool is every closed
+// signal ever recorded (highest realized gain wins); "Weekly" refers to
+// cron/weekly-featured re-running each Sunday to pick up a new record.
+// Kept as-is rather than renamed because a Prisma model rename is a
+// drop-and-recreate, and the row here is trivially regenerated but the
+// migration would need --accept-data-loss for no real benefit.
 //
-// weekStartDate is the Monday (ET) of the week the signal is featured FOR,
-// and is unique so a re-run of the cron overwrites rather than duplicates.
+// Persisted rather than recomputed per render so the landing page does one
+// indexed lookup instead of scanning every closed signal on each hit.
+//
+// weekStartDate is the Monday (ET) of the week the row was selected in, and
+// is unique so a cron re-run overwrites rather than duplicates.
 // realizedGainPercent is stored at selection time because it is derived from
 // outcomePrice, which the outcome checker could in principle revise later.
 model WeeklyFeaturedSignal {

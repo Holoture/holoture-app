@@ -1,9 +1,10 @@
 /**
  * GET /api/cron/weekly-featured
  *
- * Picks the single best-performing CLOSED signal from the trailing 7 days
- * for the landing page's weekly showcase. Runs Sunday night alongside
- * cron/universe-screen.
+ * Picks the single highest-gaining CLOSED signal of ALL TIME for the
+ * landing page showcase. Re-runs weekly (Sunday night, alongside
+ * cron/universe-screen) so a new record is picked up when one is set —
+ * the WEEKLY part is the refresh cadence, not the selection window.
  *
  * Eligibility is deliberately narrow — this is a published performance
  * claim, so anything that would inflate or misattribute it is excluded:
@@ -14,10 +15,13 @@
  *   - outcomePrice must be present, since realized gain is computed from the
  *     REAL price at outcome, not the target price the signal aimed at
  *
- * If nothing qualifies, NOTHING is written. There is deliberately no
- * fallback to an older winner or a "least bad" signal — an honest empty
- * week beats a cherry-picked one, and the UI renders an explicit
- * "no signals closed at target this week" state.
+ * If nothing qualifies, NOTHING is written — the UI renders an explicit
+ * empty state rather than falling back to a weaker result.
+ *
+ * NOTE: an all-time best is by construction the most favourable single
+ * result available, so the card that renders it leads with "Best result to
+ * date" and links to the full win/loss record. That pairing is what keeps
+ * this from reading as a representative outcome.
  */
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
@@ -38,13 +42,12 @@ export async function GET(req: Request) {
 
   try {
     const now = new Date()
-    const since = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
+    // No date window — the pool is every qualifying signal ever recorded.
     const candidates = await prisma.signal.findMany({
       where: {
         outcome: 'HIT_TARGET',
         outcomePrice: { not: null },
-        outcomeCheckedAt: { gte: since },
         ...PUBLIC_TRACK_RECORD_FILTER,
       },
       select: {
@@ -54,7 +57,7 @@ export async function GET(req: Request) {
     })
 
     if (candidates.length === 0) {
-      return NextResponse.json({ ok: true, candidates: 0, selected: null, note: 'no signals closed at target in the trailing 7 days' })
+      return NextResponse.json({ ok: true, candidates: 0, selected: null, note: 'no signals have closed at target yet' })
     }
 
     let best: { id: string; ticker: string; gain: number } | null = null
