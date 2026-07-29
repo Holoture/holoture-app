@@ -8,6 +8,7 @@ import { useUser, UserButton } from '@clerk/nextjs'
 import { Menu, X, Gift, ChevronDown, Lock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import PromoModal from './PromoModal'
+import NotificationBell from './NotificationBell'
 
 type DropdownItemConfig = {
   href: string
@@ -106,6 +107,7 @@ export default function Header() {
             )}
             {isLoaded && isSignedIn && (
               <>
+                <NotificationBell />
                 <button
                   onClick={() => setPromoOpen(true)}
                   className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white"

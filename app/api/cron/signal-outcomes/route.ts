@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getQuotes } from '@/lib/schwab'
 import { isValidTimeframeCategory, classifyLegacyTimeHorizon, type TimeframeCategory } from '@/lib/timeframe'
+import { createNotificationsBulk, pruneOldNotifications, type NotificationType } from '@/lib/notifications'
+import { formatCurrency } from '@/lib/utils'
 
 export const maxDuration = 60
 
@@ -145,6 +147,41 @@ export async function GET(request: Request) {
       })
     }
 
+    // Tracked-signal notifications — only for users who tracked one of these
+    // specific signals, never a broadcast.
+    if (updates.length > 0) {
+      const bySignalId = new Map(signals.map((s) => [s.id, s]))
+      const trackers = await prisma.trackedSignal.findMany({
+        where: { signalId: { in: updates.map((u) => u.id) }, closedAt: null },
+        select: { userId: true, signalId: true },
+      })
+      const notifTypeFor: Record<string, NotificationType> = {
+        HIT_TARGET: 'signal_hit_target',
+        HIT_STOP: 'signal_hit_stop',
+        EXPIRED: 'signal_expired',
+      }
+      const updateBySignalId = new Map(updates.map((u) => [u.id, u]))
+      await createNotificationsBulk(
+        trackers.flatMap((t) => {
+          const update = updateBySignalId.get(t.signalId)
+          const s = bySignalId.get(t.signalId)
+          const type = update ? notifTypeFor[update.outcome] : undefined
+          if (!update || !s || !type) return []
+          const title =
+            update.outcome === 'HIT_TARGET' ? `${s.ticker} hit its target` :
+            update.outcome === 'HIT_STOP'   ? `${s.ticker} hit its stop loss` :
+            `${s.ticker} expired without resolution`
+          const body =
+            update.outcome === 'HIT_TARGET' ? `Target price of ${formatCurrency(s.targetPrice)} was reached.` :
+            update.outcome === 'HIT_STOP'   ? `Stop loss price of ${formatCurrency(s.stopLoss)} was reached.` :
+            `Neither the target nor the stop loss was reached before the signal's timeframe ended.`
+          return [{ userId: t.userId, type, title, body, linkUrl: '/tracker' }]
+        }),
+      )
+    }
+
+    const pruned = await pruneOldNotifications()
+
     console.log(`Signal outcomes: evaluated ${evaluated} signals`)
     return NextResponse.json({
       message: 'Success',
@@ -154,6 +191,7 @@ export async function GET(request: Request) {
         hit_stop: updates.filter((u) => u.outcome === 'HIT_STOP').length,
         expired: updates.filter((u) => u.outcome === 'EXPIRED').length,
       },
+      notificationsPruned: pruned,
     })
   } catch (err) {
     console.error('Signal outcomes cron error:', err)

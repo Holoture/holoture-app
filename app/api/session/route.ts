@@ -15,6 +15,7 @@ import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 import { randomBytes } from 'crypto'
 import { checkRateLimit, tooManyRequests, getIp, DEFAULT_LIMIT, DEFAULT_WINDOW_MS } from '@/lib/rate-limit'
+import { createNotification } from '@/lib/notifications'
 
 const COOKIE        = 'holo-sid'
 const SESSION_LIMIT = 3
@@ -79,6 +80,21 @@ export async function POST(req: NextRequest) {
   await prisma.userSession.create({
     data: { userId, sessionToken: token, deviceInfo, ipAddress: ip },
   })
+
+  // New-device notification — only when this isn't the user's very first
+  // session ever (a brand-new account's first sign-in isn't a "new device"
+  // event worth notifying about). activeCount is the count BEFORE this
+  // create, so activeCount > 0 here means at least one other session
+  // already existed.
+  if (activeCount > 0) {
+    await createNotification({
+      userId,
+      type: 'new_device',
+      title: 'New device signed in',
+      body: (deviceInfo || 'Unknown device').slice(0, 140),
+      linkUrl: '/account/devices',
+    })
+  }
 
   const res = NextResponse.json({ ok: true, created: true }, { status: 201 })
   res.cookies.set(COOKIE, token, {

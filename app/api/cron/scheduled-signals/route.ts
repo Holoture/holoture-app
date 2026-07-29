@@ -52,6 +52,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
 import { getQuotes, getExtendedHoursQuotes } from '@/lib/schwab'
+import { notifySignalDigest } from '@/lib/notifications'
 import {
   EXTENDED_MAX_SPREAD_PCT,
   EXTENDED_MIN_LAST_TRADE_DOLLARS,
@@ -379,6 +380,12 @@ export async function GET(req: Request) {
       })
       created.push(c.ticker)
     }
+
+    // Batched digest, Pro/Max only — never a per-signal notification, and
+    // never fanned out to Free (these runs aren't the free-pick source;
+    // see notifySignalDigest's doc comment).
+    const digestLabel = slot.session === 'premarket' ? 'premarket run' : slot.session === 'afterhours' ? 'after-hours run' : 'regular-hours run'
+    await notifySignalDigest({ createdCount: created.length, runLabel: digestLabel })
 
     return NextResponse.json({
       ok: true,

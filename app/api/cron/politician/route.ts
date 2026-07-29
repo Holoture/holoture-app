@@ -1,6 +1,23 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
+import { createNotificationsBulk } from '@/lib/notifications'
+
+// Proposed threshold for the "politician trade above a significant dollar
+// amount" platform highlight — filtered hard so this stays rare (per spec:
+// if it fires more than ~2-3x/week, the threshold is too loose). Trades are
+// disclosed as a RANGE (STOCK Act bands), not an exact figure, so this
+// gates on the range's own FLOOR: $250,000 (i.e. the "$250,001–$500,000"
+// band or higher) AND the AI significance call is already "High" — two
+// independent filters, not one. Report actual weekly frequency once this
+// has run for a week; tune from there rather than guessing further.
+const POLITICIAN_TRADE_NOTIFY_FLOOR = 250_000
+
+/** Extracts the lower bound from a STOCK Act disclosure range string, e.g. "$250,001 - $500,000" -> 250001. Returns null if unparseable. */
+function parseAmountRangeFloor(range: string): number | null {
+  const match = range.replace(/,/g, '').match(/\$?(\d+)/)
+  return match ? parseInt(match[1], 10) : null
+}
 
 export const maxDuration = 300
 
@@ -306,7 +323,30 @@ export async function GET(req: Request) {
       )
     }
 
-    return NextResponse.json({ ok: true, count: upserted, total: trades.length, newTrades: newTrades.length, diagnostic })
+    // Platform highlight: politician trade above the disclosed-range floor,
+    // AND already AI-rated High significance — only ever from genuinely new
+    // trades this run (never re-fires for a trade already in the DB).
+    const bigTrades = newTrades.filter((t) => {
+      const floor = parseAmountRangeFloor(t.amount_range)
+      if (floor === null || floor < POLITICIAN_TRADE_NOTIFY_FLOOR) return false
+      const key = `${t.politician_name}|${t.ticker}|${t.traded_at}`
+      return commentaryMap.get(key)?.significance === 'High'
+    })
+    if (bigTrades.length > 0) {
+      const allUsers = await prisma.user.findMany({ select: { clerkId: true } })
+      const rows = bigTrades.flatMap((t) =>
+        allUsers.map((u) => ({
+          userId: u.clerkId,
+          type: 'politician_trade' as const,
+          title: `${t.politician_name} disclosed a ${t.trade_type.toLowerCase()} in ${t.ticker}`,
+          body: `Disclosed amount range: ${t.amount_range}.`,
+          linkUrl: '/politician-scanner',
+        })),
+      )
+      await createNotificationsBulk(rows)
+    }
+
+    return NextResponse.json({ ok: true, count: upserted, total: trades.length, newTrades: newTrades.length, bigTrades: bigTrades.length, diagnostic })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('[cron/politician]', msg)

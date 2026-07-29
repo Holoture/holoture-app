@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
+import { createNotification } from '@/lib/notifications'
 import type Stripe from 'stripe'
+
+/** Looks up the Clerk id for a Stripe customer — every notification write here needs it since Notification.userId is the Clerk id, not the internal User.id. */
+async function clerkIdForCustomer(customerId: string): Promise<string | null> {
+  const user = await prisma.user.findFirst({ where: { stripeCustomerId: customerId }, select: { clerkId: true } })
+  return user?.clerkId ?? null
+}
 
 function tierFromPriceId(priceId: string | undefined): 'pro' | 'max' {
   if (priceId && priceId === process.env.STRIPE_MAX_PRICE_ID) return 'max'
@@ -93,15 +100,28 @@ export async function POST(req: NextRequest) {
         break
       }
 
-      // ── Trial ending soon ──────────────────────────────────────────────────
+      // ── Trial ending soon (3-day reminder) ──────────────────────────────────
       // Stripe fires this 3 days before the trial ends (configured in Stripe
       // Dashboard under Subscriptions → Reminders). Stripe also sends its own
       // built-in reminder email to the customer automatically when
       // trial_period_days is set on checkout — no extra email code needed.
       // We don't need a DB write here because trialEndsAt is already stored
       // from the subscription.created event; the dashboard banner reads it.
+      // The 1-day reminder is a separate daily cron (cron/trial-reminders)
+      // since Stripe only fires this specific event once, at the 3-day mark.
       case 'customer.subscription.trial_will_end': {
-        // Add any custom notification logic here (e.g. in-app notification).
+        const sub        = event.data.object as Stripe.Subscription
+        const customerId = sub.customer as string
+        const clerkId = await clerkIdForCustomer(customerId)
+        if (clerkId) {
+          await createNotification({
+            userId: clerkId,
+            type: 'trial_ending',
+            title: 'Your Pro trial ends in 3 days',
+            body: 'Manage your plan from the Subscription page.',
+            linkUrl: '/pricing',
+          })
+        }
         break
       }
 
@@ -113,6 +133,39 @@ export async function POST(req: NextRequest) {
           where: { stripeCustomerId: customerId },
           data:  { subscriptionStatus: 'past_due', tier: 'free' },
         })
+        const clerkId = await clerkIdForCustomer(customerId)
+        if (clerkId) {
+          await createNotification({
+            userId: clerkId,
+            type: 'payment_failed',
+            title: 'Payment failed',
+            body: 'Your most recent payment did not go through. Update your payment method to keep your plan active.',
+            linkUrl: '/pricing',
+          })
+        }
+        break
+      }
+
+      // ── Subscription renewed ────────────────────────────────────────────────
+      // invoice.payment_succeeded fires for every successful charge, including
+      // the very first one at signup — billing_reason distinguishes a renewal
+      // from the initial subscription create, which already gets its own
+      // context via subscription.created and shouldn't double-notify.
+      case 'invoice.payment_succeeded': {
+        const invoice    = event.data.object as Stripe.Invoice
+        const customerId = invoice.customer as string
+        if (invoice.billing_reason === 'subscription_cycle') {
+          const clerkId = await clerkIdForCustomer(customerId)
+          if (clerkId) {
+            await createNotification({
+              userId: clerkId,
+              type: 'subscription_renewed',
+              title: 'Subscription renewed',
+              body: 'Your subscription has been renewed.',
+              linkUrl: '/pricing',
+            })
+          }
+        }
         break
       }
     }

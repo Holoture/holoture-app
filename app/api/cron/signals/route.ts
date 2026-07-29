@@ -9,6 +9,7 @@ import {
 } from '@/lib/schwab'
 import { isValidTimeframeCategory, classifyLegacyTimeHorizon, type TimeframeCategory } from '@/lib/timeframe'
 import { LARGE_CAP_MIN_DOLLAR_VOLUME, SMALL_CAP_MIN_DOLLAR_VOLUME } from '@/lib/liquidityFloor'
+import { notifySignalDigest } from '@/lib/notifications'
 
 export const maxDuration = 120
 
@@ -742,6 +743,8 @@ export async function GET(req: Request) {
         data: { signalCount: allSignals.length, status: 'success' },
       }),
     ])
+
+    await notifySignalDigest({ createdCount: allSignals.length, runLabel: 'daily batch', freeDigest: true })
 
     return NextResponse.json({ ok: true, count: allSignals.length, largeCap: largeCapCount, smallCap: smallCapCount })
   } catch (err) {

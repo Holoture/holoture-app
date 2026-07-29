@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { prisma } from '@/lib/prisma'
+import { createNotificationsBulk } from '@/lib/notifications'
 
 export const maxDuration = 120
 
@@ -269,6 +270,68 @@ export async function GET(request: Request) {
     }))
 
     await prisma.insiderTrade.createMany({ data: records, skipDuplicates: true })
+
+    // ── Insider cluster detection: 2+ distinct insiders, same company, ──────
+    // within a rolling 7-day window. Filtered hard and rare by design — this
+    // is a platform-wide highlight (broadcast to every user), not a
+    // per-tracked-signal notification, so it must stay infrequent or it
+    // becomes exactly the noise the digest-batching elsewhere in this
+    // feature exists to avoid.
+    const clusterCutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    const touchedTickers = [...new Set(records.map((r) => r.ticker))]
+    if (touchedTickers.length > 0) {
+      const recentByTicker = await prisma.insiderTrade.findMany({
+        where: { ticker: { in: touchedTickers }, tradeDate: { gte: clusterCutoff } },
+        select: { ticker: true, insiderName: true, companyName: true },
+      })
+      const insidersByTicker = new Map<string, Set<string>>()
+      const companyByTicker = new Map<string, string>()
+      for (const t of recentByTicker) {
+        if (!insidersByTicker.has(t.ticker)) insidersByTicker.set(t.ticker, new Set())
+        insidersByTicker.get(t.ticker)!.add(t.insiderName)
+        companyByTicker.set(t.ticker, t.companyName)
+      }
+
+      const clusterTickers: string[] = []
+      for (const [ticker, insiders] of insidersByTicker) {
+        if (insiders.size >= 2) clusterTickers.push(ticker)
+      }
+
+      if (clusterTickers.length > 0) {
+        // Dedup: don't re-broadcast the same cluster every run while it's
+        // still ongoing — skip any ticker already announced in the last 7
+        // days. Exact title match (not `contains`) deliberately, since a
+        // substring check here would false-positive on short tickers that
+        // are substrings of others (e.g. "A" inside "Insider cluster buy: AAPL").
+        const titleFor = (t: string) => `Insider cluster buy: ${t}`
+        const alreadyAnnounced = await prisma.notification.findMany({
+          where: {
+            type: 'insider_cluster',
+            createdAt: { gte: clusterCutoff },
+            title: { in: clusterTickers.map(titleFor) },
+          },
+          select: { title: true },
+        })
+        const announcedTitles = new Set(alreadyAnnounced.map((a) => a.title))
+        const newClusters = clusterTickers.filter((t) => !announcedTitles.has(titleFor(t)))
+
+        if (newClusters.length > 0) {
+          const allUsers = await prisma.user.findMany({ select: { clerkId: true } })
+          const rows = newClusters.flatMap((ticker) => {
+            const count = insidersByTicker.get(ticker)!.size
+            const company = companyByTicker.get(ticker) ?? ticker
+            return allUsers.map((u) => ({
+              userId: u.clerkId,
+              type: 'insider_cluster' as const,
+              title: `Insider cluster buy: ${ticker}`,
+              body: `${count} insiders at ${company} filed purchases within the past 7 days.`,
+              linkUrl: '/insider-scanner',
+            }))
+          })
+          await createNotificationsBulk(rows)
+        }
+      }
+    }
 
     console.log(`Insider cron: inserted ${records.length} new trades`)
     return NextResponse.json({ message: 'Success', inserted: records.length })

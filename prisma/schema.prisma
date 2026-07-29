@@ -259,6 +259,26 @@ model TrackedSignal {
   @@unique([userId, signalId])
 }
 
+// In-app notification bell. userId is Clerk's id (matches User.clerkId),
+// not a Prisma relation FK — this table is written from many places
+// (crons, the Stripe webhook, /api/user/sync) that only have the Clerk id
+// on hand, and a hard relation would force every one of those call sites to
+// look up the User row first just to satisfy the FK. isRead/createdAt are
+// composite-indexed with userId since every read path is "this user's
+// unread, newest first."
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  body      String
+  linkUrl   String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead, createdAt])
+}
+
 model AlertPreferences {
   id                  String   @id @default(cuid())
   clerkId             String   @unique

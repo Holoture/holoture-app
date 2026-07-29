@@ -27,6 +27,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getQuotes } from '@/lib/schwab'
+import { createNotificationsBulk } from '@/lib/notifications'
+import { formatCurrency } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -62,6 +64,7 @@ export async function GET(req: Request) {
     let enteredZone = 0
     let retiredLeftZone = 0
     const now = new Date()
+    const justEntered: { id: string; ticker: string; entryZoneLow: number; entryZoneHigh: number }[] = []
 
     for (const c of candidates) {
       const q = quotes.get(c.ticker)
@@ -71,6 +74,7 @@ export async function GET(req: Request) {
       if (inZone && !c.enteredZoneAt) {
         await prisma.signal.update({ where: { id: c.id }, data: { enteredZoneAt: now } })
         enteredZone++
+        justEntered.push(c)
         continue
       }
 
@@ -82,6 +86,29 @@ export async function GET(req: Request) {
         retiredLeftZone++
       }
       // else: already entered at some point — leave to cron/signal-outcomes
+    }
+
+    // Tracked-signal notification — only users who opted in by tracking this
+    // specific signal, never a broadcast. Highest priority per spec since
+    // it's the one category the user explicitly asked for.
+    if (justEntered.length > 0) {
+      const trackers = await prisma.trackedSignal.findMany({
+        where: { signalId: { in: justEntered.map((s) => s.id) }, closedAt: null },
+        select: { userId: true, signalId: true },
+      })
+      const byId = new Map(justEntered.map((s) => [s.id, s]))
+      await createNotificationsBulk(
+        trackers.map((t) => {
+          const s = byId.get(t.signalId)!
+          return {
+            userId: t.userId,
+            type: 'zone_entered' as const,
+            title: `${s.ticker} entered its entry zone`,
+            body: `Price is now within the entry zone (${formatCurrency(s.entryZoneLow)}–${formatCurrency(s.entryZoneHigh)}).`,
+            linkUrl: '/tracker',
+          }
+        }),
+      )
     }
 
     return NextResponse.json({ ok: true, checked: candidates.length, enteredZone, retiredLeftZone })
