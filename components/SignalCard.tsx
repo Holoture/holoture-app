@@ -20,6 +20,11 @@ export type Signal = {
   // | 'momentum' (see lib/timeframe.ts). Optional only because pre-migration
   // rows may not have it backfilled yet.
   timeframeCategory?: string | null
+  // Which market session the signal's pricing data came from — 'regular'
+  // (the default/daily board) or 'premarket' | 'afterhours' (produced only
+  // by cron/extended-signals). Optional only because pre-migration rows may
+  // not have it backfilled yet — treat missing as 'regular'.
+  session?: string | null
   isMomentumSpike?: boolean
   marketCap?: number
   signalDate: Date | string
