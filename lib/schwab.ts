@@ -187,6 +187,16 @@ export type ExtendedHoursQuote = {
   regularClosePrice: number
   extendedLastPrice: number
   extendedVolume: number
+  // extended.totalVolume comes back 0 on every live symbol checked (verified
+  // via a raw payload dump against BABA) — it does not appear to be a usable
+  // in-session traded-volume figure on this Schwab entitlement, unlike the
+  // regular-session quote.totalVolume. Kept on the type (still 0) since it's
+  // real data Schwab returns, but callers needing an in-session liquidity
+  // proxy should use extendedBidPrice/extendedAskPrice (spread) and
+  // extendedLastSize (last print size) instead — see cron/extended-signals.
+  extendedBidPrice: number
+  extendedAskPrice: number
+  extendedLastSize: number
   extendedTradeTime: number // epoch ms
   pctChange: number // vs regularLastPrice — see getExtendedHoursQuotes doc
 }
@@ -213,15 +223,6 @@ export type ExtendedHoursQuote = {
  * Tickers with no real extended-session trade yet (extendedTradeTime = 0)
  * are omitted — a 0.0 last price is "no data," not a real quote.
  */
-/**
- * Diagnostic only — the unshaped /quotes payload for a single symbol, so the
- * exact field names Schwab returns in the `extended` block can be inspected
- * against live data rather than assumed.
- */
-export async function getRawQuotePayload(symbol: string): Promise<unknown | null> {
-  return schwabGet('/quotes', { symbols: symbol, fields: 'quote,extended,regular,reference' })
-}
-
 export async function getExtendedHoursQuotes(symbols: string[]): Promise<Map<string, ExtendedHoursQuote>> {
   const out = new Map<string, ExtendedHoursQuote>()
   if (symbols.length === 0) return out
@@ -258,6 +259,9 @@ export async function getExtendedHoursQuotes(symbols: string[]): Promise<Map<str
       regularClosePrice: q.closePrice ?? 0,
       extendedLastPrice,
       extendedVolume: ext.totalVolume ?? 0,
+      extendedBidPrice: ext.bidPrice ?? 0,
+      extendedAskPrice: ext.askPrice ?? 0,
+      extendedLastSize: ext.lastSize ?? 0,
       extendedTradeTime,
       pctChange: ((extendedLastPrice - regularLastPrice) / regularLastPrice) * 100,
     })

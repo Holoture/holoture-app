@@ -40,7 +40,17 @@ export const SMALL_CAP_MIN_DOLLAR_VOLUME = 5_000_000
 // the regular-session bar, never looser — extended sessions are thinner and
 // more easily manipulated, so the guardrails matter more here, not less.
 //
+// NOTE: the in-session floor does NOT use extended.totalVolume — a live raw
+// payload dump (against BABA, verified in production) showed that field is
+// 0 on every symbol on this Schwab entitlement, extended session or not.
+// It is not a usable traded-volume figure here. Bid/ask spread width and
+// last-print trade size (both present and populated in the same payload)
+// are the liquidity proxies used instead: a thin/manipulated book shows up
+// as a wide spread and/or a small last-print size, which is exactly the
+// failure mode the daily-average floor can't catch in an extended session.
+//
 // Starting values, to tune against live data — not gospel.
-export const EXTENDED_MIN_DOLLAR_VOLUME = 250_000 // actual $ traded in this extended session
-export const EXTENDED_MIN_PRICE = 3               // penny-stock floor, same as the momentum scanner
-export const EXTENDED_MAX_QUOTE_AGE_MIN = 20      // reject stale prints — a 20min-old last trade is itself a liquidity warning
+export const EXTENDED_MAX_SPREAD_PCT = 1.5     // bid/ask spread as % of mid — wider than this = too thin/manipulable to trust
+export const EXTENDED_MIN_LAST_TRADE_DOLLARS = 5_000 // lastPrice x lastSize of the most recent print — a real trade actually happened at real size
+export const EXTENDED_MIN_PRICE = 3            // penny-stock floor, same as the momentum scanner
+export const EXTENDED_MAX_QUOTE_AGE_MIN = 20   // reject stale prints — a 20min-old last trade is itself a liquidity warning

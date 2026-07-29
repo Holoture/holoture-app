@@ -17,8 +17,12 @@
  * clear BOTH floors:
  *   1. the daily-average dollar-volume floor — inherited by scanning only
  *      TickerUniverse, which is where that admission check already lives;
- *   2. an in-session floor (EXTENDED_MIN_*) on actual extended-session
- *      dollar volume, price, and last-print recency.
+ *   2. an in-session floor (EXTENDED_MAX_SPREAD_PCT, EXTENDED_MIN_LAST_
+ *      TRADE_DOLLARS) on the bid/ask spread and last-print trade size,
+ *      price, and last-print recency. NOT extended-session totalVolume —
+ *      that field came back 0 for every symbol on a live raw-payload check
+ *      against this Schwab entitlement, so spread width and trade size are
+ *      used as the liquidity proxy instead.
  * See lib/liquidityFloor.ts for why the daily floor alone is insufficient.
  *
  * As in cron/momentum, Claude never decides inclusion — every candidate has
@@ -30,11 +34,12 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
-import { getExtendedHoursQuotes, getRawQuotePayload } from '@/lib/schwab'
+import { getExtendedHoursQuotes } from '@/lib/schwab'
 import { classifyByMarketCap } from '@/lib/marketCapClassification'
 import { getMarketSession } from '@/lib/marketSession'
 import {
-  EXTENDED_MIN_DOLLAR_VOLUME,
+  EXTENDED_MAX_SPREAD_PCT,
+  EXTENDED_MIN_LAST_TRADE_DOLLARS,
   EXTENDED_MIN_PRICE,
   EXTENDED_MAX_QUOTE_AGE_MIN,
 } from '@/lib/liquidityFloor'
@@ -64,7 +69,8 @@ type Candidate = {
   ticker: string
   price: number
   pctMove: number
-  extendedDollarVolume: number
+  spreadPct: number
+  lastTradeDollars: number
   regularBaseline: number
   quoteAgeMin: number
 }
@@ -82,11 +88,14 @@ type WrittenSignal = {
  * Mechanical confidence — magnitude- and liquidity-driven, never AI-guessed
  * and never null. Floor of 55 matches MIN_CONFIDENCE in cron/signals so an
  * extended-hours signal is never weaker than the daily board's minimum bar.
+ * Liquidity component rewards a TIGHTER spread and a LARGER last-print size
+ * — both indicate a more trustworthy, less manipulable extended-session print.
  */
 function computeConfidence(c: Candidate): number {
   const magnitude = Math.min(20, Math.abs(c.pctMove) * 2)
-  const liquidity = Math.min(15, (c.extendedDollarVolume / 500_000) * 5)
-  return Math.round(Math.min(90, 55 + magnitude + liquidity) * 10) / 10
+  const spreadScore = Math.min(8, Math.max(0, (EXTENDED_MAX_SPREAD_PCT - c.spreadPct) * 4))
+  const sizeScore = Math.min(7, (c.lastTradeDollars / EXTENDED_MIN_LAST_TRADE_DOLLARS) * 2)
+  return Math.round(Math.min(90, 55 + magnitude + spreadScore + sizeScore) * 10) / 10
 }
 
 async function writeTheses(
@@ -116,7 +125,7 @@ For each, reply with a JSON array. Each object must have exactly these keys:
 
 Reply with a JSON array ONLY, no markdown.
 
-Data (all values already confirmed real, from Schwab's ${sessionLabel} quote feed):
+Data (all values already confirmed real, from Schwab's ${sessionLabel} quote feed — spreadPct is bid/ask spread as % of mid, lastTradeDollars is the dollar size of the most recent print):
 ${JSON.stringify(candidates, null, 2)}`,
       },
     ],
@@ -151,17 +160,6 @@ export async function GET(req: Request) {
     const url = new URL(req.url)
     const forced = url.searchParams.get('force')
     const isDryRun = forced === 'premarket' || forced === 'afterhours'
-
-    // Temporary: dump Schwab's raw `extended` block for one symbol. The
-    // in-session volume gate reads ext.totalVolume, which came back 0 for
-    // every ticker on the first live dry run — this is here to establish
-    // whether the field is absent, differently named, or genuinely zero
-    // outside an active extended session.
-    const debugRaw = url.searchParams.get('debugRaw')
-    if (debugRaw) {
-      const raw = await getRawQuotePayload(debugRaw)
-      return NextResponse.json({ ok: true, debugRaw, raw })
-    }
 
     // When forced, `session` is already one of the two extended values, so
     // the guard below is a no-op for a dry run and narrows the type for both
@@ -200,7 +198,7 @@ export async function GET(req: Request) {
     // far the real distribution sits from the thresholds. Calibrating
     // MIN_PCT_MOVE against actual near-misses beats guessing at it.
     const upMoves: Candidate[] = []
-    const rejected = { cooldown: 0, price: 0, move: 0, volume: 0, stale: 0, direction: 0 }
+    const rejected = { cooldown: 0, price: 0, move: 0, spread: 0, size: 0, stale: 0, direction: 0 }
 
     for (const map of quoteMaps) {
       for (const q of map.values()) {
@@ -213,20 +211,29 @@ export async function GET(req: Request) {
         // as a signal with an entry zone would overstate how tradable it is.
         if (q.pctChange <= 0) { rejected.direction++; continue }
 
-        const extendedDollarVolume = q.extendedLastPrice * q.extendedVolume
+        // Liquidity proxy: extended.totalVolume is unusably 0 on this
+        // entitlement (see lib/liquidityFloor.ts), so spread width and
+        // last-print trade size stand in for it instead.
+        const mid = (q.extendedBidPrice + q.extendedAskPrice) / 2
+        const spreadPct = mid > 0 && q.extendedBidPrice > 0 && q.extendedAskPrice > 0
+          ? ((q.extendedAskPrice - q.extendedBidPrice) / mid) * 100
+          : Infinity // no two-sided quote at all = can't assess liquidity, treat as failing
+        const lastTradeDollars = q.extendedLastPrice * q.extendedLastSize
         const quoteAgeMin = (now - q.extendedTradeTime) / 60_000
         const cand: Candidate = {
           ticker: q.symbol,
           price: Math.round(q.extendedLastPrice * 100) / 100,
           pctMove: Math.round(q.pctChange * 100) / 100,
-          extendedDollarVolume: Math.round(extendedDollarVolume),
+          spreadPct: Number.isFinite(spreadPct) ? Math.round(spreadPct * 100) / 100 : -1,
+          lastTradeDollars: Math.round(lastTradeDollars),
           regularBaseline: Math.round(q.regularLastPrice * 100) / 100,
           quoteAgeMin: Math.round(quoteAgeMin * 10) / 10,
         }
         upMoves.push(cand)
 
         if (Math.abs(q.pctChange) < MIN_PCT_MOVE) { rejected.move++; continue }
-        if (extendedDollarVolume < EXTENDED_MIN_DOLLAR_VOLUME) { rejected.volume++; continue }
+        if (spreadPct > EXTENDED_MAX_SPREAD_PCT) { rejected.spread++; continue }
+        if (lastTradeDollars < EXTENDED_MIN_LAST_TRADE_DOLLARS) { rejected.size++; continue }
         if (quoteAgeMin > EXTENDED_MAX_QUOTE_AGE_MIN || quoteAgeMin < 0) { rejected.stale++; continue }
 
         candidates.push(cand)
@@ -245,7 +252,8 @@ export async function GET(req: Request) {
         rejected,
         thresholds: {
           MIN_PCT_MOVE,
-          EXTENDED_MIN_DOLLAR_VOLUME,
+          EXTENDED_MAX_SPREAD_PCT,
+          EXTENDED_MIN_LAST_TRADE_DOLLARS,
           EXTENDED_MIN_PRICE,
           EXTENDED_MAX_QUOTE_AGE_MIN,
         },
@@ -298,7 +306,7 @@ export async function GET(req: Request) {
           timeHorizon,
           timeframeCategory,
           session,
-          thesis: `${sessionLabel} SIGNAL — THIN SESSION, WIDE SPREADS. ${written.thesis} | Up ${c.pctMove}% vs the regular-session price of $${c.regularBaseline}, on $${c.extendedDollarVolume.toLocaleString()} of ${sessionLabel.toLowerCase()} volume (last print ${c.quoteAgeMin}m ago). Extended-hours liquidity is a fraction of regular hours — expect wider spreads, size smaller than usual, and be aware the move can fully reverse at the open.`,
+          thesis: `${sessionLabel} SIGNAL — THIN SESSION, WIDE SPREADS. ${written.thesis} | Up ${c.pctMove}% vs the regular-session price of $${c.regularBaseline}, on a ${c.spreadPct}% bid/ask spread and a $${c.lastTradeDollars.toLocaleString()} last print (${c.quoteAgeMin}m ago). Extended-hours liquidity is a fraction of regular hours — expect wider spreads, size smaller than usual, and be aware the move can fully reverse at the open.`,
           aiSummary: written.aiSummary,
           sector: written.sector,
           signalCategory: isLarge ? 'large_cap' : 'small_cap',
