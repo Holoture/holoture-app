@@ -3,14 +3,13 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import Header from '@/components/Header'
-import { Plus, TrendingUp, TrendingDown, Minus, Gift, Infinity, Zap, Clock, Flag, MessageSquare } from 'lucide-react'
+import { Plus, TrendingUp, TrendingDown, Minus, Gift, Infinity, Zap, Clock } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import SignalDeleteButton from './SignalDeleteButton'
 import SignalToggleButton from './SignalToggleButton'
 import PromoCodeToggle from './PromoCodeToggle'
 import PromoCodeCreateForm from './PromoCodeCreateForm'
 import RefreshSignalsButton from './RefreshSignalsButton'
-import ModerationQueue from './ModerationQueue'
 import SystemHealthCard from './SystemHealthCard'
 
 async function getSignals() {
@@ -20,19 +19,6 @@ async function getSignals() {
 async function getPromoCodes() {
   try {
     return await prisma.promoCode.findMany({ orderBy: { createdAt: 'desc' } })
-  } catch {
-    return []
-  }
-}
-
-async function getFlaggedPosts() {
-  try {
-    return await prisma.forumPost.findMany({
-      where: { flagCount: { gt: 0 } },
-      orderBy: { flagCount: 'desc' },
-      take: 20,
-      select: { id: true, title: true, authorName: true, flagCount: true, isHidden: true, createdAt: true },
-    })
   } catch {
     return []
   }
@@ -71,8 +57,8 @@ export default async function AdminSignalsPage() {
   const { userId } = await auth()
   if (!userId || userId !== process.env.ADMIN_USER_ID) redirect('/dashboard')
 
-  const [signals, promoCodes, lastRefresh, flaggedPosts, latestHealth] = await Promise.all([
-    getSignals(), getPromoCodes(), getLastRefresh(), getFlaggedPosts(), getLatestHealthCheck(),
+  const [signals, promoCodes, lastRefresh, latestHealth] = await Promise.all([
+    getSignals(), getPromoCodes(), getLastRefresh(), getLatestHealthCheck(),
   ])
 
   return (
@@ -168,26 +154,6 @@ export default async function AdminSignalsPage() {
             </table>
           </div>
         )}
-
-        {/* Forum Moderation Queue */}
-        <div className="mt-12">
-          <div className="flex items-center gap-3 mb-6">
-            <Flag className="w-5 h-5" style={{ color: '#E24B4A' }} />
-            <h2 className="text-xl font-black text-white">Forum Moderation</h2>
-            <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: flaggedPosts.length > 0 ? 'rgba(226,75,74,0.15)' : 'var(--surf-w8)', color: flaggedPosts.length > 0 ? '#E24B4A' : 'var(--text-w40)' }}>
-              {flaggedPosts.length} flagged
-            </span>
-            <Link
-              href="/forum"
-              className="ml-auto inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-70 transition-opacity"
-              style={{ color: '#009BFF' }}
-            >
-              <MessageSquare className="w-3.5 h-3.5" />
-              View Forum
-            </Link>
-          </div>
-          <ModerationQueue posts={flaggedPosts.map(p => ({ ...p, createdAt: p.createdAt.toISOString() }))} />
-        </div>
 
         {/* Promo Codes */}
         <div className="mt-12">

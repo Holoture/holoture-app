@@ -21,7 +21,7 @@ import { z } from 'zod'
  * Strip all HTML tags and inline scripts from a string.
  * Applied to every free-text field that will be stored and later rendered.
  *
- * Protects against: stored XSS attacks via forum posts/replies.
+ * Protects against: stored XSS attacks via free-text fields.
  */
 export function stripHtml(input: string): string {
   return input
@@ -67,31 +67,6 @@ export function escapeRegex(input: string): string {
 }
 
 // ── Zod schemas ───────────────────────────────────────────────────────────────
-
-/** Forum post creation */
-export const forumPostSchema = z.object({
-  title:   z.string().trim().min(1, 'Title required').max(200, 'Title must be ≤ 200 characters'),
-  content: z.string().trim().min(1, 'Content required').max(5000, 'Content must be ≤ 5000 characters'),
-})
-
-/** Forum reply creation */
-export const forumReplySchema = z.object({
-  content: z.string().trim().min(1, 'Content required').max(2000, 'Reply must be ≤ 2000 characters'),
-})
-
-/** Forum vote */
-export const voteSchema = z.object({
-  targetId:   z.string().min(1).max(100),
-  targetType: z.enum(['post', 'reply']),
-  voteType:   z.enum(['up', 'down']),
-})
-
-/** Forum flag */
-export const flagSchema = z.object({
-  targetId:   z.string().min(1).max(100),
-  targetType: z.enum(['post', 'reply']),
-  reason:     z.string().max(500).optional().default(''),
-})
 
 /** Promo code redemption — alphanumeric + dash/underscore only */
 export const promoCodeSchema = z.object({

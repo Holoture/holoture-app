@@ -102,7 +102,6 @@ export default function Header() {
                 >
                   Get Started
                 </Link>
-                <ForumPill />
               </>
             )}
             {isLoaded && isSignedIn && (
@@ -115,7 +114,6 @@ export default function Header() {
                   <Gift className="w-5 h-5" />
                 </button>
                 <UserButton appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
-                <ForumPill />
               </>
             )}
             <button
@@ -377,16 +375,3 @@ function NavLink({
   )
 }
 
-function ForumPill() {
-  return (
-    <Link
-      href="/forum"
-      className="shrink-0 font-semibold whitespace-nowrap transition-colors text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-1.5"
-      style={{ backgroundColor: '#009BFF', color: 'white', borderRadius: 100 }}
-      onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#0080DD')}
-      onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#009BFF')}
-    >
-      Forum
-    </Link>
-  )
-}

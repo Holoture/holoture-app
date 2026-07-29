@@ -8,7 +8,7 @@
  *   The Map lives per-instance, so this guards against burst attacks on a
  *   single instance rather than providing global cross-instance limiting.
  *   That is the accepted trade-off for zero external infrastructure.
- * - Keys should be namespaced: `"checkout:user_abc"` or `"forum-read:1.2.3.4"`.
+ * - Keys should be namespaced: `"checkout:user_abc"` or `"details:1.2.3.4"`.
  * - A 1% chance cleanup runs on each call to prevent unbounded Map growth.
  */
 
@@ -130,10 +130,3 @@ export const DETAILS_WINDOW_MS = 60_000
 export const ADMIN_LIMIT     = 20
 export const ADMIN_WINDOW_MS = 60_000
 
-/** Forum writes: 20 / hour / user — prevents post/reply flooding */
-export const FORUM_WRITE_LIMIT     = 20
-export const FORUM_WRITE_WINDOW_MS = 60 * 60_000 // 1 hour
-
-/** Forum reads: 60 / minute / IP */
-export const FORUM_READ_LIMIT     = 60
-export const FORUM_READ_WINDOW_MS = 60_000
