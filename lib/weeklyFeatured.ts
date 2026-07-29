@@ -36,6 +36,49 @@ export function realizedGainPercent(s: {
 }
 
 /**
+ * Data-quality gate for the public showcase.
+ *
+ * cron/signal-outcomes records outcomePrice at the moment it DETECTS the
+ * target being crossed, so a genuine winner's exit lands at or just past
+ * its target — in live data every legitimate result sat within ~5% of
+ * target, and the largest honest overshoot was 1.56x the intended move.
+ * A recorded exit far beyond that means the QUOTE is wrong (stale feed,
+ * wrong instrument, unadjusted split), not that the move was real.
+ *
+ * This caught a real one: a GS signal targeting 665 from a 561.50 entry
+ * had outcomePrice 1045 recorded — a 4.67x overshoot that would have been
+ * published as an "86% gain" on the landing page.
+ *
+ * 2x is deliberately loose enough to keep every observed legitimate
+ * result (max 1.56x) while rejecting that class of artifact. Returns true
+ * when the outcome is trustworthy enough to publish.
+ */
+const MAX_OVERSHOOT_RATIO = 2
+
+export function isPlausibleOutcome(s: {
+  signalType: string
+  entryZoneLow: number
+  entryZoneHigh: number
+  targetPrice: number
+  outcomePrice: number
+}): boolean {
+  const realized = realizedGainPercent(s)
+  if (realized === null) return false
+
+  const entry = (s.entryZoneLow + s.entryZoneHigh) / 2
+  const isShort = s.signalType === 'SHORT' || s.signalType === 'SELL'
+  const intended = isShort
+    ? ((entry - s.targetPrice) / entry) * 100
+    : ((s.targetPrice - entry) / entry) * 100
+
+  // A non-positive intended move means the signal's own target/entry are
+  // inconsistent — not publishable regardless of what the exit says.
+  if (!Number.isFinite(intended) || intended <= 0) return false
+
+  return realized <= intended * MAX_OVERSHOOT_RATIO
+}
+
+/**
  * Monday 00:00 ET of the week containing `date`, returned as a UTC Date.
  * Used as the stable weekly key so a mid-week cron re-run overwrites the
  * same row instead of creating a second entry for the same week.

@@ -26,7 +26,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
-import { realizedGainPercent, weekStartET } from '@/lib/weeklyFeatured'
+import { realizedGainPercent, isPlausibleOutcome, weekStartET } from '@/lib/weeklyFeatured'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -52,7 +52,7 @@ export async function GET(req: Request) {
       },
       select: {
         id: true, ticker: true, signalType: true,
-        entryZoneLow: true, entryZoneHigh: true, outcomePrice: true,
+        entryZoneLow: true, entryZoneHigh: true, targetPrice: true, outcomePrice: true,
       },
     })
 
@@ -61,20 +61,40 @@ export async function GET(req: Request) {
     }
 
     let best: { id: string; ticker: string; gain: number } | null = null
+    const rejectedImplausible: { ticker: string; gain: number }[] = []
+
     for (const c of candidates) {
       if (c.outcomePrice === null) continue
-      const gain = realizedGainPercent({
+      const shaped = {
         signalType: c.signalType,
         entryZoneLow: c.entryZoneLow,
         entryZoneHigh: c.entryZoneHigh,
+        targetPrice: c.targetPrice,
         outcomePrice: c.outcomePrice,
-      })
+      }
+      const gain = realizedGainPercent(shaped)
       if (gain === null) continue
+
+      // Reject exits far beyond the signal's own target — that pattern means
+      // a bad recorded quote, not a real outsized move. Never publish one.
+      if (!isPlausibleOutcome(shaped)) {
+        rejectedImplausible.push({ ticker: c.ticker, gain: Math.round(gain * 100) / 100 })
+        continue
+      }
+
       if (!best || gain > best.gain) best = { id: c.id, ticker: c.ticker, gain }
     }
 
+    if (rejectedImplausible.length > 0) {
+      console.warn('[cron/weekly-featured] rejected implausible outcomes', rejectedImplausible)
+    }
+
     if (!best) {
-      return NextResponse.json({ ok: true, candidates: candidates.length, selected: null, note: 'no candidate produced a computable realized gain' })
+      return NextResponse.json({
+        ok: true, candidates: candidates.length, selected: null,
+        rejectedImplausible,
+        note: 'no candidate produced a publishable realized gain',
+      })
     }
 
     const weekStartDate = weekStartET(now)
@@ -88,6 +108,7 @@ export async function GET(req: Request) {
       ok: true,
       candidates: candidates.length,
       selected: { ticker: best.ticker, realizedGainPercent: Math.round(best.gain * 100) / 100 },
+      rejectedImplausible,
       weekStartDate: weekStartDate.toISOString(),
     })
   } catch (err) {
