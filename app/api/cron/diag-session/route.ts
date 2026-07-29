@@ -19,6 +19,8 @@ type Row = {
   count: bigint
   min_et: string
   max_et: string
+  min_utc: string
+  max_utc: string
 }
 
 export async function GET(req: Request) {
@@ -31,7 +33,13 @@ export async function GET(req: Request) {
     WITH et AS (
       SELECT
         "timeframeCategory",
-        ("createdAt" AT TIME ZONE 'America/New_York') AS et_ts
+        -- Prisma maps DateTime to `timestamp WITHOUT time zone` holding UTC,
+        -- so it must be anchored to UTC first; a bare
+        -- `AT TIME ZONE 'America/New_York'` converts the wrong direction and
+        -- shifts every row +4/5h (which is what made the intraday cron look
+        -- like it ran at 18:31 ET instead of 10:30 ET).
+        ("createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') AS et_ts,
+        "createdAt" AS utc_ts
       FROM "Signal"
       WHERE "createdAt" >= NOW() - INTERVAL '14 days'
     ), bucketed AS (
@@ -39,7 +47,8 @@ export async function GET(req: Request) {
         "timeframeCategory",
         et_ts,
         EXTRACT(DOW FROM et_ts) AS dow,
-        (EXTRACT(HOUR FROM et_ts) * 60 + EXTRACT(MINUTE FROM et_ts)) AS mins
+        (EXTRACT(HOUR FROM et_ts) * 60 + EXTRACT(MINUTE FROM et_ts)) AS mins,
+        utc_ts
       FROM et
     )
     SELECT
@@ -52,8 +61,10 @@ export async function GET(req: Request) {
       END AS session,
       "timeframeCategory",
       COUNT(*) AS count,
-      TO_CHAR(MIN(et_ts), 'HH24:MI') AS min_et,
-      TO_CHAR(MAX(et_ts), 'HH24:MI') AS max_et
+      TO_CHAR(MIN(mins) * INTERVAL '1 minute', 'HH24:MI') AS min_et,
+      TO_CHAR(MAX(mins) * INTERVAL '1 minute', 'HH24:MI') AS max_et,
+      TO_CHAR(MIN(utc_ts), 'HH24:MI') AS min_utc,
+      TO_CHAR(MAX(utc_ts), 'HH24:MI') AS max_utc
     FROM bucketed
     GROUP BY 1, 2
     ORDER BY 1, 2
@@ -71,6 +82,7 @@ export async function GET(req: Request) {
       timeframeCategory: r.timeframeCategory ?? 'null',
       count: Number(r.count),
       etTimeRange: `${r.min_et}–${r.max_et}`,
+      utcTimeRange: `${r.min_utc}–${r.max_utc}`,
     })),
   })
 }
