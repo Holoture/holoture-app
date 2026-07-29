@@ -30,7 +30,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
-import { getExtendedHoursQuotes } from '@/lib/schwab'
+import { getExtendedHoursQuotes, getRawQuotePayload } from '@/lib/schwab'
 import { classifyByMarketCap } from '@/lib/marketCapClassification'
 import { getMarketSession } from '@/lib/marketSession'
 import {
@@ -151,6 +151,17 @@ export async function GET(req: Request) {
     const url = new URL(req.url)
     const forced = url.searchParams.get('force')
     const isDryRun = forced === 'premarket' || forced === 'afterhours'
+
+    // Temporary: dump Schwab's raw `extended` block for one symbol. The
+    // in-session volume gate reads ext.totalVolume, which came back 0 for
+    // every ticker on the first live dry run — this is here to establish
+    // whether the field is absent, differently named, or genuinely zero
+    // outside an active extended session.
+    const debugRaw = url.searchParams.get('debugRaw')
+    if (debugRaw) {
+      const raw = await getRawQuotePayload(debugRaw)
+      return NextResponse.json({ ok: true, debugRaw, raw })
+    }
 
     // When forced, `session` is already one of the two extended values, so
     // the guard below is a no-op for a dry run and narrows the type for both

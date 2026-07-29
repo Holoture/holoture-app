@@ -213,6 +213,15 @@ export type ExtendedHoursQuote = {
  * Tickers with no real extended-session trade yet (extendedTradeTime = 0)
  * are omitted — a 0.0 last price is "no data," not a real quote.
  */
+/**
+ * Diagnostic only — the unshaped /quotes payload for a single symbol, so the
+ * exact field names Schwab returns in the `extended` block can be inspected
+ * against live data rather than assumed.
+ */
+export async function getRawQuotePayload(symbol: string): Promise<unknown | null> {
+  return schwabGet('/quotes', { symbols: symbol, fields: 'quote,extended,regular,reference' })
+}
+
 export async function getExtendedHoursQuotes(symbols: string[]): Promise<Map<string, ExtendedHoursQuote>> {
   const out = new Map<string, ExtendedHoursQuote>()
   if (symbols.length === 0) return out
