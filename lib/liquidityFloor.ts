@@ -24,3 +24,23 @@ export const SMALL_MID_MAX_MARKET_CAP = 1_000_000_000 // inclusive upper bound (
 // the market-cap band itself widen, instead of loosening both at once.
 export const LARGE_CAP_MIN_DOLLAR_VOLUME = 1_000_000
 export const SMALL_CAP_MIN_DOLLAR_VOLUME = 5_000_000
+
+// ── Extended-session (premarket / after-hours) additional floor ──────────────
+//
+// The floors above are computed from avg10DaysVolume — a FULL-DAY average.
+// Extended sessions typically trade 1-5% of daily volume, so that average
+// says nothing about whether a name is liquid *right now*, in this session:
+// a stock can average $50M/day and still trade $80k premarket on a
+// dollar-wide spread. Applying the daily figure to extended volume directly
+// would instead reject essentially everything.
+//
+// So extended-hours signals must clear BOTH: the daily-average floor (via
+// TickerUniverse membership, which is where that admission check already
+// happens) AND the in-session floor below. That is strictly TIGHTER than
+// the regular-session bar, never looser — extended sessions are thinner and
+// more easily manipulated, so the guardrails matter more here, not less.
+//
+// Starting values, to tune against live data — not gospel.
+export const EXTENDED_MIN_DOLLAR_VOLUME = 250_000 // actual $ traded in this extended session
+export const EXTENDED_MIN_PRICE = 3               // penny-stock floor, same as the momentum scanner
+export const EXTENDED_MAX_QUOTE_AGE_MIN = 20      // reject stale prints — a 20min-old last trade is itself a liquidity warning

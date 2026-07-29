@@ -60,6 +60,17 @@ model Signal {
   aiSummary      String
   sector         String
   signalCategory String          @default("large_cap")
+  // Which market session the signal's PRICING DATA came from, assigned at
+  // generation time — 'regular' | 'premarket' | 'afterhours'.
+  //
+  // Deliberately NOT inferred from createdAt: the daily cron/signals batch
+  // runs at ~7:30am ET, which falls inside the premarket clock window, but
+  // it reads regular-session quotes and emits multi-day/multi-month swing
+  // and long-term ideas. Tagging those 'premarket' by timestamp would be
+  // flatly wrong. Only cron/extended-signals, which actually reads Schwab's
+  // `extended` quote block, ever writes a non-'regular' value here — so the
+  // default correctly classifies every pre-existing row.
+  session        String          @default("regular")
   // Server-assigned at generation time — replaces client-side regex parsing
   // of the free-text timeHorizon string (which orphaned real signals, e.g.
   // "1-3 months" matched none of isSwingTrade/isLongTerm/isIntraday/
