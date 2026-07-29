@@ -279,6 +279,27 @@ model TrackedSignal {
 // look up the User row first just to satisfy the FK. isRead/createdAt are
 // composite-indexed with userId since every read path is "this user's
 // unread, newest first."
+// The weekly "best performing signal" showcase on the landing page.
+//
+// Persisted rather than recomputed per render so the selection is STABLE for
+// the whole week — a live query would let the featured signal change under a
+// visitor mid-week as newer outcomes land, which would make a "week of X"
+// label a lie.
+//
+// weekStartDate is the Monday (ET) of the week the signal is featured FOR,
+// and is unique so a re-run of the cron overwrites rather than duplicates.
+// realizedGainPercent is stored at selection time because it is derived from
+// outcomePrice, which the outcome checker could in principle revise later.
+model WeeklyFeaturedSignal {
+  id                 String   @id @default(cuid())
+  signalId           String
+  weekStartDate      DateTime @unique
+  realizedGainPercent Float
+  selectedAt         DateTime @default(now())
+
+  @@index([weekStartDate])
+}
+
 // Accountability log for every admin-panel action (signal create/edit/
 // delete/toggle, notification send, Schwab re-auth, manual cron triggers).
 // Append-only — nothing in the app ever updates or deletes a row here.

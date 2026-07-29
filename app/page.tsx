@@ -8,40 +8,48 @@ import ScrollBackground from '@/components/ScrollBackground'
 import EdgeCarousel from '@/components/EdgeCarousel'
 import Testimonials from '@/components/Testimonials'
 import HowItWorks from '@/components/HowItWorks'
-import SignalCard, { type Signal } from '@/components/SignalCard'
+import WeeklyFeaturedCard, { type WeeklyFeatured } from '@/components/WeeklyFeaturedCard'
 import OutcomesStrip, { type OutcomesSummary } from '@/components/OutcomesStrip'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
 import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
 
-// The hero shows real, live data — not a mockup. Pulls the highest-confidence
-// complete signal from the most recent signal date so the hero never shows a
-// signal that's gone stale, and never shows placeholder/fabricated data.
-async function getHeroSignal(): Promise<Signal | null> {
+/**
+ * The hero's weekly showcase: the best-performing CLOSED signal of the
+ * trailing week, chosen once by cron/weekly-featured and read back here.
+ *
+ * Reads the stored selection rather than recomputing — the ranking must not
+ * shift under a visitor mid-week, or the "week of X" label stops being true.
+ * Returns null when the cron found nothing worth featuring, which the card
+ * renders as an explicit empty state rather than falling back to an older
+ * or weaker winner.
+ */
+async function getWeeklyFeatured(): Promise<WeeklyFeatured | null> {
   try {
-    const latest = await prisma.signal.findFirst({
-      where: { isActive: true, ticker: { not: '' }, confidence: { gt: 0 }, ...PUBLIC_TRACK_RECORD_FILTER },
-      orderBy: { signalDate: 'desc' },
-      select: { signalDate: true },
+    const row = await prisma.weeklyFeaturedSignal.findFirst({
+      orderBy: { weekStartDate: 'desc' },
     })
-    if (!latest) return null
+    if (!row) return null
 
-    const dayStart = new Date(latest.signalDate)
-    dayStart.setHours(0, 0, 0, 0)
-    const dayEnd = new Date(dayStart)
-    dayEnd.setDate(dayEnd.getDate() + 1)
+    const signal = await prisma.signal.findUnique({ where: { id: row.signalId } })
+    // Defensive: the signal could have been deleted from the admin console
+    // after selection. Showing a partial card would be worse than the
+    // honest empty state.
+    if (!signal || signal.outcome !== 'HIT_TARGET' || signal.isManual) return null
 
-    const signal = await prisma.signal.findFirst({
-      where: {
-        isActive: true,
-        ticker: { not: '' },
-        confidence: { gt: 0 },
-        signalDate: { gte: dayStart, lt: dayEnd },
-        ...PUBLIC_TRACK_RECORD_FILTER,
-      },
-      orderBy: { confidence: 'desc' },
-    })
-    return signal
+    return {
+      ticker: signal.ticker,
+      companyName: signal.companyName,
+      signalType: signal.signalType,
+      entryZoneLow: signal.entryZoneLow,
+      entryZoneHigh: signal.entryZoneHigh,
+      targetPrice: signal.targetPrice,
+      realizedGainPercent: row.realizedGainPercent,
+      thesis: signal.thesis,
+      openedAt: signal.signalDate.toISOString(),
+      closedAt: (signal.outcomeCheckedAt ?? signal.updatedAt).toISOString(),
+      weekStartDate: row.weekStartDate.toISOString(),
+    }
   } catch {
     return null
   }
@@ -164,9 +172,9 @@ async function getTrialEligibility(): Promise<{ eligible: boolean; href: string 
 }
 
 export default async function LandingPage() {
-  const [trial, heroSignal, heroStats, outcomesSummary] = await Promise.all([
+  const [trial, weeklyFeatured, heroStats, outcomesSummary] = await Promise.all([
     getTrialEligibility(),
-    getHeroSignal(),
+    getWeeklyFeatured(),
     getHeroStats(),
     getOutcomesSummary(),
   ])
@@ -221,21 +229,11 @@ export default async function LandingPage() {
               )}
             </div>
 
-            {/* Right — proof, 5 cols, a real live signal */}
+            {/* Right — proof, 5 cols. A CLOSED past result, not a live pick:
+                the card carries its own "closed" labeling and links down to
+                the full win/loss record so one winner is never shown alone. */}
             <div className="lg:col-span-5">
-              {heroSignal ? (
-                <>
-                  <p className="eyebrow mb-3" style={{ color: '#009BFF' }}>Live signal</p>
-                  <SignalCard signal={heroSignal} />
-                </>
-              ) : (
-                <div
-                  className="rounded-none p-8 text-center term-panel"
-                  style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--line)' }}
-                >
-                  <p style={{ color: 'var(--text-mute)' }}>Signal board updating — check back shortly.</p>
-                </div>
-              )}
+              <WeeklyFeaturedCard featured={weeklyFeatured} />
             </div>
           </div>
         </div>
@@ -244,7 +242,12 @@ export default async function LandingPage() {
       {/* Real track record — wins and losses, near the top. Only renders once
           there's a real sample (25+ closed signals); never shows a thin or
           fabricated number. */}
-      {outcomesSummary && <OutcomesStrip summary={outcomesSummary} />}
+      {/* Anchor target for the weekly showcase card's "See our full track
+          record" link — kept on the wrapper so the anchor still resolves
+          even when the strip itself is hidden for a small sample. */}
+      <div id="track-record" style={{ scrollMarginTop: 80 }}>
+        {outcomesSummary && <OutcomesStrip summary={outcomesSummary} />}
+      </div>
 
       {/* One Platform, Four Edges — screenshot carousel */}
       <EdgeCarousel />
