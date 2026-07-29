@@ -259,59 +259,6 @@ model TrackedSignal {
   @@unique([userId, signalId])
 }
 
-model ForumPost {
-  id          String       @id @default(cuid())
-  userId      String
-  authorName  String
-  authorTier  String       @default("free")
-  title       String
-  content     String       @db.Text
-  isPinned    Boolean      @default(false)
-  isLocked    Boolean      @default(false)
-  upvotes     Int          @default(0)
-  downvotes   Int          @default(0)
-  replyCount  Int          @default(0)
-  flagCount   Int          @default(0)
-  isHidden    Boolean      @default(false)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  replies     ForumReply[]
-}
-
-model ForumReply {
-  id          String    @id @default(cuid())
-  postId      String
-  post        ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  userId      String
-  authorName  String
-  authorTier  String    @default("free")
-  content     String    @db.Text
-  upvotes     Int       @default(0)
-  flagCount   Int       @default(0)
-  isHidden    Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-}
-
-model ForumVote {
-  id         String   @id @default(cuid())
-  userId     String
-  targetId   String
-  targetType String
-  voteType   String
-  createdAt  DateTime @default(now())
-
-  @@unique([userId, targetId, targetType])
-}
-
-model ForumFlag {
-  id         String   @id @default(cuid())
-  userId     String
-  targetId   String
-  targetType String
-  reason     String   @default("")
-  createdAt  DateTime @default(now())
-}
-
 model AlertPreferences {
   id                  String   @id @default(cuid())
   clerkId             String   @unique
