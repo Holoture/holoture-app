@@ -143,7 +143,19 @@ export async function GET(req: Request) {
   if (!verifyCron(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
-    const session = getMarketSession()
+    // Operability escape hatch: ?force=premarket|afterhours runs the full
+    // scan and reports what WOULD qualify, outside the normal windows.
+    // force ALWAYS implies a dry run — it never calls Claude and never
+    // writes, so a forced run can't persist signals tagged with a session
+    // that isn't actually happening, or price a signal off a stale print.
+    const url = new URL(req.url)
+    const forced = url.searchParams.get('force')
+    const isDryRun = forced === 'premarket' || forced === 'afterhours'
+
+    // When forced, `session` is already one of the two extended values, so
+    // the guard below is a no-op for a dry run and narrows the type for both
+    // paths.
+    const session = isDryRun ? (forced as 'premarket' | 'afterhours') : getMarketSession()
     if (session !== 'premarket' && session !== 'afterhours') {
       return NextResponse.json({ ok: true, skipped: 'not_an_extended_session', session })
     }
@@ -205,6 +217,16 @@ export async function GET(req: Request) {
 
     candidates.sort((a, b) => Math.abs(b.pctMove) - Math.abs(a.pctMove))
     const shortlist = candidates.slice(0, MAX_CANDIDATES_PER_RUN)
+
+    if (isDryRun) {
+      return NextResponse.json({
+        ok: true, dryRun: true, session,
+        scanned: universe.length,
+        qualified: candidates.length,
+        wouldCreate: shortlist,
+        rejected,
+      })
+    }
 
     if (shortlist.length === 0) {
       return NextResponse.json({
