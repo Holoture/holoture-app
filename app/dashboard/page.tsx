@@ -120,8 +120,10 @@ export default async function DashboardPage() {
   }))
 
   // Split by session — 'premarket'/'afterhours' come only from
-  // cron/extended-signals; everything else (including legacy pre-migration
-  // rows with no session value) is the regular daily/momentum board.
+  // cron/scheduled-signals' premarket/after-hours slots; everything else
+  // (including legacy pre-migration rows with no session value, and
+  // cron/scheduled-signals' own regular-hours-slot signals) is the regular
+  // daily/momentum board.
   const isExtended = (s: { session?: string | null }) => s.session === 'premarket' || s.session === 'afterhours'
   const regularSignals = serializedSignals.filter(s => !isExtended(s))
   const extendedSignalsSerialized = serializedSignals.filter(isExtended)

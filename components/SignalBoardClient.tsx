@@ -417,12 +417,13 @@ export default function SignalBoardClient({
   // Movers page's own (differently-styled) premarket/after-hours labels.
   function sessionBadgeFor(s: Signal): { label: string; pulsing: boolean } | null {
     if (!isMomentumGroup(s)) return null
-    // Extended-hours signals (cron/extended-signals) are tagged with their
-    // OWN session at generation time — label from that, not from the live
-    // clock, or a premarket signal viewed at 7pm would wrongly read
+    // Premarket/after-hours signals (cron/scheduled-signals) are tagged with
+    // their OWN session at generation time — label from that, not from the
+    // live clock, or a premarket signal viewed at 7pm would wrongly read
     // "AFTER-HOURS SIGNAL". Regular-session momentum-group signals (from
-    // cron/intraday-signals, cron/signals, cron/momentum) have no fixed
-    // session of their own, so those still reflect the live market clock.
+    // cron/scheduled-signals' regular-hours slots, cron/signals,
+    // cron/momentum) have no fixed session of their own, so those still
+    // reflect the live market clock.
     if (s.session === 'premarket')  return { label: 'PREMARKET SIGNAL', pulsing: false }
     if (s.session === 'afterhours') return { label: 'AFTER-HOURS SIGNAL', pulsing: false }
     if (marketSession === 'premarket')  return { label: 'PREMARKET SIGNAL', pulsing: false }
