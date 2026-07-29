@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { TrendingUp } from 'lucide-react'
+import Link from 'next/link'
+import { TrendingUp, ShieldCheck } from 'lucide-react'
 import SignalBoardClient from './SignalBoardClient'
 import { UpgradeBanner } from './FreeSignalCard'
 import type { Signal } from './SignalCard'
@@ -112,6 +113,7 @@ export default function DashboardSignalsSection({
       </div>
 
       <div className="mt-8">
+        {viewMode === 'extended' && <ExtendedSignalsDistinctionBanner />}
         {viewMode === 'extended' ? (
           extendedSignalsToShow.length === 0 ? (
             <EmptyExtendedState message={emptyExtendedMessage} />
@@ -151,6 +153,32 @@ export default function DashboardSignalsSection({
         )}
       </div>
     </>
+  )
+}
+
+/**
+ * Step 5 — unmistakable distinction from /movers. Movers is explicitly
+ * "unfiltered — not a signal" and uses an amber AlertTriangle warning; that
+ * visual language is deliberately NOT reused here. This banner uses the
+ * signal-board's own vetted-signal color language (blue/green, ShieldCheck)
+ * and says outright what makes these different — liquidity-filtered, real
+ * entry zone/target/stop — with a link to Movers for direct comparison
+ * rather than letting users guess at the relationship.
+ */
+function ExtendedSignalsDistinctionBanner() {
+  return (
+    <div
+      className="flex items-start gap-2 rounded-lg px-3 py-2 mb-4"
+      style={{ backgroundColor: 'rgba(0,155,255,0.06)', border: '1px solid rgba(0,155,255,0.25)' }}
+    >
+      <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#009BFF' }} />
+      <p className="text-xs" style={{ color: '#009BFF' }}>
+        Vetted signals — liquidity-filtered against the same screened universe as the daily board, each with a real entry zone, target, and stop loss. This is NOT the unfiltered Movers list.{' '}
+        <Link href="/movers" className="underline hover:opacity-80 transition-opacity">
+          See unfiltered movers →
+        </Link>
+      </p>
+    </div>
   )
 }
 
