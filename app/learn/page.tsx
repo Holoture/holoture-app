@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import Header from '@/components/Header'
 import {
   BookOpen, Target, BarChart3, Shield, Clock, ChevronDown, ChevronRight,
-  CheckCircle2, Search, Zap, TrendingUp, TrendingDown, AlertTriangle,
+  CheckCircle2, Search, Zap, ArrowLeftRight, CalendarRange, AlertTriangle,
   Newspaper, Users, Layers, Calendar, BarChart2, X,
 } from 'lucide-react'
 
@@ -62,7 +62,7 @@ const ARTICLES: Article[] = [
   },
   {
     id: 'signal-types',
-    icon: TrendingUp,
+    icon: ArrowLeftRight,
     title: 'Understanding BUY, WATCH, and SHORT Signals',
     difficulty: 'Beginner',
     readTime: '3 min',
@@ -355,7 +355,7 @@ const ARTICLES: Article[] = [
   },
   {
     id: 'swing-vs-longterm',
-    icon: TrendingDown,
+    icon: CalendarRange,
     title: 'Swing Trading vs. Long-Term Investing',
     difficulty: 'Intermediate',
     readTime: '4 min',

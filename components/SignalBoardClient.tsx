@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
-import { ChevronDown, Search, TrendingUp, History, RefreshCw, Clock, SlidersHorizontal, X } from 'lucide-react'
+import { ChevronDown, Search, Unlock, History, RefreshCw, Clock, SlidersHorizontal, X } from 'lucide-react'
 import Link from 'next/link'
 import SignalRow from './SignalRow'
 import SignalHistoryTab from './SignalHistoryTab'
@@ -624,7 +624,7 @@ export default function SignalBoardClient({
                     className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                     style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}
                   >
-                    <TrendingUp className="w-4 h-4" style={{ color: '#009BFF' }} />
+                    <Unlock className="w-4 h-4" style={{ color: '#009BFF' }} />
                   </div>
                   <p className="text-sm text-white">
                     <span className="font-bold" style={{ color: '#009BFF' }}>

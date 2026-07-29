@@ -4,7 +4,7 @@ import Header from '@/components/Header'
 import MarketStatusBanner from '@/components/MarketStatusBanner'
 import { getMarketStatus } from '@/lib/marketStatus'
 import { prisma } from '@/lib/prisma'
-import { CalendarDays, AlertCircle } from 'lucide-react'
+import { CalendarClock, AlertCircle } from 'lucide-react'
 
 const MACRO_EVENTS = [
   { date: 'Weekly', event: 'Initial Jobless Claims', impact: 'Medium', color: '#fbbf24', description: 'Leading indicator for labor market health' },
@@ -60,7 +60,7 @@ export default async function CalendarPage() {
         <MarketStatusBanner {...marketStatus} />
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-1">
-            <CalendarDays className="w-6 h-6" style={{ color: '#009BFF' }} />
+            <CalendarClock className="w-6 h-6" style={{ color: '#009BFF' }} />
             <h1 className="text-2xl font-black text-white">Earnings Calendar</h1>
           </div>
           <p className="text-sm text-white">Upcoming earnings dates with impact ratings — updates daily at midnight</p>
@@ -71,7 +71,7 @@ export default async function CalendarPage() {
             <h2 className="text-lg font-bold text-white mb-4">Earnings — Next 30 Days</h2>
             {entries.length === 0 ? (
               <div className="rounded-xl p-10 text-center" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
-                <CalendarDays className="w-8 h-8 mx-auto mb-3" style={{ color: '#009BFF' }} />
+                <CalendarClock className="w-8 h-8 mx-auto mb-3" style={{ color: '#009BFF' }} />
                 <p className="font-semibold text-white">No earnings data yet</p>
                 <p className="text-sm text-white mt-1">The calendar cron runs daily at midnight. Ensure FINNHUB_API_KEY and ANTHROPIC_API_KEY are set.</p>
               </div>

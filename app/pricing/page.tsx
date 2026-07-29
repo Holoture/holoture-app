@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Check, Star, TrendingUp, Zap, Clock } from 'lucide-react'
+import { Check, Star, Zap, Clock } from 'lucide-react'
 import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 import ManageBillingButtons from '@/components/ManageBillingButtons'
@@ -245,7 +245,6 @@ export default async function PricingPage() {
 
       <footer style={{ borderTop: '1px solid var(--border)', backgroundColor: 'var(--bg-surface)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center gap-2">
-          <TrendingUp className="w-4 h-4" style={{ color: '#009BFF' }} />
           <span className="text-sm font-bold text-white">Holo<span style={{ color: '#009BFF' }}>ture</span></span>
         </div>
       </footer>

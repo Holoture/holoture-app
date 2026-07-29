@@ -1,4 +1,4 @@
-import { Lock, TrendingUp } from 'lucide-react'
+import { Lock, Unlock } from 'lucide-react'
 import Link from 'next/link'
 import SignalCard, { type Signal } from './SignalCard'
 
@@ -48,7 +48,7 @@ export function UpgradeBanner() {
         className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
         style={{ backgroundColor: 'rgba(0,155,255,0.2)' }}
       >
-        <TrendingUp className="w-6 h-6" style={{ color: '#009BFF' }} />
+        <Unlock className="w-6 h-6" style={{ color: '#009BFF' }} />
       </div>
       <div className="text-center sm:text-left flex-1">
         <h3 className="font-bold text-white">Unlock the Full Signal Board</h3>

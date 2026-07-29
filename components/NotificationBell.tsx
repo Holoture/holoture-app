@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import {
   Bell, Target, ShieldAlert, Clock, CreditCard, RefreshCw, Monitor,
-  TrendingUp, Users, Landmark, FileText, CalendarOff, Wrench,
+  BarChart3, Users, Landmark, FileText, CalendarOff, Wrench,
 } from 'lucide-react'
 import { formatRelativeTime } from '@/lib/utils'
 import type { NotificationType } from '@/lib/notifications'
@@ -33,7 +33,7 @@ const TYPE_ICON: Record<string, typeof Bell> = {
   payment_failed: CreditCard,
   subscription_renewed: RefreshCw,
   new_device: Monitor,
-  signal_digest: TrendingUp,
+  signal_digest: BarChart3,
   insider_cluster: Users,
   politician_trade: Landmark,
   new_thesis: FileText,

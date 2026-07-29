@@ -5,7 +5,7 @@ import { getOrCreateUser } from '@/lib/user'
 import Header from '@/components/Header'
 import PoliticianTradesClient from '@/components/PoliticianTradesClient'
 import AuthLoadingGate from '@/components/AuthLoadingGate'
-import { Users } from 'lucide-react'
+import { Landmark } from 'lucide-react'
 
 const PAGE_SIZE = 25
 
@@ -92,7 +92,7 @@ export default async function PoliticianScannerPage({
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-1">
-            <Users className="w-6 h-6" style={{ color: '#a78bfa' }} />
+            <Landmark className="w-6 h-6" style={{ color: '#a78bfa' }} />
             <h1 className="text-2xl font-black text-white">Politician Scanner</h1>
           </div>
           <p className="text-sm text-white" style={{ opacity: 0.7 }}>

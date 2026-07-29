@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import {
-  TrendingUp, Search, Filter, ExternalLink,
+  UserCheck, Search, Filter, ExternalLink,
   Users, Flame, Zap, ChevronDown, ChevronUp,
 } from 'lucide-react'
 
@@ -355,7 +355,7 @@ export default function InsiderScannerClient({ trades, tier, isPreview = false }
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <TrendingUp className="w-7 h-7" style={{ color: '#009BFF' }} />
+            <UserCheck className="w-7 h-7" style={{ color: '#009BFF' }} />
             <h1 className="text-3xl font-black text-white">Insider Buying Scanner</h1>
           </div>
           <p style={{ color: 'var(--text-muted)' }}>

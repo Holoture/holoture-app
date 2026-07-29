@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import { formatCurrency } from '@/lib/utils'
 import {
   Pin, PinOff, Trash2, ChevronDown, ChevronRight,
-  TrendingUp, TrendingDown, Minus, CheckCircle, XCircle, Activity,
+  LogIn, Minus, CheckCircle, XCircle, Activity,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -241,7 +241,7 @@ function SignalCard({
                   : { backgroundColor: 'var(--bg-surface-2)', color: 'var(--text-w50)', border: '1px solid var(--border)' }
               }
             >
-              {st === 'watching' ? <><Activity className="w-3 h-3 inline mr-1" />Watching</> : <><TrendingUp className="w-3 h-3 inline mr-1" />Entered</>}
+              {st === 'watching' ? <><Activity className="w-3 h-3 inline mr-1" />Watching</> : <><LogIn className="w-3 h-3 inline mr-1" />Entered</>}
             </button>
           ))}
           {/* Close buttons */}

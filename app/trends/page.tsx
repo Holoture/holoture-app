@@ -6,7 +6,7 @@ import { getMarketStatus } from '@/lib/marketStatus'
 import AutoRefresh from '@/components/AutoRefresh'
 import RefreshBanner from '@/components/RefreshBanner'
 import { prisma } from '@/lib/prisma'
-import { BarChart3, TrendingUp, TrendingDown } from 'lucide-react'
+import { PieChart, TrendingUp, TrendingDown } from 'lucide-react'
 
 async function getSectorData() {
   try {
@@ -47,7 +47,7 @@ export default async function TrendsPage() {
         <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <BarChart3 className="w-6 h-6" style={{ color: '#009BFF' }} />
+              <PieChart className="w-6 h-6" style={{ color: '#009BFF' }} />
               <h1 className="text-2xl font-black text-white">Sector Trends</h1>
             </div>
             <p className="text-sm text-white">ETF heat map with market summary — refreshes every 5 min</p>
@@ -89,7 +89,7 @@ export default async function TrendsPage() {
 
         {sorted.length === 0 ? (
           <div className="rounded-xl p-10 text-center" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
-            <BarChart3 className="w-8 h-8 mx-auto mb-3" style={{ color: '#009BFF' }} />
+            <PieChart className="w-8 h-8 mx-auto mb-3" style={{ color: '#009BFF' }} />
             <p className="font-semibold text-white">No sector data yet</p>
             <p className="text-sm text-white mt-1">Ensure FINNHUB_API_KEY and ANTHROPIC_API_KEY are set and the cron has run.</p>
           </div>

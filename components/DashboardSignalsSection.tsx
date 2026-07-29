@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
-import { TrendingUp, ShieldCheck } from 'lucide-react'
+import { Inbox, ShieldCheck } from 'lucide-react'
 import SignalBoardClient from './SignalBoardClient'
 import { UpgradeBanner } from './FreeSignalCard'
 import type { Signal } from './SignalCard'
@@ -192,7 +192,7 @@ function EmptyExtendedState({ message }: { message: string }) {
         className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
         style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}
       >
-        <TrendingUp className="w-8 h-8" style={{ color: '#009BFF' }} />
+        <Inbox className="w-8 h-8" style={{ color: '#009BFF' }} />
       </div>
       <h3 className="text-xl font-bold text-white mb-2">{message}</h3>
       <p className="text-sm text-white max-w-sm">
@@ -212,7 +212,7 @@ function EmptyState() {
         className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
         style={{ backgroundColor: 'rgba(0,155,255,0.15)' }}
       >
-        <TrendingUp className="w-8 h-8" style={{ color: '#009BFF' }} />
+        <Inbox className="w-8 h-8" style={{ color: '#009BFF' }} />
       </div>
       <h3 className="text-xl font-bold text-white mb-2">No signals yet</h3>
       <p className="text-sm text-white max-w-sm">
