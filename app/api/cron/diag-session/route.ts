@@ -33,11 +33,10 @@ export async function GET(req: Request) {
     WITH et AS (
       SELECT
         "timeframeCategory",
-        -- Prisma maps DateTime to `timestamp WITHOUT time zone` holding UTC,
-        -- so it must be anchored to UTC first; a bare
-        -- `AT TIME ZONE 'America/New_York'` converts the wrong direction and
-        -- shifts every row +4/5h (which is what made the intraday cron look
-        -- like it ran at 18:31 ET instead of 10:30 ET).
+        -- Prisma maps DateTime to timestamp WITHOUT time zone holding UTC, so
+        -- it must be anchored to UTC first; a bare AT TIME ZONE America/New_York
+        -- converts the wrong direction and shifts every row +4/5h (which is
+        -- what made the intraday cron look like it ran at 18:31 ET, not 10:30).
         ("createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') AS et_ts,
         "createdAt" AS utc_ts
       FROM "Signal"
