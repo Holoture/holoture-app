@@ -184,6 +184,11 @@ export async function GET(req: Request) {
 
     const now = Date.now()
     const candidates: Candidate[] = []
+    // Every up-move that cleared cooldown+price, retained before the
+    // magnitude/liquidity/staleness gates purely so a dry run can show how
+    // far the real distribution sits from the thresholds. Calibrating
+    // MIN_PCT_MOVE against actual near-misses beats guessing at it.
+    const upMoves: Candidate[] = []
     const rejected = { cooldown: 0, price: 0, move: 0, volume: 0, stale: 0, direction: 0 }
 
     for (const map of quoteMaps) {
@@ -196,22 +201,24 @@ export async function GET(req: Request) {
         // spreads are much worse outside regular hours), so surfacing one
         // as a signal with an entry zone would overstate how tradable it is.
         if (q.pctChange <= 0) { rejected.direction++; continue }
-        if (Math.abs(q.pctChange) < MIN_PCT_MOVE) { rejected.move++; continue }
 
         const extendedDollarVolume = q.extendedLastPrice * q.extendedVolume
-        if (extendedDollarVolume < EXTENDED_MIN_DOLLAR_VOLUME) { rejected.volume++; continue }
-
         const quoteAgeMin = (now - q.extendedTradeTime) / 60_000
-        if (quoteAgeMin > EXTENDED_MAX_QUOTE_AGE_MIN || quoteAgeMin < 0) { rejected.stale++; continue }
-
-        candidates.push({
+        const cand: Candidate = {
           ticker: q.symbol,
           price: Math.round(q.extendedLastPrice * 100) / 100,
           pctMove: Math.round(q.pctChange * 100) / 100,
           extendedDollarVolume: Math.round(extendedDollarVolume),
           regularBaseline: Math.round(q.regularLastPrice * 100) / 100,
           quoteAgeMin: Math.round(quoteAgeMin * 10) / 10,
-        })
+        }
+        upMoves.push(cand)
+
+        if (Math.abs(q.pctChange) < MIN_PCT_MOVE) { rejected.move++; continue }
+        if (extendedDollarVolume < EXTENDED_MIN_DOLLAR_VOLUME) { rejected.volume++; continue }
+        if (quoteAgeMin > EXTENDED_MAX_QUOTE_AGE_MIN || quoteAgeMin < 0) { rejected.stale++; continue }
+
+        candidates.push(cand)
       }
     }
 
@@ -225,6 +232,13 @@ export async function GET(req: Request) {
         qualified: candidates.length,
         wouldCreate: shortlist,
         rejected,
+        thresholds: {
+          MIN_PCT_MOVE,
+          EXTENDED_MIN_DOLLAR_VOLUME,
+          EXTENDED_MIN_PRICE,
+          EXTENDED_MAX_QUOTE_AGE_MIN,
+        },
+        topUpMoves: [...upMoves].sort((a, b) => b.pctMove - a.pctMove).slice(0, 8),
       })
     }
 
