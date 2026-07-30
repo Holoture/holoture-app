@@ -55,6 +55,31 @@ export function peakGainPercent(s: {
   return raw
 }
 
+// Entry price vs. real market data on/near the signal's own posting date.
+// This is a DIFFERENT failure mode than MAX_SANE_GAIN_PCT catches: it isn't
+// a bad candle during the gain window, it's the signal's OWN stored entry
+// zone not matching where the stock actually traded at posting. Found via
+// a GS signal whose entryZoneLow/High (545-578) didn't match its real price
+// on ANY of the 44 trading days after posting — the real series sat at
+// ~980-1150 from day one, a ~72% gap the peak-gain ceiling doesn't catch
+// since it only bounds the SIZE of a move, not whether the starting point
+// is real.
+const MAX_ENTRY_DIVERGENCE_PCT = 25
+
+/**
+ * True when `entryPrice` is close enough to the first available real candle
+ * after posting to trust the entry zone as accurate. Compares against that
+ * candle's own midpoint (high+low)/2, not its close, so a normal single-day
+ * swing isn't mistaken for a stale entry.
+ */
+export function isEntryPriceTrustworthy(entryPrice: number, referenceCandle: PriceCandle): boolean {
+  if (!Number.isFinite(entryPrice) || entryPrice <= 0) return false
+  const ref = (referenceCandle.high + referenceCandle.low) / 2
+  if (!Number.isFinite(ref) || ref <= 0) return false
+  const divergencePct = (Math.abs(entryPrice - ref) / ref) * 100
+  return divergencePct <= MAX_ENTRY_DIVERGENCE_PCT
+}
+
 /**
  * Monday 00:00 ET of the week containing `date`, returned as a UTC Date.
  * Used as the stable weekly key so a mid-week cron re-run overwrites the

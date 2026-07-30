@@ -27,7 +27,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getDailyCandles } from '@/lib/schwab'
 import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
-import { peakGainPercent, weekStartET } from '@/lib/weeklyFeatured'
+import { peakGainPercent, isEntryPriceTrustworthy, weekStartET } from '@/lib/weeklyFeatured'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -76,6 +76,16 @@ export async function GET(req: Request) {
       }
 
       const entryPrice = (c.entryZoneLow + c.entryZoneHigh) / 2
+
+      // Reject when the signal's own stored entry zone doesn't match where
+      // the stock actually traded at posting — a stale/wrong entry, not a
+      // real move, would otherwise inflate the gain against a fictional
+      // starting point.
+      if (!isEntryPriceTrustworthy(entryPrice, sincePosting[0])) {
+        skipped.push({ ticker: c.ticker, reason: `entry zone (${entryPrice.toFixed(2)}) doesn't match real price at posting (~${((sincePosting[0].high + sincePosting[0].low) / 2).toFixed(2)})` })
+        continue
+      }
+
       const gain = peakGainPercent({ signalType: c.signalType, entryPrice, candlesSincePosting: sincePosting })
       if (gain === null) {
         skipped.push({ ticker: c.ticker, reason: 'no computable gain (bad entry price or failed sanity ceiling)' })
