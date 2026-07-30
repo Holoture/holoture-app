@@ -6,27 +6,28 @@
  * cron/universe-screen) so a new record is picked up when one is set —
  * the WEEKLY part is the refresh cadence, not the selection window.
  *
- * Eligibility is deliberately narrow — this is a published performance
- * claim, so anything that would inflate or misattribute it is excluded:
+ * GAIN BASIS: entry price at the time the signal was posted -> the highest
+ * price the stock reached afterward (lowest, for a SHORT/SELL). This is the
+ * stock's best subsequent price, not the signal's actual realized exit —
+ * see lib/weeklyFeatured.ts for the full tradeoff. "Entry price at posting"
+ * is the entry-zone midpoint, since that's the only "as of generation" price
+ * this app stores (the AI-set entry zone is Schwab-priced at generation
+ * time — see cron/signals' own comments on that field).
+ *
+ * Eligibility:
  *   - outcome must be HIT_TARGET (never open/pending, EXPIRED, HIT_STOP,
  *     LEFT_ZONE, or UNVERIFIABLE)
  *   - isManual must be false — algorithm output only, same rule the public
  *     outcomes strip enforces via lib/publicStats.ts
- *   - outcomePrice must be present, since realized gain is computed from the
- *     REAL price at outcome, not the target price the signal aimed at
  *
  * If nothing qualifies, NOTHING is written — the UI renders an explicit
  * empty state rather than falling back to a weaker result.
- *
- * NOTE: an all-time best is by construction the most favourable single
- * result available, so the card that renders it leads with "Best result to
- * date" and links to the full win/loss record. That pairing is what keeps
- * this from reading as a representative outcome.
  */
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getDailyCandles } from '@/lib/schwab'
 import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
-import { realizedGainPercent, isPlausibleOutcome, weekStartET } from '@/lib/weeklyFeatured'
+import { peakGainPercent, weekStartET } from '@/lib/weeklyFeatured'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -45,14 +46,10 @@ export async function GET(req: Request) {
 
     // No date window — the pool is every qualifying signal ever recorded.
     const candidates = await prisma.signal.findMany({
-      where: {
-        outcome: 'HIT_TARGET',
-        outcomePrice: { not: null },
-        ...PUBLIC_TRACK_RECORD_FILTER,
-      },
+      where: { outcome: 'HIT_TARGET', ...PUBLIC_TRACK_RECORD_FILTER },
       select: {
         id: true, ticker: true, signalType: true,
-        entryZoneLow: true, entryZoneHigh: true, targetPrice: true, outcomePrice: true,
+        entryZoneLow: true, entryZoneHigh: true, signalDate: true,
       },
     })
 
@@ -60,41 +57,40 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: true, candidates: 0, selected: null, note: 'no signals have closed at target yet' })
     }
 
+    // One Schwab candle fetch per unique ticker, not per signal — several
+    // candidates commonly share a ticker.
+    const uniqueTickers = [...new Set(candidates.map((c) => c.ticker))]
+    const candlesByTicker = new Map(
+      await Promise.all(uniqueTickers.map(async (t) => [t, await getDailyCandles(t)] as const)),
+    )
+
     let best: { id: string; ticker: string; gain: number } | null = null
-    const rejectedImplausible: { ticker: string; gain: number }[] = []
+    const skipped: { ticker: string; reason: string }[] = []
 
     for (const c of candidates) {
-      if (c.outcomePrice === null) continue
-      const shaped = {
-        signalType: c.signalType,
-        entryZoneLow: c.entryZoneLow,
-        entryZoneHigh: c.entryZoneHigh,
-        targetPrice: c.targetPrice,
-        outcomePrice: c.outcomePrice,
+      const allCandles = candlesByTicker.get(c.ticker) ?? []
+      const sincePosting = allCandles.filter((cd) => cd.datetime >= c.signalDate.getTime())
+      if (sincePosting.length === 0) {
+        skipped.push({ ticker: c.ticker, reason: 'no candle data since posting' })
+        continue
       }
-      const gain = realizedGainPercent(shaped)
-      if (gain === null) continue
 
-      // Reject exits far beyond the signal's own target — that pattern means
-      // a bad recorded quote, not a real outsized move. Never publish one.
-      if (!isPlausibleOutcome(shaped)) {
-        rejectedImplausible.push({ ticker: c.ticker, gain: Math.round(gain * 100) / 100 })
+      const entryPrice = (c.entryZoneLow + c.entryZoneHigh) / 2
+      const gain = peakGainPercent({ signalType: c.signalType, entryPrice, candlesSincePosting: sincePosting })
+      if (gain === null) {
+        skipped.push({ ticker: c.ticker, reason: 'no computable gain (bad entry price or failed sanity ceiling)' })
         continue
       }
 
       if (!best || gain > best.gain) best = { id: c.id, ticker: c.ticker, gain }
     }
 
-    if (rejectedImplausible.length > 0) {
-      console.warn('[cron/weekly-featured] rejected implausible outcomes', rejectedImplausible)
+    if (skipped.length > 0) {
+      console.warn('[cron/weekly-featured] skipped candidates', skipped)
     }
 
     if (!best) {
-      return NextResponse.json({
-        ok: true, candidates: candidates.length, selected: null,
-        rejectedImplausible,
-        note: 'no candidate produced a publishable realized gain',
-      })
+      return NextResponse.json({ ok: true, candidates: candidates.length, selected: null, skipped, note: 'no candidate produced a publishable gain' })
     }
 
     const weekStartDate = weekStartET(now)
@@ -107,8 +103,8 @@ export async function GET(req: Request) {
     return NextResponse.json({
       ok: true,
       candidates: candidates.length,
-      selected: { ticker: best.ticker, realizedGainPercent: Math.round(best.gain * 100) / 100 },
-      rejectedImplausible,
+      selected: { ticker: best.ticker, gainPercent: Math.round(best.gain * 100) / 100 },
+      skipped,
       weekStartDate: weekStartDate.toISOString(),
     })
   } catch (err) {

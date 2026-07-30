@@ -35,13 +35,14 @@ function condense(thesis: string, maxLen = 240): string {
 }
 
 /**
- * The landing page's showcase of the highest-gaining signal recorded to
- * date. This is a PAST RESULT and, being an all-time maximum, the single
- * most favourable number the data contains — so the design job is making
- * both facts impossible to miss: a CLOSED tag, a muted/dashed border
- * instead of the active-signal treatment, an explicit "closed … not a
- * typical result" line, no live price anywhere, and a link to the full
- * win/loss record so the best case is never shown in isolation.
+ * The landing page's showcase of a closed signal's peak gain (entry price
+ * at posting -> the best price the stock reached afterward — see
+ * lib/weeklyFeatured.ts for that tradeoff). Still visually distinguished
+ * from an active signal card via the CLOSED tag and a muted/dashed border
+ * (never the live SignalCard's solid accent + corner ticks), and still
+ * shows no live price anywhere. The "past result, not a typical one" and
+ * full-track-record-link disclaimers were removed at the user's explicit
+ * request.
  */
 export default function WeeklyFeaturedCard({ featured }: { featured: WeeklyFeatured | null }) {
   const isShort = featured?.signalType === 'SHORT' || featured?.signalType === 'SELL'
@@ -50,7 +51,7 @@ export default function WeeklyFeaturedCard({ featured }: { featured: WeeklyFeatu
     <div>
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         <p className="eyebrow" style={{ color: 'var(--text-dim)' }}>
-          Best result to date
+          Recent Result
         </p>
         <span
           className="data-label"
@@ -102,7 +103,7 @@ export default function WeeklyFeaturedCard({ featured }: { featured: WeeklyFeatu
                 +{featured.realizedGainPercent.toFixed(1)}%
               </p>
               <p className="data-label mt-1" style={{ fontSize: 10, color: 'var(--text-dim)' }}>
-                REALIZED
+                PEAK GAIN
               </p>
             </div>
           </div>
@@ -110,23 +111,11 @@ export default function WeeklyFeaturedCard({ featured }: { featured: WeeklyFeatu
           <div className="grid grid-cols-2 gap-x-6 gap-y-2 mb-4">
             <Row label="Entry zone" value={`${formatCurrency(featured.entryZoneLow)} – ${formatCurrency(featured.entryZoneHigh)}`} />
             <Row label="Target" value={formatCurrency(featured.targetPrice)} />
-            <Row label="Played out" value={`${fmtDate(featured.openedAt)} → ${fmtDate(featured.closedAt)}`} />
+            <Row label="Posted" value={fmtDate(featured.openedAt)} />
           </div>
 
           <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text-body)' }}>
             {condense(featured.thesis)}
-          </p>
-
-          <p className="mt-4 pt-3" style={{ fontSize: 12, color: 'var(--text-mute)', borderTop: '1px solid var(--line-faint)' }}>
-            This signal has closed. Past result shown for illustration — this is
-            the single best result to date, not a typical one.
-          </p>
-
-          <p className="mt-2" style={{ fontSize: 12, color: 'var(--text-mute)' }}>
-            Not every signal wins.{' '}
-            <Link href="#track-record" className="underline hover:opacity-80 transition-opacity" style={{ color: '#009BFF' }}>
-              See our full track record
-            </Link>
           </p>
         </div>
       ) : (

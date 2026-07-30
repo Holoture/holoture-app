@@ -1,81 +1,58 @@
 /**
- * Shared math for the weekly "best performing signal" showcase — used by
- * both the selection cron and the landing-page read path, so the number the
- * cron ranks on and the number the card displays can never diverge.
+ * Shared math for the landing page's "best result" showcase — used by both
+ * the selection cron and the landing-page read path, so the number the cron
+ * ranks on and the number the card displays can never diverge.
+ *
+ * GAIN BASIS: entry price at the time the signal was posted -> the highest
+ * price the stock reached afterward (lowest, for a SHORT/SELL, since decline
+ * is the favorable direction for those). This is deliberately NOT the
+ * signal's actual realized exit price — it measures the best price the
+ * stock touched after posting, which is a different and more favorable
+ * number than what the signal actually captured at target. That tradeoff
+ * was surfaced and confirmed explicitly before this was built.
  */
 
+export type PriceCandle = { high: number; low: number; datetime: number }
+
+// A wide sanity ceiling, NOT a "vs. target" plausibility check like the
+// realized-exit-price version of this feature used. Under this gain basis,
+// a huge move IS exactly what's being looked for, so a large number alone
+// is no longer evidence of bad data. This only exists to reject genuinely
+// corrupt candle data (a bad print, an unadjusted stock split inflating a
+// historical "high" 10x) rather than a real outsized winner.
+const MAX_SANE_GAIN_PCT = 500
+
 /**
- * Realized % gain from the entry-zone midpoint to the ACTUAL outcome price.
- *
- * Direction-aware, matching evaluateDirectionalOutcome() in
- * cron/signal-outcomes: SHORT/SELL win on a DECLINE, so their gain is
- * (entry - exit) / entry. BUY and WATCH share the bullish orientation
- * (target above entry) and use (exit - entry) / entry.
- *
- * Deliberately computed from outcomePrice, not targetPrice — targetPrice is
- * what the signal aimed at, outcomePrice is what actually happened, and a
- * published performance number must reflect the latter. Returns null when
- * the entry midpoint is non-positive (unusable denominator).
+ * Direction-aware % gain from `entryPrice` to the best price reached across
+ * `candlesSincePosting` (highest high for BUY/WATCH, lowest low for
+ * SHORT/SELL). Returns null when there's no usable entry price, no candle
+ * data, or the result fails the sanity ceiling.
  */
-export function realizedGainPercent(s: {
+export function peakGainPercent(s: {
   signalType: string
-  entryZoneLow: number
-  entryZoneHigh: number
-  outcomePrice: number
+  entryPrice: number
+  candlesSincePosting: PriceCandle[]
 }): number | null {
-  const entry = (s.entryZoneLow + s.entryZoneHigh) / 2
-  if (!Number.isFinite(entry) || entry <= 0) return null
-  if (!Number.isFinite(s.outcomePrice) || s.outcomePrice <= 0) return null
+  if (!Number.isFinite(s.entryPrice) || s.entryPrice <= 0) return null
+  if (s.candlesSincePosting.length === 0) return null
 
   const isShort = s.signalType === 'SHORT' || s.signalType === 'SELL'
+  let extreme: number | null = null
+  for (const c of s.candlesSincePosting) {
+    const v = isShort ? c.low : c.high
+    if (!Number.isFinite(v) || v <= 0) continue
+    extreme = extreme === null ? v : isShort ? Math.min(extreme, v) : Math.max(extreme, v)
+  }
+  if (extreme === null) return null
+
   const raw = isShort
-    ? ((entry - s.outcomePrice) / entry) * 100
-    : ((s.outcomePrice - entry) / entry) * 100
+    ? ((s.entryPrice - extreme) / s.entryPrice) * 100
+    : ((extreme - s.entryPrice) / s.entryPrice) * 100
 
-  return Number.isFinite(raw) ? raw : null
-}
+  if (!Number.isFinite(raw)) return null
+  if (raw > MAX_SANE_GAIN_PCT) return null
 
-/**
- * Data-quality gate for the public showcase.
- *
- * cron/signal-outcomes records outcomePrice at the moment it DETECTS the
- * target being crossed, so a genuine winner's exit lands at or just past
- * its target — in live data every legitimate result sat within ~5% of
- * target, and the largest honest overshoot was 1.56x the intended move.
- * A recorded exit far beyond that means the QUOTE is wrong (stale feed,
- * wrong instrument, unadjusted split), not that the move was real.
- *
- * This caught a real one: a GS signal targeting 665 from a 561.50 entry
- * had outcomePrice 1045 recorded — a 4.67x overshoot that would have been
- * published as an "86% gain" on the landing page.
- *
- * 2x is deliberately loose enough to keep every observed legitimate
- * result (max 1.56x) while rejecting that class of artifact. Returns true
- * when the outcome is trustworthy enough to publish.
- */
-const MAX_OVERSHOOT_RATIO = 2
-
-export function isPlausibleOutcome(s: {
-  signalType: string
-  entryZoneLow: number
-  entryZoneHigh: number
-  targetPrice: number
-  outcomePrice: number
-}): boolean {
-  const realized = realizedGainPercent(s)
-  if (realized === null) return false
-
-  const entry = (s.entryZoneLow + s.entryZoneHigh) / 2
-  const isShort = s.signalType === 'SHORT' || s.signalType === 'SELL'
-  const intended = isShort
-    ? ((entry - s.targetPrice) / entry) * 100
-    : ((s.targetPrice - entry) / entry) * 100
-
-  // A non-positive intended move means the signal's own target/entry are
-  // inconsistent — not publishable regardless of what the exit says.
-  if (!Number.isFinite(intended) || intended <= 0) return false
-
-  return realized <= intended * MAX_OVERSHOOT_RATIO
+  return raw
 }
 
 /**
