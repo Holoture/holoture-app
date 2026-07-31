@@ -32,6 +32,7 @@ export type AdminAction =
   | 'run.signals'
   | 'run.health'
   | 'run.outcomes'
+  | 'featured.select'
 
 /** Append-only accountability record. Never throws — logging must not break the action it records. */
 export async function logAdminAction(params: {

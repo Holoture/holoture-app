@@ -14,6 +14,7 @@ import StatusDot, { type OpsStatus } from './StatusDot'
 import SignalsPanel from './SignalsPanel'
 import NotificationsPanel from './NotificationsPanel'
 import ActionsPanel from './ActionsPanel'
+import FeaturedPanel from './FeaturedPanel'
 
 export const dynamic = 'force-dynamic'
 
@@ -206,6 +207,12 @@ export default async function AdminConsolePage() {
         <section>
           <p className="ops-section-label mb-2">Signals</p>
           <SignalsPanel signals={serializedSignals} options={serializedOptions} />
+        </section>
+
+        {/* ── FEATURED ─────────────────────────────────────────────────── */}
+        <section>
+          <p className="ops-section-label mb-2">Featured</p>
+          <FeaturedPanel />
         </section>
 
         {/* ── NOTIFICATIONS + ACTIONS ──────────────────────────────────── */}
