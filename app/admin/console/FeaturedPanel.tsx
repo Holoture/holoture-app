@@ -2,113 +2,134 @@
 
 import { useEffect, useState } from 'react'
 
-type Candidate = {
-  id: string; ticker: string; companyName: string
-  signalType: string; signalDate: string
+type FeaturedForm = {
+  ticker: string; companyName: string; signalType: string
+  entryZoneLow: string; entryZoneHigh: string; targetPrice: string
+  gainPercent: string; postedAt: string; thesis: string
 }
 
+const EMPTY: FeaturedForm = {
+  ticker: '', companyName: '', signalType: 'BUY',
+  entryZoneLow: '', entryZoneHigh: '', targetPrice: '',
+  gainPercent: '', postedAt: '', thesis: '',
+}
+
+const TYPES = ['BUY', 'WATCH', 'SHORT', 'SELL']
+
 /**
- * Lets the admin manually choose which closed signal shows on the landing
- * page's "Recent Result" card, instead of waiting for the weekly cron.
- * The gain is always recomputed server-side from real Schwab candles and
- * gated by the same entry-price guard the cron uses — this panel can only
- * pick WHICH eligible signal is featured, never what number is shown.
+ * Hand-enter every field the landing page's "Recent Result" card shows.
+ * Unlike the underlying Signal system, nothing here is verified against
+ * live market data — this is a direct override, so it's on the admin to
+ * enter honest numbers.
  */
 export default function FeaturedPanel() {
-  const [candidates, setCandidates] = useState<Candidate[] | null>(null)
-  const [currentSignalId, setCurrentSignalId] = useState<string | null>(null)
-  const [currentGain, setCurrentGain] = useState<number | null>(null)
-  const [selected, setSelected] = useState('')
+  const [f, setF] = useState<FeaturedForm>(EMPTY)
+  const [isOverride, setIsOverride] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<string | null>(null)
 
-  async function load() {
-    setError(null)
-    try {
-      const res = await fetch('/api/admin/weekly-featured')
-      const data = await res.json()
-      if (!res.ok) { setError(data.error ?? 'Failed to load candidates'); return }
-      setCandidates(data.candidates)
-      setCurrentSignalId(data.currentSignalId)
-      setCurrentGain(data.currentGainPercent)
-      setSelected((prev) => prev || data.currentSignalId || data.candidates[0]?.id || '')
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Network error')
-    }
-  }
+  useEffect(() => {
+    fetch('/api/admin/weekly-featured')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.current) {
+          setF({
+            ticker: data.current.ticker,
+            companyName: data.current.companyName,
+            signalType: data.current.signalType,
+            entryZoneLow: String(data.current.entryZoneLow),
+            entryZoneHigh: String(data.current.entryZoneHigh),
+            targetPrice: String(data.current.targetPrice),
+            gainPercent: String(data.current.gainPercent),
+            postedAt: data.current.postedAt,
+            thesis: data.current.thesis,
+          })
+          setIsOverride(data.current.isManualOverride)
+        }
+      })
+      .catch(() => setError('Failed to load current card'))
+      .finally(() => setLoading(false))
+  }, [])
 
-  useEffect(() => { load() }, [])
+  const set = (k: keyof FeaturedForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+    setF((prev) => ({ ...prev, [k]: e.target.value }))
 
   async function apply() {
-    if (!selected) return
     setBusy(true); setError(null); setResult(null)
     try {
       const res = await fetch('/api/admin/weekly-featured', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ signalId: selected }),
+        body: JSON.stringify(f),
       })
       const data = await res.json()
-      if (!res.ok) { setError(data.error ?? 'Failed to feature signal'); return }
-      setResult(`Now featured: ${data.ticker} at +${data.gainPercent}% peak gain`)
-      await load()
+      if (!res.ok) { setError(data.error ?? 'Failed to update Recent Result card'); return }
+      setResult(`Now featured: ${data.ticker} at +${data.gainPercent}%`)
+      setIsOverride(true)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Network error')
     } finally { setBusy(false) }
   }
 
-  const current = candidates?.find((c) => c.id === currentSignalId)
-
   return (
     <div className="ops-panel term-panel p-4">
       <p style={{ fontSize: 10, color: 'var(--text-w35)', letterSpacing: '0.08em', marginBottom: 10 }}>
-        LANDING PAGE &quot;RECENT RESULT&quot; CARD
+        LANDING PAGE &quot;RECENT RESULT&quot; CARD — MANUAL ENTRY
       </p>
 
-      {candidates === null && !error && (
-        <p style={{ fontSize: 12, color: 'var(--text-w50)' }}>Loading eligible signals…</p>
-      )}
-
-      {error && (
-        <p style={{ fontSize: 11, color: '#E24B4A', marginBottom: 8 }}>{error}</p>
-      )}
-
-      {candidates && candidates.length === 0 && (
-        <p style={{ fontSize: 12, color: 'var(--text-w50)' }}>No closed, non-manual (HIT_TARGET) signals available yet.</p>
-      )}
-
-      {candidates && candidates.length > 0 && (
+      {loading ? (
+        <p style={{ fontSize: 12, color: 'var(--text-w50)' }}>Loading current card…</p>
+      ) : (
         <>
           <p style={{ fontSize: 11, color: 'var(--text-w50)', marginBottom: 10 }}>
-            Currently showing: {current
-              ? <span style={{ color: '#fff' }}>{current.ticker}{currentGain !== null ? ` (+${currentGain.toFixed(2)}%)` : ''}</span>
-              : <span style={{ color: 'var(--text-w35)' }}>none selected</span>}
+            Source: <span style={{ color: isOverride ? '#BA7517' : 'var(--text-w50)' }}>
+              {isOverride ? 'manual override' : 'auto-selected by weekly cron'}
+            </span>
           </p>
 
-          <div className="flex gap-2 flex-wrap items-center">
-            <select className="ops-input" style={{ minWidth: 260 }} value={selected} onChange={(e) => setSelected(e.target.value)}>
-              {candidates.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.ticker} · {c.signalType} · posted {c.signalDate.slice(0, 10)}
-                </option>
-              ))}
-            </select>
-            <button className="ops-btn ops-btn-primary" disabled={busy || !selected} onClick={apply}>
-              {busy ? 'Applying…' : 'Set as Recent Result'}
+          {error && <p style={{ fontSize: 11, color: '#E24B4A', marginBottom: 8 }}>{error}</p>}
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <Field label="Ticker"><input className="ops-input" value={f.ticker} onChange={set('ticker')} /></Field>
+            <Field label="Company name"><input className="ops-input" value={f.companyName} onChange={set('companyName')} /></Field>
+            <Field label="Signal type">
+              <select className="ops-input" value={f.signalType} onChange={set('signalType')}>
+                {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </Field>
+            <Field label="Posted date"><input className="ops-input" type="date" value={f.postedAt} onChange={set('postedAt')} /></Field>
+            <Field label="Entry zone low"><input className="ops-input" value={f.entryZoneLow} onChange={set('entryZoneLow')} /></Field>
+            <Field label="Entry zone high"><input className="ops-input" value={f.entryZoneHigh} onChange={set('entryZoneHigh')} /></Field>
+            <Field label="Target price"><input className="ops-input" value={f.targetPrice} onChange={set('targetPrice')} /></Field>
+            <Field label="% gain"><input className="ops-input" value={f.gainPercent} onChange={set('gainPercent')} /></Field>
+          </div>
+
+          <div className="mt-2">
+            <Field label="Summary">
+              <textarea className="ops-input" rows={2} value={f.thesis} onChange={set('thesis')} />
+            </Field>
+          </div>
+
+          <div className="flex justify-end mt-3">
+            <button className="ops-btn ops-btn-primary" disabled={busy} onClick={apply}>
+              {busy ? 'Publishing…' : 'Publish to landing page'}
             </button>
           </div>
 
-          <p style={{ fontSize: 10, color: 'var(--text-w35)', marginTop: 8 }}>
-            Gain is recomputed live from real market data (entry price at posting → best price since) and
-            rejected if the stored entry zone doesn&apos;t match real price history — a pick can fail this check.
-          </p>
-
-          {result && (
-            <p style={{ fontSize: 11, color: '#1D9E75', marginTop: 8 }}>{result}</p>
-          )}
+          {result && <p style={{ fontSize: 11, color: '#1D9E75', marginTop: 8 }}>{result}</p>}
         </>
       )}
     </div>
+  )
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span style={{ fontSize: 10, letterSpacing: '0.08em', color: 'var(--text-w35)', textTransform: 'uppercase' }}>{label}</span>
+      <div className="mt-0.5">{children}</div>
+    </label>
   )
 }

@@ -1,46 +1,46 @@
 /**
  * GET/POST /api/admin/weekly-featured
  *
- * Lets the admin manually pick which closed signal the landing page's
- * "Recent Result" card shows, instead of waiting for the weekly cron
- * (cron/weekly-featured) to re-run. The gain is never hand-typed — POST
- * recomputes it the exact same way the cron does (lib/weeklyFeatured.ts:
- * peak price since posting, gated by the same entry-price trustworthiness
- * guard) so a manual pick can't bypass the data-integrity checks that were
- * added after GS/SLB/CRWD turned out to have stale entry zones.
+ * Lets the admin hand-enter every field of the landing page's "Recent
+ * Result" card (ticker, company name, entry zone, target, % gain, posted
+ * date, summary) instead of waiting for the weekly cron. A manual entry
+ * sets isManualOverride, which cron/weekly-featured checks so it won't
+ * clobber a hand-entered card on its next weekly run.
  */
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDailyCandles } from '@/lib/schwab'
-import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
-import { peakGainPercent, isEntryPriceTrustworthy, weekStartET } from '@/lib/weeklyFeatured'
+import { weekStartET } from '@/lib/weeklyFeatured'
 import { requireAdmin, logAdminAction } from '@/lib/adminAuth'
 import { checkRateLimit, tooManyRequests, ADMIN_LIMIT, ADMIN_WINDOW_MS } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
-export const maxDuration = 60
 
 export async function GET() {
   const adminId = await requireAdmin()
   if (!adminId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const [candidates, current] = await Promise.all([
-    prisma.signal.findMany({
-      where: { outcome: 'HIT_TARGET', ...PUBLIC_TRACK_RECORD_FILTER },
-      select: { id: true, ticker: true, companyName: true, signalType: true, signalDate: true },
-      orderBy: { signalDate: 'desc' },
-    }),
-    prisma.weeklyFeaturedSignal.findFirst({ orderBy: { weekStartDate: 'desc' } }),
-  ])
+  const current = await prisma.weeklyFeaturedSignal.findFirst({ orderBy: { weekStartDate: 'desc' } })
+  if (!current) return NextResponse.json({ current: null })
 
   return NextResponse.json({
-    candidates: candidates.map((c) => ({
-      id: c.id, ticker: c.ticker, companyName: c.companyName,
-      signalType: c.signalType, signalDate: c.signalDate.toISOString(),
-    })),
-    currentSignalId: current?.signalId ?? null,
-    currentGainPercent: current?.realizedGainPercent ?? null,
+    current: {
+      ticker: current.ticker,
+      companyName: current.companyName,
+      signalType: current.signalType,
+      entryZoneLow: current.entryZoneLow,
+      entryZoneHigh: current.entryZoneHigh,
+      targetPrice: current.targetPrice,
+      gainPercent: current.realizedGainPercent,
+      postedAt: current.postedAt.toISOString().slice(0, 10),
+      thesis: current.thesis,
+      isManualOverride: current.isManualOverride,
+    },
   })
+}
+
+function num(v: unknown): number | null {
+  const n = typeof v === 'string' ? Number(v) : typeof v === 'number' ? v : NaN
+  return Number.isFinite(n) ? n : null
 }
 
 export async function POST(req: Request) {
@@ -49,48 +49,55 @@ export async function POST(req: Request) {
   const rl = checkRateLimit(`admin-weekly-featured:${adminId}`, ADMIN_LIMIT, ADMIN_WINDOW_MS)
   if (!rl.success) return tooManyRequests(rl.retryAfter!)
 
-  let body: { signalId?: unknown }
+  let body: Record<string, unknown>
   try { body = await req.json() } catch { return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 }) }
-  const signalId = String(body.signalId ?? '')
-  if (!signalId) return NextResponse.json({ error: 'signalId is required' }, { status: 400 })
 
-  const signal = await prisma.signal.findUnique({ where: { id: signalId } })
-  if (!signal) return NextResponse.json({ error: 'Signal not found' }, { status: 404 })
-  if (signal.outcome !== 'HIT_TARGET' || signal.isManual) {
-    return NextResponse.json({ error: 'Only closed, non-manual (HIT_TARGET) signals can be featured' }, { status: 400 })
+  const ticker = String(body.ticker ?? '').trim().toUpperCase()
+  const companyName = String(body.companyName ?? '').trim()
+  const signalType = String(body.signalType ?? '').trim().toUpperCase()
+  const thesis = String(body.thesis ?? '').trim()
+  const postedAtRaw = String(body.postedAt ?? '').trim()
+
+  const entryZoneLow = num(body.entryZoneLow)
+  const entryZoneHigh = num(body.entryZoneHigh)
+  const targetPrice = num(body.targetPrice)
+  const gainPercent = num(body.gainPercent)
+
+  if (!ticker) return NextResponse.json({ error: 'Ticker is required' }, { status: 400 })
+  if (!companyName) return NextResponse.json({ error: 'Company name is required' }, { status: 400 })
+  if (!['BUY', 'WATCH', 'SHORT', 'SELL'].includes(signalType)) {
+    return NextResponse.json({ error: 'Signal type must be BUY, WATCH, SHORT, or SELL' }, { status: 400 })
   }
+  if (!thesis) return NextResponse.json({ error: 'Summary is required' }, { status: 400 })
+  if (entryZoneLow === null || entryZoneHigh === null) return NextResponse.json({ error: 'Entry zone low/high must be numbers' }, { status: 400 })
+  if (targetPrice === null) return NextResponse.json({ error: 'Target price must be a number' }, { status: 400 })
+  if (gainPercent === null) return NextResponse.json({ error: '% gain must be a number' }, { status: 400 })
 
-  const allCandles = await getDailyCandles(signal.ticker)
-  const sincePosting = allCandles.filter((c) => c.datetime >= signal.signalDate.getTime())
-  if (sincePosting.length === 0) {
-    return NextResponse.json({ error: 'No candle data since this signal was posted' }, { status: 422 })
-  }
-
-  const entryPrice = (signal.entryZoneLow + signal.entryZoneHigh) / 2
-  if (!isEntryPriceTrustworthy(entryPrice, sincePosting[0])) {
-    const ref = (sincePosting[0].high + sincePosting[0].low) / 2
-    return NextResponse.json({
-      error: `Entry zone (${entryPrice.toFixed(2)}) doesn't match real price at posting (~${ref.toFixed(2)}) — likely stale data, refusing to feature`,
-    }, { status: 422 })
-  }
-
-  const gain = peakGainPercent({ signalType: signal.signalType, entryPrice, candlesSincePosting: sincePosting })
-  if (gain === null) {
-    return NextResponse.json({ error: 'Could not compute a publishable gain for this signal' }, { status: 422 })
+  const postedAt = new Date(postedAtRaw)
+  if (!postedAtRaw || Number.isNaN(postedAt.getTime())) {
+    return NextResponse.json({ error: 'Posted date is required and must be a valid date' }, { status: 400 })
   }
 
   const weekStartDate = weekStartET(new Date())
   await prisma.weeklyFeaturedSignal.upsert({
     where: { weekStartDate },
-    create: { signalId: signal.id, weekStartDate, realizedGainPercent: gain },
-    update: { signalId: signal.id, realizedGainPercent: gain, selectedAt: new Date() },
+    create: {
+      signalId: null, ticker, companyName, signalType,
+      entryZoneLow, entryZoneHigh, targetPrice, realizedGainPercent: gainPercent,
+      thesis, postedAt, isManualOverride: true, weekStartDate,
+    },
+    update: {
+      signalId: null, ticker, companyName, signalType,
+      entryZoneLow, entryZoneHigh, targetPrice, realizedGainPercent: gainPercent,
+      thesis, postedAt, isManualOverride: true, selectedAt: new Date(),
+    },
   })
 
   await logAdminAction({
     adminId, action: 'featured.select',
-    target: signal.ticker,
-    detail: `manually featured ${signal.ticker} at +${gain.toFixed(2)}% peak gain`,
+    target: ticker,
+    detail: `manually set Recent Result card: ${ticker} at +${gainPercent}%`,
   })
 
-  return NextResponse.json({ ok: true, ticker: signal.ticker, gainPercent: Math.round(gain * 100) / 100 })
+  return NextResponse.json({ ok: true, ticker, gainPercent })
 }

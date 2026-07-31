@@ -12,8 +12,6 @@ export type WeeklyFeatured = {
   thesis: string
   /** ISO — when the signal was posted. */
   openedAt: string
-  /** ISO — when the outcome checker recorded HIT_TARGET. */
-  closedAt: string
   weekStartDate: string
 }
 

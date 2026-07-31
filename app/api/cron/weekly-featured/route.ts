@@ -45,11 +45,21 @@ export async function GET(req: Request) {
     const now = new Date()
 
     // No date window — the pool is every qualifying signal ever recorded.
+    const weekStartDate = weekStartET(now)
+
+    // An admin's manual pick for this week wins over the cron — don't clobber
+    // a hand-entered card if the cron happens to re-run mid-week.
+    const existing = await prisma.weeklyFeaturedSignal.findUnique({ where: { weekStartDate } })
+    if (existing?.isManualOverride) {
+      return NextResponse.json({ ok: true, skippedReason: 'current week is manually overridden by an admin', weekStartDate: weekStartDate.toISOString() })
+    }
+
     const candidates = await prisma.signal.findMany({
       where: { outcome: 'HIT_TARGET', ...PUBLIC_TRACK_RECORD_FILTER },
       select: {
-        id: true, ticker: true, signalType: true,
-        entryZoneLow: true, entryZoneHigh: true, signalDate: true,
+        id: true, ticker: true, companyName: true, signalType: true,
+        entryZoneLow: true, entryZoneHigh: true, targetPrice: true,
+        thesis: true, signalDate: true,
       },
     })
 
@@ -64,7 +74,11 @@ export async function GET(req: Request) {
       await Promise.all(uniqueTickers.map(async (t) => [t, await getDailyCandles(t)] as const)),
     )
 
-    let best: { id: string; ticker: string; gain: number } | null = null
+    let best: {
+      id: string; ticker: string; companyName: string; signalType: string
+      entryZoneLow: number; entryZoneHigh: number; targetPrice: number
+      thesis: string; signalDate: Date; gain: number
+    } | null = null
     const skipped: { ticker: string; reason: string }[] = []
 
     for (const c of candidates) {
@@ -92,7 +106,13 @@ export async function GET(req: Request) {
         continue
       }
 
-      if (!best || gain > best.gain) best = { id: c.id, ticker: c.ticker, gain }
+      if (!best || gain > best.gain) {
+        best = {
+          id: c.id, ticker: c.ticker, companyName: c.companyName, signalType: c.signalType,
+          entryZoneLow: c.entryZoneLow, entryZoneHigh: c.entryZoneHigh, targetPrice: c.targetPrice,
+          thesis: c.thesis, signalDate: c.signalDate, gain,
+        }
+      }
     }
 
     if (skipped.length > 0) {
@@ -103,11 +123,16 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: true, candidates: candidates.length, selected: null, skipped, note: 'no candidate produced a publishable gain' })
     }
 
-    const weekStartDate = weekStartET(now)
+    const featuredFields = {
+      signalId: best.id, ticker: best.ticker, companyName: best.companyName,
+      signalType: best.signalType, entryZoneLow: best.entryZoneLow, entryZoneHigh: best.entryZoneHigh,
+      targetPrice: best.targetPrice, realizedGainPercent: best.gain, thesis: best.thesis,
+      postedAt: best.signalDate, isManualOverride: false,
+    }
     await prisma.weeklyFeaturedSignal.upsert({
       where: { weekStartDate },
-      create: { signalId: best.id, weekStartDate, realizedGainPercent: best.gain },
-      update: { signalId: best.id, realizedGainPercent: best.gain, selectedAt: new Date() },
+      create: { ...featuredFields, weekStartDate },
+      update: { ...featuredFields, selectedAt: new Date() },
     })
 
     return NextResponse.json({

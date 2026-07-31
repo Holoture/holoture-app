@@ -15,15 +15,14 @@ import { hasEverSubscribed } from '@/lib/user'
 import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
 
 /**
- * The hero's showcase: the highest-gaining CLOSED signal recorded to date,
- * chosen by cron/weekly-featured (which re-runs weekly to pick up a new
- * record) and read back here.
+ * The hero's showcase: either the highest-gaining CLOSED signal recorded to
+ * date (auto-selected weekly by cron/weekly-featured) or a hand-entered
+ * override set from the admin console — see WeeklyFeaturedSignal.isManualOverride.
  *
- * Reads the stored selection rather than recomputing per render — one query
- * instead of scanning every closed signal on every landing-page hit.
- * Returns null when the cron found nothing worth featuring, which the card
- * renders as an explicit empty state rather than falling back to a weaker
- * result.
+ * The row is fully self-contained (ticker, gain, thesis, etc. all stored
+ * directly on it) rather than joined against Signal at render time, so a
+ * manual entry works with no linked signal and can't go stale if the
+ * underlying Signal row is later edited or deleted.
  */
 async function getWeeklyFeatured(): Promise<WeeklyFeatured | null> {
   try {
@@ -32,23 +31,16 @@ async function getWeeklyFeatured(): Promise<WeeklyFeatured | null> {
     })
     if (!row) return null
 
-    const signal = await prisma.signal.findUnique({ where: { id: row.signalId } })
-    // Defensive: the signal could have been deleted from the admin console
-    // after selection. Showing a partial card would be worse than the
-    // honest empty state.
-    if (!signal || signal.outcome !== 'HIT_TARGET' || signal.isManual) return null
-
     return {
-      ticker: signal.ticker,
-      companyName: signal.companyName,
-      signalType: signal.signalType,
-      entryZoneLow: signal.entryZoneLow,
-      entryZoneHigh: signal.entryZoneHigh,
-      targetPrice: signal.targetPrice,
+      ticker: row.ticker,
+      companyName: row.companyName,
+      signalType: row.signalType,
+      entryZoneLow: row.entryZoneLow,
+      entryZoneHigh: row.entryZoneHigh,
+      targetPrice: row.targetPrice,
       realizedGainPercent: row.realizedGainPercent,
-      thesis: signal.thesis,
-      openedAt: signal.signalDate.toISOString(),
-      closedAt: (signal.outcomeCheckedAt ?? signal.updatedAt).toISOString(),
+      thesis: row.thesis,
+      openedAt: row.postedAt.toISOString(),
       weekStartDate: row.weekStartDate.toISOString(),
     }
   } catch {
