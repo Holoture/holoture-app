@@ -41,20 +41,30 @@ export async function GET(req: Request) {
       alertsCreated: [] as string[],
     }
 
-    for (const feed of FEED_URLS) {
+    // Fetch all 6 feeds in parallel — sequential fetching (each with its own
+    // 15s timeout) could take up to 90s worst case, which blew past this
+    // route's 60s maxDuration in production (FUNCTION_INVOCATION_TIMEOUT,
+    // observed 2026-07-31). In parallel, worst case is ~15s regardless of
+    // feed count.
+    const fetches = await Promise.all(
+      FEED_URLS.map(async (feed) => {
+        try {
+          const res = await fetch(feed.url, {
+            headers: { 'User-Agent': 'Holoture News Catalyst Scanner contact@holoture.com' },
+            signal: AbortSignal.timeout(15000),
+            cache: 'no-store',
+          })
+          if (!res.ok) return { feed, xml: null }
+          return { feed, xml: await res.text() }
+        } catch {
+          return { feed, xml: null } // one feed failing shouldn't abort the whole run
+        }
+      }),
+    )
+
+    for (const { feed, xml } of fetches) {
       stats.feedsPolled++
-      let xml: string
-      try {
-        const res = await fetch(feed.url, {
-          headers: { 'User-Agent': 'Holoture News Catalyst Scanner contact@holoture.com' },
-          signal: AbortSignal.timeout(15000),
-          cache: 'no-store',
-        })
-        if (!res.ok) continue
-        xml = await res.text()
-      } catch {
-        continue // one feed failing shouldn't abort the whole run
-      }
+      if (xml === null) continue
 
       const parsed = parseRssItems(xml)
       stats.itemsFetched += parsed.length
