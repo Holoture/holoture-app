@@ -302,15 +302,18 @@ model WeeklyFeaturedSignal {
   // fields below are always self-contained (never re-joined against
   // Signal at render time), so a manual entry works with no linked row.
   signalId            String?
-  ticker              String
-  companyName         String
-  signalType          String
-  entryZoneLow        Float
-  entryZoneHigh       Float
-  targetPrice         Float
+  // Defaults exist only so `prisma db push` can add these columns onto an
+  // already-populated table without failing/prompting in non-interactive
+  // CI — every row written by the app code always supplies real values.
+  ticker              String   @default("")
+  companyName         String   @default("")
+  signalType          String   @default("BUY")
+  entryZoneLow        Float    @default(0)
+  entryZoneHigh       Float    @default(0)
+  targetPrice         Float    @default(0)
   realizedGainPercent Float
-  thesis              String
-  postedAt            DateTime
+  thesis              String   @default("")
+  postedAt            DateTime @default(now())
   // True when an admin hand-entered these fields via the console rather
   // than the cron computing them from real market data.
   isManualOverride    Boolean  @default(false)
