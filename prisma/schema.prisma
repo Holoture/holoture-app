@@ -519,3 +519,61 @@ model TrialRecord {
   @@index([deviceFingerprint])
   @@index([userId])
 }
+
+// ── News Catalyst Alerts ─────────────────────────────────────────────────────
+//
+// Standalone, explicitly high-risk "after the fact" alert feature — completely
+// separate from the vetted Signal system. NEVER queried alongside Signal, never
+// blended into the public track-record/outcomes stats. See
+// app/api/cron/news-catalyst/route.ts and lib/newsCatalyst.ts for the full
+// feature doc and the GlobeNewswire ToS/licensing note this was built under.
+
+// Raw ingestion log — every RSS item fetched, regardless of whether it becomes
+// an alert. Exists purely for dedup (guid is unique) so the same release isn't
+// re-processed across polls; not shown in any UI.
+model NewsCatalystRawItem {
+  id           String   @id @default(cuid())
+  guid         String   @unique
+  headline     String
+  body         String
+  feedCategory String // the GlobeNewswire RSS topic this came from, e.g. "Contracts"
+  publishedAt  DateTime
+  sourceUrl    String
+  fetchedAt    DateTime @default(now())
+
+  @@index([fetchedAt])
+}
+
+// A raw item becomes a row here only after clearing ALL THREE gates: catalyst
+// category match, ticker resolution (high or low confidence — never a guess
+// with no match at all), and volume confirmation. See lib/newsCatalyst.ts.
+model NewsCatalystAlert {
+  id                        String    @id @default(cuid())
+  ticker                    String
+  tickerConfidence          String // 'high' | 'low' — see lib/newsCatalyst.ts#resolveTicker
+  headline                  String
+  sourceUrl                 String
+  category                  String // 'contract_award' | 'ma' | 'fda' | 'going_concern' | 'reverse_split' | 'delisting' | 'earnings_surprise'
+  publishedAt               DateTime
+  detectedAt                DateTime  @default(now())
+  relativeVolumeAtDetection Float
+  currentPrice              Float
+  priceChangePercent        Float
+  // Not in the originally-specified field list — added because Step 6 (UI)
+  // requires showing halt status prominently when known.
+  isHalted                  Boolean   @default(false)
+
+  // Outcome tracking (internal reference only — never published as a
+  // performance claim, never blended with Signal outcomes). Populated by
+  // cron/news-catalyst-outcomes on its own schedule, independently per row
+  // once each interval has actually elapsed since detectedAt.
+  priceChangeAt15m          Float?
+  checkedAt15m              DateTime?
+  priceChangeAt1h           Float?
+  checkedAt1h               DateTime?
+  priceChangeAtEod          Float?
+  checkedAtEod              DateTime?
+
+  @@index([detectedAt])
+  @@index([ticker])
+}

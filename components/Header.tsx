@@ -35,6 +35,7 @@ const MARKETS_MENU: DropdownItemConfig[] = [
 const SCANNERS_MENU: DropdownItemConfig[] = [
   { href: '/politician-scanner', label: 'Politician Scanner', available: true, desc: 'Congressional trades' },
   { href: '/insider-scanner',    label: 'Insider Scanner',    available: true, desc: 'Insider buying activity' },
+  { href: '/catalyst-alerts',    label: 'Catalyst Alerts',    available: true, desc: 'High-risk news-driven moves' },
 ]
 
 const NAV_LINKS = [

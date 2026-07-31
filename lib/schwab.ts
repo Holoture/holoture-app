@@ -113,6 +113,10 @@ export type SchwabQuote = {
   closePrice: number // prior day's close
   week52High?: number
   week52Low?: number
+  // "Normal" | "Halted" | "Closed" — Schwab's own halt indicator, not
+  // previously mapped by this client. Added for the News Catalyst Alerts
+  // feature, which needs to show halt status directly rather than infer it.
+  securityStatus: string | null
 }
 
 export type SchwabFundamental = {
@@ -149,6 +153,7 @@ export async function getQuotes(symbols: string[]): Promise<Map<string, SchwabQu
       closePrice: q.closePrice ?? 0,
       week52High: q['52WeekHigh'],
       week52Low: q['52WeekLow'],
+      securityStatus: (q as unknown as { securityStatus?: string }).securityStatus ?? null,
     })
   }
   return out
@@ -189,6 +194,7 @@ export async function getQuotesWithFundamentals(
         closePrice: q.closePrice ?? 0,
         week52High: q['52WeekHigh'],
         week52Low: q['52WeekLow'],
+        securityStatus: (q as unknown as { securityStatus?: string }).securityStatus ?? null,
       },
       fundamental: {
         peRatio: f.peRatio ?? null,
@@ -221,6 +227,7 @@ export type ExtendedHoursQuote = {
   extendedLastSize: number
   extendedTradeTime: number // epoch ms
   pctChange: number // vs regularLastPrice — see getExtendedHoursQuotes doc
+  securityStatus: string | null // "Normal" | "Halted" | "Closed"
 }
 
 /**
@@ -286,6 +293,7 @@ export async function getExtendedHoursQuotes(symbols: string[]): Promise<Map<str
       extendedLastSize: ext.lastSize ?? 0,
       extendedTradeTime,
       pctChange: ((extendedLastPrice - regularLastPrice) / regularLastPrice) * 100,
+      securityStatus: (q as unknown as { securityStatus?: string }).securityStatus ?? null,
     })
   }
   return out

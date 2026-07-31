@@ -22,6 +22,8 @@
     { "path": "/api/cron/scheduled-signals/regular-1515", "schedule": "15 19 * * 1-5" },
     { "path": "/api/cron/scheduled-signals/afterhours-1645", "schedule": "45 20 * * 1-5" },
     { "path": "/api/cron/scheduled-signals/afterhours-1830", "schedule": "30 22 * * 1-5" },
+    { "path": "/api/cron/news-catalyst", "schedule": "* 8-23 * * 1-5" },
+    { "path": "/api/cron/news-catalyst-outcomes", "schedule": "*/10 8-23 * * 1-5" },
     { "path": "/api/cron/insider", "schedule": "0 12 * * 1-5" },
     { "path": "/api/cron/insider", "schedule": "0 22 * * 1-5" },
     { "path": "/api/cron/signal-outcomes", "schedule": "0 6 * * *" },
