@@ -1,11 +1,7 @@
 /**
  * GET /api/signals/history
  *
- * Returns signals from the last 30 days grouped by date.
- * Access control:
- *   free  — only signals matching today's 5-pick selection algorithm (historically)
- *   pro   — all signals except options
- *   max   — all signals including options (options served separately)
+ * Admin-only. Returns signals from the last 30 days grouped by date.
  *
  * Query params:
  *   days   (number 1–30, default 30)
@@ -63,13 +59,16 @@ function getDailyFreePickIdsForDate(signalIds: string[], dateStr: string): Set<s
 
 export async function GET(req: NextRequest) {
   const { userId } = await auth()
-  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!userId || userId !== process.env.ADMIN_USER_ID) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const ip = getIp(req)
   const rl = checkRateLimit(`signal-history:${ip}`, DEFAULT_LIMIT, DEFAULT_WINDOW_MS)
   if (!rl.success) return tooManyRequests(rl.retryAfter!)
 
-  // Tier check
+  // Tier check — kept for the response shape SignalHistoryTab expects,
+  // though only the admin can reach this route now.
   const user = await prisma.user.findUnique({
     where: { clerkId: userId },
     select: {

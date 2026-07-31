@@ -575,15 +575,17 @@ export default function SignalBoardClient({
           </button>
         ))}
 
-        {/* History — demoted to a small link/toggle, not a peer signal-type tab */}
-        <button
-          onClick={() => setActiveTab('history')}
-          className="flex items-center gap-1 px-3 py-2.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0"
-          style={{ color: activeTab === 'history' ? '#009BFF' : 'var(--text-w35)' }}
-        >
-          <History className="w-3.5 h-3.5" />
-          History
-        </button>
+        {/* History — admin-only, not a peer signal-type tab */}
+        {isAdmin && (
+          <button
+            onClick={() => setActiveTab('history')}
+            className="flex items-center gap-1 px-3 py-2.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0"
+            style={{ color: activeTab === 'history' ? '#009BFF' : 'var(--text-w35)' }}
+          >
+            <History className="w-3.5 h-3.5" />
+            History
+          </button>
+        )}
 
         {/* Admin refresh + timestamp */}
         <div className="ml-auto pl-3 flex items-center gap-2 shrink-0">
@@ -602,11 +604,11 @@ export default function SignalBoardClient({
         </div>
       </div>
 
-      {/* ── HISTORY TAB ── */}
-      {activeTab === 'history' && <SignalHistoryTab tier={tier} />}
+      {/* ── HISTORY TAB — admin-only ── */}
+      {isAdmin && activeTab === 'history' && <SignalHistoryTab tier={tier} />}
 
       {/* ── SIGNAL TABS (All + category tabs) ── */}
-      {activeTab !== 'history' && (
+      {!(isAdmin && activeTab === 'history') && (
         <>
           {/* Free user — single combined upsell banner (was two stacked banners) */}
           {isFree && (() => {
