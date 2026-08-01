@@ -69,6 +69,109 @@ export function verifyCronSecret(req: Request): boolean {
   return req.headers.get('authorization') === `Bearer ${secret}`
 }
 
+// ── DST-safe extended-hours scheduling ──────────────────────────────────────
+//
+// vercel.json cron schedules are fixed UTC and cannot natively express
+// "always run at 7:00am America/New_York" — that offset is UTC-4 in EDT and
+// UTC-5 in EST, and Vercel has no timezone-aware cron. Hardcoding one UTC
+// offset (what this app did before) is only ever correct for one of the two
+// DST states and silently drifts an hour off target twice a year with no
+// error — flagged as an open risk across two separate investigations before
+// finally being fixed here.
+//
+// FIX: the schedule itself becomes irrelevant to DST. Each of the 4 extended
+// slots' crons (vercel.json) now fire every minute across a UTC window wide
+// enough to contain BOTH the EDT and EST clock time of that slot's real ET
+// target (see EXTENDED_SLOT_TARGETS + the vercel.json comment for the exact
+// windows). The route itself computes the CURRENT real America/New_York
+// wall-clock time via Intl.DateTimeFormat (which already knows the DST
+// calendar — no manual date-range table to keep updated) and only executes
+// once real ET time matches the target, within a small tolerance for cron
+// jitter (observed ~1-1.5min in production). A DB-backed idempotency claim
+// (ScheduledSlotRun) ensures the multiple invocations that legitimately land
+// inside that window only actually run the slot once per day.
+export const EXTENDED_SLOT_TARGETS: Partial<Record<SlotId, { hour: number; minute: number }>> = {
+  premarket_0700: { hour: 7, minute: 0 },
+  premarket_0900: { hour: 9, minute: 0 },
+  afterhours_1645: { hour: 16, minute: 45 },
+  afterhours_1830: { hour: 18, minute: 30 },
+}
+
+// Wider than the observed ~1-1.5min production jitter, with real margin —
+// tune down if jitter is ever confirmed tighter, never removed to 0 (that
+// would recreate an exact-minute-match race against normal cron jitter).
+const SLOT_TOLERANCE_MINUTES = 6
+
+function getCurrentEtHourMinute(now: Date): { hour: number; minute: number } {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', hour12: false,
+  }).formatToParts(now)
+  return {
+    hour: parseInt(parts.find((p) => p.type === 'hour')?.value ?? '0', 10),
+    minute: parseInt(parts.find((p) => p.type === 'minute')?.value ?? '0', 10),
+  }
+}
+
+function etDateString(now: Date): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(now)
+}
+
+/** True only for the FIRST caller for this (slotId, etDate) — a unique-constraint race, not a lock. */
+async function claimSlotRun(slotId: string, etDate: string): Promise<boolean> {
+  try {
+    await prisma.scheduledSlotRun.create({ data: { slotId, etDate } })
+    return true
+  } catch {
+    return false // unique constraint violation — another invocation already claimed today
+  }
+}
+
+/**
+ * Entry point for the 4 extended-hours dedicated routes' real (non-dry-run)
+ * invocations. Computes real ET time, no-ops outside the slot's tolerance
+ * window (cheap — no DB or Schwab calls), and runs the slot's real logic at
+ * most once per ET calendar day once inside the window.
+ */
+export async function runExtendedSlotDstSafe(slotId: SlotId): Promise<Record<string, unknown>> {
+  const target = EXTENDED_SLOT_TARGETS[slotId]
+  if (!target) throw new Error(`runExtendedSlotDstSafe called with a non-extended slot: ${slotId}`)
+
+  const now = new Date()
+  const { hour, minute } = getCurrentEtHourMinute(now)
+  const nowMin = hour * 60 + minute
+  const targetMin = target.hour * 60 + target.minute
+  const windowEndMin = targetMin + SLOT_TOLERANCE_MINUTES
+
+  if (nowMin < targetMin || nowMin > windowEndMin) {
+    return {
+      ok: true, slot: slotId, skipped: true, reason: 'outside DST-safe execution window',
+      etTime: `${hour}:${String(minute).padStart(2, '0')}`,
+      targetEtTime: `${target.hour}:${String(target.minute).padStart(2, '0')}`,
+    }
+  }
+
+  const etDate = etDateString(now)
+  const claimed = await claimSlotRun(slotId, etDate)
+  if (!claimed) {
+    return { ok: true, slot: slotId, skipped: true, reason: 'already ran today', etDate }
+  }
+
+  // Safeguard: claiming at the LAST possible minute of the window means
+  // every earlier invocation inside the window was missed — the same
+  // failure signature (cron not actually firing) that caused the original
+  // shared-pathname bug. Still ran successfully this time, but worth a loud
+  // trace so it surfaces in monitoring instead of silently squeaking by.
+  if (nowMin === windowEndMin) {
+    console.warn(
+      `[scheduled-signals] ${slotId} claimed at the LAST minute of its DST-safe window ` +
+      `(target ${target.hour}:${String(target.minute).padStart(2, '0')} ET, tolerance ${SLOT_TOLERANCE_MINUTES}min) — ` +
+      `earlier invocations inside the window were apparently missed.`,
+    )
+  }
+
+  return runSlot(slotId, false)
+}
+
 // ── Slot configuration ──────────────────────────────────────────────────────
 
 export type SlotSession = 'premarket' | 'regular' | 'afterhours'

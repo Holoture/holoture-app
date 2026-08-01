@@ -520,6 +520,25 @@ model TrialRecord {
   @@index([userId])
 }
 
+// DST-safe idempotency claim for the 4 extended-hours scheduled-signals slots
+// (premarket-0700/0900, afterhours-1645/1830). Those crons now run every
+// minute across a UTC window wide enough to cover BOTH the EDT and EST clock
+// time for the slot's real ET target — the code decides whether to actually
+// execute based on real America/New_York wall-clock time (see
+// lib/scheduledSignals.ts#runExtendedSlotDstSafe), not a fixed UTC offset, so
+// the DST transition twice a year never silently shifts the schedule again.
+// Multiple invocations can legitimately land inside that window on the same
+// day; this table's unique constraint ensures only the FIRST one actually
+// runs the slot, the rest see the claim already exists and no-op.
+model ScheduledSlotRun {
+  id     String   @id @default(cuid())
+  slotId String
+  etDate String // 'YYYY-MM-DD' in America/New_York — the day this slot ran
+  ranAt  DateTime @default(now())
+
+  @@unique([slotId, etDate])
+}
+
 // ── News Catalyst Alerts ─────────────────────────────────────────────────────
 //
 // Standalone, explicitly high-risk "after the fact" alert feature — completely
