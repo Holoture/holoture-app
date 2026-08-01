@@ -318,6 +318,12 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
   }
 
   if (shortlist.length === 0) {
+    // Real (non-dry-run) invocations write no response body Vercel logs
+    // capture — this is the only trace a real run leaves for later
+    // diagnosis. Added after a diagnosis session had to fall back on
+    // late-night dry-runs to guess what an actual premarket/after-hours run
+    // had done hours earlier.
+    console.log(`[scheduled-signals] ${slotId} scanned=${universe.length} qualified=0 created=0 rejected=${JSON.stringify(rejected)}`)
     return { ok: true, slot: slotId, session: slot.session, scanned: universe.length, qualified: 0, created: 0, rejected }
   }
 
@@ -369,6 +375,8 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
   // see notifySignalDigest's doc comment).
   const digestLabel = slot.session === 'premarket' ? 'premarket run' : slot.session === 'afterhours' ? 'after-hours run' : 'regular-hours run'
   await notifySignalDigest({ createdCount: created.length, runLabel: digestLabel })
+
+  console.log(`[scheduled-signals] ${slotId} scanned=${universe.length} qualified=${candidates.length} created=${created.length} tickers=${created.join(',')} rejected=${JSON.stringify(rejected)}`)
 
   return {
     ok: true,

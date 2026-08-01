@@ -44,6 +44,13 @@ export default function CatalystAlertsClient() {
   async function load() {
     try {
       const res = await fetch('/api/news-catalyst')
+      // Defensive: a non-JSON response (an HTML error/auth page, a proxy
+      // timeout page, etc.) would otherwise throw an opaque "Unexpected
+      // token '<'" out of res.json() instead of a readable error.
+      if (!res.headers.get('content-type')?.includes('application/json')) {
+        setError(`Unexpected response (HTTP ${res.status})`)
+        return
+      }
       const data = await res.json()
       if (!res.ok) { setError(data.error ?? 'Failed to load alerts'); return }
       setAlerts(data.alerts)

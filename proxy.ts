@@ -22,6 +22,13 @@ const isPublicApiRoute = createRouteMatcher([
   // Removing the middleware layer prevents transient Clerk validation failures
   // from silently returning 401 to the chart/details fetch calls.
   '/api/signals/(.*)',
+  // Same reasoning: auth.protect() at the middleware layer returns a bare HTML
+  // 404 for a signed-out/edge-case-invalid session (Clerk's default, not a
+  // JSON 401) — that HTML response is what broke CatalystAlertsClient's
+  // fetch().json() with "Unexpected token '<'". This route already checks
+  // auth() + Max tier itself and returns real JSON 401/403, so the extra
+  // middleware layer only added a worse failure mode, not real protection.
+  '/api/news-catalyst',
 ])
 
 export const proxy = clerkMiddleware(
