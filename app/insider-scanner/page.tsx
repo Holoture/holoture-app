@@ -1,10 +1,24 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { getOrCreateUser, computeTier } from '@/lib/user'
 import Header from '@/components/Header'
 import InsiderScannerClient from '@/components/InsiderScannerClient'
 import AuthLoadingGate from '@/components/AuthLoadingGate'
+
+export const metadata: Metadata = {
+  title: 'Insider Scanner - Insider Buying Activity - Holoture',
+  description: 'Track open-market insider stock buying (Form 4 filings) from company executives and directors — see who is buying their own company\'s stock and how much.',
+  openGraph: {
+    title: 'Insider Scanner - Insider Buying Activity - Holoture',
+    description: 'Track open-market insider stock buying (Form 4 filings) from company executives and directors — see who is buying their own company\'s stock and how much.',
+  },
+  twitter: {
+    title: 'Insider Scanner - Insider Buying Activity - Holoture',
+    description: 'Track open-market insider stock buying (Form 4 filings) from company executives and directors — see who is buying their own company\'s stock and how much.',
+  },
+}
 
 async function getInsiderTrades(limit = 100) {
   try {

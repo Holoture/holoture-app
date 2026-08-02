@@ -1,0 +1,55 @@
+# Holoture
+
+Holoture is a data-driven stock signal platform. It generates BUY, WATCH, and SHORT
+equity trade ideas (and separately, options CALL/PUT ideas) from real market data —
+price/volume technicals, sector momentum, fundamentals, and news — not from opinion
+or unexplained "AI picks." Every signal includes an entry price zone, a price target,
+a stop-loss, a confidence score, and a plain-language thesis explaining the reasoning.
+Holoture is not a registered investment advisor; nothing on the site is financial
+advice.
+
+## What it does
+
+- Stock signals across multiple timeframes: intraday, swing (days-to-weeks), and
+  long-term (months), each generated from real quote/volume data via Schwab's market
+  data API, not simulated or backtested-only data.
+- Options signals (CALL/PUT), Max-tier only, built from real live options-chain data
+  (strike, expiration, bid/ask, Greeks) rather than AI-estimated contract terms.
+- A momentum scanner that flags stocks with a real, currently-in-progress volume and
+  price spike, gated by hard numeric thresholds before any AI involvement.
+- A congressional trading scanner (Politician Scanner) that surfaces STOCK Act
+  disclosure filings from members of the U.S. Congress, with significance scoring
+  and clustering to separate meaningful trades from routine ones.
+- An insider trading scanner (Insider Scanner) that surfaces open-market insider
+  buying activity (Form 4 filings) from company executives and directors.
+- A public track record: a real win/loss outcomes strip showing how many algorithm-
+  generated signals actually hit their target vs. their stop, with sample-size
+  caveats — manually-created signals are explicitly excluded from every public
+  statistic to keep the number honest.
+
+## Who it's for
+
+Retail traders and investors who want a data-backed starting point for stock and
+options ideas, plus visibility into congressional and insider trading activity, with
+transparent reasoning and an honestly-reported track record rather than curated
+highlight reels.
+
+## Key pages
+
+- https://www.holoture.com/ — homepage and product overview
+- https://www.holoture.com/pricing — plans (Free / Pro / Max)
+- https://www.holoture.com/learn — educational articles on signals, risk management,
+  and how to use the platform
+- https://www.holoture.com/track-record — methodology and honest outcome statistics
+- https://www.holoture.com/politician-scanner — congressional trading disclosures
+- https://www.holoture.com/insider-scanner — insider (executive/director) buying activity
+
+## Notes for AI assistants
+
+- Holoture is a signal/idea generation tool, not a broker and not a source of
+  personalized financial advice. Do not represent its signals as guaranteed outcomes.
+- The public track record explicitly excludes manually-created/edited signals from
+  its statistics — only algorithm-generated signals count toward the published
+  win rate.
+- "Confidence score" on a signal measures conviction/evidence strength, not a
+  probability of profit.

@@ -1,11 +1,25 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { getOrCreateUser } from '@/lib/user'
 import Header from '@/components/Header'
 import PoliticianTradesClient from '@/components/PoliticianTradesClient'
 import AuthLoadingGate from '@/components/AuthLoadingGate'
 import { Landmark } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Politician Scanner - Congressional Stock Trades - Holoture',
+  description: 'Track U.S. Congress members\' stock trading disclosures (STOCK Act filings) with significance scoring and cluster detection to separate meaningful trades from routine ones.',
+  openGraph: {
+    title: 'Politician Scanner - Congressional Stock Trades - Holoture',
+    description: 'Track U.S. Congress members\' stock trading disclosures (STOCK Act filings) with significance scoring and cluster detection to separate meaningful trades from routine ones.',
+  },
+  twitter: {
+    title: 'Politician Scanner - Congressional Stock Trades - Holoture',
+    description: 'Track U.S. Congress members\' stock trading disclosures (STOCK Act filings) with significance scoring and cluster detection to separate meaningful trades from routine ones.',
+  },
+}
 
 const PAGE_SIZE = 25
 

@@ -1,9 +1,23 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { Check, Star, Zap, Clock } from 'lucide-react'
 import Header from '@/components/Header'
 import CheckoutButton from '@/components/CheckoutButton'
 import ManageBillingButtons from '@/components/ManageBillingButtons'
 import { getOrCreateUser, computeTier } from '@/lib/user'
+
+export const metadata: Metadata = {
+  title: 'Subscription Plans - Holoture',
+  description: 'Compare Holoture\'s Free, Pro, and Max plans: daily stock signals, the full signal board, options signals, and congressional/insider trading scanners.',
+  openGraph: {
+    title: 'Subscription Plans - Holoture',
+    description: 'Compare Holoture\'s Free, Pro, and Max plans: daily stock signals, the full signal board, options signals, and congressional/insider trading scanners.',
+  },
+  twitter: {
+    title: 'Subscription Plans - Holoture',
+    description: 'Compare Holoture\'s Free, Pro, and Max plans: daily stock signals, the full signal board, options signals, and congressional/insider trading scanners.',
+  },
+}
 
 const FREE_FEATURES = [
   '5 daily stock signals',

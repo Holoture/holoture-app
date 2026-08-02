@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import Link from 'next/link'
 import Header from '@/components/Header'
 import {
   BookOpen, Target, BarChart3, Shield, Clock, ChevronDown, ChevronRight,
@@ -802,6 +803,28 @@ export default function LearnPage() {
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Deep dives — full standalone articles, not part of the accordion below */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+          <Link
+            href="/learn/congressional-stock-trades"
+            className="rounded-xl p-5 hover:bg-white/5 transition-colors"
+            style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
+          >
+            <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#009BFF' }}>Deep Dive</p>
+            <p className="font-bold text-white text-sm">How to Track Congressional Stock Trades</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--text-w40)' }}>7 min read</p>
+          </Link>
+          <Link
+            href="/learn/insider-buying-explained"
+            className="rounded-xl p-5 hover:bg-white/5 transition-colors"
+            style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
+          >
+            <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#009BFF' }}>Deep Dive</p>
+            <p className="font-bold text-white text-sm">What Is Insider Buying and Why It Matters</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--text-w40)' }}>6 min read</p>
+          </Link>
         </div>
 
         {/* Search bar */}
