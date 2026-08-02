@@ -79,7 +79,7 @@ export default function MoversTable({ rows }: { rows: MoverRow[] }) {
           style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--bg-surface-2)' }}
         >
           <div className="text-xs font-semibold" style={{ width: 130, flexShrink: 0, color: 'var(--text-w40)' }}>Ticker</div>
-          <div className="text-xs font-semibold" style={{ flex: 1, minWidth: 0, color: 'var(--text-w40)' }}>Company</div>
+          <div style={{ flex: 1, minWidth: 0 }} />
           <div className="text-xs font-semibold text-right" style={{ width: 100, flexShrink: 0, color: 'var(--text-w40)' }}>Price</div>
           <div className="text-xs font-semibold text-right" style={{ width: 90, flexShrink: 0, color: 'var(--text-w40)' }}>$ Change</div>
           <div className="text-xs font-semibold text-right" style={{ width: 90, flexShrink: 0, color: 'var(--text-w40)' }}>% Change</div>
