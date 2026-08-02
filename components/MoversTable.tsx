@@ -78,8 +78,7 @@ export default function MoversTable({ rows }: { rows: MoverRow[] }) {
           className="hidden sm:flex items-center gap-3 px-4 py-2"
           style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--bg-surface-2)' }}
         >
-          <div className="text-xs font-semibold" style={{ width: 130, flexShrink: 0, color: 'var(--text-w40)' }}>Ticker</div>
-          <div style={{ flex: 1, minWidth: 0 }} />
+          <div className="text-xs font-semibold flex-1" style={{ color: 'var(--text-w40)' }}>Ticker</div>
           <div className="text-xs font-semibold text-right" style={{ width: 100, flexShrink: 0, color: 'var(--text-w40)' }}>Price</div>
           <div className="text-xs font-semibold text-right" style={{ width: 90, flexShrink: 0, color: 'var(--text-w40)' }}>$ Change</div>
           <div className="text-xs font-semibold text-right" style={{ width: 90, flexShrink: 0, color: 'var(--text-w40)' }}>% Change</div>
@@ -99,7 +98,6 @@ export default function MoversTable({ rows }: { rows: MoverRow[] }) {
               <div className="flex sm:hidden flex-col gap-1 px-4 py-3" style={rowStyle}>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-white font-data" style={{ fontSize: 15 }}>{m.ticker}</span>
-                  <span className="truncate text-xs" style={{ color: 'var(--text-w40)' }}>{m.companyName ?? ''}</span>
                 </div>
                 <div className="flex items-center gap-4 text-sm font-data">
                   <span className="text-white">{formatCurrency(m.extendedLastPrice)}</span>
@@ -115,11 +113,8 @@ export default function MoversTable({ rows }: { rows: MoverRow[] }) {
 
               {/* Desktop — fixed-width columns matching the header row */}
               <div className="hidden sm:flex sm:items-center gap-3 px-4 py-3" style={rowStyle}>
-                <div style={{ width: 130, flexShrink: 0 }}>
+                <div className="flex-1">
                   <span className="font-bold text-white font-data" style={{ fontSize: 16 }}>{m.ticker}</span>
-                </div>
-                <div className="truncate text-sm text-white" style={{ flex: 1, minWidth: 0, opacity: 0.75 }}>
-                  {m.companyName ?? '—'}
                 </div>
                 <div className="text-sm font-data text-white text-right" style={{ width: 100, flexShrink: 0 }}>
                   {formatCurrency(m.extendedLastPrice)}
