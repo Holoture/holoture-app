@@ -20,7 +20,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Holoture — Data Stock Signals',
+  title: 'Holoture - Stocks, Options, Market Data',
   description: 'Data-powered stock signal and investment insight platform. Get curated buy/sell signals with entry zones, confidence scores, and time horizons.',
   keywords: 'stock signals, data investing, stock picks, investment insights',
   icons: {
