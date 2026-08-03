@@ -10,7 +10,7 @@ import Testimonials from '@/components/Testimonials'
 import HowItWorks from '@/components/HowItWorks'
 import WeeklyFeaturedCard, { type WeeklyFeatured } from '@/components/WeeklyFeaturedCard'
 import OutcomesStrip, { type OutcomesSummary } from '@/components/OutcomesStrip'
-import ShortHorizonOutcomesStrip, { type ShortHorizonOutcomesSummary } from '@/components/ShortHorizonOutcomesStrip'
+import type { ShortHorizonOutcomesSummary } from '@/components/ShortHorizonOutcomesStrip'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
 import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
@@ -130,13 +130,13 @@ async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
   }
 }
 
-// Short-horizon (intraday / days_1_3 / momentum) track record — restored
-// alongside OutcomesStrip (swing/long_term), deliberately NOT blended into
-// it. See ShortHorizonOutcomesStrip.tsx's doc comment: these two groups
-// perform measurably differently, so one combined number would misrepresent
-// both. Same exclusion rules as the swing/long_term strip: LEFT_ZONE and
-// UNVERIFIABLE are not resolved thesis outcomes and never enter any count
-// here; PUBLIC_TRACK_RECORD_FILTER excludes hand-created/edited signals.
+// Short-horizon (intraday / days_1_3 / momentum) track record — removed from
+// the landing page again per request. getShortHorizonOutcomesSummary() and
+// components/ShortHorizonOutcomesStrip.tsx are left in place, unused, in
+// case this is revisited later. Same exclusion rules as the swing/long_term
+// strip: LEFT_ZONE and UNVERIFIABLE are not resolved thesis outcomes and
+// never enter any count here; PUBLIC_TRACK_RECORD_FILTER excludes
+// hand-created/edited signals.
 const SHORT_HORIZON_CATEGORIES = ['intraday', 'days_1_3', 'momentum']
 
 async function getShortHorizonOutcomesSummary(): Promise<ShortHorizonOutcomesSummary | null> {
@@ -212,12 +212,11 @@ async function getTrialEligibility(): Promise<{ eligible: boolean; href: string 
 }
 
 export default async function LandingPage() {
-  const [trial, weeklyFeatured, heroStats, outcomesSummary, shortHorizonSummary] = await Promise.all([
+  const [trial, weeklyFeatured, heroStats, outcomesSummary] = await Promise.all([
     getTrialEligibility(),
     getWeeklyFeatured(),
     getHeroStats(),
     getOutcomesSummary(),
-    getShortHorizonOutcomesSummary(),
   ])
 
   return (
@@ -288,7 +287,6 @@ export default async function LandingPage() {
           even when the strip itself is hidden for a small sample. */}
       <div id="track-record" style={{ scrollMarginTop: 80 }}>
         {outcomesSummary && <OutcomesStrip summary={outcomesSummary} />}
-        {shortHorizonSummary && <ShortHorizonOutcomesStrip summary={shortHorizonSummary} />}
       </div>
 
       {/* One Platform, Four Edges — screenshot carousel */}
