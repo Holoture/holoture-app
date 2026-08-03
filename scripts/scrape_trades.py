@@ -41,9 +41,57 @@ BAD_TICKERS = {
 }
 
 # ---------------------------------------------------------------------------
-# Party lookup — 119th Congress (2025-2027)
-# Keys are cleaned "First Last" names after name normalization.
+# Party lookup — primary source is the `unitedstates/congress-legislators`
+# project (public-domain, actively maintained by civic-tech volunteers from
+# official Congress/Clerk sources — no licensing concern, unlike a commercial
+# reseller). Covers EVERY current member, not a fixed hand-typed subset, so
+# newly elected/reelected members don't silently fall through to "Unknown"
+# the way the old static-only dict did.
+#
+# PARTY_LOOKUP below is now only a FALLBACK for when the live fetch fails or
+# a name-formatting mismatch misses the live lookup — kept rather than
+# deleted since it costs nothing and only helps.
 # ---------------------------------------------------------------------------
+
+LEGISLATORS_CURRENT_URL = "https://unitedstates.github.io/congress-legislators/legislators-current.json"
+LEGISLATORS_HISTORICAL_URL = "https://unitedstates.github.io/congress-legislators/legislators-historical.json"
+
+
+def fetch_live_party_lookup() -> dict[str, str]:
+    """Build a name -> party map from the public-domain congress-legislators
+    dataset. Covers current members plus anyone who left office in the last
+    ~2 years (legislators-historical), so a member who resigned/retired mid-
+    window still resolves. Returns {} on any failure — callers fall back to
+    the static PARTY_LOOKUP dict, never crash the whole scrape over this."""
+    lookup: dict[str, str] = {}
+    for url in (LEGISLATORS_CURRENT_URL, LEGISLATORS_HISTORICAL_URL):
+        try:
+            resp = SESSION.get(url, timeout=30)
+            resp.raise_for_status()
+            records = resp.json()
+        except Exception as exc:
+            print(f"  congress-legislators fetch failed ({url}): {exc}")
+            continue
+
+        for rec in records:
+            name = rec.get("name", {})
+            first, last = name.get("first"), name.get("last")
+            if not first or not last:
+                continue
+            terms = rec.get("terms", [])
+            if not terms:
+                continue
+            party = terms[-1].get("party")  # most recent term
+            if not party:
+                continue
+            key = f"{first} {last}".strip()
+            # Current file is fetched second in historical case only if not
+            # already present — don't let an older historical record
+            # overwrite a current one.
+            lookup.setdefault(key, party)
+    print(f"  congress-legislators live lookup: {len(lookup)} names loaded")
+    return lookup
+
 
 PARTY_LOOKUP: dict[str, str] = {
     # User-specified
@@ -174,7 +222,15 @@ def clean_name(raw: str) -> str:
     return f"{first} {last}".strip()
 
 
+# Populated once in main() via fetch_live_party_lookup(). Module-level so
+# both scrape_house (via lookup_party) and scrape_senate can read it without
+# threading a parameter through every call site.
+_LIVE_PARTY_LOOKUP: dict[str, str] = {}
+
+
 def lookup_party(name: str) -> str:
+    if name in _LIVE_PARTY_LOOKUP:
+        return _LIVE_PARTY_LOOKUP[name]
     return PARTY_LOOKUP.get(name, "Unknown")
 
 
@@ -202,7 +258,12 @@ def norm_trade_type(raw: str) -> str:
         return "BUY"
     if raw in ("S", "SALE", "SELL", "SALE_FULL", "SALE_PARTIAL"):
         return "SELL"
-    return "SELL"  # default to SELL if ambiguous (common for PTR filings)
+    # Previously defaulted to "SELL" here — silently mislabeled every
+    # unparseable filing as a sale rather than surfacing that it's actually
+    # unknown. UNKNOWN is filtered out of the BUY/SELL UI toggle but still
+    # shows under "All Types", instead of asserting a direction we don't
+    # actually know.
+    return "UNKNOWN"
 
 
 # ---------------------------------------------------------------------------
@@ -306,7 +367,7 @@ def parse_ptr_pdf(pdf_bytes: bytes, member_name: str) -> list[dict]:
                         # Fallback: look for P/S after the [ST] tag on the same line
                         post = line[m.end():]
                         post_m = re.search(r"\b([PS])\b", post, re.IGNORECASE)
-                        trade_type = norm_trade_type(post_m.group(1)) if post_m else "SELL"
+                        trade_type = norm_trade_type(post_m.group(1)) if post_m else "UNKNOWN"
 
                     # Dates: first = transaction date, second = filing/notification date
                     dates = _DATE_RE.findall(context)
@@ -475,7 +536,7 @@ def scrape_senate() -> list[dict]:
             continue
 
         filed = safe_iso(str(src.get("date_filed", "")))
-        party = PARTY_LOOKUP.get(senator, "Unknown")
+        party = lookup_party(senator)
 
         for tx in src.get("transactions", []) or src.get("trade_data", []) or []:
             if not isinstance(tx, dict):
@@ -489,7 +550,7 @@ def scrape_senate() -> list[dict]:
             if not raw_ticker or raw_ticker in BAD_TICKERS:
                 continue
 
-            tx_type = norm_trade_type(str(tx.get("type", tx.get("transaction_type", "S"))))
+            tx_type = norm_trade_type(str(tx.get("type", tx.get("transaction_type", ""))))
             tx_date = safe_iso(str(tx.get("transaction_date", tx.get("date", filed))))
             asset_name = str(tx.get("asset_name", tx.get("asset_description", "")))
             # Strip ticker suffix from company name display
@@ -519,6 +580,9 @@ def scrape_senate() -> list[dict]:
 
 def main() -> None:
     os.makedirs("data", exist_ok=True)
+
+    global _LIVE_PARTY_LOOKUP
+    _LIVE_PARTY_LOOKUP = fetch_live_party_lookup()
 
     all_trades = scrape_house() + scrape_senate()
 

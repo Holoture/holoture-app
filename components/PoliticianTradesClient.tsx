@@ -39,6 +39,10 @@ function isBuy(tradeType: string) {
   return tradeType.toUpperCase() === 'BUY' || tradeType.toLowerCase().includes('purchase')
 }
 
+function isSell(tradeType: string) {
+  return tradeType.toUpperCase() === 'SELL' || tradeType.toLowerCase().includes('sale')
+}
+
 function initials(name: string) {
   return name.split(' ').filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toUpperCase()
 }
@@ -70,6 +74,7 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
   const [expanded, setExpanded] = useState(false)
   const party = PARTY_STYLE[trade.party] ?? { bg: 'rgba(148,163,184,0.15)', text: '#94a3b8', border: 'rgba(148,163,184,0.3)', avatar: '#64748b' }
   const buy = isBuy(trade.tradeType)
+  const sell = isSell(trade.tradeType)
   const sig = SIG_STYLE[trade.significance] ?? SIG_STYLE.Low
   const published = formatRelativeDate(trade.filedAt)
   const filedAfter = daysBetween(trade.tradedAt, trade.filedAt)
@@ -116,18 +121,22 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
           </div>
         </div>
 
-        {/* Type — direction, so green/red is correct here */}
+        {/* Type — direction, so green/red is correct here. A trade whose
+            filing couldn't be parsed as clearly BUY or SELL shows as a
+            neutral UNKNOWN badge instead of silently defaulting to SELL. */}
         <div>
           <span
             className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-none"
             style={
               buy
                 ? { backgroundColor: 'rgba(0,199,118,0.15)', color: 'var(--buy)', border: '1px solid rgba(0,199,118,0.35)' }
-                : { backgroundColor: 'rgba(229,72,77,0.15)', color: 'var(--short)', border: '1px solid rgba(229,72,77,0.35)' }
+                : sell
+                ? { backgroundColor: 'rgba(229,72,77,0.15)', color: 'var(--short)', border: '1px solid rgba(229,72,77,0.35)' }
+                : { backgroundColor: 'var(--bg-overlay)', color: 'var(--text-mute)', border: '1px solid var(--line)' }
             }
           >
-            {buy ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-            {buy ? 'BUY' : 'SELL'}
+            {buy ? <TrendingUp className="w-3 h-3" /> : sell ? <TrendingDown className="w-3 h-3" /> : null}
+            {buy ? 'BUY' : sell ? 'SELL' : 'UNKNOWN'}
           </span>
         </div>
 
