@@ -337,6 +337,12 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
   const now = Date.now()
   const candidates: Candidate[] = []
   const rejected = { dedup: 0, price: 0, move: 0, spread: 0, size: 0, stale: 0 }
+  // TEMPORARY instrumentation for spread-threshold investigation — dry-run
+  // only, no effect on real invocations. Captures real spread%/last-print
+  // size for every ticker that clears price/move/dedup (i.e. the population
+  // the spread gate actually acts on), before that gate is applied. Remove
+  // once the spread threshold question is resolved.
+  const spreadSamples: { ticker: string; pctChange: number; spreadPct: number; lastTradeDollars: number }[] = []
 
   if (slot.session === 'regular') {
     // Regular session: plain quotes are real-time and carry a real
@@ -390,6 +396,15 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
         const spreadPct = mid > 0 && q.extendedBidPrice > 0 && q.extendedAskPrice > 0
           ? ((q.extendedAskPrice - q.extendedBidPrice) / mid) * 100
           : Infinity
+        const lastTradeDollarsForSample = q.extendedLastPrice * q.extendedLastSize
+        if (isDryRun) {
+          spreadSamples.push({
+            ticker: q.symbol,
+            pctChange: Math.round(q.pctChange * 100) / 100,
+            spreadPct: Number.isFinite(spreadPct) ? Math.round(spreadPct * 100) / 100 : -1,
+            lastTradeDollars: Math.round(lastTradeDollarsForSample),
+          })
+        }
         if (spreadPct > EXTENDED_MAX_SPREAD_PCT) { rejected.spread++; continue }
 
         const lastTradeDollars = q.extendedLastPrice * q.extendedLastSize
@@ -423,7 +438,11 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
       qualified: candidates.length,
       wouldCreate: shortlist,
       rejected,
-      thresholds: { minPctMove: slot.minPctMove, minConfidence: slot.minConfidence },
+      thresholds: { minPctMove: slot.minPctMove, minConfidence: slot.minConfidence, maxSpreadPct: EXTENDED_MAX_SPREAD_PCT, minLastTradeDollars: EXTENDED_MIN_LAST_TRADE_DOLLARS },
+      // TEMPORARY — real spread%/last-print-size for every ticker that
+      // cleared price/move/dedup, sorted by spread ascending, for spread-
+      // threshold investigation. Empty on regular-session dry runs.
+      spreadSamples: spreadSamples.sort((a, b) => a.spreadPct - b.spreadPct),
     }
   }
 
