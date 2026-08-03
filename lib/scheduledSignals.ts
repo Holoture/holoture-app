@@ -336,13 +336,10 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
 
   const now = Date.now()
   const candidates: Candidate[] = []
+  // `spread` stays in this shape for response-shape stability but is no
+  // longer incremented anywhere — spread is advisory-only now (see the
+  // extended-session branch below), never a rejection reason.
   const rejected = { dedup: 0, price: 0, move: 0, spread: 0, size: 0, stale: 0 }
-  // TEMPORARY instrumentation for spread-threshold investigation — dry-run
-  // only, no effect on real invocations. Captures real spread%/last-print
-  // size for every ticker that clears price/move/dedup (i.e. the population
-  // the spread gate actually acts on), before that gate is applied. Remove
-  // once the spread threshold question is resolved.
-  const spreadSamples: { ticker: string; pctChange: number; spreadPct: number; lastTradeDollars: number }[] = []
 
   if (slot.session === 'regular') {
     // Regular session: plain quotes are real-time and carry a real
@@ -392,20 +389,23 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
         if (existing && !isMateriallyChanged(existing, q.extendedLastPrice)) { rejected.dedup++; continue }
         if (Math.abs(q.pctChange) < slot.minPctMove) { rejected.move++; continue }
 
+        // Spread is ADVISORY ONLY, never a hard gate — investigation (a real
+        // spread%/last-print-size sample pulled live during an actual
+        // after-hours window) found Schwab doesn't return usable bid/ask
+        // for extended quotes on
+        // this entitlement (mid/bid/ask all read as missing on every real
+        // candidate checked), the same class of gap already documented for
+        // extended.totalVolume elsewhere in this file. A hard gate on data
+        // that's structurally never populated meant NOTHING could ever pass,
+        // regardless of what threshold value was set — confirmed via a real
+        // production run: zero premarket/afterhours signals ever created.
+        // lastTradeDollars (real, populated) is now the sole hard liquidity
+        // gate; spread still contributes a scoring bonus when it happens to
+        // be available, but a missing spread no longer excludes a candidate.
         const mid = (q.extendedBidPrice + q.extendedAskPrice) / 2
         const spreadPct = mid > 0 && q.extendedBidPrice > 0 && q.extendedAskPrice > 0
           ? ((q.extendedAskPrice - q.extendedBidPrice) / mid) * 100
-          : Infinity
-        const lastTradeDollarsForSample = q.extendedLastPrice * q.extendedLastSize
-        if (isDryRun) {
-          spreadSamples.push({
-            ticker: q.symbol,
-            pctChange: Math.round(q.pctChange * 100) / 100,
-            spreadPct: Number.isFinite(spreadPct) ? Math.round(spreadPct * 100) / 100 : -1,
-            lastTradeDollars: Math.round(lastTradeDollarsForSample),
-          })
-        }
-        if (spreadPct > EXTENDED_MAX_SPREAD_PCT) { rejected.spread++; continue }
+          : null
 
         const lastTradeDollars = q.extendedLastPrice * q.extendedLastSize
         if (lastTradeDollars < EXTENDED_MIN_LAST_TRADE_DOLLARS) { rejected.size++; continue }
@@ -413,7 +413,9 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
         const quoteAgeMin = (now - q.extendedTradeTime) / 60_000
         if (quoteAgeMin > EXTENDED_MAX_QUOTE_AGE_MIN || quoteAgeMin < 0) { rejected.stale++; continue }
 
-        const spreadScore = Math.min(6, Math.max(0, (EXTENDED_MAX_SPREAD_PCT - spreadPct) * 3))
+        const spreadScore = spreadPct !== null && spreadPct <= EXTENDED_MAX_SPREAD_PCT
+          ? Math.min(6, Math.max(0, (EXTENDED_MAX_SPREAD_PCT - spreadPct) * 3))
+          : 0
         const sizeScore = Math.min(4, (lastTradeDollars / EXTENDED_MIN_LAST_TRADE_DOLLARS) * 1.5)
 
         candidates.push({
@@ -422,7 +424,9 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
           pctMove: Math.round(q.pctChange * 100) / 100,
           direction: 'BUY',
           liquidityBonus: spreadScore + sizeScore,
-          liquidityNote: `${Math.round(spreadPct * 100) / 100}% spread, $${Math.round(lastTradeDollars).toLocaleString()} last print`,
+          liquidityNote: spreadPct !== null
+            ? `${Math.round(spreadPct * 100) / 100}% spread, $${Math.round(lastTradeDollars).toLocaleString()} last print`
+            : `$${Math.round(lastTradeDollars).toLocaleString()} last print (spread unavailable)`,
         })
       }
     }
@@ -439,10 +443,6 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
       wouldCreate: shortlist,
       rejected,
       thresholds: { minPctMove: slot.minPctMove, minConfidence: slot.minConfidence, maxSpreadPct: EXTENDED_MAX_SPREAD_PCT, minLastTradeDollars: EXTENDED_MIN_LAST_TRADE_DOLLARS },
-      // TEMPORARY — real spread%/last-print-size for every ticker that
-      // cleared price/move/dedup, sorted by spread ascending, for spread-
-      // threshold investigation. Empty on regular-session dry runs.
-      spreadSamples: spreadSamples.sort((a, b) => a.spreadPct - b.spreadPct),
     }
   }
 
