@@ -4,20 +4,18 @@
  * softens the stop-outs. This is the strongest anti-guru credibility signal
  * available: nobody fabricating results publishes their misses.
  *
- * "Last 20" = the 20 most recently CLOSED signals (by outcomeCheckedAt), not
- * the 20 most recently generated. Every signal in this window already has a
- * resolved outcome, so there's no "still open" bucket — showing one would
- * always read 0 by construction, which is worse than not showing it at all.
- *
- * The "expired" count is intentionally not rendered as its own stat below
- * (hit target / hit stop only), but `expired` is still carried on the type
- * and still included in `window.size` — any win-rate math must divide by
- * the full `size`, never just `hitTarget + hitStop`, or a window with real
- * expired signals would read a falsely inflated rate. See the comment next
- * to `windowWinRatePct` in app/page.tsx for the exact calculation.
+ * "Last 20" = the 20 most recently RESOLVED signals (HIT_TARGET or HIT_STOP
+ * only, by outcomeCheckedAt) — EXPIRED signals are deliberately excluded
+ * from this pool, not just hidden from display, so `window.winRatePct` is
+ * hitTarget / (hitTarget + hitStop), not hitTarget / 20. That means this is
+ * NOT "win rate over the last 20 signals" — it's "win rate among the last 20
+ * signals that actually hit target or stop." The label below must say
+ * "resolved" so this scoping is visible, not implied to be the unfiltered
+ * last 20. `allTime` still includes EXPIRED in its own counts (unchanged,
+ * used only for the MIN_SAMPLE gate in app/page.tsx, never rendered raw).
  */
 export type OutcomesSummary = {
-  window: { hitTarget: number; hitStop: number; expired: number; size: number; winRatePct: number }
+  window: { hitTarget: number; hitStop: number; size: number; winRatePct: number }
   allTime: { hitTarget: number; hitStop: number; expired: number }
 }
 
@@ -41,7 +39,7 @@ export default function OutcomesStrip({ summary }: { summary: OutcomesSummary })
       >
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           <span className="data-label" style={{ color: 'var(--text-dim)' }}>
-            Recent Signals
+            Last {summary.window.size} Resolved Signals
           </span>
           <Stat label="hit target" value={summary.window.hitTarget} color="var(--buy)" />
           <Stat label="stopped out" value={summary.window.hitStop} color="var(--short)" />

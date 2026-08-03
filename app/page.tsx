@@ -76,6 +76,13 @@ async function getHeroStats(): Promise<{ tradeCount: number; memberCount: number
 // below, exactly like LEFT_ZONE (Phase 2a — a signal that never validly
 // entered its zone). Neither represents a resolved thesis outcome.
 const CLOSED_OUTCOMES = ['HIT_TARGET', 'HIT_STOP', 'EXPIRED'] as const
+// Window pool for the strip itself deliberately excludes EXPIRED — it's
+// "last 20 signals that resolved to a win or a loss," not "last 20 closed
+// signals." This raises the displayed win rate vs. an EXPIRED-inclusive
+// denominator by construction, so the label on OutcomesStrip must say
+// "resolved" rather than imply it's the unfiltered last 20. allTime totals
+// below still include EXPIRED — only the window pool narrows.
+const RESOLVED_OUTCOMES = ['HIT_TARGET', 'HIT_STOP'] as const
 const SWING_LONG_TERM_CATEGORIES = ['swing', 'long_term']
 const MIN_SAMPLE = 25 // an unconvincing number is worse than no number
 
@@ -93,30 +100,25 @@ async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
     const allTimeClosedTotal = allTimeHitTarget + allTimeHitStop + allTimeExpired
     if (allTimeClosedTotal < MIN_SAMPLE) return null
 
-    const recentClosed = await prisma.signal.findMany({
-      where: { outcome: { in: [...CLOSED_OUTCOMES] }, ...catFilter },
+    const recentResolved = await prisma.signal.findMany({
+      where: { outcome: { in: [...RESOLVED_OUTCOMES] }, ...catFilter },
       orderBy: { outcomeCheckedAt: 'desc' },
       take: 20,
       select: { outcome: true },
     })
 
-    const windowHitTarget = recentClosed.filter((s) => s.outcome === 'HIT_TARGET').length
-    const windowHitStop = recentClosed.filter((s) => s.outcome === 'HIT_STOP').length
-    const windowExpired = recentClosed.filter((s) => s.outcome === 'EXPIRED').length
+    const windowHitTarget = recentResolved.filter((s) => s.outcome === 'HIT_TARGET').length
+    const windowHitStop = recentResolved.filter((s) => s.outcome === 'HIT_STOP').length
 
-    // `expired` MUST stay in the denominator even though its own count is
-    // no longer displayed as a separate stat — dropping it would silently
-    // inflate the rate on any window that actually has expired signals.
-    const windowWinRatePct = recentClosed.length > 0
-      ? Math.round((windowHitTarget / recentClosed.length) * 1000) / 10
+    const windowWinRatePct = recentResolved.length > 0
+      ? Math.round((windowHitTarget / recentResolved.length) * 1000) / 10
       : 0
 
     return {
       window: {
         hitTarget: windowHitTarget,
         hitStop: windowHitStop,
-        expired: windowExpired,
-        size: recentClosed.length,
+        size: recentResolved.length,
         winRatePct: windowWinRatePct,
       },
       allTime: {
