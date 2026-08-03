@@ -7,6 +7,7 @@ import { Plus, TrendingUp, TrendingDown, Minus, Gift, Infinity, Zap, Clock } fro
 import { formatCurrency } from '@/lib/utils'
 import SignalDeleteButton from './SignalDeleteButton'
 import SignalToggleButton from './SignalToggleButton'
+import SignalOutcomeEditor from './SignalOutcomeEditor'
 import PromoCodeToggle from './PromoCodeToggle'
 import PromoCodeCreateForm from './PromoCodeCreateForm'
 import RefreshSignalsButton from './RefreshSignalsButton'
@@ -124,7 +125,7 @@ export default async function AdminSignalsPage() {
             <table className="w-full text-sm">
               <thead style={{ backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid var(--border)' }}>
                 <tr>
-                  {['Ticker', 'Type', 'Entry Zone', 'Target', 'Confidence', 'Horizon', 'Age', 'Status', ''].map((h) => (
+                  {['Ticker', 'Type', 'Entry Zone', 'Target', 'Confidence', 'Horizon', 'Age', 'Outcome', 'Status', ''].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white">{h}</th>
                   ))}
                 </tr>
@@ -152,6 +153,9 @@ export default async function AdminSignalsPage() {
                       <td className="px-4 py-3"><ConfidencePill value={signal.confidence} /></td>
                       <td className="px-4 py-3 text-white">{signal.timeHorizon}</td>
                       <td className="px-4 py-3"><AgePill ageH={ageH} /></td>
+                      <td className="px-4 py-3">
+                        <SignalOutcomeEditor id={signal.id} outcome={signal.outcome} outcomePrice={signal.outcomePrice} />
+                      </td>
                       <td className="px-4 py-3"><SignalToggleButton id={signal.id} isActive={signal.isActive} /></td>
                       <td className="px-4 py-3"><SignalDeleteButton id={signal.id} ticker={signal.ticker} /></td>
                     </tr>

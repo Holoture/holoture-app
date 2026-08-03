@@ -131,6 +131,12 @@ export const signalPatchSchema = z.object({
   aiSummary:      z.string().trim().max(10_000).optional(),
   companyName:    z.string().trim().max(200).optional(),
   sector:         z.string().trim().max(100).optional(),
+  // Manual outcome correction (admin only) — for real signals whose
+  // automated outcome (cron/signal-outcomes, cron/zone-check) was missed or
+  // wrong. Same enum the crons themselves write; must stay tied to a real
+  // Signal row, never a raw aggregate count. See PUBLIC_TRACK_RECORD_FILTER.
+  outcome:        z.enum(['HIT_TARGET', 'HIT_STOP', 'EXPIRED', 'LEFT_ZONE']).nullable().optional(),
+  outcomePrice:   z.number().positive().nullable().optional(),
 })
 
 /** Tracker signal update */

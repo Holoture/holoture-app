@@ -42,10 +42,16 @@ export async function PATCH(
   const parsed = parseBody(signalPatchSchema, rawBody)
   if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 })
 
+  // Manual outcome corrections stamp outcomeCheckedAt server-side so the
+  // audit trail (when was this actually set) can't be spoofed from the client.
+  const data = 'outcome' in parsed.data
+    ? { ...parsed.data, outcomeCheckedAt: new Date() }
+    : parsed.data
+
   try {
     const signal = await prisma.signal.update({
       where: { id },
-      data: parsed.data,
+      data,
     })
     return NextResponse.json(signal)
   } catch {
