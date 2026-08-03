@@ -135,7 +135,7 @@ export const signalPatchSchema = z.object({
   // automated outcome (cron/signal-outcomes, cron/zone-check) was missed or
   // wrong. Same enum the crons themselves write; must stay tied to a real
   // Signal row, never a raw aggregate count. See PUBLIC_TRACK_RECORD_FILTER.
-  outcome:        z.enum(['HIT_TARGET', 'HIT_STOP', 'EXPIRED', 'LEFT_ZONE']).nullable().optional(),
+  outcome:        z.enum(['HIT_TARGET', 'HIT_STOP', 'EXPIRED']).nullable().optional(),
   outcomePrice:   z.number().positive().nullable().optional(),
 })
 

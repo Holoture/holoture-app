@@ -9,7 +9,6 @@ const OUTCOMES = [
   { value: 'HIT_TARGET', label: 'Hit Target' },
   { value: 'HIT_STOP', label: 'Hit Stop' },
   { value: 'EXPIRED', label: 'Expired' },
-  { value: 'LEFT_ZONE', label: 'Left Zone (never entered)' },
 ]
 
 export default function SignalOutcomeEditor({
