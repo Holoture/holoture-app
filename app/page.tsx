@@ -177,8 +177,7 @@ async function getShortHorizonOutcomesSummary(): Promise<ShortHorizonOutcomesSum
       : 0
 
     return { size, winRatePct, expectancyPct, unverifiableCount }
-  } catch (e) {
-    console.error('[getShortHorizonOutcomesSummary]', e) // TEMPORARY — remove once diagnosed
+  } catch {
     return null
   }
 }
