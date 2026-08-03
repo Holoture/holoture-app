@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Search } from 'lucide-react'
+import { TrendingUp, TrendingDown, ChevronLeft, ChevronRight, ChevronDown, Search } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 
 type Trade = {
@@ -64,95 +64,114 @@ function daysBetween(a: string, b: string) {
   return Math.max(0, Math.round(ms / (24 * 60 * 60 * 1000)))
 }
 
+const ROW_GRID = 'grid-cols-[1.6fr_1.6fr_0.8fr_0.9fr_0.9fr_0.8fr]'
+
 function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
+  const [expanded, setExpanded] = useState(false)
   const party = PARTY_STYLE[trade.party] ?? { bg: 'rgba(148,163,184,0.15)', text: '#94a3b8', border: 'rgba(148,163,184,0.3)', avatar: '#64748b' }
   const buy = isBuy(trade.tradeType)
   const sig = SIG_STYLE[trade.significance] ?? SIG_STYLE.Low
   const published = formatRelativeDate(trade.filedAt)
-  const traded = new Date(trade.tradedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   const filedAfter = daysBetween(trade.tradedAt, trade.filedAt)
 
+  // Exact (non-relative) dates — only shown in the expanded panel.
+  const exactTraded = new Date(trade.tradedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  const exactFiled = new Date(trade.filedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+
   return (
-    <div
-      className="grid grid-cols-[1.6fr_1.6fr_0.9fr_0.9fr_0.7fr_0.7fr_0.8fr_1fr] items-center gap-3 px-4 py-3 text-sm"
-      style={{ borderBottom: isLast ? 'none' : '1px solid var(--border)' }}
-    >
-      {/* Politician — circle avatar kept: a circle means a person */}
-      <div className="flex items-center gap-2.5 min-w-0">
-        <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-          style={{ backgroundColor: `${party.avatar}30`, color: party.avatar }}
-        >
-          {initials(trade.politicianName)}
+    <div style={{ borderBottom: isLast ? 'none' : '1px solid var(--border)' }}>
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+        className={`w-full grid ${ROW_GRID} items-center gap-3 px-4 py-3 text-sm text-left hover:bg-white/[0.02] transition-colors`}
+      >
+        {/* Politician — circle avatar kept: a circle means a person */}
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+            style={{ backgroundColor: `${party.avatar}30`, color: party.avatar }}
+          >
+            {initials(trade.politicianName)}
+          </div>
+          <div className="min-w-0">
+            <p className="font-semibold text-white truncate">{trade.politicianName}</p>
+            <p className="text-xs truncate" style={{ color: party.text, opacity: 0.85 }}>
+              {trade.party} | {trade.chamber}
+            </p>
+          </div>
         </div>
-        <div className="min-w-0">
-          <p className="font-semibold text-white truncate">{trade.politicianName}</p>
-          <p className="text-xs truncate" style={{ color: party.text, opacity: 0.85 }}>
-            {trade.party} | {trade.chamber}
+
+        {/* Traded Issuer — sharp: this slot is a ticker, not a person */}
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div
+            className="w-8 h-8 rounded-none flex items-center justify-center text-xs font-bold shrink-0 font-data"
+            style={{ backgroundColor: 'var(--bg-overlay)', color: 'var(--text-mute)', border: '1px solid var(--line)' }}
+          >
+            {trade.ticker.slice(0, 1)}
+          </div>
+          <div className="min-w-0">
+            <p className="font-semibold text-white truncate font-data">{trade.ticker}</p>
+            <p className="text-xs truncate" style={{ color: 'var(--text-w50)' }}>{trade.companyName || 'N/A'}</p>
+          </div>
+        </div>
+
+        {/* Type — direction, so green/red is correct here */}
+        <div>
+          <span
+            className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-none"
+            style={
+              buy
+                ? { backgroundColor: 'rgba(0,199,118,0.15)', color: 'var(--buy)', border: '1px solid rgba(0,199,118,0.35)' }
+                : { backgroundColor: 'rgba(229,72,77,0.15)', color: 'var(--short)', border: '1px solid rgba(229,72,77,0.35)' }
+            }
+          >
+            {buy ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+            {buy ? 'BUY' : 'SELL'}
+          </span>
+        </div>
+
+        {/* Size */}
+        <div>
+          <p className="text-white whitespace-nowrap font-data">{trade.amountRange}</p>
+        </div>
+
+        {/* Filed — consolidates the old Published/Traded/Filed After columns
+            into one: relative filed date on top, gap-from-trade below. */}
+        <div>
+          <p className="font-semibold text-white font-data">{published.time} · {published.label}</p>
+          <p className="text-xs" style={{ color: 'var(--text-w50)' }}>{filedAfter}d after trade</p>
+        </div>
+
+        {/* Significance + expand indicator */}
+        <div className="flex items-center justify-between gap-2">
+          <span
+            className="text-xs font-bold px-2 py-0.5 rounded-none"
+            style={{ backgroundColor: sig.bg, color: sig.text, border: `1px solid ${sig.border}` }}
+          >
+            {trade.significance}
+          </span>
+          <ChevronDown
+            className={`w-4 h-4 shrink-0 transition-transform ${expanded ? 'rotate-180' : ''}`}
+            style={{ color: 'var(--text-w35)' }}
+          />
+        </div>
+      </button>
+
+      {expanded && (
+        <div
+          className="mx-4 mb-3 p-4 rounded-none"
+          style={{ backgroundColor: 'var(--bg-overlay)', border: '1px solid var(--line)' }}
+        >
+          <div className="flex flex-wrap gap-x-6 gap-y-1 mb-3 text-xs font-data" style={{ color: 'var(--text-w50)' }}>
+            <span>Traded <span className="text-white">{exactTraded}</span></span>
+            <span>Filed <span className="text-white">{exactFiled}</span></span>
+          </div>
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-w70)' }}>
+            {trade.aiCommentary || 'No commentary available for this trade.'}
           </p>
         </div>
-      </div>
-
-      {/* Traded Issuer — sharp: this slot is a ticker, not a person */}
-      <div className="flex items-center gap-2.5 min-w-0">
-        <div
-          className="w-8 h-8 rounded-none flex items-center justify-center text-xs font-bold shrink-0 font-data"
-          style={{ backgroundColor: 'var(--bg-overlay)', color: 'var(--text-mute)', border: '1px solid var(--line)' }}
-        >
-          {trade.ticker.slice(0, 1)}
-        </div>
-        <div className="min-w-0">
-          <p className="font-semibold text-white truncate font-data">{trade.ticker}</p>
-          <p className="text-xs truncate" style={{ color: 'var(--text-w50)' }}>{trade.companyName || 'N/A'}</p>
-        </div>
-      </div>
-
-      {/* Published */}
-      <div>
-        <p className="font-semibold text-white font-data">{published.time}</p>
-        <p className="text-xs" style={{ color: 'var(--text-w50)' }}>{published.label}</p>
-      </div>
-
-      {/* Traded */}
-      <div>
-        <p className="text-white font-data">{traded}</p>
-      </div>
-
-      {/* Filed After */}
-      <div>
-        <p className="text-white font-data">{filedAfter}</p>
-        <p className="text-xs" style={{ color: 'var(--text-w50)' }}>days</p>
-      </div>
-
-      {/* Type — direction, so green/red is correct here */}
-      <div>
-        <span
-          className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-none"
-          style={
-            buy
-              ? { backgroundColor: 'rgba(0,199,118,0.15)', color: 'var(--buy)', border: '1px solid rgba(0,199,118,0.35)' }
-              : { backgroundColor: 'rgba(229,72,77,0.15)', color: 'var(--short)', border: '1px solid rgba(229,72,77,0.35)' }
-          }
-        >
-          {buy ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-          {buy ? 'BUY' : 'SELL'}
-        </span>
-      </div>
-
-      {/* Size */}
-      <div>
-        <p className="text-white whitespace-nowrap font-data">{trade.amountRange}</p>
-      </div>
-
-      {/* Significance — magnitude, not direction */}
-      <div>
-        <span
-          className="text-xs font-bold px-2 py-0.5 rounded-none"
-          style={{ backgroundColor: sig.bg, color: sig.text, border: `1px solid ${sig.border}` }}
-        >
-          {trade.significance}
-        </span>
-      </div>
+      )}
     </div>
   )
 }
@@ -346,16 +365,14 @@ export default function PoliticianTradesClient({
           <div className="min-w-[860px]">
             {/* Column headers */}
             <div
-              className="grid grid-cols-[1.6fr_1.6fr_0.9fr_0.9fr_0.7fr_0.7fr_0.8fr_1fr] gap-3 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide"
+              className={`grid ${ROW_GRID} gap-3 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide`}
               style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-w35)', backgroundColor: 'var(--surf-w2)' }}
             >
               <div>Politician</div>
               <div>Traded Issuer</div>
-              <div>Published</div>
-              <div>Traded</div>
-              <div>Filed After</div>
               <div>Type</div>
               <div>Size</div>
+              <div>Filed</div>
               <div>Significance</div>
             </div>
 
