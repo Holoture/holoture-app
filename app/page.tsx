@@ -63,12 +63,14 @@ async function getHeroStats(): Promise<{ tradeCount: number; memberCount: number
 }
 
 // Real track record for the outcomes strip — wins AND losses, never hidden.
-// SPLIT IN TWO as of Phase 3: swing/long_term never gets blended with
-// intraday/days_1_3/momentum again — the two groups have measurably
+// Re-blended across ALL timeframe categories (intraday/days_1_3/momentum
+// alongside swing/long_term) per explicit request, reversing the Phase 3
+// split. That split existed because the categories have measurably
 // different performance (see ShortHorizonOutcomesStrip's doc comment for
-// the actual numbers) and averaging them would misrepresent both. Each
-// group is queried by timeframeCategory directly, on outcome data
-// corrected by the Phase 1 SHORT-direction backfill.
+// the actual numbers this session pulled) — blending them again means this
+// single win rate is now a mix of populations that perform very
+// differently, not a like-for-like comparison. Documented here rather than
+// silently changed back.
 //
 // UNVERIFIABLE outcomes (Phase 1b — a stored single price snapshot that
 // didn't resolve to a definitive win/loss/expired under the corrected
@@ -83,7 +85,7 @@ const CLOSED_OUTCOMES = ['HIT_TARGET', 'HIT_STOP', 'EXPIRED'] as const
 // "resolved" rather than imply it's the unfiltered last 20. allTime totals
 // below still include EXPIRED — only the window pool narrows.
 const RESOLVED_OUTCOMES = ['HIT_TARGET', 'HIT_STOP'] as const
-const SWING_LONG_TERM_CATEGORIES = ['swing', 'long_term']
+const ALL_TIMEFRAME_CATEGORIES = ['intraday', 'days_1_3', 'swing', 'long_term', 'momentum']
 const MIN_SAMPLE = 25 // an unconvincing number is worse than no number
 
 async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
@@ -91,7 +93,7 @@ async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
     // PUBLIC_TRACK_RECORD_FILTER excludes hand-created/hand-edited signals
     // from every count and denominator below — they are not algorithm
     // output and would misrepresent the published track record.
-    const catFilter = { timeframeCategory: { in: SWING_LONG_TERM_CATEGORIES }, ...PUBLIC_TRACK_RECORD_FILTER }
+    const catFilter = { timeframeCategory: { in: ALL_TIMEFRAME_CATEGORIES }, ...PUBLIC_TRACK_RECORD_FILTER }
     const [allTimeHitTarget, allTimeHitStop, allTimeExpired] = await Promise.all([
       prisma.signal.count({ where: { outcome: 'HIT_TARGET', ...catFilter } }),
       prisma.signal.count({ where: { outcome: 'HIT_STOP', ...catFilter } }),

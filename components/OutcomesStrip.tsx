@@ -5,7 +5,9 @@
  * available: nobody fabricating results publishes their misses.
  *
  * "Last 20" = the 20 most recently RESOLVED signals (HIT_TARGET or HIT_STOP
- * only, by outcomeCheckedAt) — EXPIRED signals are deliberately excluded
+ * only, by outcomeCheckedAt), across ALL timeframe categories (intraday,
+ * days_1_3, swing, long_term, momentum blended together — see app/page.tsx's
+ * getOutcomesSummary comment) — EXPIRED signals are deliberately excluded
  * from this pool, not just hidden from display, so `window.winRatePct` is
  * hitTarget / (hitTarget + hitStop), not hitTarget / 20. That means this is
  * NOT "win rate over the last 20 signals" — it's "win rate among the last 20
