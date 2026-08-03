@@ -330,6 +330,12 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
   const now = Date.now()
   const candidates: Candidate[] = []
   const rejected = { dedup: 0, price: 0, move: 0, spread: 0, size: 0, stale: 0 }
+  // TEMPORARY instrumentation for threshold recalibration — only populated on
+  // dry runs, never touches real invocations. Captures the RAW pctChange for
+  // every ticker that returns real extended-quote data, before any gate,
+  // so the actual move-size distribution can be inspected instead of guessed.
+  // Remove once minPctMove is recalibrated from real data.
+  const moveSamples: { ticker: string; pctChange: number }[] = []
 
   if (slot.session === 'regular') {
     // Regular session: plain quotes are real-time and carry a real
@@ -373,6 +379,7 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
 
     for (const map of quoteMaps) {
       for (const q of map.values()) {
+        if (isDryRun) moveSamples.push({ ticker: q.symbol, pctChange: Math.round(q.pctChange * 100) / 100 })
         if (q.extendedLastPrice < EXTENDED_MIN_PRICE) { rejected.price++; continue }
         if (q.pctChange <= 0) { rejected.move++; continue } // BUY-only: down-moves excluded outright, not just filtered by magnitude
         const existing = activeTodayByTicker.get(q.symbol)
@@ -417,6 +424,10 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
       wouldCreate: shortlist,
       rejected,
       thresholds: { minPctMove: slot.minPctMove, minConfidence: slot.minConfidence },
+      // TEMPORARY — real pctChange for every ticker with extended-quote data,
+      // sorted by magnitude, for threshold recalibration. Empty on regular-
+      // session dry runs (moveSamples only populated in the extended branch).
+      moveSamples: moveSamples.sort((a, b) => Math.abs(b.pctChange) - Math.abs(a.pctChange)),
     }
   }
 
