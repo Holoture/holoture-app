@@ -4,11 +4,10 @@
  * softens the stop-outs. This is the strongest anti-guru credibility signal
  * available: nobody fabricating results publishes their misses.
  *
- * "Last 100" = the 100 most recently CLOSED signals (by outcomeCheckedAt),
- * not the 100 most recently generated. Every signal in this window already
- * has a resolved outcome, so there's no "still open" bucket — showing one
- * would always read 0 by construction, which is worse than not showing it
- * at all.
+ * "Last 20" = the 20 most recently CLOSED signals (by outcomeCheckedAt), not
+ * the 20 most recently generated. Every signal in this window already has a
+ * resolved outcome, so there's no "still open" bucket — showing one would
+ * always read 0 by construction, which is worse than not showing it at all.
  *
  * The "expired" count is intentionally not rendered as its own stat below
  * (hit target / hit stop only), but `expired` is still carried on the type

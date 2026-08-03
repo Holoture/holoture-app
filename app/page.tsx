@@ -96,7 +96,7 @@ async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
     const recentClosed = await prisma.signal.findMany({
       where: { outcome: { in: [...CLOSED_OUTCOMES] }, ...catFilter },
       orderBy: { outcomeCheckedAt: 'desc' },
-      take: 100,
+      take: 20,
       select: { outcome: true },
     })
 
