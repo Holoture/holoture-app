@@ -191,15 +191,22 @@ type SlotConfig = {
   timeframeCategory: 'intraday' | 'days_1_3'
 }
 
+// premarket/afterhours minPctMove values recalibrated from a real live
+// extended-quote sample (see lib/scheduledSignals.ts git history / session
+// notes for the source data) — the original 2.5-4.0% values were regular-
+// session-scaled assumptions that real extended-hours data essentially
+// never clears (confirmed: zero signals ever created on any extended slot
+// before this change). Regular-session values are untouched; those slots
+// were already producing real qualified/created counts.
 export const SLOTS: Record<SlotId, SlotConfig> = {
-  premarket_0700:   { session: 'premarket',  label: '7:00am premarket (early earnings reactions)',        minPctMove: 2.5, minConfidence: 55, maxCandidatesPerRun: 6, timeframeCategory: 'intraday' },
-  premarket_0900:   { session: 'premarket',  label: '9:00am premarket (econ data + pre-open positioning)', minPctMove: 2.5, minConfidence: 55, maxCandidatesPerRun: 6, timeframeCategory: 'intraday' },
+  premarket_0700:   { session: 'premarket',  label: '7:00am premarket (early earnings reactions)',        minPctMove: 1.0, minConfidence: 55, maxCandidatesPerRun: 6, timeframeCategory: 'intraday' },
+  premarket_0900:   { session: 'premarket',  label: '9:00am premarket (econ data + pre-open positioning)', minPctMove: 1.25, minConfidence: 55, maxCandidatesPerRun: 6, timeframeCategory: 'intraday' },
   regular_1000:     { session: 'regular',    label: '10:00am (post-opening-range)',                        minPctMove: 2.5, minConfidence: 58, maxCandidatesPerRun: 6, timeframeCategory: 'intraday' },
   regular_1130:     { session: 'regular',    label: '11:30am (mid-morning trend)',                         minPctMove: 3.0, minConfidence: 60, maxCandidatesPerRun: 6, timeframeCategory: 'intraday' },
   regular_1400:     { session: 'regular',    label: '2:00pm (post-lunch / Fed-announcement window)',       minPctMove: 3.5, minConfidence: 65, maxCandidatesPerRun: 5, timeframeCategory: 'intraday' },
   regular_1515:     { session: 'regular',    label: '3:15pm (closing-hour institutional volume)',          minPctMove: 4.0, minConfidence: 70, maxCandidatesPerRun: 4, timeframeCategory: 'intraday' },
-  afterhours_1645:  { session: 'afterhours', label: '4:45pm after-hours (post-earnings-chaos window)',     minPctMove: 3.0, minConfidence: 58, maxCandidatesPerRun: 6, timeframeCategory: 'days_1_3' },
-  afterhours_1830:  { session: 'afterhours', label: '6:30pm after-hours (settled reaction)',                minPctMove: 4.0, minConfidence: 65, maxCandidatesPerRun: 4, timeframeCategory: 'days_1_3' },
+  afterhours_1645:  { session: 'afterhours', label: '4:45pm after-hours (post-earnings-chaos window)',     minPctMove: 1.5, minConfidence: 58, maxCandidatesPerRun: 6, timeframeCategory: 'days_1_3' },
+  afterhours_1830:  { session: 'afterhours', label: '6:30pm after-hours (settled reaction)',                minPctMove: 2.0, minConfidence: 65, maxCandidatesPerRun: 4, timeframeCategory: 'days_1_3' },
 }
 
 export function isSlotId(v: string | null): v is SlotId {
@@ -330,12 +337,6 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
   const now = Date.now()
   const candidates: Candidate[] = []
   const rejected = { dedup: 0, price: 0, move: 0, spread: 0, size: 0, stale: 0 }
-  // TEMPORARY instrumentation for threshold recalibration — only populated on
-  // dry runs, never touches real invocations. Captures the RAW pctChange for
-  // every ticker that returns real extended-quote data, before any gate,
-  // so the actual move-size distribution can be inspected instead of guessed.
-  // Remove once minPctMove is recalibrated from real data.
-  const moveSamples: { ticker: string; pctChange: number }[] = []
 
   if (slot.session === 'regular') {
     // Regular session: plain quotes are real-time and carry a real
@@ -379,7 +380,6 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
 
     for (const map of quoteMaps) {
       for (const q of map.values()) {
-        if (isDryRun) moveSamples.push({ ticker: q.symbol, pctChange: Math.round(q.pctChange * 100) / 100 })
         if (q.extendedLastPrice < EXTENDED_MIN_PRICE) { rejected.price++; continue }
         if (q.pctChange <= 0) { rejected.move++; continue } // BUY-only: down-moves excluded outright, not just filtered by magnitude
         const existing = activeTodayByTicker.get(q.symbol)
@@ -424,10 +424,6 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
       wouldCreate: shortlist,
       rejected,
       thresholds: { minPctMove: slot.minPctMove, minConfidence: slot.minConfidence },
-      // TEMPORARY — real pctChange for every ticker with extended-quote data,
-      // sorted by magnitude, for threshold recalibration. Empty on regular-
-      // session dry runs (moveSamples only populated in the extended branch).
-      moveSamples: moveSamples.sort((a, b) => Math.abs(b.pctChange) - Math.abs(a.pctChange)),
     }
   }
 
