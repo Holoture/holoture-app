@@ -7,20 +7,22 @@ import { formatCurrency } from '@/lib/utils'
 
 export const maxDuration = 60
 
-// Max age before an unresolved signal is marked EXPIRED, keyed on the
-// canonical timeframeCategory enum — not the free-text timeHorizon string.
-// 'momentum' resolves fast by design (tight stop, fixed 6% target — see
-// cron/momentum/route.ts), so it shares intraday's 1-day window rather
-// than the old text-parser's now-irrelevant 'momentum|week' -> 7 mapping
-// (that legacy branch dates to the pre-scanner fake momentum tab).
+// Max age before an unresolved signal is marked EXPIRED — i.e. how long a
+// signal gets to hit its target or stop before the outcome checker gives up
+// on it. This is deliberately uniform and generous (3 months) across every
+// category: it is NOT the signal's own timeHorizon/timeframeCategory (which
+// still governs how the signal is framed and how it's dedup'd on generation
+// — see cron/signals's per-ticker freshness check, which is untouched by
+// this value and keeps the daily feed from going stale). This window only
+// controls when an unresolved trade stops being tracked toward target/stop.
 const MAX_AGE_DAYS_BY_CATEGORY: Record<TimeframeCategory, number> = {
-  intraday: 1,
-  momentum: 1,
-  days_1_3: 3,
-  swing: 14,
-  long_term: 45,
+  intraday: 90,
+  momentum: 90,
+  days_1_3: 90,
+  swing: 90,
+  long_term: 90,
 }
-const DEFAULT_MAX_AGE_DAYS = 5 // pre-migration rows with no recoverable category at all
+const DEFAULT_MAX_AGE_DAYS = 90 // pre-migration rows with no recoverable category at all
 
 function resolveMaxAgeDays(timeframeCategory: string | null, timeHorizon: string): number {
   if (isValidTimeframeCategory(timeframeCategory)) return MAX_AGE_DAYS_BY_CATEGORY[timeframeCategory]
