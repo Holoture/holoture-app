@@ -10,6 +10,7 @@ import Testimonials from '@/components/Testimonials'
 import HowItWorks from '@/components/HowItWorks'
 import WeeklyFeaturedCard, { type WeeklyFeatured } from '@/components/WeeklyFeaturedCard'
 import OutcomesStrip, { type OutcomesSummary } from '@/components/OutcomesStrip'
+import ShortHorizonOutcomesStrip, { type ShortHorizonOutcomesSummary } from '@/components/ShortHorizonOutcomesStrip'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
 import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
@@ -129,11 +130,57 @@ async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
   }
 }
 
-// The short-horizon outcomes strip was removed from the landing page per
-// request. components/ShortHorizonOutcomesStrip.tsx (and the query logic
-// that fed it — filter timeframeCategory in ('intraday','days_1_3',
-// 'momentum'), exclude LEFT_ZONE/UNVERIFIABLE from every denominator) is
-// left in place, unused, in case this is revisited later.
+// Short-horizon (intraday / days_1_3 / momentum) track record — restored
+// alongside OutcomesStrip (swing/long_term), deliberately NOT blended into
+// it. See ShortHorizonOutcomesStrip.tsx's doc comment: these two groups
+// perform measurably differently, so one combined number would misrepresent
+// both. Same exclusion rules as the swing/long_term strip: LEFT_ZONE and
+// UNVERIFIABLE are not resolved thesis outcomes and never enter any count
+// here; PUBLIC_TRACK_RECORD_FILTER excludes hand-created/edited signals.
+const SHORT_HORIZON_CATEGORIES = ['intraday', 'days_1_3', 'momentum']
+
+async function getShortHorizonOutcomesSummary(): Promise<ShortHorizonOutcomesSummary | null> {
+  try {
+    const catFilter = { timeframeCategory: { in: SHORT_HORIZON_CATEGORIES }, ...PUBLIC_TRACK_RECORD_FILTER }
+    const [hitTarget, hitStop, expired, unverifiableCount] = await Promise.all([
+      prisma.signal.count({ where: { outcome: 'HIT_TARGET', ...catFilter } }),
+      prisma.signal.count({ where: { outcome: 'HIT_STOP', ...catFilter } }),
+      prisma.signal.count({ where: { outcome: 'EXPIRED', ...catFilter } }),
+      prisma.signal.count({ where: { outcome: 'UNVERIFIABLE', ...catFilter } }),
+    ])
+    const size = hitTarget + hitStop + expired
+    if (size < MIN_SAMPLE) return null
+
+    const winRatePct = Math.round((hitTarget / size) * 1000) / 10
+
+    // Expectancy: real direction-aware gain from entry-zone midpoint to
+    // outcomePrice, averaged across HIT_TARGET + HIT_STOP only — EXPIRED
+    // signals never resolved to a real exit price, so there's no gain
+    // number to include for them (same convention used for the equity
+    // gain report this session: expired stays in the win-rate denominator,
+    // never in the gain average).
+    const decided = await prisma.signal.findMany({
+      where: { outcome: { in: ['HIT_TARGET', 'HIT_STOP'] }, ...catFilter },
+      select: { outcomePrice: true, entryZoneLow: true, entryZoneHigh: true, signalType: true },
+    })
+    const gains = decided
+      .map((s) => {
+        if (s.outcomePrice == null) return null
+        const mid = (s.entryZoneLow + s.entryZoneHigh) / 2
+        if (!(mid > 0)) return null
+        const isShort = s.signalType === 'SHORT' || s.signalType === 'SELL'
+        return isShort ? ((mid - s.outcomePrice) / mid) * 100 : ((s.outcomePrice - mid) / mid) * 100
+      })
+      .filter((g): g is number => g !== null)
+    const expectancyPct = gains.length > 0
+      ? Math.round((gains.reduce((a, b) => a + b, 0) / gains.length) * 10) / 10
+      : 0
+
+    return { size, winRatePct, expectancyPct, unverifiableCount }
+  } catch {
+    return null
+  }
+}
 
 // Determine whether to show the delayed trial popup. Logged-out visitors and
 // users who have never subscribed are eligible; prior/current customers are not.
@@ -165,11 +212,12 @@ async function getTrialEligibility(): Promise<{ eligible: boolean; href: string 
 }
 
 export default async function LandingPage() {
-  const [trial, weeklyFeatured, heroStats, outcomesSummary] = await Promise.all([
+  const [trial, weeklyFeatured, heroStats, outcomesSummary, shortHorizonSummary] = await Promise.all([
     getTrialEligibility(),
     getWeeklyFeatured(),
     getHeroStats(),
     getOutcomesSummary(),
+    getShortHorizonOutcomesSummary(),
   ])
 
   return (
@@ -240,6 +288,7 @@ export default async function LandingPage() {
           even when the strip itself is hidden for a small sample. */}
       <div id="track-record" style={{ scrollMarginTop: 80 }}>
         {outcomesSummary && <OutcomesStrip summary={outcomesSummary} />}
+        {shortHorizonSummary && <ShortHorizonOutcomesStrip summary={shortHorizonSummary} />}
       </div>
 
       {/* One Platform, Four Edges — screenshot carousel */}
