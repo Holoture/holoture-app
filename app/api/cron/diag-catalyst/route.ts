@@ -23,10 +23,17 @@ export async function GET(req: Request) {
   if (!verifyCron(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
-    const [rawCount, alertCount] = await Promise.all([
+    const [rawCount, alertCount, allAlerts] = await Promise.all([
       prisma.newsCatalystRawItem.count(),
       prisma.newsCatalystAlert.count(),
+      prisma.newsCatalystAlert.findMany({ select: { ticker: true, headline: true, detectedAt: true } }),
     ])
+    const now = Date.now()
+    const alertsWithAge = allAlerts.map((a) => ({
+      ...a,
+      hoursAgo: Math.round((now - a.detectedAt.getTime()) / 3600000 * 10) / 10,
+      within48hWindow: now - a.detectedAt.getTime() <= 48 * 3600000,
+    }))
 
     const oldestRaw = await prisma.newsCatalystRawItem.findFirst({ orderBy: { fetchedAt: 'asc' }, select: { fetchedAt: true } })
     const newestRaw = await prisma.newsCatalystRawItem.findFirst({ orderBy: { fetchedAt: 'desc' }, select: { fetchedAt: true } })
@@ -73,6 +80,7 @@ export async function GET(req: Request) {
       ok: true,
       totalRawItems: rawCount,
       totalAlerts: alertCount,
+      allAlerts: alertsWithAge,
       oldestRawFetchedAt: oldestRaw?.fetchedAt ?? null,
       newestRawFetchedAt: newestRaw?.fetchedAt ?? null,
       rawItemsByFeedCategory: byCategory.map((c) => ({ feedCategory: c.feedCategory, count: Number(c.count) })),
