@@ -504,13 +504,20 @@ function flattenExpDateMap(
  * payload reasonable — options signals are meant to be near-term
  * directional trades, not LEAPS or same-day 0DTE noise.
  */
-export async function getOptionChain(symbol: string): Promise<{
+export async function getOptionChain(
+  symbol: string,
+  dateWindow?: { fromDate: string; toDate: string },
+): Promise<{
   underlyingPrice: number | null
   contracts: OptionContract[]
 } | null> {
   const today = new Date()
-  const fromDate = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-  const toDate = new Date(today.getTime() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  // Default window (5-60 DTE) is tuned for cron/options' signal generation.
+  // cron/options-outcomes passes its own narrow window (today -> the exact
+  // signal's expirationDate) since a contract close to or at expiration
+  // falls outside this default range and would otherwise never be found.
+  const fromDate = dateWindow?.fromDate ?? new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  const toDate = dateWindow?.toDate ?? new Date(today.getTime() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 
   const data = (await schwabGet('/chains', {
     symbol,

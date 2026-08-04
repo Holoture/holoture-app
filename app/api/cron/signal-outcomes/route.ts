@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getQuotes } from '@/lib/schwab'
 import { isValidTimeframeCategory, classifyLegacyTimeHorizon, type TimeframeCategory } from '@/lib/timeframe'
 import { createNotificationsBulk, pruneOldNotifications, type NotificationType } from '@/lib/notifications'
+import { pruneOldHealthChecks, pruneOldWebhookLogs } from '@/lib/db-cleanup'
 import { formatCurrency } from '@/lib/utils'
 
 export const maxDuration = 60
@@ -182,7 +183,11 @@ export async function GET(request: Request) {
       )
     }
 
-    const pruned = await pruneOldNotifications()
+    const [pruned, healthChecksPruned, webhookLogsPruned] = await Promise.all([
+      pruneOldNotifications(),
+      pruneOldHealthChecks(),
+      pruneOldWebhookLogs(),
+    ])
 
     console.log(`Signal outcomes: evaluated ${evaluated} signals`)
     return NextResponse.json({
@@ -194,6 +199,8 @@ export async function GET(request: Request) {
         expired: updates.filter((u) => u.outcome === 'EXPIRED').length,
       },
       notificationsPruned: pruned,
+      healthChecksPruned,
+      webhookLogsPruned,
     })
   } catch (err) {
     console.error('Signal outcomes cron error:', err)

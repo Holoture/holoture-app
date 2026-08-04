@@ -139,6 +139,21 @@ export const signalPatchSchema = z.object({
   outcomePrice:   z.number().positive().nullable().optional(),
 })
 
+/**
+ * Options signal update — admin only. Same mass-assignment protection as
+ * signalPatchSchema. Only outcome-correction fields are exposed here —
+ * options signals have no admin edit UI for trade parameters (no
+ * /admin/options page exists), so nothing else needs a whitelist entry yet.
+ */
+export const optionsSignalPatchSchema = z.object({
+  isActive:        z.boolean().optional(),
+  // CLOSED_EARLY is never written by cron/options-outcomes — it's the one
+  // outcome value that only ever comes from an admin PATCH.
+  outcome:         z.enum(['HIT_TARGET', 'EXPIRED_WORTHLESS', 'EXPIRED_ITM', 'CLOSED_EARLY']).nullable().optional(),
+  outcomePremium:  z.number().min(0).nullable().optional(),
+  realizedPnL:     z.number().nullable().optional(),
+})
+
 /** Tracker signal update */
 export const trackerPatchSchema = z.object({
   notes:      z.string().max(2000).nullable().optional(),
