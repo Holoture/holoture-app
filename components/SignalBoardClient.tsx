@@ -9,6 +9,7 @@ import type { Signal } from './SignalCard'
 import { signalUpside } from '@/lib/signal-upside'
 import { useLiveQuotes } from '@/lib/useLiveQuotes'
 import { getMarketSession, getMarketSessionAt, type MarketSession } from '@/lib/marketSession'
+import { etDateString } from '@/lib/etDate'
 
 // ─── category helpers ─────────────────────────────────────────────────────────
 
@@ -80,7 +81,12 @@ function getDailyFreePickIds(signals: Signal[]): Set<string> {
   if (eligible.length === 0) return new Set()
   if (eligible.length <= FREE_SIGNAL_COUNT) return new Set(eligible.map(s => s.id))
 
-  const today = new Date().toISOString().slice(0, 10)
+  // Was the browser's local date — the daily free-pick rotation would flip
+  // at each visitor's own local midnight instead of a shared ET boundary,
+  // so users in different timezones could see different "free today" picks
+  // at the same real moment. Explicit ET, same as every other day-boundary
+  // fix in this pass.
+  const today = etDateString()
   let hash = 5381
   for (const c of today) hash = ((hash << 5) + hash + c.charCodeAt(0)) >>> 0
 

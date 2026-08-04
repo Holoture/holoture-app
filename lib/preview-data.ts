@@ -1,5 +1,6 @@
 import { unstable_cache } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { etDateString } from '@/lib/etDate'
 
 export type PreviewSignal = {
   id: string
@@ -58,7 +59,9 @@ export type PreviewData = {
 
 export const getPreviewData = unstable_cache(
   async (): Promise<PreviewData> => {
-    const today = new Date().toISOString().split('T')[0]
+    // Was UTC-today — same day-boundary bug as app/calendar/page.tsx's
+    // identical filter. Explicit ET.
+    const today = etDateString()
 
     const [signals, totalSignals, news, sectors, marketSummary, calendar, trades] =
       await Promise.all([

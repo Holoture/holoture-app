@@ -5,6 +5,7 @@ import MarketStatusBanner from '@/components/MarketStatusBanner'
 import { getMarketStatus } from '@/lib/marketStatus'
 import { prisma } from '@/lib/prisma'
 import { CalendarClock, AlertCircle } from 'lucide-react'
+import { etDateString, etWeekBounds } from '@/lib/etDate'
 
 const MACRO_EVENTS = [
   { date: 'Weekly', event: 'Initial Jobless Claims', impact: 'Medium', color: '#fbbf24', description: 'Leading indicator for labor market health' },
@@ -19,7 +20,11 @@ const MACRO_EVENTS = [
 
 async function getCalendarEntries() {
   try {
-    const today = new Date().toISOString().split('T')[0]
+    // Was UTC-today (new Date().toISOString()...) — after ~8pm ET that's
+    // already tomorrow's date in UTC, silently dropping today's remaining
+    // earnings entries from the "gte" filter. Explicit ET, same as the
+    // extended-hours cron's DST-safe date logic.
+    const today = etDateString()
     return await prisma.calendarEntry.findMany({
       where: { date: { gte: today } },
       orderBy: { date: 'asc' },
@@ -30,12 +35,9 @@ async function getCalendarEntries() {
 
 function isThisWeek(dateStr: string): boolean {
   const d = new Date(dateStr + 'T00:00:00')
-  const now = new Date()
-  const weekStart = new Date(now)
-  weekStart.setDate(now.getDate() - now.getDay())
-  weekStart.setHours(0, 0, 0, 0)
-  const weekEnd = new Date(weekStart)
-  weekEnd.setDate(weekStart.getDate() + 7)
+  // Was server-local `new Date()` for "now" and local getDate()/getDay()
+  // for the week boundary — same class of bug, computed in ET instead.
+  const { weekStart, weekEnd } = etWeekBounds()
   return d >= weekStart && d < weekEnd
 }
 

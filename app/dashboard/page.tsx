@@ -8,6 +8,7 @@ import { getMarketStatus } from '@/lib/marketStatus'
 import DashboardSignalsSection from '@/components/DashboardSignalsSection'
 import AuthLoadingGate from '@/components/AuthLoadingGate'
 import { Crown, Zap } from 'lucide-react'
+import { etDateLabel } from '@/lib/etDate'
 
 // ── EST helpers ────────────────────────────────────────────────────────────────
 
@@ -105,9 +106,11 @@ export default async function DashboardPage() {
   const isPro = tier === 'pro' || tier === 'max'
   const isMax = tier === 'max'
 
-  const today = new Date().toLocaleDateString('en-US', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-  })
+  // Was `new Date().toLocaleDateString(...)` with no timeZone — that formats
+  // in the server's local zone (UTC on Vercel), which rolls over to the next
+  // calendar day 4-5 hours before real Eastern midnight. Explicit ET, same
+  // as the extended-hours cron's DST-safe date logic.
+  const today = etDateLabel()
 
   const { signals, isYesterday } = signalResult
   const isAdmin = userId === process.env.ADMIN_USER_ID
