@@ -17,6 +17,8 @@ type Trade = {
   filedAt: string
   aiCommentary: string
   significance: string
+  assetType: string
+  optionDetails: string | null
 }
 
 const PARTY_STYLE: Record<string, { bg: string; text: string; border: string; avatar: string }> = {
@@ -116,7 +118,17 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
             {trade.ticker.slice(0, 1)}
           </div>
           <div className="min-w-0">
-            <p className="font-semibold text-white truncate font-data">{trade.ticker}</p>
+            <p className="font-semibold text-white truncate font-data flex items-center gap-1.5">
+              {trade.ticker}
+              {trade.assetType === 'OPTION' && (
+                <span
+                  className="text-[10px] font-bold px-1.5 py-0.5 rounded-none shrink-0"
+                  style={{ backgroundColor: 'rgba(168,85,247,0.15)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.35)' }}
+                >
+                  OPT
+                </span>
+              )}
+            </p>
             <p className="text-xs truncate" style={{ color: 'var(--text-w50)' }}>{trade.companyName || 'N/A'}</p>
           </div>
         </div>
@@ -176,6 +188,11 @@ function TradeRow({ trade, isLast }: { trade: Trade; isLast: boolean }) {
             <span>Traded <span className="text-white">{exactTraded}</span></span>
             <span>Filed <span className="text-white">{exactFiled}</span></span>
           </div>
+          {trade.assetType === 'OPTION' && trade.optionDetails && (
+            <p className="text-sm leading-relaxed mb-2" style={{ color: '#c084fc' }}>
+              {trade.optionDetails}
+            </p>
+          )}
           <p className="text-sm leading-relaxed" style={{ color: 'var(--text-w70)' }}>
             {trade.aiCommentary || 'No commentary available for this trade.'}
           </p>

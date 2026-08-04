@@ -237,12 +237,22 @@ model PoliticianTrade {
   aiCommentary    String   @default("")
   significance    String   @default("Low")
   fetchedAt       DateTime @default(now())
+  // 'EQUITY' (default — every row from the existing GitHub Actions scraper)
+  // or 'OPTION' (rows from cron/politician-options, the Apify Actor
+  // options-only supplement). The equity scraper never writes anything but
+  // the default, so no backfill was needed on existing rows.
+  assetType       String   @default("EQUITY")
+  // Free-text strike/expiration/contract detail (Apify's `Details` field),
+  // options rows only — e.g. "Purchased 20 call options with a strike price
+  // of $100 and an expiration date of 1/15/27." Null for equity rows.
+  optionDetails   String?
 
   // Added — only externalId was indexed despite PoliticianTradesClient
   // filtering/sorting by ticker and tradedAt.
   @@index([ticker])
   @@index([tradedAt])
   @@index([politicianName])
+  @@index([assetType])
 }
 
 model NewsArticle {

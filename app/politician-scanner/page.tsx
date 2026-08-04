@@ -95,6 +95,8 @@ export default async function PoliticianScannerPage({
     filedAt: t.filedAt instanceof Date ? t.filedAt.toISOString() : String(t.filedAt),
     aiCommentary: t.aiCommentary,
     significance: t.significance,
+    assetType: t.assetType,
+    optionDetails: t.optionDetails,
   }))
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
