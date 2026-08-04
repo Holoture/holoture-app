@@ -133,21 +133,23 @@ export async function GET(req: Request) {
       }
     }
 
-    if (updates.length > 0) {
-      await prisma.$transaction(
-        updates.map((u) =>
-          prisma.optionsSignal.update({
-            where: { id: u.id },
-            data: {
-              outcome: u.outcome,
-              outcomeCheckedAt: now,
-              outcomePremium: u.outcomePremium,
-              realizedPnL: u.realizedPnL,
-              isActive: false,
-            },
-          }),
-        ),
-      )
+    // Sequential plain updates, not an interactive $transaction — same
+    // pattern cron/signal-outcomes uses. An interactive transaction here
+    // hit Prisma's default 5s timeout once update counts got into the
+    // hundreds (this cron's first-ever run resolves everything backlogged
+    // since options outcome tracking never existed before), and per-row
+    // atomicity isn't needed since each update is independent.
+    for (const u of updates) {
+      await prisma.optionsSignal.update({
+        where: { id: u.id },
+        data: {
+          outcome: u.outcome,
+          outcomeCheckedAt: now,
+          outcomePremium: u.outcomePremium,
+          realizedPnL: u.realizedPnL,
+          isActive: false,
+        },
+      })
     }
 
     return NextResponse.json({
