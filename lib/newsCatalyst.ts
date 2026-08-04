@@ -41,11 +41,22 @@ import { getMarketSession } from '@/lib/marketSession'
 // before being hardcoded here. GlobeNewswire has no dedicated "reverse
 // split" or "delisting" feed — those categories are caught via the keyword
 // matcher below running across all subscribed feeds, not a dedicated source.
+//
+// subjectcode/9-FDA%20Approval REMOVED 2026-08-04: live-fetched directly
+// during the catalyst-alerts pipeline re-investigation and confirmed it does
+// NOT return FDA-approval content — its top items were a securities
+// class-action law-firm ad and crypto presale marketing. It had supplied
+// 142 of 272 (52%) of all raw items ingested since Jul 31 with almost none
+// of them actually FDA-related, drowning out the other feeds' real
+// candidates for no signal. Real 'fda' catalyst matches still surface via
+// the keyword matcher across whichever feeds actually mention FDA action
+// (same mechanism reverse_split/delisting already rely on with no
+// dedicated feed) — this only removes a confirmed-mislabeled noise source,
+// not FDA detection itself.
 export const FEED_URLS: { url: string; feedCategory: string }[] = [
   { url: 'https://www.globenewswire.com/RssFeed/subjectcode/1-Contracts/feedTitle/GlobeNewswire%20-%20Contracts', feedCategory: 'Contracts' },
   { url: 'https://www.globenewswire.com/RssFeed/subjectcode/16-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements', feedCategory: 'Financing Agreements' },
   { url: 'https://www.globenewswire.com/RssFeed/subjectcode/23-Mergers%20and%20Acquisitions/feedTitle/GlobeNewswire%20-%20Mergers%20and%20Acquisitions', feedCategory: 'Mergers and Acquisitions' },
-  { url: 'https://www.globenewswire.com/RssFeed/subjectcode/9-FDA%20Approval/feedTitle/GlobeNewswire%20-%20FDA%20Approval', feedCategory: 'FDA Approval' },
   { url: 'https://www.globenewswire.com/RssFeed/subjectcode/4-Bankruptcy/feedTitle/GlobeNewswire%20-%20Bankruptcy', feedCategory: 'Bankruptcy' },
   { url: 'https://www.globenewswire.com/RssFeed/subjectcode/22-Earnings%20Releases%20and%20Operating%20Results/feedTitle/GlobeNewswire%20-%20Earnings', feedCategory: 'Earnings Releases and Operating Results' },
 ]
@@ -87,11 +98,31 @@ export type TickerConfidence = 'high' | 'low'
 
 const EXCHANGE_TICKER_RE = /\((?:NASDAQ|NYSE|NYSE American|OTCQB|OTCQX|OTC Pink|OTC)\s*:\s*([A-Z]{1,6})\)/
 
+// Strips a trailing corporate-entity suffix (", Inc.", " Corporation", " plc",
+// etc.) so the fuzzy matcher can match how companies are actually referred to
+// in press-release prose. Confirmed necessary via a live re-investigation:
+// SEC lists "Utz Brands, Inc." but a real GlobeNewswire headline said "Utz
+// Brands Hit with Investigation..." — the un-stripped title never appears as
+// a substring of real article text, which silently discarded a real,
+// ticker-bearing company. Applied iteratively for double suffixes like
+// "X Group, Inc.".
+const CORP_SUFFIX_RE = /,?\s+(incorporated|inc\.?|corporation|corp\.?|company|co\.?|plc|ltd\.?|limited|llc|l\.l\.c\.?|s\.a\.?|n\.v\.?|a\.g\.?|ag|group|holdings?)\.?$/i
+
+function stripCorpSuffix(title: string): string {
+  let s = title.trim()
+  let prev: string
+  do {
+    prev = s
+    s = s.replace(CORP_SUFFIX_RE, '').trim().replace(/,$/, '').trim()
+  } while (s !== prev && s.length > 0)
+  return s
+}
+
 // SEC's free CIK-to-ticker map, cached in-memory per warm serverless
 // instance — it's ~800KB, not worth re-fetching on every invocation. No TTL
 // beyond the instance's own lifetime; company listings don't change fast
 // enough for that to matter here.
-let tickerMapCache: Map<string, string> | null = null // lowercased company title -> ticker
+let tickerMapCache: Map<string, string> | null = null // lowercased company title (full and suffix-stripped) -> ticker
 
 async function getCompanyTickerMap(): Promise<Map<string, string>> {
   if (tickerMapCache) return tickerMapCache
@@ -109,12 +140,16 @@ async function getCompanyTickerMap(): Promise<Map<string, string>> {
     // against the CYCU reference case itself, which resolved to CYCUW before
     // this fix. Prefer the plain ticker whenever both exist for one title.
     const isDerivative = (ticker: string) => /(W|WS|U|R|RT)$/i.test(ticker) && ticker.length > 1
-    for (const entry of Object.values(data)) {
-      const key = entry.title.toLowerCase()
+    const setPreferred = (key: string, ticker: string) => {
+      if (!key) return
       const existing = map.get(key)
-      if (!existing || (isDerivative(existing) && !isDerivative(entry.ticker))) {
-        map.set(key, entry.ticker)
-      }
+      if (!existing || (isDerivative(existing) && !isDerivative(ticker))) map.set(key, ticker)
+    }
+    for (const entry of Object.values(data)) {
+      const fullKey = entry.title.toLowerCase()
+      setPreferred(fullKey, entry.ticker)
+      const strippedKey = stripCorpSuffix(entry.title).toLowerCase()
+      if (strippedKey !== fullKey) setPreferred(strippedKey, entry.ticker)
     }
     tickerMapCache = map
     return map
