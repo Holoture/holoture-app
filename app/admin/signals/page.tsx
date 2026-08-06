@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import Header from '@/components/Header'
-import { Plus, TrendingUp, TrendingDown, Minus, Gift, Infinity, Zap, Clock } from 'lucide-react'
+import { Plus, TrendingUp, TrendingDown, Minus, Gift, Infinity, Zap, Clock, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import SignalDeleteButton from './SignalDeleteButton'
 import SignalToggleButton from './SignalToggleButton'
@@ -13,8 +13,26 @@ import PromoCodeCreateForm from './PromoCodeCreateForm'
 import RefreshSignalsButton from './RefreshSignalsButton'
 import SystemHealthCard from './SystemHealthCard'
 
-async function getSignals() {
-  return prisma.signal.findMany({ orderBy: { createdAt: 'desc' } })
+// Ranking columns for the recent-signals table. Keyed by the query-string
+// `sort` value; each maps to a real Prisma orderBy field. createdAt/desc
+// (i.e. most-recent-first) is the default when no sort param is present —
+// same ordering the table always had, just now one option among several
+// instead of the only one.
+const SORT_FIELDS = {
+  recent: { field: 'createdAt', label: 'Age' },
+  ticker: { field: 'ticker', label: 'Ticker' },
+  confidence: { field: 'confidence', label: 'Confidence' },
+  target: { field: 'targetPrice', label: 'Target' },
+  entry: { field: 'entryZoneLow', label: 'Entry Zone' },
+} as const
+type SortKey = keyof typeof SORT_FIELDS
+
+function isSortKey(v: string | undefined): v is SortKey {
+  return !!v && v in SORT_FIELDS
+}
+
+async function getSignals(sort: SortKey, dir: 'asc' | 'desc') {
+  return prisma.signal.findMany({ orderBy: { [SORT_FIELDS[sort].field]: dir } })
 }
 
 async function getPromoCodes() {
@@ -54,12 +72,20 @@ function formatRelativeTime(date: Date): string {
   return `${Math.floor(h / 24)}d ago`
 }
 
-export default async function AdminSignalsPage() {
+export default async function AdminSignalsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string; dir?: string }>
+}) {
   const { userId } = await auth()
   if (!userId || userId !== process.env.ADMIN_USER_ID) redirect('/dashboard')
 
+  const sp = await searchParams
+  const sort: SortKey = isSortKey(sp.sort) ? sp.sort : 'recent'
+  const dir: 'asc' | 'desc' = sp.dir === 'asc' ? 'asc' : 'desc'
+
   const [signals, promoCodes, lastRefresh, latestHealth] = await Promise.all([
-    getSignals(), getPromoCodes(), getLastRefresh(), getLatestHealthCheck(),
+    getSignals(sort, dir), getPromoCodes(), getLastRefresh(), getLatestHealthCheck(),
   ])
 
   return (
@@ -132,9 +158,16 @@ export default async function AdminSignalsPage() {
             <table className="w-full text-sm">
               <thead style={{ backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid var(--border)' }}>
                 <tr>
-                  {['Ticker', 'Type', 'Entry Zone', 'Target', 'Confidence', 'Horizon', 'Age', 'Outcome', 'Status', ''].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white">{h}</th>
-                  ))}
+                  <SortableHeader label="Ticker" sortKey="ticker" current={sort} dir={dir} />
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white">Type</th>
+                  <SortableHeader label="Entry Zone" sortKey="entry" current={sort} dir={dir} />
+                  <SortableHeader label="Target" sortKey="target" current={sort} dir={dir} />
+                  <SortableHeader label="Confidence" sortKey="confidence" current={sort} dir={dir} />
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white">Horizon</th>
+                  <SortableHeader label="Age" sortKey="recent" current={sort} dir={dir} />
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white">Outcome</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white"></th>
                 </tr>
               </thead>
               <tbody>
@@ -233,6 +266,35 @@ export default async function AdminSignalsPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Clicking a header sorts by that column, defaulting to desc; clicking the
+// already-active column flips direction. Plain <Link>s (no client JS) so
+// this works the same as every other admin nav link on this page.
+function SortableHeader({
+  label, sortKey, current, dir,
+}: {
+  label: string
+  sortKey: SortKey
+  current: SortKey
+  dir: 'asc' | 'desc'
+}) {
+  const isActive = current === sortKey
+  const nextDir = isActive && dir === 'desc' ? 'asc' : 'desc'
+  const href = `/admin/signals?sort=${sortKey}&dir=${nextDir}`
+  const Icon = isActive ? (dir === 'desc' ? ArrowDown : ArrowUp) : ArrowUpDown
+  return (
+    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">
+      <Link
+        href={href}
+        className="inline-flex items-center gap-1 hover:opacity-80 transition-opacity"
+        style={{ color: isActive ? '#009BFF' : 'white' }}
+      >
+        {label}
+        <Icon className="w-3 h-3" />
+      </Link>
+    </th>
   )
 }
 
