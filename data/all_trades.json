@@ -12,7 +12,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "WAT",
     "company_name": "WAT",
@@ -20,215 +20,6 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-15",
     "filed_at": "2026-02-13"
-  },
-  {
-    "politician_name": "Brian Babin",
-    "party": "Republican",
-    "chamber": "House",
-    "ticker": "WDS",
-    "company_name": "WDS",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "SBAC",
-    "company_name": "SBAC",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "ETN",
-    "company_name": "ETN",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "MGY",
-    "company_name": "MGY",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "RHP",
-    "company_name": "RHP",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "BABA",
-    "company_name": "BABA",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "TEL",
-    "company_name": "TEL",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "VCYT",
-    "company_name": "VCYT",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "FBK",
-    "company_name": "FBK",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "GPN",
-    "company_name": "GPN",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "BR",
-    "company_name": "BR",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "STRL",
-    "company_name": "STRL",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "TOELF",
-    "company_name": "TOELF",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Debbie Dingell",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "PTA",
-    "company_name": "PTA",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "BABA",
-    "company_name": "BABA",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Julie Johnson",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "NOW",
-    "company_name": "NOW",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Julia Letlow",
-    "party": "Republican",
-    "chamber": "House",
-    "ticker": "DOV",
-    "company_name": "DOV",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Julia Letlow",
-    "party": "Republican",
-    "chamber": "House",
-    "ticker": "ICE",
-    "company_name": "ICE",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Richard Dean Dr McCormick",
-    "party": "Unknown",
-    "chamber": "House",
-    "ticker": "UNH",
-    "company_name": "UNH",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
   },
   {
     "politician_name": "Tim Moore",
@@ -242,55 +33,11 @@
     "filed_at": "2026-08-06"
   },
   {
-    "politician_name": "Jared Moskowitz",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "MSI",
-    "company_name": "MSI",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Jared Moskowitz",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "PH",
-    "company_name": "PH",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "Nancy Pelosi",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "TEM",
-    "company_name": "TEM",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "WHR",
     "company_name": "WHR",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-08-06",
-    "filed_at": "2026-08-06"
-  },
-  {
-    "politician_name": "David J. Taylor",
-    "party": "Unknown",
-    "chamber": "House",
-    "ticker": "JPM",
-    "company_name": "JPM",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
     "traded_at": "2026-08-06",
@@ -303,7 +50,7 @@
     "ticker": "CHRW",
     "company_name": "DC C.H. Robinson Worldwide, Inc. -",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-31",
     "filed_at": "2026-08-01"
   },
@@ -399,6 +146,17 @@
     "politician_name": "April McClain Delaney",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "STE",
+    "company_name": "DC STERIS plc",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "FWONK",
     "company_name": "Liberty Formula One Common Stock",
     "trade_type": "BUY",
@@ -423,7 +181,7 @@
     "chamber": "House",
     "ticker": "MKL",
     "company_name": "MKL",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-29",
     "filed_at": "2026-08-01"
@@ -577,17 +335,6 @@
     "chamber": "House",
     "ticker": "STE",
     "company_name": "DC STERIS plc",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-07-27",
-    "filed_at": "2026-08-01"
-  },
-  {
-    "politician_name": "April McClain Delaney",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "TSCO",
-    "company_name": "TSCO",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-27",
@@ -671,6 +418,17 @@
     "filed_at": "2026-08-01"
   },
   {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TSCO",
+    "company_name": "TSCO",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-24",
+    "filed_at": "2026-08-01"
+  },
+  {
     "politician_name": "Pete Sessions",
     "party": "Republican",
     "chamber": "House",
@@ -738,7 +496,7 @@
   },
   {
     "politician_name": "Sam T. Liccardo",
-    "party": "Unknown",
+    "party": "Democrat",
     "chamber": "House",
     "ticker": "NVDA",
     "company_name": "NVDA",
@@ -804,7 +562,7 @@
   },
   {
     "politician_name": "James A. Himes",
-    "party": "Unknown",
+    "party": "Democrat",
     "chamber": "House",
     "ticker": "BAC",
     "company_name": "JT Bank of America Corporation",
@@ -815,29 +573,29 @@
   },
   {
     "politician_name": "James A. Himes",
-    "party": "Unknown",
+    "party": "Democrat",
     "chamber": "House",
     "ticker": "XOM",
     "company_name": "JT ExxonMobil Holdings Corporation",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-07-20",
     "filed_at": "2026-07-20"
   },
   {
     "politician_name": "James A. Himes",
-    "party": "Unknown",
+    "party": "Democrat",
     "chamber": "House",
     "ticker": "HD",
     "company_name": "JT Home Depot, Inc.",
     "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-07-20",
     "filed_at": "2026-07-20"
   },
   {
     "politician_name": "Robert E. Latta",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FMAO",
     "company_name": "SP Farmers & Merchants Bancorp, Inc.",
@@ -896,7 +654,7 @@
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "GOOGL",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-10",
     "filed_at": "2026-07-10"
@@ -918,7 +676,7 @@
     "chamber": "House",
     "ticker": "AMAT",
     "company_name": "AMAT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-10",
     "filed_at": "2026-07-10"
@@ -962,7 +720,7 @@
     "chamber": "House",
     "ticker": "DE",
     "company_name": "DE",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-10",
     "filed_at": "2026-07-10"
@@ -984,7 +742,7 @@
     "chamber": "House",
     "ticker": "LLY",
     "company_name": "LLY",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-10",
     "filed_at": "2026-07-10"
@@ -1028,7 +786,7 @@
     "chamber": "House",
     "ticker": "HONAV",
     "company_name": "HONAV",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-10",
     "filed_at": "2026-07-10"
@@ -1050,7 +808,7 @@
     "chamber": "House",
     "ticker": "MPC",
     "company_name": "MPC",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-10",
     "filed_at": "2026-07-10"
@@ -1243,6 +1001,17 @@
     "filed_at": "2026-07-03"
   },
   {
+    "politician_name": "Lloyd Doggett",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "KO",
+    "company_name": "Coca-Cola Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-01",
+    "filed_at": "2026-08-05"
+  },
+  {
     "politician_name": "Susie Lee",
     "party": "Democrat",
     "chamber": "House",
@@ -1270,7 +1039,18 @@
     "chamber": "House",
     "ticker": "BRCM",
     "company_name": "BRCM",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-30",
+    "filed_at": "2026-07-02"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "BR",
+    "company_name": "BR",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-30",
     "filed_at": "2026-07-02"
@@ -1314,7 +1094,7 @@
     "chamber": "House",
     "ticker": "CRDO",
     "company_name": "CRDO",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-30",
     "filed_at": "2026-07-02"
@@ -1369,7 +1149,7 @@
     "chamber": "House",
     "ticker": "SMTC",
     "company_name": "SMTC",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-30",
     "filed_at": "2026-07-02"
@@ -1409,18 +1189,18 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "ADI",
     "company_name": "ADI",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-30",
     "filed_at": "2026-07-01"
   },
   {
     "politician_name": "Robert J. Wittman",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CCI",
     "company_name": "Crown Castle Inc. Common Stock",
@@ -1453,7 +1233,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "JNJ",
     "company_name": "JNJ",
@@ -1464,7 +1244,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MKL",
     "company_name": "MKL",
@@ -1475,7 +1255,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "SPGI",
     "company_name": "SPGI",
@@ -1508,18 +1288,18 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "GOOGL",
     "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-24",
     "filed_at": "2026-07-01"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "ESAB",
     "company_name": "ESAB Corporation Common Stock",
@@ -1530,7 +1310,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "ESAB",
     "company_name": "ESAB Corporation Common Stock",
@@ -1584,6 +1364,17 @@
     "filed_at": "2026-07-01"
   },
   {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NTES",
+    "company_name": "Shares, each representing 5 ordinary",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-18",
+    "filed_at": "2026-03-05"
+  },
+  {
     "politician_name": "Jared Moskowitz",
     "party": "Democrat",
     "chamber": "House",
@@ -1595,19 +1386,8 @@
     "filed_at": "2026-06-30"
   },
   {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "NTDOY",
-    "company_name": "JT Nintendo Co Ltd ADR",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-06-17",
-    "filed_at": "2026-07-07"
-  },
-  {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GIL",
     "company_name": "Vot. Common Stock",
@@ -1732,7 +1512,7 @@
     "chamber": "House",
     "ticker": "CME",
     "company_name": "CME",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-16",
     "filed_at": "2026-07-02"
@@ -1766,7 +1546,7 @@
     "ticker": "CAG",
     "company_name": "ConAgra Brands, Inc. Common Stock",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-16",
     "filed_at": "2026-07-02"
   },
@@ -1831,7 +1611,7 @@
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "MSFT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "Unknown",
     "traded_at": "2026-06-16",
     "filed_at": "2026-07-02"
@@ -1854,6 +1634,17 @@
     "ticker": "STRL",
     "company_name": "STRL",
     "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-06-16",
+    "filed_at": "2026-07-02"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "STRL",
+    "company_name": "STRL",
+    "trade_type": "BUY",
     "amount_range": "Unknown",
     "traded_at": "2026-06-16",
     "filed_at": "2026-07-02"
@@ -2069,7 +1860,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "VOYG",
     "company_name": "Voyager Technologies, Inc. Class A",
@@ -2080,7 +1871,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CVX",
     "company_name": "Chevron Corporation Common Stock",
@@ -2091,7 +1882,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "IBP",
     "company_name": "Installed Building Products, Inc.",
@@ -2106,7 +1897,7 @@
     "chamber": "House",
     "ticker": "CNM",
     "company_name": "CNM",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-12",
     "filed_at": "2026-07-01"
@@ -2181,6 +1972,17 @@
     "politician_name": "Richard Dean Dr McCormick",
     "party": "Unknown",
     "chamber": "House",
+    "ticker": "CSCO",
+    "company_name": "CSCO",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-12",
+    "filed_at": "2026-07-08"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
     "ticker": "ICE",
     "company_name": "Intercontinental Exchange Inc.",
     "trade_type": "BUY",
@@ -2245,7 +2047,7 @@
   },
   {
     "politician_name": "Christian D. Menefee",
-    "party": "Unknown",
+    "party": "Democrat",
     "chamber": "House",
     "ticker": "PINS",
     "company_name": "SP Pinterest, Inc. Class A Common Stock",
@@ -2261,7 +2063,7 @@
     "ticker": "LLY",
     "company_name": "Eli Lilly and Company Common Stock",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-10",
     "filed_at": "2026-07-02"
   },
@@ -2271,6 +2073,17 @@
     "chamber": "House",
     "ticker": "MELI",
     "company_name": "MercadoLibre, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-10",
+    "filed_at": "2026-07-02"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TOELF",
+    "company_name": "TOELF",
     "trade_type": "BUY",
     "amount_range": "Unknown",
     "traded_at": "2026-06-10",
@@ -2283,7 +2096,7 @@
     "ticker": "MTN",
     "company_name": "Vail Resorts, Inc. Common Stock",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-10",
     "filed_at": "2026-07-02"
   },
@@ -2436,7 +2249,7 @@
     "chamber": "House",
     "ticker": "MA",
     "company_name": "MA",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-05",
     "filed_at": "2026-07-02"
@@ -2459,7 +2272,7 @@
     "ticker": "MSTR",
     "company_name": "Strategy Inc - Class A Common Stock",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-05",
     "filed_at": "2026-07-02"
   },
@@ -2480,7 +2293,7 @@
     "chamber": "House",
     "ticker": "WRB",
     "company_name": "WRB",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-05",
     "filed_at": "2026-07-02"
@@ -2492,7 +2305,7 @@
     "ticker": "WDAY",
     "company_name": "Workday, Inc. - Class A Common",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-05",
     "filed_at": "2026-07-02"
   },
@@ -2530,8 +2343,19 @@
     "filed_at": "2026-07-01"
   },
   {
+    "politician_name": "Byron Donalds",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MPWR",
+    "company_name": "MPWR",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-05",
+    "filed_at": "2026-07-01"
+  },
+  {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "Alphabet Inc. - Class A Common",
@@ -2542,7 +2366,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AMZN",
     "company_name": "Amazon.com, Inc. - Common Stock",
@@ -2553,7 +2377,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AEP",
     "company_name": "Inc.",
@@ -2564,7 +2388,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "T",
     "company_name": "AT&T Inc.",
@@ -2575,7 +2399,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "KR",
     "company_name": "Kroger Company",
@@ -2586,7 +2410,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "LRCX",
     "company_name": "Lam Research Corporation - Common",
@@ -2608,7 +2432,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "WPM",
     "company_name": "Wheaton Precious Metals Corp",
@@ -2619,7 +2443,7 @@
   },
   {
     "politician_name": "Robert E. Latta",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FMAO",
     "company_name": "SP Farmers & Merchants Bancorp, Inc.",
@@ -2634,7 +2458,7 @@
     "chamber": "House",
     "ticker": "DELL",
     "company_name": "DELL",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-04",
     "filed_at": "2026-06-04"
@@ -2651,19 +2475,8 @@
     "filed_at": "2026-06-04"
   },
   {
-    "politician_name": "Tim Moore",
-    "party": "Republican",
-    "chamber": "House",
-    "ticker": "T",
-    "company_name": "AT&T Inc.",
-    "trade_type": "BUY",
-    "amount_range": "$50,001 -\n$100,000",
-    "traded_at": "2026-06-04",
-    "filed_at": "2026-06-04"
-  },
-  {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "BEP",
     "company_name": "Limited Partnership Units",
@@ -2674,7 +2487,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "UNH",
     "company_name": "UnitedHealth Group Incorporated",
@@ -2685,7 +2498,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "BEP",
     "company_name": "Limited Partnership Units",
@@ -2707,7 +2520,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "GOOGL",
@@ -2718,7 +2531,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GIL",
     "company_name": "Vot. Common Stock",
@@ -2729,7 +2542,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "JNJ",
     "company_name": "JNJ",
@@ -2740,7 +2553,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MKL",
     "company_name": "MKL",
@@ -2751,7 +2564,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "MSFT",
@@ -2762,11 +2575,11 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "SYK",
     "company_name": "SYK",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-02",
     "filed_at": "2026-06-18"
@@ -2777,14 +2590,14 @@
     "chamber": "House",
     "ticker": "BAC",
     "company_name": "BAC",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-02",
     "filed_at": "2026-06-02"
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "BEP",
     "company_name": "Limited Partnership Units",
@@ -2795,12 +2608,12 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CRM",
     "company_name": "Salesforce, Inc. Common Stock",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-02",
     "filed_at": "2026-07-01"
   },
@@ -2863,6 +2676,17 @@
     "politician_name": "Josh Gottheimer",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "BABA",
+    "company_name": "BABA",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-01",
+    "filed_at": "2026-07-07"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "BKNG",
     "company_name": "JT Booking Holdings Inc. - Common",
     "trade_type": "SELL",
@@ -2882,19 +2706,30 @@
     "filed_at": "2026-07-07"
   },
   {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NTDOY",
+    "company_name": "JT Nintendo Co Ltd ADR",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-01",
+    "filed_at": "2026-07-07"
+  },
+  {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CHKP",
     "company_name": "Ltd.",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-01",
     "filed_at": "2026-06-02"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "EQT",
     "company_name": "EQT Corporation Common Stock",
@@ -2905,7 +2740,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CHKP",
     "company_name": "Ltd.",
@@ -2951,8 +2786,8 @@
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
-    "ticker": "CIEN",
-    "company_name": "Ciena Corporation",
+    "ticker": "CLX",
+    "company_name": "Clorox Company",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-29",
@@ -2964,6 +2799,17 @@
     "chamber": "House",
     "ticker": "DASH",
     "company_name": "DoorDash, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-05-29",
+    "filed_at": "2026-06-05"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GPN",
+    "company_name": "GPN",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-29",
@@ -3041,7 +2887,7 @@
     "chamber": "House",
     "ticker": "WRB",
     "company_name": "WRB",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-29",
     "filed_at": "2026-06-05"
@@ -3059,7 +2905,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "BEP",
     "company_name": "Limited Partnership Units",
@@ -3125,7 +2971,7 @@
   },
   {
     "politician_name": "Christian D. Menefee",
-    "party": "Unknown",
+    "party": "Democrat",
     "chamber": "House",
     "ticker": "PINS",
     "company_name": "SP Pinterest, Inc. Class A Common Stock",
@@ -3173,7 +3019,7 @@
     "chamber": "House",
     "ticker": "ABT",
     "company_name": "ABT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-27",
     "filed_at": "2026-06-02"
@@ -3184,7 +3030,7 @@
     "chamber": "House",
     "ticker": "NVDA",
     "company_name": "NVDA",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-27",
     "filed_at": "2026-06-09"
@@ -3195,7 +3041,7 @@
     "chamber": "House",
     "ticker": "TSCO",
     "company_name": "TSCO",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-26",
     "filed_at": "2026-06-01"
@@ -3290,7 +3136,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "BDX",
     "company_name": "Becton, Dickinson and Company",
@@ -3306,7 +3152,7 @@
     "ticker": "T",
     "company_name": "AT&T Inc.",
     "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-05-21",
     "filed_at": "2026-05-21"
   },
@@ -3367,7 +3213,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "DDOG",
     "company_name": "Datadog, Inc. - Class A Common",
@@ -3437,8 +3283,8 @@
     "chamber": "House",
     "ticker": "STRL",
     "company_name": "STRL",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-18",
     "filed_at": "2026-06-05"
   },
@@ -3504,7 +3350,7 @@
     "ticker": "T",
     "company_name": "AT&T Inc.",
     "trade_type": "BUY",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-05-18",
     "filed_at": "2026-05-18"
   },
@@ -3536,7 +3382,7 @@
     "chamber": "House",
     "ticker": "BKNG",
     "company_name": "BKNG",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-15",
     "filed_at": "2026-06-05"
@@ -3558,17 +3404,6 @@
     "chamber": "House",
     "ticker": "CVNA",
     "company_name": "Carvana Co. Class A Common Stock",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-05-15",
-    "filed_at": "2026-06-05"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "CLX",
-    "company_name": "Clorox Company",
     "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-15",
@@ -3657,7 +3492,7 @@
     "chamber": "House",
     "ticker": "MDT",
     "company_name": "MDT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-15",
     "filed_at": "2026-06-05"
@@ -3668,7 +3503,7 @@
     "chamber": "House",
     "ticker": "MU",
     "company_name": "MU",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-15",
     "filed_at": "2026-06-05"
@@ -3680,7 +3515,7 @@
     "ticker": "MSFT",
     "company_name": "Microsoft Corporation - Common",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-15",
     "filed_at": "2026-06-05"
   },
@@ -3712,7 +3547,7 @@
     "chamber": "House",
     "ticker": "PYPL",
     "company_name": "PYPL",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-15",
     "filed_at": "2026-06-05"
@@ -3789,7 +3624,7 @@
     "chamber": "House",
     "ticker": "UBER",
     "company_name": "UBER",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-15",
     "filed_at": "2026-06-05"
@@ -3895,18 +3730,18 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "Alphabet Inc. - Class A Common",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-15",
     "filed_at": "2026-05-28"
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "T",
     "company_name": "AT&T Inc.",
@@ -3917,7 +3752,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "HD",
     "company_name": "Home Depot, Inc.",
@@ -3928,7 +3763,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MEDP",
     "company_name": "Medpace Holdings, Inc. - Common",
@@ -3939,7 +3774,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PH",
     "company_name": "Parker-Hannifin Corporation",
@@ -4059,15 +3894,15 @@
     "filed_at": "2026-06-02"
   },
   {
-    "politician_name": "Gilbert Cisneros",
+    "politician_name": "Josh Gottheimer",
     "party": "Democrat",
     "chamber": "House",
-    "ticker": "STE",
-    "company_name": "STERIS plc",
+    "ticker": "NSRGY",
+    "company_name": "JT NESTLE S.A S/ADR",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-05-13",
-    "filed_at": "2026-06-05"
+    "traded_at": "2026-05-14",
+    "filed_at": "2026-06-02"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -4115,12 +3950,12 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "QCOM",
     "company_name": "QUALCOMM Incorporated -",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-13",
     "filed_at": "2026-06-01"
   },
@@ -4313,7 +4148,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "WHR",
     "company_name": "Whirlpool Corporation Common",
@@ -4329,7 +4164,7 @@
     "ticker": "ACN",
     "company_name": "SP Accenture plc Class A Ordinary Shares",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-08",
     "filed_at": "2026-06-08"
   },
@@ -4350,7 +4185,7 @@
     "chamber": "House",
     "ticker": "CTRA",
     "company_name": "CTRA",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-08",
     "filed_at": "2026-06-05"
@@ -4433,11 +4268,33 @@
     "filed_at": "2026-05-11"
   },
   {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DVN",
+    "company_name": "DVN",
+    "trade_type": "SELL",
+    "amount_range": "$15,001 - $50,000",
+    "traded_at": "2026-05-08",
+    "filed_at": "2026-05-11"
+  },
+  {
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
     "ticker": "DASH",
     "company_name": "DoorDash, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-05-07",
+    "filed_at": "2026-06-05"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "FBK",
+    "company_name": "FBK",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-07",
@@ -4615,7 +4472,7 @@
     "ticker": "BMY",
     "company_name": "SP Bristol-Myers Squibb Company",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-07",
     "filed_at": "2026-06-10"
   },
@@ -4724,8 +4581,8 @@
     "chamber": "House",
     "ticker": "FTAI",
     "company_name": "FTAI",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-05",
     "filed_at": "2026-05-08"
   },
@@ -4790,8 +4647,19 @@
     "chamber": "House",
     "ticker": "WPM",
     "company_name": "WPM",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-05-05",
+    "filed_at": "2026-05-08"
+  },
+  {
+    "politician_name": "Brian Babin",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "WDS",
+    "company_name": "WDS",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-05",
     "filed_at": "2026-05-08"
   },
@@ -4801,21 +4669,10 @@
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "GOOGL",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-05",
     "filed_at": "2026-06-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "NSRGY",
-    "company_name": "JT NESTLE S.A S/ADR",
-    "trade_type": "SELL",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-05-05",
-    "filed_at": "2026-06-02"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -4944,7 +4801,7 @@
     "chamber": "House",
     "ticker": "CLH",
     "company_name": "CLH",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-01",
     "filed_at": "2026-06-01"
@@ -4984,7 +4841,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CARR",
     "company_name": "Carrier Global Corporation Common",
@@ -5038,6 +4895,17 @@
     "filed_at": "2026-05-01"
   },
   {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TDG",
+    "company_name": "DC Transdigm Group Incorporated",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-30",
+    "filed_at": "2026-05-01"
+  },
+  {
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
@@ -5065,17 +4933,6 @@
     "chamber": "House",
     "ticker": "SSNC",
     "company_name": "SSNC",
-    "trade_type": "UNKNOWN",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-29",
-    "filed_at": "2026-05-07"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "STE",
-    "company_name": "STERIS plc",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-29",
@@ -5093,23 +4950,12 @@
     "filed_at": "2026-05-01"
   },
   {
-    "politician_name": "April McClain Delaney",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "TDG",
-    "company_name": "DC Transdigm Group Incorporated",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-29",
-    "filed_at": "2026-05-01"
-  },
-  {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "ADI",
     "company_name": "ADI",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-29",
     "filed_at": "2026-05-17"
@@ -5127,7 +4973,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AVGO",
     "company_name": "Broadcom Inc. - Common Stock",
@@ -5138,7 +4984,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "HD",
     "company_name": "Home Depot, Inc.",
@@ -5149,18 +4995,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
-    "chamber": "House",
-    "ticker": "HD",
-    "company_name": "Home Depot, Inc.",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-04-27",
-    "filed_at": "2026-05-01"
-  },
-  {
-    "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "LRCX",
     "company_name": "Lam Research Corporation - Common",
@@ -5171,7 +5006,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PG",
     "company_name": "Procter & Gamble Company",
@@ -5182,7 +5017,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PGR",
     "company_name": "Progressive Corporation",
@@ -5193,7 +5028,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "V",
     "company_name": "Visa Inc.",
@@ -5230,7 +5065,7 @@
     "chamber": "House",
     "ticker": "CHRW",
     "company_name": "CHRW",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-24",
     "filed_at": "2026-05-01"
@@ -5297,7 +5132,7 @@
     "ticker": "V",
     "company_name": "JT Visa Inc.",
     "trade_type": "SELL",
-    "amount_range": "$50,001 -\n$100,000",
+    "amount_range": "$50,001 - $100,000",
     "traded_at": "2026-04-24",
     "filed_at": "2026-05-08"
   },
@@ -5314,7 +5149,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "URI",
     "company_name": "United Rentals, Inc. Common Stock",
@@ -5336,7 +5171,7 @@
   },
   {
     "politician_name": "Lloyd K. Smucker",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FULT",
     "company_name": "Fulton Financial Corporation -",
@@ -5347,7 +5182,7 @@
   },
   {
     "politician_name": "Lloyd K. Smucker",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PRU",
     "company_name": "Prudential Financial, Inc. Common",
@@ -5358,7 +5193,7 @@
   },
   {
     "politician_name": "Lloyd K. Smucker",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "VZ",
     "company_name": "Verizon Communications Inc.",
@@ -5369,7 +5204,7 @@
   },
   {
     "politician_name": "Lloyd K. Smucker",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "WFC",
     "company_name": "Wells Fargo & Company Common",
@@ -5402,7 +5237,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "UNH",
     "company_name": "UnitedHealth Group Incorporated",
@@ -5417,14 +5252,25 @@
     "chamber": "House",
     "ticker": "PAYX",
     "company_name": "PAYX",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-21",
     "filed_at": "2026-05-01"
   },
   {
+    "politician_name": "Debbie Dingell",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PTA",
+    "company_name": "PTA",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-21",
+    "filed_at": "2026-04-27"
+  },
+  {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "TTWO",
     "company_name": "Take-Two Interactive Software, Inc. -",
@@ -5484,13 +5330,13 @@
     "ticker": "THC",
     "company_name": "JT Tenet Healthcare Corporation",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-20",
     "filed_at": "2026-05-08"
   },
   {
     "politician_name": "Robert E. Latta",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FMAO",
     "company_name": "SP Farmers & Merchants Bancorp, Inc.",
@@ -5534,7 +5380,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "Microsoft Corporation - Common",
@@ -5545,7 +5391,7 @@
   },
   {
     "politician_name": "Lloyd K. Smucker",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FULT",
     "company_name": "Fulton Financial Corporation -",
@@ -5556,7 +5402,7 @@
   },
   {
     "politician_name": "Lloyd K. Smucker",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "TFC",
     "company_name": "Truist Financial Corporation Common",
@@ -5583,7 +5429,7 @@
     "ticker": "PG",
     "company_name": "SP Procter & Gamble Company",
     "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-04-16",
     "filed_at": "2026-05-04"
   },
@@ -5605,6 +5451,17 @@
     "ticker": "MORN",
     "company_name": "MORN",
     "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-16",
+    "filed_at": "2026-05-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MORN",
+    "company_name": "MORN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-16",
     "filed_at": "2026-05-01"
@@ -5721,11 +5578,11 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "NVT",
     "company_name": "NVT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-15",
     "filed_at": "2026-05-17"
@@ -5813,7 +5670,7 @@
     "chamber": "House",
     "ticker": "ADP",
     "company_name": "ADP",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-14",
     "filed_at": "2026-05-07"
@@ -5890,8 +5747,8 @@
     "chamber": "House",
     "ticker": "CMCSA",
     "company_name": "CMCSA",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-14",
     "filed_at": "2026-05-07"
   },
@@ -5912,7 +5769,7 @@
     "chamber": "House",
     "ticker": "CSGP",
     "company_name": "CSGP",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-14",
     "filed_at": "2026-05-07"
@@ -6089,7 +5946,7 @@
     "ticker": "MSFT",
     "company_name": "MSFT",
     "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-14",
     "filed_at": "2026-05-07"
   },
@@ -6099,7 +5956,7 @@
     "chamber": "House",
     "ticker": "MOS",
     "company_name": "Mosaic Company",
-    "trade_type": "SELL",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-14",
     "filed_at": "2026-05-07"
@@ -6132,7 +5989,7 @@
     "chamber": "House",
     "ticker": "NVDA",
     "company_name": "NVDA",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-14",
     "filed_at": "2026-05-07"
@@ -6155,7 +6012,7 @@
     "ticker": "PLTR",
     "company_name": "Palantir Technologies Inc. - Class A",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-14",
     "filed_at": "2026-05-07"
   },
@@ -6220,7 +6077,7 @@
     "chamber": "House",
     "ticker": "NOW",
     "company_name": "NOW",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-14",
     "filed_at": "2026-05-07"
@@ -6253,7 +6110,7 @@
     "chamber": "House",
     "ticker": "TYL",
     "company_name": "TYL",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-14",
     "filed_at": "2026-05-07"
@@ -6326,7 +6183,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FCNCA",
     "company_name": "First Citizens BancShares, Inc. - Class",
@@ -6337,7 +6194,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "TXN",
     "company_name": "Texas Instruments Incorporated -",
@@ -6348,7 +6205,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "VOYG",
     "company_name": "Voyager Technologies, Inc. Class A",
@@ -6385,7 +6242,7 @@
     "chamber": "House",
     "ticker": "HDB",
     "company_name": "HDB",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-13",
     "filed_at": "2026-05-05"
@@ -6427,10 +6284,21 @@
     "politician_name": "Josh Gottheimer",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "CBZ",
+    "company_name": "JT CBIZ, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-09",
+    "filed_at": "2026-05-05"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "DRI",
     "company_name": "JT Darden Restaurants, Inc. Common",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-09",
     "filed_at": "2026-05-05"
   },
@@ -6452,18 +6320,7 @@
     "ticker": "F",
     "company_name": "JT Ford Motor Company Common Stock",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
-    "traded_at": "2026-04-09",
-    "filed_at": "2026-05-05"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "GS",
-    "company_name": "JT Goldman Sachs Group, Inc.",
-    "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-09",
     "filed_at": "2026-05-05"
   },
@@ -6474,7 +6331,7 @@
     "ticker": "HD",
     "company_name": "JT Home Depot, Inc.",
     "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-04-09",
     "filed_at": "2026-05-05"
   },
@@ -6496,7 +6353,7 @@
     "ticker": "MLM",
     "company_name": "JT Martin Marietta Materials, Inc.",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-09",
     "filed_at": "2026-05-05"
   },
@@ -6507,7 +6364,7 @@
     "ticker": "PFGC",
     "company_name": "JT Performance Food Group Company",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-09",
     "filed_at": "2026-05-05"
   },
@@ -6529,7 +6386,7 @@
     "ticker": "TSCO",
     "company_name": "JT Tractor Supply Company - Common",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-09",
     "filed_at": "2026-05-05"
   },
@@ -6814,21 +6671,10 @@
     "chamber": "House",
     "ticker": "SSNC",
     "company_name": "SSNC",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-04-06",
-    "filed_at": "2026-05-07"
-  },
-  {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "CBZ",
-    "company_name": "JT CBIZ, Inc. Common Stock",
-    "trade_type": "BUY",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-06",
-    "filed_at": "2026-05-05"
+    "filed_at": "2026-05-07"
   },
   {
     "politician_name": "Josh Gottheimer",
@@ -6854,7 +6700,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MRVL",
     "company_name": "Marvell Technology, Inc. - Common",
@@ -6865,7 +6711,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CRM",
     "company_name": "Salesforce, Inc. Common Stock",
@@ -6979,7 +6825,7 @@
     "chamber": "House",
     "ticker": "SNDA",
     "company_name": "SNDA",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-31",
     "filed_at": "2026-04-09"
@@ -7054,10 +6900,21 @@
     "politician_name": "Jared Moskowitz",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "PH",
+    "company_name": "PH",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-03-31",
+    "filed_at": "2026-03-31"
+  },
+  {
+    "politician_name": "Jared Moskowitz",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "QCOM",
     "company_name": "QUALCOMM Incorporated -",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-31",
     "filed_at": "2026-03-31"
   },
@@ -7101,7 +6958,7 @@
     "ticker": "FN",
     "company_name": "Fabrinet Ordinary Shares",
     "trade_type": "BUY",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-03-27",
     "filed_at": "2026-04-06"
   },
@@ -7122,7 +6979,7 @@
     "chamber": "House",
     "ticker": "MTSI",
     "company_name": "Holdings, Inc. - Common Stock",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-27",
     "filed_at": "2026-04-06"
@@ -7155,7 +7012,7 @@
     "chamber": "House",
     "ticker": "TECH",
     "company_name": "TECH",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-26",
     "filed_at": "2026-04-01"
@@ -7173,7 +7030,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FCNCA",
     "company_name": "FCNCA",
@@ -7184,34 +7041,34 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "JNJ",
     "company_name": "JNJ",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-26",
     "filed_at": "2026-04-08"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PEP",
     "company_name": "Pepsico, Inc.",
     "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-03-26",
     "filed_at": "2026-04-08"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "SPGI",
     "company_name": "SPGI",
     "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-26",
     "filed_at": "2026-04-08"
   },
@@ -7232,7 +7089,7 @@
     "chamber": "House",
     "ticker": "ANET",
     "company_name": "ANET",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-25",
     "filed_at": "2026-04-06"
@@ -7243,7 +7100,7 @@
     "chamber": "House",
     "ticker": "AVGO",
     "company_name": "AVGO",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-25",
     "filed_at": "2026-04-06"
@@ -7298,7 +7155,7 @@
     "chamber": "House",
     "ticker": "NVDA",
     "company_name": "NVDA",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-25",
     "filed_at": "2026-04-06"
@@ -7309,7 +7166,7 @@
     "chamber": "House",
     "ticker": "TDG",
     "company_name": "TDG",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-25",
     "filed_at": "2026-04-06"
@@ -7327,7 +7184,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FDX",
     "company_name": "FedEx Corporation Common Stock",
@@ -7338,7 +7195,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "URI",
     "company_name": "United Rentals, Inc. Common Stock",
@@ -7349,7 +7206,7 @@
   },
   {
     "politician_name": "Terri A. Sewell",
-    "party": "Unknown",
+    "party": "Democrat",
     "chamber": "House",
     "ticker": "GEHC",
     "company_name": "GE HealthCare Technologies Inc. -",
@@ -7437,7 +7294,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "IBP",
     "company_name": "Installed Building Products, Inc.",
@@ -7448,7 +7305,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "KR",
     "company_name": "Kroger Company",
@@ -7560,6 +7417,17 @@
     "politician_name": "Jared Moskowitz",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "MSI",
+    "company_name": "MSI",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-23",
+    "filed_at": "2026-03-31"
+  },
+  {
+    "politician_name": "Jared Moskowitz",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "ORCL",
     "company_name": "DC Oracle Corporation Common Stock",
     "trade_type": "SELL",
@@ -7607,7 +7475,7 @@
     "ticker": "ADM",
     "company_name": "Archer-Daniels-Midland Company",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-20",
     "filed_at": "2026-04-06"
   },
@@ -7618,7 +7486,7 @@
     "ticker": "MIAX",
     "company_name": "Miami International Holdings, Inc.",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-20",
     "filed_at": "2026-04-06"
   },
@@ -7684,7 +7552,7 @@
     "ticker": "LGIH",
     "company_name": "LGI Homes, Inc. - Common Stock",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-20",
     "filed_at": "2026-03-20"
   },
@@ -7698,17 +7566,6 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-19",
     "filed_at": "2026-04-06"
-  },
-  {
-    "politician_name": "Jonathan Jackson",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "BP",
-    "company_name": "JT BP p.l.c. Common Stock",
-    "trade_type": "BUY",
-    "amount_range": "$15,001 -\n$50,000",
-    "traded_at": "2026-03-19",
-    "filed_at": "2026-04-07"
   },
   {
     "politician_name": "Jonathan Jackson",
@@ -7749,17 +7606,6 @@
     "chamber": "House",
     "ticker": "ADP",
     "company_name": "ADP",
-    "trade_type": "UNKNOWN",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-03-19",
-    "filed_at": "2026-04-07"
-  },
-  {
-    "politician_name": "Richard Dean Dr McCormick",
-    "party": "Unknown",
-    "chamber": "House",
-    "ticker": "ADP",
-    "company_name": "Automatic Data Processing, Inc. -",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-19",
@@ -7802,6 +7648,17 @@
     "politician_name": "Richard Dean Dr McCormick",
     "party": "Unknown",
     "chamber": "House",
+    "ticker": "LHX",
+    "company_name": "LHX",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-19",
+    "filed_at": "2026-04-07"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
     "ticker": "MSFT",
     "company_name": "Microsoft Corporation - Common",
     "trade_type": "BUY",
@@ -7815,7 +7672,7 @@
     "chamber": "House",
     "ticker": "NEE",
     "company_name": "NEE",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-19",
     "filed_at": "2026-04-07"
@@ -7825,7 +7682,7 @@
     "party": "Unknown",
     "chamber": "House",
     "ticker": "UNH",
-    "company_name": "UnitedHealth Group Incorporated",
+    "company_name": "UNH",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-19",
@@ -7844,18 +7701,18 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "BA",
     "company_name": "Boeing Company",
     "trade_type": "BUY",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-03-19",
     "filed_at": "2026-04-01"
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CSCO",
     "company_name": "Cisco Systems, Inc. - Common Stock",
@@ -7866,7 +7723,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GLW",
     "company_name": "Corning Incorporated Common Stock",
@@ -7877,29 +7734,29 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FDX",
     "company_name": "FedEx Corporation Common Stock",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-19",
     "filed_at": "2026-04-01"
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GS",
     "company_name": "Goldman Sachs Group, Inc.",
     "trade_type": "BUY",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-03-19",
     "filed_at": "2026-04-01"
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "NVR",
     "company_name": "NVR, Inc. Common Stock",
@@ -7910,7 +7767,7 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PTON",
     "company_name": "Peloton Interactive, Inc. - Common",
@@ -7921,29 +7778,29 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "RH",
     "company_name": "RH Common Stock",
     "trade_type": "BUY",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-03-19",
     "filed_at": "2026-04-01"
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "ULTA",
     "company_name": "Ulta Beauty, Inc. - Common Stock",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-19",
     "filed_at": "2026-04-01"
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "VG",
     "company_name": "Venture Global, Inc. Class A common",
@@ -7954,12 +7811,12 @@
   },
   {
     "politician_name": "Maria Elvira Salazar",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "WHR",
     "company_name": "Whirlpool Corporation Common",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-19",
     "filed_at": "2026-04-01"
   },
@@ -7969,8 +7826,8 @@
     "chamber": "House",
     "ticker": "APP",
     "company_name": "APP",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-18",
     "filed_at": "2026-04-06"
   },
@@ -8024,7 +7881,7 @@
     "chamber": "House",
     "ticker": "WRB",
     "company_name": "WRB",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-18",
     "filed_at": "2026-04-06"
@@ -8058,7 +7915,7 @@
     "ticker": "SMA",
     "company_name": "JT SmartStop Self Storage REIT, Inc.",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-03-18",
     "filed_at": "2026-03-31"
   },
@@ -8113,7 +7970,7 @@
     "ticker": "MUA",
     "company_name": "JT Blackrock MuniAssets Fund, Inc",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-03-17",
     "filed_at": "2026-03-31"
   },
@@ -8189,17 +8046,6 @@
     "chamber": "House",
     "ticker": "AMZN",
     "company_name": "AMZN",
-    "trade_type": "UNKNOWN",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-03-16",
-    "filed_at": "2026-04-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "AMZN",
-    "company_name": "Amazon.com, Inc. - Common Stock",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-16",
@@ -8242,17 +8088,6 @@
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
-    "ticker": "PLTR",
-    "company_name": "PLTR",
-    "trade_type": "UNKNOWN",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-03-16",
-    "filed_at": "2026-04-06"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
     "ticker": "TDG",
     "company_name": "Transdigm Group Incorporated",
     "trade_type": "BUY",
@@ -8266,17 +8101,6 @@
     "chamber": "House",
     "ticker": "SGI",
     "company_name": "DC Somnigroup International Inc.",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-03-16",
-    "filed_at": "2026-04-01"
-  },
-  {
-    "politician_name": "April McClain Delaney",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "STE",
-    "company_name": "DC STERIS plc",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-16",
@@ -8311,7 +8135,7 @@
     "ticker": "ACN",
     "company_name": "JT Accenture plc Class A Ordinary",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-03-16",
     "filed_at": "2026-03-31"
   },
@@ -8322,7 +8146,7 @@
     "ticker": "IQV",
     "company_name": "JT IQVIA Holdings, Inc. Common Stock",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-03-16",
     "filed_at": "2026-03-31"
   },
@@ -8475,7 +8299,7 @@
     "chamber": "House",
     "ticker": "DASH",
     "company_name": "DASH",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-13",
     "filed_at": "2026-04-06"
@@ -8608,7 +8432,7 @@
     "ticker": "MSFT",
     "company_name": "Microsoft Corporation - Common",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-13",
     "filed_at": "2026-04-06"
   },
@@ -8652,7 +8476,7 @@
     "ticker": "PLTR",
     "company_name": "PLTR",
     "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-13",
     "filed_at": "2026-04-06"
   },
@@ -8706,7 +8530,7 @@
     "chamber": "House",
     "ticker": "PFE",
     "company_name": "Pfizer, Inc. Common Stock",
-    "trade_type": "SELL",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-13",
     "filed_at": "2026-04-06"
@@ -8728,7 +8552,7 @@
     "chamber": "House",
     "ticker": "ROP",
     "company_name": "Roper Technologies, Inc.",
-    "trade_type": "SELL",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-13",
     "filed_at": "2026-04-06"
@@ -8783,7 +8607,7 @@
     "chamber": "House",
     "ticker": "UPS",
     "company_name": "UPS",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-13",
     "filed_at": "2026-04-06"
@@ -8827,7 +8651,7 @@
     "chamber": "House",
     "ticker": "WFC",
     "company_name": "WFC",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-13",
     "filed_at": "2026-04-06"
@@ -8981,7 +8805,7 @@
     "chamber": "House",
     "ticker": "HDB",
     "company_name": "HDB",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-12",
     "filed_at": "2026-04-07"
@@ -9021,7 +8845,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CVX",
     "company_name": "Chevron Corporation Common Stock",
@@ -9032,7 +8856,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "HD",
     "company_name": "Home Depot, Inc.",
@@ -9043,7 +8867,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "IBP",
     "company_name": "Installed Building Products, Inc.",
@@ -9054,7 +8878,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "LRCX",
     "company_name": "Lam Research Corporation - Common",
@@ -9065,7 +8889,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PH",
     "company_name": "Parker-Hannifin Corporation",
@@ -9076,7 +8900,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "RPM",
     "company_name": "RPM International Inc. Common",
@@ -9087,7 +8911,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CVX",
     "company_name": "Chevron Corporation Common Stock",
@@ -9098,7 +8922,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FITB",
     "company_name": "Fifth Third Bancorp - Common Stock",
@@ -9109,7 +8933,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MPC",
     "company_name": "Marathon Petroleum Corporation",
@@ -9120,7 +8944,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "RPM",
     "company_name": "RPM International Inc. Common",
@@ -9175,7 +8999,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "WAT",
     "company_name": "WAT",
@@ -9262,6 +9086,17 @@
     "filed_at": "2026-04-01"
   },
   {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "STE",
+    "company_name": "DC STERIS plc",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-09",
+    "filed_at": "2026-04-01"
+  },
+  {
     "politician_name": "Jonathan Jackson",
     "party": "Democrat",
     "chamber": "House",
@@ -9290,7 +9125,7 @@
     "ticker": "AJG",
     "company_name": "Arthur J. Gallagher & Co. Common",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-08",
     "filed_at": "2026-03-08"
   },
@@ -9372,24 +9207,13 @@
     "filed_at": "2026-04-07"
   },
   {
-    "politician_name": "Josh Gottheimer",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "NTES",
-    "company_name": "Shares, each representing 5 ordinary",
-    "trade_type": "UNKNOWN",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-03-05",
-    "filed_at": "2026-04-07"
-  },
-  {
     "politician_name": "Sheri Biggs",
     "party": "Republican",
     "chamber": "House",
     "ticker": "IBIT",
     "company_name": "SP iShares Bitcoin Trust ETF",
     "trade_type": "BUY",
-    "amount_range": "$100,001 -\n$250,000",
+    "amount_range": "$100,001 - $250,000",
     "traded_at": "2026-03-04",
     "filed_at": "2026-04-09"
   },
@@ -9890,7 +9714,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "Alphabet Inc. - Class A Common",
@@ -9901,7 +9725,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AMZN",
     "company_name": "Amazon.com, Inc. - Common Stock",
@@ -9912,7 +9736,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AEP",
     "company_name": "Inc.",
@@ -9923,7 +9747,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "T",
     "company_name": "AT&T Inc.",
@@ -9934,7 +9758,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AVGO",
     "company_name": "Broadcom Inc. - Common Stock",
@@ -9945,7 +9769,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CVX",
     "company_name": "Chevron Corporation Common Stock",
@@ -9956,7 +9780,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "ETN",
     "company_name": "Eaton Corporation, PLC Ordinary",
@@ -9967,7 +9791,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "LLY",
     "company_name": "Eli Lilly and Company Common Stock",
@@ -9978,7 +9802,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FITB",
     "company_name": "Fifth Third Bancorp - Common Stock",
@@ -9989,7 +9813,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "IBP",
     "company_name": "Installed Building Products, Inc.",
@@ -10000,7 +9824,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "KR",
     "company_name": "Kroger Company",
@@ -10011,7 +9835,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "LRCX",
     "company_name": "Lam Research Corporation - Common",
@@ -10022,7 +9846,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MPC",
     "company_name": "Marathon Petroleum Corporation",
@@ -10033,7 +9857,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MEDP",
     "company_name": "Medpace Holdings, Inc. - Common",
@@ -10044,7 +9868,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "Microsoft Corporation - Common",
@@ -10055,7 +9879,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PH",
     "company_name": "Parker-Hannifin Corporation",
@@ -10066,7 +9890,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PG",
     "company_name": "Procter & Gamble Company",
@@ -10077,7 +9901,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "RPM",
     "company_name": "RPM International Inc. Common",
@@ -10088,18 +9912,18 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CRM",
     "company_name": "Salesforce, Inc. Common Stock",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-26",
     "filed_at": "2026-03-05"
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "V",
     "company_name": "Visa Inc.",
@@ -10147,7 +9971,7 @@
     "chamber": "House",
     "ticker": "ORCL",
     "company_name": "ORCL",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-24",
     "filed_at": "2026-03-06"
@@ -10169,7 +9993,7 @@
     "chamber": "House",
     "ticker": "UBER",
     "company_name": "UBER",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-24",
     "filed_at": "2026-03-06"
@@ -10279,7 +10103,7 @@
     "chamber": "House",
     "ticker": "JLL",
     "company_name": "JLL",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-23",
     "filed_at": "2026-03-01"
@@ -10290,14 +10114,14 @@
     "chamber": "House",
     "ticker": "PAYX",
     "company_name": "PAYX",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-23",
     "filed_at": "2026-03-01"
   },
   {
     "politician_name": "Christian D. Menefee",
-    "party": "Unknown",
+    "party": "Democrat",
     "chamber": "House",
     "ticker": "PINS",
     "company_name": "SP Pinterest, Inc. Class A Common Stock",
@@ -10367,7 +10191,7 @@
     "chamber": "House",
     "ticker": "MORN",
     "company_name": "MORN",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-19",
     "filed_at": "2026-03-01"
@@ -10387,9 +10211,20 @@
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "TEL",
+    "company_name": "TEL",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-18",
+    "filed_at": "2026-03-06"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "DSGX",
     "company_name": "DSGX",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-18",
     "filed_at": "2026-03-06"
@@ -10444,7 +10279,7 @@
     "chamber": "House",
     "ticker": "CVNA",
     "company_name": "CVNA",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-18",
     "filed_at": "2026-03-05"
@@ -10500,7 +10335,7 @@
     "ticker": "URI",
     "company_name": "United Rentals, Inc. Common Stock",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-02-18",
     "filed_at": "2026-02-19"
   },
@@ -10561,7 +10396,7 @@
   },
   {
     "politician_name": "Christian D. Menefee",
-    "party": "Unknown",
+    "party": "Democrat",
     "chamber": "House",
     "ticker": "PINS",
     "company_name": "SP Pinterest, Inc. Class A Common Stock",
@@ -10610,7 +10445,7 @@
     "ticker": "BRO",
     "company_name": "BRO",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-13",
     "filed_at": "2026-03-01"
   },
@@ -10662,9 +10497,20 @@
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
+    "ticker": "BA",
+    "company_name": "Boeing Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-12",
+    "filed_at": "2026-03-01"
+  },
+  {
+    "politician_name": "Julia Letlow",
+    "party": "Republican",
+    "chamber": "House",
     "ticker": "AVGO",
     "company_name": "AVGO",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-12",
     "filed_at": "2026-03-01"
@@ -10785,7 +10631,7 @@
     "chamber": "House",
     "ticker": "THC",
     "company_name": "THC",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-11",
     "filed_at": "2026-03-03"
@@ -10818,7 +10664,7 @@
     "chamber": "House",
     "ticker": "ABT",
     "company_name": "ABT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-03-06"
@@ -10895,7 +10741,7 @@
     "chamber": "House",
     "ticker": "BKNG",
     "company_name": "BKNG",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-03-06"
@@ -10929,7 +10775,7 @@
     "ticker": "CVX",
     "company_name": "Chevron Corporation Common Stock",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-03-06"
   },
@@ -11016,7 +10862,7 @@
     "chamber": "House",
     "ticker": "EG",
     "company_name": "EG",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-03-06"
@@ -11039,7 +10885,7 @@
     "ticker": "XOM",
     "company_name": "Exxon Mobil Corporation Common",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-03-06"
   },
@@ -11159,7 +11005,7 @@
     "chamber": "House",
     "ticker": "MU",
     "company_name": "MU",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-03-06"
@@ -11170,8 +11016,8 @@
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "MSFT",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-03-06"
   },
@@ -11226,7 +11072,7 @@
     "ticker": "ROP",
     "company_name": "Roper Technologies, Inc.",
     "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-03-06"
   },
@@ -11291,8 +11137,19 @@
     "chamber": "House",
     "ticker": "UNH",
     "company_name": "UNH",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-10",
+    "filed_at": "2026-03-06"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VCYT",
+    "company_name": "VCYT",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-03-06"
   },
@@ -11335,7 +11192,7 @@
     "chamber": "House",
     "ticker": "WBD",
     "company_name": "WBD",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-03-06"
@@ -11440,17 +11297,6 @@
     "filed_at": "2026-02-23"
   },
   {
-    "politician_name": "David J. Taylor",
-    "party": "Unknown",
-    "chamber": "House",
-    "ticker": "PGR",
-    "company_name": "Progressive Corporation",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-02-10",
-    "filed_at": "2026-02-17"
-  },
-  {
     "politician_name": "Tim Walberg",
     "party": "Republican",
     "chamber": "House",
@@ -11460,6 +11306,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-10",
     "filed_at": "2026-05-29"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "BABA",
+    "company_name": "BABA",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-09",
+    "filed_at": "2026-03-06"
   },
   {
     "politician_name": "April McClain Delaney",
@@ -11509,6 +11366,17 @@
     "politician_name": "April McClain Delaney",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "STE",
+    "company_name": "DC STERIS plc",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-09",
+    "filed_at": "2026-03-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "VIK",
     "company_name": "VIK",
     "trade_type": "UNKNOWN",
@@ -11529,7 +11397,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AMZN",
     "company_name": "Amazon.com, Inc. - Common Stock",
@@ -11540,7 +11408,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "LLY",
     "company_name": "Eli Lilly and Company Common Stock",
@@ -11551,7 +11419,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "Microsoft Corporation - Common",
@@ -11562,7 +11430,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PH",
     "company_name": "Parker-Hannifin Corporation",
@@ -11573,7 +11441,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PG",
     "company_name": "Procter & Gamble Company",
@@ -11584,7 +11452,18 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PGR",
+    "company_name": "Progressive Corporation",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-09",
+    "filed_at": "2026-02-17"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "CRM",
     "company_name": "Salesforce, Inc. Common Stock",
@@ -11595,7 +11474,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "V",
     "company_name": "Visa Inc.",
@@ -11641,20 +11520,9 @@
     "politician_name": "April McClain Delaney",
     "party": "Democrat",
     "chamber": "House",
-    "ticker": "STE",
-    "company_name": "DC STERIS plc",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-02-06",
-    "filed_at": "2026-03-01"
-  },
-  {
-    "politician_name": "April McClain Delaney",
-    "party": "Democrat",
-    "chamber": "House",
     "ticker": "MIDD",
     "company_name": "MIDD",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-06",
     "filed_at": "2026-03-01"
@@ -11676,7 +11544,7 @@
     "chamber": "House",
     "ticker": "APP",
     "company_name": "APP",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-05",
     "filed_at": "2026-03-06"
@@ -11687,7 +11555,7 @@
     "chamber": "House",
     "ticker": "BJ",
     "company_name": "BJ",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-05",
     "filed_at": "2026-03-01"
@@ -11738,18 +11606,18 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "GOOGL",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-05",
     "filed_at": "2026-03-03"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FCNCA",
     "company_name": "First Citizens BancShares, Inc. - Class",
@@ -11985,7 +11853,7 @@
     "ticker": "GOOGL",
     "company_name": "Alphabet Inc. - Class A Common",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-03",
     "filed_at": "2026-02-03"
   },
@@ -12072,7 +11940,7 @@
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "MSFT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-02",
     "filed_at": "2026-03-05"
@@ -12089,11 +11957,22 @@
     "filed_at": "2026-03-05"
   },
   {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "FITB",
+    "company_name": "FITB",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-02",
+    "filed_at": "2026-03-05"
+  },
+  {
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
-    "ticker": "BA",
-    "company_name": "Boeing Company",
+    "ticker": "CSCO",
+    "company_name": "Cisco Systems, Inc. - Common Stock",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-02",
@@ -12103,8 +11982,8 @@
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
-    "ticker": "CSCO",
-    "company_name": "Cisco Systems, Inc. - Common Stock",
+    "ticker": "ICE",
+    "company_name": "ICE",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-02",
@@ -12138,7 +12017,7 @@
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "MSFT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-02",
     "filed_at": "2026-03-01"
@@ -12325,7 +12204,18 @@
     "chamber": "House",
     "ticker": "PG",
     "company_name": "Procter & Gamble Company",
-    "trade_type": "SELL",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-30",
+    "filed_at": "2026-02-11"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PGR",
+    "company_name": "Progressive Corporation",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-30",
     "filed_at": "2026-02-11"
@@ -12356,6 +12246,17 @@
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "RHP",
+    "company_name": "RHP",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-01-30",
+    "filed_at": "2026-02-11"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "TDG",
     "company_name": "Transdigm Group Incorporated",
     "trade_type": "BUY",
@@ -12373,6 +12274,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-30",
     "filed_at": "2026-02-11"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "SGI",
+    "company_name": "SGI",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-30",
+    "filed_at": "2026-02-02"
   },
   {
     "politician_name": "Josh Gottheimer",
@@ -12403,7 +12315,7 @@
     "ticker": "GEV",
     "company_name": "JT GE Vernova Inc. Common Stock",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-30",
     "filed_at": "2026-02-03"
   },
@@ -12414,7 +12326,7 @@
     "ticker": "SHOP",
     "company_name": "Voting Shares",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$50,001 - $100,000",
     "traded_at": "2026-01-30",
     "filed_at": "2026-02-03"
   },
@@ -12424,7 +12336,7 @@
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "MSFT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-30",
     "filed_at": "2026-02-06"
@@ -12458,13 +12370,13 @@
     "ticker": "T",
     "company_name": "AT&T Inc.",
     "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-01-30",
     "filed_at": "2026-01-30"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "ABT",
     "company_name": "Abbott Laboratories Common Stock",
@@ -12475,7 +12387,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AMZN",
     "company_name": "Amazon.com, Inc. - Common Stock",
@@ -12486,7 +12398,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "T",
     "company_name": "AT&T Inc.",
@@ -12497,7 +12409,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AVGO",
     "company_name": "Broadcom Inc. - Common Stock",
@@ -12508,7 +12420,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "IBP",
     "company_name": "Installed Building Products, Inc.",
@@ -12519,7 +12431,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "JPM",
     "company_name": "JP Morgan Chase & Co. Common",
@@ -12530,7 +12442,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MEDP",
     "company_name": "Medpace Holdings, Inc. - Common",
@@ -12541,7 +12453,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "Microsoft Corporation - Common",
@@ -12552,7 +12464,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PG",
     "company_name": "Procter & Gamble Company",
@@ -12563,7 +12475,18 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PGR",
+    "company_name": "Progressive Corporation",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-29",
+    "filed_at": "2026-01-30"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "RPM",
     "company_name": "RPM International Inc. Common",
@@ -12574,7 +12497,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "VRTX",
     "company_name": "Vertex Pharmaceuticals Incorporated",
@@ -12600,7 +12523,7 @@
     "chamber": "House",
     "ticker": "DLTR",
     "company_name": "DLTR",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-28",
     "filed_at": "2026-02-11"
@@ -12644,7 +12567,7 @@
     "chamber": "House",
     "ticker": "TECH",
     "company_name": "TECH",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-28",
     "filed_at": "2026-02-01"
@@ -12686,6 +12609,17 @@
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "ETN",
+    "company_name": "ETN",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-27",
+    "filed_at": "2026-02-11"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "EPAC",
     "company_name": "Enerpac Tool Group Corp. Common",
     "trade_type": "BUY",
@@ -12700,7 +12634,7 @@
     "ticker": "WPM",
     "company_name": "Wheaton Precious Metals Corp",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-27",
     "filed_at": "2026-02-11"
   },
@@ -12761,7 +12695,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "JNJ",
     "company_name": "JNJ",
@@ -12772,18 +12706,18 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MKL",
     "company_name": "MKL",
     "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-23",
     "filed_at": "2026-02-05"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "MSFT",
@@ -12794,7 +12728,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "SYK",
     "company_name": "SYK",
@@ -12897,7 +12831,7 @@
     "chamber": "House",
     "ticker": "MTSI",
     "company_name": "Holdings, Inc. - Common Stock",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-20",
     "filed_at": "2026-02-11"
@@ -12919,7 +12853,7 @@
     "chamber": "House",
     "ticker": "WRB",
     "company_name": "WRB",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-20",
     "filed_at": "2026-02-11"
@@ -12981,7 +12915,7 @@
   },
   {
     "politician_name": "Robert E. Latta",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "FMAO",
     "company_name": "SP Farmers & Merchants Bancorp, Inc.",
@@ -13008,7 +12942,7 @@
     "ticker": "PLTR",
     "company_name": "JT Palantir Technologies Inc. - Class A",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-16",
     "filed_at": "2026-02-03"
   },
@@ -13047,7 +12981,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "Alphabet Inc. - Class A Common Stock",
@@ -13058,7 +12992,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AEP",
     "company_name": "Inc.",
@@ -13069,7 +13003,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AVGO",
     "company_name": "Broadcom Inc. - Common Stock",
@@ -13080,7 +13014,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "ETN",
     "company_name": "Eaton Corporation, PLC Ordinary",
@@ -13091,7 +13025,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "LLY",
     "company_name": "Eli Lilly and Company Common Stock",
@@ -13102,7 +13036,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "HD",
     "company_name": "Home Depot, Inc.",
@@ -13113,7 +13047,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "IBP",
     "company_name": "Installed Building Products, Inc.",
@@ -13124,7 +13058,18 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "JPM",
+    "company_name": "JPM",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-16",
+    "filed_at": "2026-01-30"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "KR",
     "company_name": "Kroger Company",
@@ -13135,7 +13080,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "LRCX",
     "company_name": "Lam Research Corporation - Common",
@@ -13146,7 +13091,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MEDP",
     "company_name": "Medpace Holdings, Inc. - Common",
@@ -13157,7 +13102,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "Microsoft Corporation - Common",
@@ -13168,7 +13113,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PH",
     "company_name": "Parker-Hannifin Corporation",
@@ -13179,18 +13124,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
-    "chamber": "House",
-    "ticker": "PGR",
-    "company_name": "Progressive Corporation",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-01-16",
-    "filed_at": "2026-01-30"
-  },
-  {
-    "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "RPM",
     "company_name": "RPM International Inc. Common",
@@ -13201,7 +13135,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "V",
     "company_name": "Visa Inc.",
@@ -13217,7 +13151,7 @@
     "ticker": "ADC",
     "company_name": "Agree Realty Corporation Common",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-15",
     "filed_at": "2026-02-11"
   },
@@ -13239,7 +13173,7 @@
     "ticker": "COLB",
     "company_name": "Columbia Banking System, Inc. -",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-15",
     "filed_at": "2026-02-11"
   },
@@ -13316,7 +13250,7 @@
     "ticker": "MEDP",
     "company_name": "Medpace Holdings, Inc. - Common",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-15",
     "filed_at": "2026-02-11"
   },
@@ -13370,7 +13304,18 @@
     "chamber": "House",
     "ticker": "MORN",
     "company_name": "MORN",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-15",
+    "filed_at": "2026-02-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PTC",
+    "company_name": "DC PTC Inc.",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-15",
     "filed_at": "2026-02-01"
@@ -13448,7 +13393,7 @@
     "ticker": "TMUS",
     "company_name": "JT T-Mobile US, Inc.",
     "trade_type": "SELL",
-    "amount_range": "$50,001 -\n$100,000",
+    "amount_range": "$50,001 - $100,000",
     "traded_at": "2026-01-13",
     "filed_at": "2026-02-03"
   },
@@ -13473,17 +13418,6 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-12",
     "filed_at": "2026-02-11"
-  },
-  {
-    "politician_name": "April McClain Delaney",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "SGI",
-    "company_name": "SGI",
-    "trade_type": "UNKNOWN",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-01-12",
-    "filed_at": "2026-02-01"
   },
   {
     "politician_name": "Cleo Fields",
@@ -13546,7 +13480,7 @@
     "chamber": "House",
     "ticker": "BKR",
     "company_name": "BKR",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-09",
     "filed_at": "2026-02-11"
@@ -13557,7 +13491,7 @@
     "chamber": "House",
     "ticker": "BRO",
     "company_name": "BRO",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-09",
     "filed_at": "2026-02-11"
@@ -13601,19 +13535,8 @@
     "chamber": "House",
     "ticker": "CVX",
     "company_name": "CVX",
-    "trade_type": "UNKNOWN",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-01-09",
-    "filed_at": "2026-02-11"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "CVX",
-    "company_name": "Chevron Corporation Common Stock",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-09",
     "filed_at": "2026-02-11"
   },
@@ -13723,7 +13646,7 @@
     "ticker": "XOM",
     "company_name": "Exxon Mobil Corporation Common",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-09",
     "filed_at": "2026-02-11"
   },
@@ -13885,6 +13808,17 @@
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "MGY",
+    "company_name": "MGY",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-01-09",
+    "filed_at": "2026-02-11"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "MTDR",
     "company_name": "Matador Resources Company",
     "trade_type": "SELL",
@@ -13909,17 +13843,6 @@
     "chamber": "House",
     "ticker": "PLTR",
     "company_name": "Palantir Technologies Inc. - Class A",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2026-01-09",
-    "filed_at": "2026-02-11"
-  },
-  {
-    "politician_name": "Gilbert Cisneros",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "PGR",
-    "company_name": "Progressive Corporation",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-09",
@@ -13964,7 +13887,7 @@
     "chamber": "House",
     "ticker": "SBAC",
     "company_name": "SBAC",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-09",
     "filed_at": "2026-02-11"
@@ -14019,7 +13942,7 @@
     "chamber": "House",
     "ticker": "KHC",
     "company_name": "KHC",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-09",
     "filed_at": "2026-02-11"
@@ -14141,13 +14064,13 @@
     "ticker": "T",
     "company_name": "AT&T Inc.",
     "trade_type": "BUY",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-01-09",
     "filed_at": "2026-01-22"
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "PG",
     "company_name": "Procter & Gamble Company",
@@ -14162,10 +14085,10 @@
     "chamber": "House",
     "ticker": "HWM",
     "company_name": "HWM",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-08",
-    "filed_at": "2026-02-01"
+    "filed_at": "2026-01-13"
   },
   {
     "politician_name": "Byron Donalds",
@@ -14173,7 +14096,7 @@
     "chamber": "House",
     "ticker": "PH",
     "company_name": "PH",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-08",
     "filed_at": "2026-02-01"
@@ -14191,7 +14114,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "AVGO",
     "company_name": "Broadcom Inc. - Common Stock",
@@ -14202,7 +14125,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "LRCX",
     "company_name": "Lam Research Corporation - Common",
@@ -14213,7 +14136,7 @@
   },
   {
     "politician_name": "David J. Taylor",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "Microsoft Corporation - Common",
@@ -14224,7 +14147,7 @@
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "GM",
     "company_name": "General Motors Company Common",
@@ -14327,7 +14250,7 @@
     "chamber": "House",
     "ticker": "ABCB",
     "company_name": "ABCB",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-05",
     "filed_at": "2026-02-11"
@@ -14349,7 +14272,7 @@
     "chamber": "House",
     "ticker": "HMN",
     "company_name": "HMN",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-05",
     "filed_at": "2026-02-11"
@@ -14371,7 +14294,7 @@
     "chamber": "House",
     "ticker": "MTX",
     "company_name": "MTX",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-05",
     "filed_at": "2026-02-11"
@@ -14393,7 +14316,7 @@
     "chamber": "House",
     "ticker": "SLGN",
     "company_name": "Silgan Holdings Inc.",
-    "trade_type": "SELL",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-05",
     "filed_at": "2026-02-11"
@@ -14446,9 +14369,20 @@
     "politician_name": "Nancy Pelosi",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "TEM",
+    "company_name": "TEM",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-01-02",
+    "filed_at": "2026-01-02"
+  },
+  {
+    "politician_name": "Nancy Pelosi",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "VSNT",
     "company_name": "VSNT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "Unknown",
     "traded_at": "2026-01-02",
     "filed_at": "2026-01-02"
@@ -14482,7 +14416,7 @@
     "ticker": "PFE",
     "company_name": "Pfizer, Inc. Common Stock",
     "trade_type": "SELL",
-    "amount_range": "$100,001 -\n$250,000",
+    "amount_range": "$100,001 - $250,000",
     "traded_at": "2025-12-31",
     "filed_at": "2025-12-31"
   },
@@ -14493,7 +14427,7 @@
     "ticker": "SFL",
     "company_name": "SFL Corporation Ltd",
     "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2025-12-31",
     "filed_at": "2025-12-31"
   },
@@ -14589,10 +14523,21 @@
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "SBAC",
+    "company_name": "SBAC",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-30",
+    "filed_at": "2026-01-09"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "CPB",
     "company_name": "The Campbell's Company - Common",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-30",
     "filed_at": "2026-01-09"
   },
@@ -14624,7 +14569,7 @@
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "GOOGL",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "Unknown",
     "traded_at": "2025-12-30",
     "filed_at": "2025-12-30"
@@ -14647,7 +14592,7 @@
     "ticker": "DIS",
     "company_name": "SP Walt Disney Company",
     "trade_type": "SELL",
-    "amount_range": "$1,000,001 -\n$5,000,000",
+    "amount_range": "$1,000,001 - $5,000,000",
     "traded_at": "2025-12-30",
     "filed_at": "2025-12-30"
   },
@@ -14713,7 +14658,7 @@
     "ticker": "GOOGL",
     "company_name": "Alphabet Inc. - Class A Common",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-26",
     "filed_at": "2025-12-26"
   },
@@ -14724,7 +14669,7 @@
     "ticker": "IREN",
     "company_name": "IREN Limited - Ordinary Shares",
     "trade_type": "SELL",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-26",
     "filed_at": "2025-12-26"
   },
@@ -14767,7 +14712,7 @@
     "chamber": "House",
     "ticker": "BE",
     "company_name": "BE",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14778,7 +14723,7 @@
     "chamber": "House",
     "ticker": "BSX",
     "company_name": "BSX",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14789,7 +14734,7 @@
     "chamber": "House",
     "ticker": "CCJ",
     "company_name": "CCJ",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14800,7 +14745,7 @@
     "chamber": "House",
     "ticker": "CVX",
     "company_name": "CVX",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14844,7 +14789,7 @@
     "chamber": "House",
     "ticker": "ETN",
     "company_name": "ETN",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14855,7 +14800,7 @@
     "chamber": "House",
     "ticker": "HD",
     "company_name": "Home Depot, Inc.",
-    "trade_type": "SELL",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14866,7 +14811,7 @@
     "chamber": "House",
     "ticker": "MELI",
     "company_name": "MELI",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14921,7 +14866,7 @@
     "chamber": "House",
     "ticker": "PWR",
     "company_name": "PWR",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14932,7 +14877,7 @@
     "chamber": "House",
     "ticker": "HOOD",
     "company_name": "HOOD",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14954,7 +14899,7 @@
     "chamber": "House",
     "ticker": "SPOT",
     "company_name": "SPOT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14965,7 +14910,7 @@
     "chamber": "House",
     "ticker": "TDG",
     "company_name": "TDG",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14976,7 +14921,7 @@
     "chamber": "House",
     "ticker": "VRT",
     "company_name": "VRT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-24",
     "filed_at": "2026-01-09"
@@ -14998,7 +14943,7 @@
     "chamber": "House",
     "ticker": "NVDA",
     "company_name": "NVDA",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "Unknown",
     "traded_at": "2025-12-24",
     "filed_at": "2025-12-24"
@@ -15043,7 +14988,7 @@
     "ticker": "CVX",
     "company_name": "CVX",
     "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-22",
     "filed_at": "2025-12-22"
   },
@@ -15053,7 +14998,7 @@
     "chamber": "House",
     "ticker": "FANG",
     "company_name": "FANG",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-22",
     "filed_at": "2025-12-22"
@@ -15086,7 +15031,7 @@
     "chamber": "House",
     "ticker": "ABT",
     "company_name": "ABT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-19",
     "filed_at": "2026-01-09"
@@ -15240,7 +15185,7 @@
     "chamber": "House",
     "ticker": "CAG",
     "company_name": "CAG",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-19",
     "filed_at": "2026-01-09"
@@ -15273,7 +15218,7 @@
     "chamber": "House",
     "ticker": "CCI",
     "company_name": "CCI",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-19",
     "filed_at": "2026-01-09"
@@ -15383,7 +15328,7 @@
     "chamber": "House",
     "ticker": "LEN",
     "company_name": "LEN",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-19",
     "filed_at": "2026-01-09"
@@ -15427,8 +15372,8 @@
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "MSFT",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-19",
     "filed_at": "2026-01-09"
   },
@@ -15450,7 +15395,7 @@
     "ticker": "NVDA",
     "company_name": "NVDA",
     "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-19",
     "filed_at": "2026-01-09"
   },
@@ -15607,17 +15552,6 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-18",
     "filed_at": "2026-01-09"
-  },
-  {
-    "politician_name": "Lloyd Doggett",
-    "party": "Democrat",
-    "chamber": "House",
-    "ticker": "HD",
-    "company_name": "Home Depot, Inc.",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2025-12-18",
-    "filed_at": "2026-01-02"
   },
   {
     "politician_name": "Julie Johnson",
@@ -16063,6 +15997,17 @@
     "politician_name": "Julie Johnson",
     "party": "Democrat",
     "chamber": "House",
+    "ticker": "NOW",
+    "company_name": "NOW",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-18",
+    "filed_at": "2026-01-05"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
     "ticker": "TXN",
     "company_name": "JT Texas Instruments Incorporated -",
     "trade_type": "SELL",
@@ -16186,8 +16131,8 @@
     "chamber": "House",
     "ticker": "OZKAP",
     "company_name": "Cumulative Perpetual Preferred Stock $50,000",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-17",
     "filed_at": "2025-12-30"
   },
@@ -16209,7 +16154,7 @@
     "ticker": "GS",
     "company_name": "Goldman Sachs Group, Inc.",
     "trade_type": "SELL",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2025-12-17",
     "filed_at": "2025-12-30"
   },
@@ -16280,13 +16225,24 @@
     "filed_at": "2026-01-02"
   },
   {
+    "politician_name": "Lloyd Doggett",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "HD",
+    "company_name": "Home Depot, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-15",
+    "filed_at": "2026-01-02"
+  },
+  {
     "politician_name": "Richard W. Allen",
     "party": "Unknown",
     "chamber": "House",
     "ticker": "FERG",
     "company_name": "SP Ferguson Enterprises Inc. Common",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-12",
     "filed_at": "2026-01-06"
   },
@@ -16373,7 +16329,7 @@
     "chamber": "House",
     "ticker": "K",
     "company_name": "Kellanova Common Stock",
-    "trade_type": "SELL",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-11",
     "filed_at": "2026-01-09"
@@ -16406,7 +16362,7 @@
     "chamber": "House",
     "ticker": "UBER",
     "company_name": "UBER",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-11",
     "filed_at": "2026-01-07"
@@ -16417,7 +16373,7 @@
     "chamber": "House",
     "ticker": "GOOGL",
     "company_name": "GOOGL",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-11",
     "filed_at": "2026-01-02"
@@ -16428,7 +16384,7 @@
     "chamber": "House",
     "ticker": "AVGO",
     "company_name": "AVGO",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-11",
     "filed_at": "2026-01-02"
@@ -16472,7 +16428,7 @@
     "chamber": "House",
     "ticker": "MGA",
     "company_name": "MGA",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-11",
     "filed_at": "2026-01-02"
@@ -16593,8 +16549,8 @@
     "chamber": "House",
     "ticker": "GPN",
     "company_name": "GPN",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-10",
     "filed_at": "2026-01-09"
   },
@@ -16714,8 +16670,8 @@
     "chamber": "House",
     "ticker": "APD",
     "company_name": "APD",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-08",
     "filed_at": "2026-01-07"
   },
@@ -16740,6 +16696,61 @@
     "amount_range": "Unknown",
     "traded_at": "2025-12-08",
     "filed_at": "2026-01-05"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CMS",
+    "company_name": "CMS",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-08",
+    "filed_at": "2026-01-09"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PEG",
+    "company_name": "Incorporated Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-08",
+    "filed_at": "2026-01-09"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PEG",
+    "company_name": "Incorporated Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-08",
+    "filed_at": "2026-01-09"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NOW",
+    "company_name": "JT ServiceNow, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-08",
+    "filed_at": "2026-01-09"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NOW",
+    "company_name": "JT ServiceNow, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-08",
+    "filed_at": "2026-01-09"
   },
   {
     "politician_name": "Julia Letlow",
@@ -16846,7 +16857,18 @@
     "chamber": "House",
     "ticker": "CDW",
     "company_name": "CDW",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-05",
+    "filed_at": "2026-01-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PWR",
+    "company_name": "PWR",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-05",
     "filed_at": "2026-01-01"
@@ -17000,7 +17022,7 @@
     "chamber": "House",
     "ticker": "PTC",
     "company_name": "DC PTC Inc.",
-    "trade_type": "SELL",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-02",
     "filed_at": "2026-01-01"
@@ -17009,9 +17031,9 @@
     "politician_name": "April McClain Delaney",
     "party": "Democrat",
     "chamber": "House",
-    "ticker": "PWR",
-    "company_name": "PWR",
-    "trade_type": "UNKNOWN",
+    "ticker": "PTC",
+    "company_name": "DC PTC Inc.",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-02",
     "filed_at": "2026-01-01"
@@ -17039,8 +17061,19 @@
     "filed_at": "2026-01-01"
   },
   {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "BA",
+    "company_name": "JT Boeing Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-02",
+    "filed_at": "2026-01-09"
+  },
+  {
     "politician_name": "Thomas H. Jr. Kean",
-    "party": "Unknown",
+    "party": "Republican",
     "chamber": "House",
     "ticker": "SNREY",
     "company_name": "SUNRISE COMMS AG ADR A",
@@ -17110,7 +17143,7 @@
     "chamber": "House",
     "ticker": "STT",
     "company_name": "STT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-11-21",
     "filed_at": "2025-12-01"
@@ -17171,6 +17204,94 @@
     "filed_at": "2025-12-01"
   },
   {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ADBE",
+    "company_name": "JT Adobe Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-30",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ADBE",
+    "company_name": "JT Adobe Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-30",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "IP",
+    "company_name": "JT International Paper Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-30",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "IP",
+    "company_name": "JT International Paper Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-30",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "DGX",
+    "company_name": "JT Quest Diagnostics Incorporated",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-30",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "DGX",
+    "company_name": "JT Quest Diagnostics Incorporated",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-30",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VRSK",
+    "company_name": "JT Verisk Analytics, Inc. - Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-30",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VRSK",
+    "company_name": "JT Verisk Analytics, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-30",
+    "filed_at": "2025-11-06"
+  },
+  {
     "politician_name": "Linda T. Sanchez",
     "party": "Unknown",
     "chamber": "House",
@@ -17198,7 +17319,7 @@
     "chamber": "House",
     "ticker": "AMZN",
     "company_name": "AMZN",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-10-22",
     "filed_at": "2025-11-01"
@@ -17226,12 +17347,89 @@
     "filed_at": "2025-11-01"
   },
   {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ALK",
+    "company_name": "JT Alaska Air Group, Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-21",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ALK",
+    "company_name": "JT Alaska Air Group, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-21",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "DE",
+    "company_name": "JT Deere & Company Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-21",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GEN",
+    "company_name": "JT Gen Digital Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-21",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GEN",
+    "company_name": "JT Gen Digital Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-21",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "WY",
+    "company_name": "JT Weyerhaeuser Company Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-21",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "WY",
+    "company_name": "JT Weyerhaeuser Company Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-21",
+    "filed_at": "2025-11-06"
+  },
+  {
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
     "ticker": "AVGO",
     "company_name": "AVGO",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-10-16",
     "filed_at": "2025-11-01"
@@ -17268,6 +17466,83 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-10-16",
     "filed_at": "2025-11-01"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CARR",
+    "company_name": "JT Carrier Global Corporation",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-03",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CARR",
+    "company_name": "JT Carrier Global Corporation",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-03",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "FISV",
+    "company_name": "JT Fiserv, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-03",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "FISV",
+    "company_name": "JT Fiserv, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-03",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "KR",
+    "company_name": "JT Kroger Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-03",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VRSN",
+    "company_name": "JT VeriSign, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-03",
+    "filed_at": "2025-11-06"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VRSN",
+    "company_name": "JT VeriSign, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-03",
+    "filed_at": "2025-11-06"
   },
   {
     "politician_name": "Julia Letlow",
@@ -17312,6 +17587,314 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-10-01",
     "filed_at": "2025-11-01"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "AOS",
+    "company_name": "JT A.O. Smith Corporation Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "AOS",
+    "company_name": "JT A.O. Smith Corporation Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "A",
+    "company_name": "JT Agilent Technologies, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "A",
+    "company_name": "JT Agilent Technologies, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "AEE",
+    "company_name": "JT Ameren Corporation Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "AEE",
+    "company_name": "JT Ameren Corporation Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CL",
+    "company_name": "JT Colgate-Palmolive Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CL",
+    "company_name": "JT Colgate-Palmolive Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "DE",
+    "company_name": "DE",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "EQIX",
+    "company_name": "JT Equinix, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "EQIX",
+    "company_name": "JT Equinix, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "HON",
+    "company_name": "JT Honeywell International Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "HON",
+    "company_name": "JT Honeywell International Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LYB",
+    "company_name": "LYB",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MKC",
+    "company_name": "Incorporated Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MKC",
+    "company_name": "Incorporated Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TAP",
+    "company_name": "JT Molson Coors Beverage Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TAP",
+    "company_name": "JT Molson Coors Beverage Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MNST",
+    "company_name": "JT Monster Beverage Corporation -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MNST",
+    "company_name": "JT Monster Beverage Corporation -",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PAYX",
+    "company_name": "JT Paychex, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PAYX",
+    "company_name": "JT Paychex, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PAYC",
+    "company_name": "JT Paycom Software, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PAYC",
+    "company_name": "JT Paycom Software, Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CI",
+    "company_name": "JT The Cigna Group Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CI",
+    "company_name": "JT The Cigna Group Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "WEC",
+    "company_name": "JT WEC Energy Group, Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "WEC",
+    "company_name": "JT WEC Energy Group, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-23",
+    "filed_at": "2025-10-07"
   },
   {
     "politician_name": "Julia Letlow",
@@ -17374,7 +17957,7 @@
     "chamber": "House",
     "ticker": "MU",
     "company_name": "MU",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-09-17",
     "filed_at": "2025-10-01"
@@ -17484,7 +18067,7 @@
     "chamber": "House",
     "ticker": "AIG",
     "company_name": "New Common Stock",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-07-25",
     "filed_at": "2025-08-11"
@@ -17495,7 +18078,7 @@
     "chamber": "House",
     "ticker": "BA",
     "company_name": "Boeing Company",
-    "trade_type": "SELL",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-07-25",
     "filed_at": "2025-08-11"
@@ -17506,7 +18089,7 @@
     "chamber": "House",
     "ticker": "EXE",
     "company_name": "EXE",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-07-25",
     "filed_at": "2025-08-11"
@@ -17517,7 +18100,7 @@
     "chamber": "House",
     "ticker": "JCI",
     "company_name": "JCI",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-07-25",
     "filed_at": "2025-08-11"
@@ -17550,7 +18133,7 @@
     "chamber": "House",
     "ticker": "WBD",
     "company_name": "WBD",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-07-25",
     "filed_at": "2025-08-11"
@@ -17603,17 +18186,6 @@
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
-    "ticker": "V",
-    "company_name": "Visa Inc.",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2025-07-24",
-    "filed_at": "2025-08-11"
-  },
-  {
-    "politician_name": "Julia Letlow",
-    "party": "Republican",
-    "chamber": "House",
     "ticker": "WDAY",
     "company_name": "Workday, Inc. - Class A Common",
     "trade_type": "SELL",
@@ -17638,7 +18210,7 @@
     "chamber": "House",
     "ticker": "T",
     "company_name": "AT&T Inc.",
-    "trade_type": "SELL",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-07-02",
     "filed_at": "2025-08-11"
@@ -17704,7 +18276,7 @@
     "chamber": "House",
     "ticker": "WDAY",
     "company_name": "WDAY",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-06-17",
     "filed_at": "2025-08-11"
@@ -17752,6 +18324,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-05-08",
     "filed_at": "2025-08-11"
+  },
+  {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MDT",
+    "company_name": "MDT",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-05-07",
+    "filed_at": "2025-06-03"
   },
   {
     "politician_name": "Julia Letlow",
@@ -17897,6 +18480,17 @@
     "filed_at": "2025-08-11"
   },
   {
+    "politician_name": "Julie Johnson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MMM",
+    "company_name": "MMM",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-03-15",
+    "filed_at": "2025-04-03"
+  },
+  {
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
@@ -17968,7 +18562,7 @@
     "chamber": "House",
     "ticker": "META",
     "company_name": "META",
-    "trade_type": "UNKNOWN",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-02-07",
     "filed_at": "2025-08-11"
@@ -17991,7 +18585,7 @@
     "ticker": "BAC",
     "company_name": "JT Bank of America Corporation",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2025-02-07",
     "filed_at": "2026-05-29"
   },
@@ -18002,7 +18596,7 @@
     "ticker": "BA",
     "company_name": "JT Boeing Company",
     "trade_type": "BUY",
-    "amount_range": "$15,001 -\n$50,000",
+    "amount_range": "$15,001 - $50,000",
     "traded_at": "2025-02-07",
     "filed_at": "2026-05-29"
   },
@@ -18046,7 +18640,7 @@
     "ticker": "J",
     "company_name": "JT Jacobs Solutions Inc. Common Stock",
     "trade_type": "BUY",
-    "amount_range": "Unknown",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-02-07",
     "filed_at": "2026-05-29"
   },
@@ -18133,7 +18727,7 @@
     "chamber": "House",
     "ticker": "MSFT",
     "company_name": "MSFT",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-01-31",
     "filed_at": "2025-08-11"
@@ -18144,7 +18738,7 @@
     "chamber": "House",
     "ticker": "NVDA",
     "company_name": "NVDA",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-01-31",
     "filed_at": "2025-08-11"
@@ -18221,7 +18815,7 @@
     "chamber": "House",
     "ticker": "AVGO",
     "company_name": "AVGO",
-    "trade_type": "UNKNOWN",
+    "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2024-12-18",
     "filed_at": "2025-08-11"
@@ -18417,28 +19011,6 @@
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
-    "ticker": "T",
-    "company_name": "AT&T Inc.",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2024-10-23",
-    "filed_at": "2025-08-11"
-  },
-  {
-    "politician_name": "Julia Letlow",
-    "party": "Republican",
-    "chamber": "House",
-    "ticker": "BA",
-    "company_name": "Boeing Company",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2024-10-23",
-    "filed_at": "2025-08-11"
-  },
-  {
-    "politician_name": "Julia Letlow",
-    "party": "Republican",
-    "chamber": "House",
     "ticker": "BMY",
     "company_name": "Bristol-Myers Squibb Company",
     "trade_type": "BUY",
@@ -18494,6 +19066,17 @@
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
+    "ticker": "DOV",
+    "company_name": "DOV",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2024-10-23",
+    "filed_at": "2025-08-11"
+  },
+  {
+    "politician_name": "Julia Letlow",
+    "party": "Republican",
+    "chamber": "House",
     "ticker": "DBX",
     "company_name": "Dropbox, Inc. - Class A Common",
     "trade_type": "BUY",
@@ -18518,17 +19101,6 @@
     "chamber": "House",
     "ticker": "EXE",
     "company_name": "Expand Energy Corporation -",
-    "trade_type": "BUY",
-    "amount_range": "$1,001 - $15,000",
-    "traded_at": "2024-10-23",
-    "filed_at": "2025-08-11"
-  },
-  {
-    "politician_name": "Julia Letlow",
-    "party": "Republican",
-    "chamber": "House",
-    "ticker": "GS",
-    "company_name": "Goldman Sachs Group, Inc.",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2024-10-23",
