@@ -256,11 +256,24 @@ export async function GET(req: Request) {
     })
     const cooldownSet = new Set(recentlyAlerted.map((s) => s.ticker))
 
+    // The cooldown alone only covers the last REALERT_COOLDOWN_MIN (60min) —
+    // a momentum signal frequently stays active well past that (its own
+    // resolution window, not this cooldown), so a second scan after 60
+    // minutes could create a real duplicate. Confirmed as a live gap during
+    // the duplicate-active-signals audit. Session-scoped true active check
+    // (this cron always writes session 'regular', the default), includes
+    // manual signals too — same audit decisions as the other two generators.
+    const activeSignals = await prisma.signal.findMany({
+      where: { isActive: true, session: 'regular' },
+      select: { ticker: true },
+    })
+    const activeSet = new Set(activeSignals.map((s) => s.ticker))
+
     // ── Pass 1: cheap universe-wide quote scan ──────────────────────────────
     const quotes = await getQuotes(UNIVERSE)
     const shortlist: { ticker: string; price: number; pctFromOpen: number; dollarVolume: number }[] = []
     for (const [ticker, q] of quotes) {
-      if (cooldownSet.has(ticker)) continue
+      if (cooldownSet.has(ticker) || activeSet.has(ticker)) continue
       if (q.lastPrice < MIN_PRICE || q.openPrice <= 0) continue
       const pctFromOpen = ((q.lastPrice - q.openPrice) / q.openPrice) * 100
       if (pctFromOpen < MIN_PCT_FROM_OPEN) continue

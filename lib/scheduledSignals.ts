@@ -11,25 +11,36 @@
  * triggering multiple cron entries that share a pathname and differ only by
  * query string. Splitting into distinct pathnames removes that ambiguity.
  *
- * ADDITIVE, NEVER REGENERATIVE — this is the load-bearing constraint of the
- * whole feature:
- *   - Only ever INSERTS new Signal rows. Never updates, re-scores, or
- *     touches entryZoneLow/High, targetPrice, stopLoss, confidence, or
- *     createdAt on an existing row.
- *   - Never deletes or deactivates a signal. (cron/signals' 48h isActive
- *     sweep and cron/zone-check's zone-lifecycle tracking are untouched and
- *     still own that separately, on their own unrelated schedules.)
- *   - createdAt (Prisma's own auto-timestamp) IS "the run time it was
- *     posted" — no separate field was added for this; the board already
- *     displays createdAt via formatDateTimeEST in SignalRow/SignalCard.
+ * INSERT-ONLY FOR SURVIVING ROWS — only ever INSERTS new Signal rows; never
+ * updates, re-scores, or touches entryZoneLow/High, targetPrice, stopLoss,
+ * confidence, or createdAt on an existing row. createdAt (Prisma's own
+ * auto-timestamp) IS "the run time it was posted" — no separate field was
+ * added for this; the board already displays createdAt via formatDateTimeEST
+ * in SignalRow/SignalCard.
  *
- * DEDUP ACROSS RUNS — a ticker with an active signal already created TODAY
- * (any earlier slot) is skipped UNLESS "materially changed", defined
- * precisely (see isMateriallyChanged() below) as: the current price has
- * moved at least MATERIAL_CHANGE_PCT beyond the existing signal's own entry
- * zone in either direction — i.e. the original entry zone is no longer
- * realistically reachable, so a new read reflects genuinely new information
- * rather than restating the same setup a second time.
+ * NO LONGER "additive, never regenerative": this file used to never
+ * deactivate an existing signal even when a materially-changed re-signal
+ * superseded it, deliberately. That guaranteed two simultaneously active
+ * signals on the same ticker+session whenever a supersede happened — found
+ * during a later duplicate-active-signals audit (confirmed live: 24 tickers
+ * had duplicate active signals, several traceable to exactly this). Fixed:
+ * a supersede now deactivates the old row (Signal.isActive: false) when the
+ * new one is created — see the `supersedesId` field on Candidate.
+ *
+ * DEDUP ACROSS RUNS — a ticker with ANY currently active signal in this
+ * slot's own session (any earlier slot, any earlier day — not just today)
+ * is skipped UNLESS "materially changed", defined precisely (see
+ * isMateriallyChanged() below) as: the current price has moved at least
+ * MATERIAL_CHANGE_PCT beyond the existing signal's own entry zone in either
+ * direction — i.e. the original entry zone is no longer realistically
+ * reachable, so a new read reflects genuinely new information rather than
+ * restating the same setup a second time. Session-scoped, not ticker-only:
+ * a ticker can have one active regular-session signal and a separate active
+ * premarket signal at the same time, tracked independently — a deliberate
+ * decision confirmed during the duplicate-signals audit, not an oversight.
+ * Includes manual (isManual: true) signals in the active check too — a
+ * hand-entered signal blocks a new algo-generated one on the same
+ * ticker+session, same audit decision.
  *
  * LIQUIDITY FLOOR — identical across every slot, extended sessions
  * included: candidates are drawn ONLY from TickerUniverse (the same
@@ -235,6 +246,11 @@ type Candidate = {
   direction: 'BUY' | 'SHORT'
   liquidityBonus: number
   liquidityNote: string // human-readable, folded into the persisted thesis
+  // Set when this candidate supersedes an existing active signal on the same
+  // ticker+session (materially changed price move) — that old signal gets
+  // deactivated when this one is created, so the two never stay active
+  // together. Undefined when there was no existing active signal to supersede.
+  supersedesId?: string
 }
 
 type WrittenSignal = {
@@ -319,20 +335,22 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
   const universe = universeRows.map((r) => r.ticker)
   const capByTicker = new Map(universeRows.map((r) => [r.ticker, r.marketCapBand === 'large' ? 'large_cap' : 'small_cap'] as const))
 
-  // Dedup set: active signals already created TODAY (ET calendar day),
-  // any earlier slot, any session.
-  const dateFmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' })
-  const todayStr = dateFmt.format(new Date())
-  const activeToday = await prisma.signal.findMany({
-    where: { isActive: true },
-    select: { ticker: true, entryZoneLow: true, entryZoneHigh: true, createdAt: true },
+  // Dedup set: ANY currently active signal for this ticker in THIS slot's
+  // session (regardless of which slot/day created it, and regardless of
+  // isManual — a hand-entered signal blocks a new algo one too). Was scoped
+  // to "created today (ET)" only, which meant a still-active signal from an
+  // earlier day was invisible here and a duplicate could slip through —
+  // confirmed as a real, live bug (24 tickers found with duplicate active
+  // signals) during the duplicate-signals audit. Session-scoped (not
+  // ticker-only) per that audit's explicit decision: a ticker can have one
+  // active regular-session signal AND a separate active premarket signal at
+  // the same time, tracked independently.
+  const activeNow = await prisma.signal.findMany({
+    where: { isActive: true, session: slot.session },
+    select: { id: true, ticker: true, entryZoneLow: true, entryZoneHigh: true },
   })
-  const activeTodayByTicker = new Map<string, { entryZoneLow: number; entryZoneHigh: number }>()
-  for (const s of activeToday) {
-    if (dateFmt.format(s.createdAt) === todayStr) {
-      activeTodayByTicker.set(s.ticker, { entryZoneLow: s.entryZoneLow, entryZoneHigh: s.entryZoneHigh })
-    }
-  }
+  const activeByTicker = new Map<string, { id: string; entryZoneLow: number; entryZoneHigh: number }>()
+  for (const s of activeNow) activeByTicker.set(s.ticker, s)
 
   const now = Date.now()
   const candidates: Candidate[] = []
@@ -352,7 +370,7 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
     for (const map of quoteMaps) {
       for (const q of map.values()) {
         if (q.lastPrice <= 0) continue
-        const existing = activeTodayByTicker.get(q.symbol)
+        const existing = activeByTicker.get(q.symbol)
         if (existing && !isMateriallyChanged(existing, q.lastPrice)) { rejected.dedup++; continue }
         if (Math.abs(q.netPercentChange) < slot.minPctMove) { rejected.move++; continue }
 
@@ -366,6 +384,7 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
           direction: q.netPercentChange >= 0 ? 'BUY' : 'SHORT',
           liquidityBonus,
           liquidityNote: `$${Math.round(todayDollarVolume).toLocaleString()} traded so far today`,
+          supersedesId: existing?.id,
         })
       }
     }
@@ -385,7 +404,7 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
       for (const q of map.values()) {
         if (q.extendedLastPrice < EXTENDED_MIN_PRICE) { rejected.price++; continue }
         if (q.pctChange <= 0) { rejected.move++; continue } // BUY-only: down-moves excluded outright, not just filtered by magnitude
-        const existing = activeTodayByTicker.get(q.symbol)
+        const existing = activeByTicker.get(q.symbol)
         if (existing && !isMateriallyChanged(existing, q.extendedLastPrice)) { rejected.dedup++; continue }
         if (Math.abs(q.pctChange) < slot.minPctMove) { rejected.move++; continue }
 
@@ -427,6 +446,7 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
           liquidityNote: spreadPct !== null
             ? `${Math.round(spreadPct * 100) / 100}% spread, $${Math.round(lastTradeDollars).toLocaleString()} last print`
             : `$${Math.round(lastTradeDollars).toLocaleString()} last print (spread unavailable)`,
+          supersedesId: existing?.id,
         })
       }
     }
@@ -470,6 +490,16 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
     const targetPrice = isBuy ? Math.round(c.price * 1.04 * 100) / 100 : Math.round(c.price * 0.96 * 100) / 100
     const stopLoss = isBuy ? Math.round(c.price * 0.97 * 100) / 100 : Math.round(c.price * 1.03 * 100) / 100
     const isLarge = capByTicker.get(c.ticker) === 'large_cap'
+
+    // Materially-changed supersession: deactivate the old active signal on
+    // this ticker+session before creating the new one, so the two never
+    // stay active together. Reverses the file's original "additive, never
+    // regenerative" design — confirmed necessary during the duplicate-
+    // signals audit, since leaving both active is structurally the same
+    // thing as a duplicate.
+    if (c.supersedesId) {
+      await prisma.signal.update({ where: { id: c.supersedesId }, data: { isActive: false } })
+    }
 
     await prisma.signal.create({
       data: {
