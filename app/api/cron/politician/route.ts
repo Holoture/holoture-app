@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
 import { createNotificationsBulk } from '@/lib/notifications'
+import { fetchPartyLookup, resolveParty } from '@/lib/partyLookup'
 
 // Proposed threshold for the "politician trade above a significant dollar
 // amount" platform highlight — filtered hard so this stays rare (per spec:
@@ -54,7 +55,12 @@ function normParty(raw: string): string {
   if (lower.includes('democrat') || lower === 'd') return 'Democrat'
   if (lower.includes('republican') || lower === 'r') return 'Republican'
   if (lower.includes('independent') || lower === 'i') return 'Independent'
-  return raw || 'Unknown'
+  // Was `return raw || 'Unknown'` — any unrecognized non-empty string
+  // passed straight through verbatim instead of normalizing to 'Unknown'.
+  // Never seen live (only Democrat/Republican/Unknown exist in the DB
+  // today), but a garbage/malformed party string displayed as-is would be
+  // worse than 'Unknown', not better.
+  return 'Unknown'
 }
 
 function normChamber(raw: string): string {
@@ -65,7 +71,11 @@ function normTradeType(raw: string): string {
   const lower = (raw ?? '').toLowerCase()
   if (lower === 'buy' || lower.includes('purchase')) return 'BUY'
   if (lower === 'sell' || lower.includes('sale')) return 'SELL'
-  return (raw ?? 'UNKNOWN').toUpperCase()
+  // Was `(raw ?? 'UNKNOWN').toUpperCase()` — `??` only replaces null/
+  // undefined, not an empty string, so an empty trade_type silently saved
+  // as '' (a blank badge in the UI) instead of the explicit 'UNKNOWN' this
+  // was clearly trying to produce.
+  return raw && raw.trim() ? raw.toUpperCase() : 'UNKNOWN'
 }
 
 function safeDate(raw: string): Date {
@@ -282,6 +292,15 @@ export async function GET(req: Request) {
     ])
     const commentaryMap = new Map([...map1, ...map2])
 
+    // Second-chance party resolution: the scraper's own Python-side lookup
+    // (scripts/scrape_trades.py) already tries, but its exact-string match
+    // misses real name-formatting variance ("Robert J. Wittman" vs. the
+    // dataset's "Rob Wittman"). This TS lookup does normalized matching
+    // (see lib/partyLookup.ts) as a second attempt whenever the scraper
+    // came back 'Unknown' — never a fuzzy/last-name-only guess, still an
+    // exact match after stripping well-defined formatting noise.
+    const partyLookup = await fetchPartyLookup()
+
     // Upsert in small parallel chunks to keep the whole batch inside the time
     // budget while ingesting every trade in the window.
     let upserted = 0
@@ -294,28 +313,47 @@ export async function GET(req: Request) {
           const key = `${trade.politician_name}|${trade.ticker}|${trade.traded_at}`
           const commentary = commentaryMap.get(key)
 
+          let party = normParty(trade.party)
+          if (party === 'Unknown') {
+            const resolved = resolveParty(trade.politician_name, partyLookup)
+            if (resolved) party = normParty(resolved)
+          }
+          const tradeType = normTradeType(trade.trade_type)
+          const amountRange = (trade.amount_range ?? '').trim() || 'Unknown'
+          // Never surface a placeholder/guessed value in these three fields
+          // — a trade missing any of them is flagged and excluded from the
+          // public scanner (app/politician-scanner/page.tsx filters
+          // isIncomplete: false) rather than shown with "Unknown". See the
+          // missing-field audit.
+          const isIncomplete = party === 'Unknown' || tradeType === 'UNKNOWN' || amountRange === 'Unknown'
+
           try {
             await prisma.politicianTrade.upsert({
               where: { externalId },
               create: {
                 externalId,
                 politicianName: trade.politician_name,
-                party: normParty(trade.party),
+                party,
                 chamber: normChamber(trade.chamber),
                 ticker: trade.ticker.toUpperCase(),
                 companyName: trade.company_name ?? '',
-                tradeType: normTradeType(trade.trade_type),
-                amountRange: trade.amount_range ?? 'Unknown',
+                tradeType,
+                amountRange,
                 tradedAt: safeDate(trade.traded_at),
                 filedAt: safeDate(trade.filed_at),
                 aiCommentary: commentary?.commentary ?? '',
                 significance: commentary?.significance ?? 'Low',
+                isIncomplete,
               },
-              // Only overwrite commentary when we actually generated some this
-              // run — otherwise a re-run would wipe good data with blanks.
+              // Refresh party/tradeType/amountRange/isIncomplete on every
+              // run too — a trade flagged incomplete on an earlier pull can
+              // heal once the underlying data or matching logic improves,
+              // instead of staying frozen at whatever was true the first
+              // time this row was created. Commentary still only overwrites
+              // when freshly generated this run, same as before.
               update: commentary
-                ? { aiCommentary: commentary.commentary, significance: commentary.significance, fetchedAt: new Date() }
-                : { fetchedAt: new Date() },
+                ? { party, tradeType, amountRange, isIncomplete, aiCommentary: commentary.commentary, significance: commentary.significance, fetchedAt: new Date() }
+                : { party, tradeType, amountRange, isIncomplete, fetchedAt: new Date() },
             })
             upserted++
           } catch { /* skip on constraint error */ }

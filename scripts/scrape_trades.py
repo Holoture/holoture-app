@@ -57,13 +57,42 @@ LEGISLATORS_CURRENT_URL = "https://unitedstates.github.io/congress-legislators/l
 LEGISLATORS_HISTORICAL_URL = "https://unitedstates.github.io/congress-legislators/legislators-historical.json"
 
 
+# Strips generational suffixes/honorifics and middle initials, then
+# collapses whitespace — "Robert J. Wittman" -> "robert wittman",
+# "Thomas H. Jr. Kean" -> "thomas kean". Real trade records use these forms
+# while congress-legislators lists "Rob Wittman" / "Tom Kean" — an exact
+# match on the raw name misses this even though the person is unambiguously
+# in the dataset. Still an EXACT match after removing well-defined
+# formatting noise, never a fuzzy/last-name-only guess (misattributing a
+# party is worse than not showing the trade — see isIncomplete downstream).
+_NAME_SUFFIX_RE = re.compile(r"\b(jr\.?|sr\.?|ii|iii|iv|dr\.?|hon\.?|mr\.?|mrs\.?|ms\.?)\b\.?", re.IGNORECASE)
+_MIDDLE_INITIAL_RE = re.compile(r"\b[A-Za-z]\.\s+")
+
+
+def normalize_name_for_lookup(name: str) -> str:
+    s = _NAME_SUFFIX_RE.sub(" ", name)
+    s = _MIDDLE_INITIAL_RE.sub(" ", s)
+    s = s.replace(",", " ")
+    s = re.sub(r"\s+", " ", s).strip().lower()
+    return s
+
+
 def fetch_live_party_lookup() -> dict[str, str]:
-    """Build a name -> party map from the public-domain congress-legislators
-    dataset. Covers current members plus anyone who left office in the last
-    ~2 years (legislators-historical), so a member who resigned/retired mid-
-    window still resolves. Returns {} on any failure — callers fall back to
-    the static PARTY_LOOKUP dict, never crash the whole scrape over this."""
+    """Build a normalized-name -> party map from the public-domain
+    congress-legislators dataset. Covers current members plus anyone who
+    left office in the last ~2 years (legislators-historical), so a member
+    who resigned/retired mid-window still resolves. Indexes each legislator
+    under several real name variants (first+last, nickname+last,
+    official_full when present), each further indexed under its normalized
+    form, so name-formatting variance in real trade records doesn't cause a
+    false 'Unknown'. Returns {} on any failure — callers fall back to the
+    static PARTY_LOOKUP dict, never crash the whole scrape over this."""
     lookup: dict[str, str] = {}
+
+    def set_preferred(key: str, party: str) -> None:
+        if key and key not in lookup:
+            lookup[key] = party
+
     for url in (LEGISLATORS_CURRENT_URL, LEGISLATORS_HISTORICAL_URL):
         try:
             resp = SESSION.get(url, timeout=30)
@@ -84,12 +113,22 @@ def fetch_live_party_lookup() -> dict[str, str]:
             party = terms[-1].get("party")  # most recent term
             if not party:
                 continue
-            key = f"{first} {last}".strip()
-            # Current file is fetched second in historical case only if not
-            # already present — don't let an older historical record
-            # overwrite a current one.
-            lookup.setdefault(key, party)
-    print(f"  congress-legislators live lookup: {len(lookup)} names loaded")
+
+            variants = [f"{first} {last}".strip()]
+            nickname = name.get("nickname")
+            if nickname:
+                variants.append(f"{nickname} {last}".strip())
+            official_full = name.get("official_full")
+            if official_full:
+                variants.append(official_full.strip())
+
+            for v in variants:
+                # Current file is fetched first; don't let historical
+                # overwrite it (set_preferred no-ops if key already set).
+                set_preferred(v.lower(), party)
+                set_preferred(normalize_name_for_lookup(v), party)
+
+    print(f"  congress-legislators live lookup: {len(lookup)} keys loaded")
     return lookup
 
 
@@ -229,9 +268,15 @@ _LIVE_PARTY_LOOKUP: dict[str, str] = {}
 
 
 def lookup_party(name: str) -> str:
-    if name in _LIVE_PARTY_LOOKUP:
-        return _LIVE_PARTY_LOOKUP[name]
-    return PARTY_LOOKUP.get(name, "Unknown")
+    lower = name.lower()
+    if lower in _LIVE_PARTY_LOOKUP:
+        return _LIVE_PARTY_LOOKUP[lower]
+    normalized = normalize_name_for_lookup(name)
+    if normalized in _LIVE_PARTY_LOOKUP:
+        return _LIVE_PARTY_LOOKUP[normalized]
+    if name in PARTY_LOOKUP:
+        return PARTY_LOOKUP[name]
+    return PARTY_LOOKUP.get(normalized.title(), "Unknown")
 
 
 # ---------------------------------------------------------------------------
@@ -353,11 +398,20 @@ def parse_ptr_pdf(pdf_bytes: bytes, member_name: str) -> list[dict]:
                         company = ticker  # last resort
 
                     # -- Context window for amount / dates / type -------------
-                    context = "\n".join(lines[max(0, i - 2) : i + 3])
+                    # Widened from (-2, +3) to (-3, +5) — the amount-range
+                    # column frequently wraps onto its own line 4+ lines away
+                    # from the ticker in real House PTR PDFs (confirmed via
+                    # the missing-field audit: 64.8% of all rows had no
+                    # amount extracted, far too high to be genuinely absent
+                    # from the source — STOCK Act PTRs require this field).
+                    context = "\n".join(lines[max(0, i - 3) : i + 6])
 
-                    # Amount
+                    # Amount. \s* in _AMOUNT_RE matches embedded newlines
+                    # (a wrapped "$15,001 -\n$50,000" cell), so the raw match
+                    # can carry a literal newline into the stored value —
+                    # collapse it to a single space for display.
                     amt_m = _AMOUNT_RE.search(context)
-                    amount = amt_m.group(0) if amt_m else "Unknown"
+                    amount = re.sub(r"\s+", " ", amt_m.group(0)).strip() if amt_m else "Unknown"
 
                     # Trade type: look for P or S immediately before a date
                     type_m = _TYPE_RE.search(context)

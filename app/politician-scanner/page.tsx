@@ -53,12 +53,17 @@ export default async function PoliticianScannerPage({
   const page = Math.max(1, parseInt(firstParam(sp.page) || '1', 10) || 1)
 
   // ── Build a Prisma where clause that all filters share ─────────────────────
+  // isIncomplete: false is unconditional, never a user-facing toggle — a
+  // trade missing party/tradeType/amountRange must never reach this page,
+  // per the missing-field audit's exclude-until-resolved rule. Review
+  // excluded trades at /admin/politician-trades.
   const where: {
     politicianName?: { contains: string; mode: 'insensitive' }
     ticker?: { contains: string }
     party?: string
     tradeType?: string
-  } = {}
+    isIncomplete: false
+  } = { isIncomplete: false }
   if (nameQ) where.politicianName = { contains: nameQ, mode: 'insensitive' }
   if (tickerQ) where.ticker = { contains: tickerQ }
   if (partyQ === 'Democrat' || partyQ === 'Republican' || partyQ === 'Independent') where.party = partyQ

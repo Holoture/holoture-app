@@ -246,6 +246,17 @@ model PoliticianTrade {
   // options rows only — e.g. "Purchased 20 call options with a strike price
   // of $100 and an expiration date of 1/15/27." Null for equity rows.
   optionDetails   String?
+  // TRUE when party, tradeType, or amountRange could not be resolved to a
+  // real value at ingestion time (party === 'Unknown', tradeType ===
+  // 'UNKNOWN', or amountRange === 'Unknown'/''). Set by every ingestion path
+  // (cron/politician, cron/politician-options) and re-evaluated on every
+  // upsert, so a trade can heal once the underlying data or matching logic
+  // improves. NEVER show a trade with isIncomplete: true on any public
+  // surface — app/politician-scanner/page.tsx filters isIncomplete: false
+  // unconditionally. This is the structural fix for "never display a
+  // placeholder/Unknown value": excluded, not disguised. See
+  // app/admin/politician-trades/page.tsx to review excluded rows.
+  isIncomplete    Boolean  @default(false)
 
   // Added — only externalId was indexed despite PoliticianTradesClient
   // filtering/sorting by ticker and tradedAt.
@@ -253,6 +264,7 @@ model PoliticianTrade {
   @@index([tradedAt])
   @@index([politicianName])
   @@index([assetType])
+  @@index([isIncomplete])
 }
 
 model NewsArticle {

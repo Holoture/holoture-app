@@ -35,7 +35,7 @@
  */
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { fetchPartyLookup, normPartyName } from '@/lib/partyLookup'
+import { fetchPartyLookup, normPartyName, resolveParty } from '@/lib/partyLookup'
 
 export const maxDuration = 120
 
@@ -133,7 +133,14 @@ export async function GET(req: Request) {
         .toLowerCase()
         .replace(/[^a-z0-9|-]/g, '-')
 
-      const party = normPartyName(partyLookup.get(name))
+      const party = normPartyName(resolveParty(name, partyLookup) ?? undefined)
+      const tradeType = normTransactionType(row.Transaction_Type)
+      const amountRange = row.Amount_Range || 'Unknown'
+      // Never surface a placeholder/guessed value in these three fields —
+      // a trade missing any of them is flagged and excluded from the public
+      // scanner (app/politician-scanner/page.tsx filters isIncomplete:
+      // false) rather than shown with "Unknown". See the missing-field audit.
+      const isIncomplete = party === 'Unknown' || tradeType === 'UNKNOWN' || amountRange === 'Unknown' || amountRange === ''
 
       try {
         await prisma.politicianTrade.upsert({
@@ -145,16 +152,22 @@ export async function GET(req: Request) {
             chamber: normChamber(row.House),
             ticker: row.Ticker!.toUpperCase(),
             companyName: row.Asset ?? '',
-            tradeType: normTransactionType(row.Transaction_Type),
-            amountRange: row.Amount_Range || 'Unknown',
+            tradeType,
+            amountRange,
             tradedAt: safeDate(row.Date),
             filedAt: safeDate(row.Notification_Date),
             aiCommentary: '',
             significance: 'Low',
             assetType: 'OPTION',
             optionDetails: row.Details || null,
+            isIncomplete,
           },
-          update: { fetchedAt: new Date() },
+          // Refresh the resolvable fields on every run too — a party/
+          // trade-type/amount that failed on an earlier pull can heal once
+          // the underlying data or matching logic improves, instead of
+          // staying frozen at whatever was true the first time this row
+          // was created.
+          update: { party, tradeType, amountRange, isIncomplete, fetchedAt: new Date() },
         })
         upserted++
       } catch { /* skip on constraint error */ }

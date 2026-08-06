@@ -99,6 +99,13 @@ export default async function AdminSignalsPage() {
                 Content
               </Link>
               <Link
+                href="/admin/politician-trades"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: 'var(--bg-surface)', color: 'white', border: '1px solid var(--border)' }}
+              >
+                Excluded Trades
+              </Link>
+              <Link
                 href="/admin/signals/new"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: '#009BFF', color: 'white' }}
