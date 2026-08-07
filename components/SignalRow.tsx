@@ -349,15 +349,16 @@ export default function SignalRow({
             {isObscured ? <LockedBadge /> : <SignalBadge type={signal.signalType} />}
           </div>
 
-          {/* Confidence — hidden for intraday/1-3day rows (Phase 1c: confidence
-              is not predictive of outcome — 10.9% win rate at 70-80 confidence
-              vs 8.1% at 80+, both reliable samples n=110/148). Still shown for
-              swing/long_term pending a fix to the underlying scoring model. */}
+          {/* Confidence — shown for every row including intraday/1-3day/
+              momentum. Was hidden for those (Phase 1c: confidence wasn't
+              predictive of outcome on the sample checked at the time —
+              10.9% win rate at 70-80 confidence vs 8.1% at 80+, n=110/148)
+              — re-enabled on request; that finding hasn't been re-validated
+              against current data, so treat the number the same caution
+              applied then still applies now, just displayed again. */}
           <div style={{ width: 68, flexShrink: 0 }}>
             {isObscured ? (
               <Blurred>99%</Blurred>
-            ) : isShortHorizonRow ? (
-              <span className="text-sm" style={{ color: 'var(--text-w30)' }}>—</span>
             ) : (
               <span className="text-sm font-bold font-data" style={{ color: confidenceColor }}>
                 {signal.confidence.toFixed(1)}%
@@ -526,9 +527,7 @@ export default function SignalRow({
           {/* Line 2: confidence + entry zone */}
           <div className="flex items-center gap-5">
             <div>
-              {isObscured ? <Blurred>99%</Blurred> : isShortHorizonRow ? (
-                <span className="text-sm" style={{ color: 'var(--text-w30)' }}>—</span>
-              ) : (
+              {isObscured ? <Blurred>99%</Blurred> : (
                 <span className="text-sm font-bold font-data" style={{ color: confidenceColor }}>
                   {signal.confidence.toFixed(1)}%
                 </span>
