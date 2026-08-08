@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-07",
-    "filed_at": "2026-08-07"
+    "traded_at": "2026-08-08",
+    "filed_at": "2026-08-08"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-07",
-    "filed_at": "2026-08-07"
+    "traded_at": "2026-08-08",
+    "filed_at": "2026-08-08"
   },
   {
     "politician_name": "April McClain Delaney",
@@ -440,6 +440,61 @@
     "filed_at": "2026-07-24"
   },
   {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AVGO",
+    "company_name": "Broadcom Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-24",
+    "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "FITB",
+    "company_name": "Fifth Third Bancorp - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-24",
+    "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "KR",
+    "company_name": "Kroger Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-24",
+    "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MPC",
+    "company_name": "Marathon Petroleum Corporation",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-24",
+    "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "Microsoft Corporation - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-24",
+    "filed_at": "2026-08-06"
+  },
+  {
     "politician_name": "April McClain Delaney",
     "party": "Democrat",
     "chamber": "House",
@@ -636,6 +691,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-17",
     "filed_at": "2026-08-01"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOGL",
+    "company_name": "Alphabet Inc. - Class A Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-17",
+    "filed_at": "2026-08-06"
   },
   {
     "politician_name": "Dan Newhouse",
