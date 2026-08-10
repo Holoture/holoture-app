@@ -754,3 +754,22 @@ model BrokerageConnection {
   @@index([snapTradeUserId])
   @@index([authorizationId])
 }
+
+// Holoture's own composite market-sentiment score (0-100, "extreme fear" to
+// "extreme greed") — NOT a reproduction of CNN's Fear & Greed Index, which
+// has no public/licensed API. Built entirely from data already accessible
+// via the Schwab wrapper and our own Signal table. See
+// app/api/cron/sentiment-index/route.ts for the weighted formula and
+// lib/sentimentIndex.ts for the component math. One row per calendar day.
+model MarketSentimentIndex {
+  id                 String   @id @default(cuid())
+  date               DateTime @unique // truncated to the day (UTC midnight), one row/day
+  score              Int // 0-100, weighted composite
+  label              String // 'Extreme Fear' | 'Fear' | 'Neutral' | 'Greed' | 'Extreme Greed'
+  // { breadth, momentum, volatility, signalMix, safeHaven }, each
+  // { score: number, weight: number, raw: Record<string, number> } — the
+  // full "show your work" breakdown surfaced on hover/click in the UI, same
+  // transparency principle as signal confidence showing its own thesis.
+  componentBreakdown Json
+  createdAt          DateTime @default(now())
+}

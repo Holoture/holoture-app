@@ -8,10 +8,12 @@ import Header from '@/components/Header'
 import MarketStatusBanner from '@/components/MarketStatusBanner'
 import UnreadActivityPanel, { type UnreadActivityItem } from '@/components/UnreadActivityPanel'
 import TopSignalSpotlight, { type SpotlightSignal } from '@/components/TopSignalSpotlight'
+import SentimentGauge, { type SentimentDisplayData } from '@/components/SentimentGauge'
 import { getMarketStatus } from '@/lib/marketStatus'
 import { prisma } from '@/lib/prisma'
 import { computeTier, type UserTier } from '@/lib/user'
 import { getHoldings, type HoldingAccount } from '@/lib/snaptrade'
+import { getLatestSentimentIndex, type ComponentBreakdown } from '@/lib/sentimentIndex'
 
 type HomeUser = {
   id: string
@@ -133,6 +135,20 @@ async function getTopMovers(session: 'premarket' | 'afterhours' | null) {
   } catch { return { session, rows: [] } }
 }
 
+// Today's (or most recently computed) Holoture Market Sentiment Index —
+// written once daily by cron/sentiment-index. componentBreakdown is stored
+// as Json, cast back to its real shape here since Prisma can't type it.
+async function getSentimentDisplay(): Promise<SentimentDisplayData | null> {
+  const row = await getLatestSentimentIndex()
+  if (!row) return null
+  return {
+    score: row.score,
+    label: row.label,
+    date: row.date.toISOString(),
+    breakdown: row.componentBreakdown as unknown as ComponentBreakdown,
+  }
+}
+
 /** Reuses the same "best result to date" row the marketing page shows, trimmed to a single small card. */
 async function getLatestFeatured() {
   try {
@@ -209,7 +225,7 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
   const marketStatus = getMarketStatus()
   const liveSession = getLiveExtendedSession()
 
-  const [unreadActivity, latestFeatured, recentActiveSignals, holdingsPanel, topSignal, notableTrade, topMovers] = await Promise.all([
+  const [unreadActivity, latestFeatured, recentActiveSignals, holdingsPanel, topSignal, notableTrade, topMovers, sentiment] = await Promise.all([
     getUnreadActivity(user.clerkId),
     getLatestFeatured(),
     getRecentActiveSignals(),
@@ -217,6 +233,7 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
     getTodaysTopSignal(),
     getNotableTrade(),
     getTopMovers(liveSession),
+    getSentimentDisplay(),
   ])
 
   // Awaited (not fire-and-forget) — a serverless function isn't guaranteed
@@ -264,6 +281,12 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
             <MarketStatusBanner {...marketStatus} />
           </div>
         </div>
+
+        {/* ── Holoture Market Sentiment Index — our own composite, computed
+            once daily by cron/sentiment-index (see lib/sentimentIndex.ts).
+            Expand-on-click reveals the component breakdown. Renders nothing
+            until the first cron run has produced a row. ── */}
+        <SentimentGauge data={sentiment} />
 
         {/* ── Today's Top Signal — expand-on-click spotlight, same
             interaction pattern as SignalRow.tsx's expanded state on the
