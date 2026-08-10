@@ -236,40 +236,16 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
           </div>
         )}
 
-        {/* ── Quick actions: one primary + three secondary, not four
-            identical boxes. ── */}
-        <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-5 p-6 mb-3 hover:opacity-90 transition-opacity group"
-            style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}
-          >
-            <div
-              className="w-14 h-14 flex items-center justify-center shrink-0"
-              style={{ backgroundColor: 'rgba(0,155,255,0.15)', color: '#009BFF' }}
-            >
-              <TrendingUp className="w-6 h-6" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="font-semibold text-lg" style={{ color: 'var(--text-high)' }}>Signals Dashboard</p>
-              <p className="text-sm mt-0.5" style={{ color: 'var(--text-w50)' }}>
-                {newSignalsCount > 0
-                  ? <><span className="font-data font-bold" style={{ color: '#009BFF' }}>{newSignalsCount}</span> new signal{newSignalsCount === 1 ? '' : 's'} since your last visit</>
-                  : "Today's full signal board"}
-              </p>
-            </div>
-            <ArrowRight className="w-5 h-5 shrink-0 opacity-40 group-hover:opacity-80 transition-opacity" style={{ color: 'var(--text-w50)' }} />
-          </Link>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {isMax ? (
-              <QuickAction href="/options" icon={<Zap className="w-4 h-4" />} title="Options" desc="CALL & PUT ideas" accent="#a78bfa" />
-            ) : (
-              <QuickAction href="/pricing" icon={<Crown className="w-4 h-4" />} title="Upgrade to Max" desc="Unlock options signals" accent="#a78bfa" />
-            )}
-            <QuickAction href="/politician-scanner" icon={<Landmark className="w-4 h-4" />} title="Scanners" desc="Politician & insider activity" />
-            <QuickAction href="/refer" icon={<Gift className="w-4 h-4" />} title="Refer a Friend" desc="You both get a free month" />
-          </div>
+        {/* ── Quick actions: secondary shortcuts, not a duplicate of the
+            active-signals section below. ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+          {isMax ? (
+            <QuickAction href="/options" icon={<Zap className="w-4 h-4" />} title="Options" desc="CALL & PUT ideas" accent="#a78bfa" />
+          ) : (
+            <QuickAction href="/pricing" icon={<Crown className="w-4 h-4" />} title="Upgrade to Max" desc="Unlock options signals" accent="#a78bfa" />
+          )}
+          <QuickAction href="/politician-scanner" icon={<Landmark className="w-4 h-4" />} title="Scanners" desc="Politician & insider activity" />
+          <QuickAction href="/refer" icon={<Gift className="w-4 h-4" />} title="Refer a Friend" desc="You both get a free month" />
         </div>
 
         {/* ── Active signals — a real 5-row preview of the dashboard, not a
