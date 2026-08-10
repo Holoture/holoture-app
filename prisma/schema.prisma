@@ -719,3 +719,38 @@ model NewsCatalystAlert {
   @@index([detectedAt])
   @@index([ticker])
 }
+
+// ── SnapTrade brokerage connection (sandbox/test only for now) ──────────────
+//
+// One row per Holoture user, keyed by Clerk id (plain string, no hard FK —
+// same reasoning as Notification: crons/webhooks that only have the Clerk
+// id on hand shouldn't need a User lookup first). snapTradeUserSecret is
+// SnapTrade's own credential for authenticating AS this user against their
+// API (distinct from our own auth) — encrypted at rest via
+// lib/encryption.ts (AES-256-GCM), NEVER stored or logged in plaintext,
+// NEVER sent to the client. See app/api/snaptrade/* for the connect/
+// callback/webhook/disconnect flow. This table intentionally has no
+// holdings/portfolio fields — connect/disconnect infrastructure only.
+model BrokerageConnection {
+  id                            String    @id @default(cuid())
+  userId                        String    @unique // Clerk id
+  // Always equal to userId today (SnapTrade's userId is just our Clerk id) —
+  // kept as its own column rather than reusing userId directly so a future
+  // change to how we derive SnapTrade's userId doesn't require a migration.
+  snapTradeUserId               String
+  snapTradeUserSecretEncrypted  String
+  connected                     Boolean   @default(false)
+  brokerageName                 String?
+  // SnapTrade's authorizationId (aka connection_id in the redirect callback)
+  // — required to call the disconnect endpoint later.
+  authorizationId               String?
+  connectedAt                   DateTime?
+  disconnectedAt                DateTime?
+  lastWebhookEventType          String?
+  lastWebhookAt                 DateTime?
+  createdAt                     DateTime  @default(now())
+  updatedAt                     DateTime  @updatedAt
+
+  @@index([snapTradeUserId])
+  @@index([authorizationId])
+}

@@ -1,11 +1,124 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Monitor, Smartphone, Laptop, Trash2, Loader2, RefreshCw, LogOut } from 'lucide-react'
+import { useEffect, useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Monitor, Smartphone, Laptop, Trash2, Loader2, RefreshCw, LogOut, Landmark, CheckCircle2, XCircle } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 import Header from '@/components/Header'
 import Link from 'next/link'
+
+function BrokerageConnectionSection() {
+  const searchParams = useSearchParams()
+  const [status, setStatus] = useState<{ connected: boolean; brokerageName: string | null; connectedAt: string | null } | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [actionLoading, setActionLoading] = useState(false)
+  const redirectFlag = searchParams.get('brokerage') // 'connected' | 'error' | 'cancelled', set by /api/snaptrade/callback
+
+  async function load() {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/snaptrade/status')
+      setStatus(await res.json())
+    } catch { /* ignore */ }
+    finally { setLoading(false) }
+  }
+
+  useEffect(() => { load() }, [])
+
+  async function connect() {
+    setActionLoading(true)
+    try {
+      const res = await fetch('/api/snaptrade/connect', { method: 'POST' })
+      const data = await res.json()
+      if (data.url) window.open(data.url, '_blank', 'noopener,noreferrer')
+      else alert(data.error ?? 'Failed to start brokerage connection')
+    } catch {
+      alert('Failed to start brokerage connection')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  async function disconnect() {
+    setActionLoading(true)
+    try {
+      const res = await fetch('/api/snaptrade/disconnect', { method: 'POST' })
+      if (res.ok) await load()
+      else alert('Failed to disconnect brokerage')
+    } catch {
+      alert('Failed to disconnect brokerage')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  return (
+    <div className="mb-10">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-lg font-bold text-white">Brokerage Connection</h2>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-w50)' }}>
+            Sandbox / test mode only — connect a test brokerage via SnapTrade.
+          </p>
+        </div>
+      </div>
+
+      {redirectFlag === 'connected' && (
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl mb-4 text-sm font-semibold" style={{ backgroundColor: 'rgba(0,199,118,0.1)', color: 'var(--buy)', border: '1px solid rgba(0,199,118,0.25)' }}>
+          <CheckCircle2 className="w-4 h-4" /> Brokerage connected.
+        </div>
+      )}
+      {redirectFlag === 'cancelled' && (
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl mb-4 text-sm font-semibold" style={{ backgroundColor: 'var(--bg-overlay)', color: 'var(--text-mute)', border: '1px solid var(--border)' }}>
+          Connection cancelled — no changes were made.
+        </div>
+      )}
+      {redirectFlag === 'error' && (
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl mb-4 text-sm font-semibold" style={{ backgroundColor: 'rgba(229,72,77,0.1)', color: 'var(--short)', border: '1px solid rgba(229,72,77,0.25)' }}>
+          <XCircle className="w-4 h-4" /> Something went wrong connecting your brokerage. Please try again.
+        </div>
+      )}
+
+      <div className="rounded-2xl p-5 flex items-center gap-4" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+        <div
+          className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+          style={{ backgroundColor: status?.connected ? 'rgba(0,199,118,0.12)' : 'rgba(255,255,255,0.05)' }}
+        >
+          <Landmark className="w-5 h-5" style={{ color: status?.connected ? 'var(--buy)' : 'var(--text-w50)' }} />
+        </div>
+        <div className="flex-1 min-w-0">
+          {loading ? (
+            <p className="text-sm" style={{ color: 'var(--text-w40)' }}>Loading…</p>
+          ) : status?.connected ? (
+            <>
+              <p className="text-sm font-semibold text-white">Connected{status.brokerageName ? ` — ${status.brokerageName}` : ''}</p>
+              {status.connectedAt && (
+                <p className="text-xs mt-0.5" style={{ color: 'var(--text-w40)' }}>
+                  Since {new Date(status.connectedAt).toLocaleDateString()}
+                </p>
+              )}
+            </>
+          ) : (
+            <p className="text-sm" style={{ color: 'var(--text-w50)' }}>No brokerage connected.</p>
+          )}
+        </div>
+        <button
+          onClick={status?.connected ? disconnect : connect}
+          disabled={loading || actionLoading}
+          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-opacity hover:opacity-70 disabled:opacity-40 shrink-0"
+          style={
+            status?.connected
+              ? { backgroundColor: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.25)' }
+              : { backgroundColor: 'rgba(0,155,255,0.12)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.3)' }
+          }
+        >
+          {actionLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+          {status?.connected ? 'Disconnect brokerage' : 'Connect your brokerage'}
+        </button>
+      </div>
+    </div>
+  )
+}
 
 interface Session {
   id: string
@@ -92,6 +205,10 @@ export default function DevicesPage() {
         <Link href="/dashboard" className="flex items-center gap-1.5 text-sm mb-8 hover:opacity-70 transition-opacity" style={{ color: 'var(--text-w50)' }}>
           ← Back to dashboard
         </Link>
+
+        <Suspense fallback={null}>
+          <BrokerageConnectionSection />
+        </Suspense>
 
         <div className="flex items-center justify-between mb-6">
           <div>
