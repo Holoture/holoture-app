@@ -102,19 +102,30 @@ function BrokerageConnectionSection() {
             <p className="text-sm" style={{ color: 'var(--text-w50)' }}>No brokerage connected.</p>
           )}
         </div>
-        <button
-          onClick={status?.connected ? disconnect : connect}
-          disabled={loading || actionLoading}
-          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-opacity hover:opacity-70 disabled:opacity-40 shrink-0"
-          style={
-            status?.connected
-              ? { backgroundColor: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.25)' }
-              : { backgroundColor: 'rgba(0,155,255,0.12)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.3)' }
-          }
-        >
-          {actionLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-          {status?.connected ? 'Disconnect brokerage' : 'Connect your brokerage'}
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          {status?.connected && (
+            <Link
+              href="/account/holdings"
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-opacity hover:opacity-70"
+              style={{ backgroundColor: 'rgba(0,155,255,0.12)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.3)' }}
+            >
+              View holdings
+            </Link>
+          )}
+          <button
+            onClick={status?.connected ? disconnect : connect}
+            disabled={loading || actionLoading}
+            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-opacity hover:opacity-70 disabled:opacity-40"
+            style={
+              status?.connected
+                ? { backgroundColor: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.25)' }
+                : { backgroundColor: 'rgba(0,155,255,0.12)', color: '#009BFF', border: '1px solid rgba(0,155,255,0.3)' }
+            }
+          >
+            {actionLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+            {status?.connected ? 'Disconnect brokerage' : 'Connect your brokerage'}
+          </button>
+        </div>
       </div>
     </div>
   )
