@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { currentUser } from '@clerk/nextjs/server'
 import {
   TrendingUp, TrendingDown, ArrowRight, Crown, Zap, Landmark,
-  Gift, Wallet, Sunrise, Moon,
+  Wallet, Sunrise, Moon, LineChart, Bell, Users,
 } from 'lucide-react'
 import Header from '@/components/Header'
 import MarketStatusBanner from '@/components/MarketStatusBanner'
@@ -216,7 +216,6 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
     'there'
 
   const tier = computeTier(user)
-  const isMax = tier === 'max'
   const isTrialing = user.subscriptionStatus === 'trialing' && tier === 'pro'
   const daysLeft = user.trialEndsAt
     ? Math.max(0, Math.ceil((user.trialEndsAt.getTime() - Date.now()) / 86_400_000))
@@ -366,13 +365,12 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
         {/* ── Quick actions: compact icon+label chip row, not description
             tiles — these are secondary shortcuts, not features being sold. ── */}
         <div className="flex flex-wrap gap-2 mb-6">
-          {isMax ? (
-            <QuickAction href="/options" icon={<Zap className="w-4 h-4" />} title="Options" accent="#a78bfa" />
-          ) : (
-            <QuickAction href="/pricing" icon={<Crown className="w-4 h-4" />} title="Upgrade to Max" accent="#a78bfa" />
-          )}
-          <QuickAction href="/politician-scanner" icon={<Landmark className="w-4 h-4" />} title="Scanners" />
-          <QuickAction href="/refer" icon={<Gift className="w-4 h-4" />} title="Refer a Friend" />
+          <QuickAction href="/dashboard" icon={<LineChart className="w-4 h-4" />} title="Equities" />
+          <QuickAction href="/options" icon={<Zap className="w-4 h-4" />} title="Options" accent="#a78bfa" />
+          <QuickAction href="/catalyst-alerts" icon={<Bell className="w-4 h-4" />} title="Catalyst Alerts" />
+          <QuickAction href="/politician-scanner" icon={<Landmark className="w-4 h-4" />} title="Politician Scanner" />
+          <QuickAction href="/insider-scanner" icon={<Users className="w-4 h-4" />} title="Insider Scanner" />
+          <QuickAction href="/trends" icon={<TrendingUp className="w-4 h-4" />} title="Trends" />
         </div>
 
         {/* ── Active signals — a real 5-row preview of the dashboard, not a
