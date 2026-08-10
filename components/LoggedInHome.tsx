@@ -5,6 +5,7 @@ import {
   Gift, Bell, Sparkles, Radio,
 } from 'lucide-react'
 import Header from '@/components/Header'
+import ScrollBackground from '@/components/ScrollBackground'
 import MarketStatusBanner from '@/components/MarketStatusBanner'
 import { getMarketStatus } from '@/lib/marketStatus'
 import { prisma } from '@/lib/prisma'
@@ -123,9 +124,21 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
   const hasTrackedActivity = trackedSignals.length > 0
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <div className="min-h-screen relative">
+      {/* Same lattice as the marketing page, scoped down: forced static (no
+          scroll-linked drift — this page is short and reloads every visit,
+          so skipping the scroll listener entirely is also cheaper) and at
+          40% of the marketing page's line opacity, since this page's job is
+          fast scanning, not ambience. The outer wrapper no longer paints an
+          opaque background (body's own var(--bg-primary) still shows
+          through everywhere) so the lattice is actually visible; every
+          text-bearing card below still has its own solid var(--bg-raised)/
+          var(--bg-surface) background, so content readability is unaffected
+          — only the bare page gutters (behind the greeting line, between
+          cards) show the lattice at all. */}
+      <ScrollBackground forceStatic opacityScale={0.4} />
       <Header />
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
         {/* ── Unread outcome notifications — the page's actual reason to
             exist, so it leads. Collapses entirely when empty rather than

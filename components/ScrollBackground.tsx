@@ -10,7 +10,10 @@ import { useEffect, useRef, useState } from 'react'
  * scrolls, the lattice drifts horizontally, and three brighter verticals
  * (open / midday / close) pass through the viewport like session boundaries
  * on a real chart's time axis. One idea, executed once — no globe, no
- * particles, no candlesticks, no rings, no decorative glow.
+ * particles, no candlesticks, no rings, no decorative glow. No fabricated
+ * ticker-particle decoration either (e.g. a fake "NVDA +2.4%" floater) —
+ * removed in an earlier pass and never reintroduced; this component only
+ * ever draws the lattice + boundary lines below, nothing data-shaped.
  *
  * Gridlines are irregularly spaced (the way real chart axes are — session
  * opens, gaps) using a deterministic PRNG so server and client render the
@@ -20,6 +23,17 @@ import { useEffect, useRef, useState } from 'react'
  *   full   — lattice + horizontal scroll drift (desktop)
  *   static — lattice only, no scroll listener (mobile / low-power)
  *   off    — reduced motion: static, identical to `static`
+ *
+ * Props (both optional, both default to the original marketing-page
+ * behavior — existing call sites need no changes):
+ *   forceStatic — skip the 'full' (scroll-drift) mode entirely regardless
+ *     of device capability. For a short page where there isn't enough
+ *     scroll distance for the drift to read as intentional rather than
+ *     jumpy, and where skipping the scroll listener/rAF loop entirely is
+ *     cheaper on a page that reloads every visit (the logged-in home).
+ *   opacityScale — multiplies both line opacities (and the readability
+ *     fade). 1 = marketing page's original intensity. Lower for a page
+ *     whose job is fast scanning, not ambience.
  */
 
 function rng(seed: number) {
@@ -33,8 +47,8 @@ function rng(seed: number) {
 
 const LATTICE_WIDTH = 1300 // > 100vw so horizontal drift never exposes an edge
 const LATTICE_HEIGHT = 1000
-const REGULAR_LINE = 'rgba(255,255,255,0.035)'
-const BOUNDARY_LINE = 'rgba(255,255,255,0.14)'
+const REGULAR_LINE_OPACITY = 0.035
+const BOUNDARY_LINE_OPACITY = 0.14
 
 type VLine = { x: number; boundary: boolean }
 
@@ -75,9 +89,17 @@ function buildHorizontalLines(): number[] {
 const V_LINES = buildVerticalLines()
 const H_LINES = buildHorizontalLines()
 
-export default function ScrollBackground() {
+export default function ScrollBackground({
+  forceStatic = false,
+  opacityScale = 1,
+}: {
+  forceStatic?: boolean
+  opacityScale?: number
+} = {}) {
   const [mode, setMode] = useState<'off' | 'static' | 'full'>('full')
   const latticeRef = useRef<HTMLDivElement>(null)
+  const regularLine = `rgba(255,255,255,${REGULAR_LINE_OPACITY * opacityScale})`
+  const boundaryLine = `rgba(255,255,255,${BOUNDARY_LINE_OPACITY * opacityScale})`
 
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -87,8 +109,8 @@ export default function ScrollBackground() {
       typeof navigator.hardwareConcurrency === 'number' &&
       navigator.hardwareConcurrency > 0 &&
       navigator.hardwareConcurrency <= 4
-    setMode(reduce ? 'off' : small || lowPower ? 'static' : 'full')
-  }, [])
+    setMode(reduce ? 'off' : forceStatic || small || lowPower ? 'static' : 'full')
+  }, [forceStatic])
 
   useEffect(() => {
     if (mode !== 'full') return
@@ -129,7 +151,7 @@ export default function ScrollBackground() {
           preserveAspectRatio="xMidYMid slice"
         >
           {H_LINES.map((y, i) => (
-            <line key={`h${i}`} x1="0" y1={y} x2={LATTICE_WIDTH} y2={y} stroke={REGULAR_LINE} strokeWidth="1" />
+            <line key={`h${i}`} x1="0" y1={y} x2={LATTICE_WIDTH} y2={y} stroke={regularLine} strokeWidth="1" />
           ))}
           {V_LINES.map((v, i) => (
             <line
@@ -138,7 +160,7 @@ export default function ScrollBackground() {
               y1="0"
               x2={v.x}
               y2={LATTICE_HEIGHT}
-              stroke={v.boundary ? BOUNDARY_LINE : REGULAR_LINE}
+              stroke={v.boundary ? boundaryLine : regularLine}
               strokeWidth={v.boundary ? 1.5 : 1}
             />
           ))}
