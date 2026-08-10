@@ -2,14 +2,17 @@ import Link from 'next/link'
 import { currentUser } from '@clerk/nextjs/server'
 import {
   TrendingUp, TrendingDown, ArrowRight, Crown, Zap, Landmark,
-  Gift, Bell, Wallet,
+  Gift, Wallet, Sunrise, Moon,
 } from 'lucide-react'
 import Header from '@/components/Header'
 import MarketStatusBanner from '@/components/MarketStatusBanner'
+import UnreadActivityPanel, { type UnreadActivityItem } from '@/components/UnreadActivityPanel'
+import TopSignalSpotlight, { type SpotlightSignal } from '@/components/TopSignalSpotlight'
 import { getMarketStatus } from '@/lib/marketStatus'
 import { prisma } from '@/lib/prisma'
 import { computeTier, type UserTier } from '@/lib/user'
 import { getHoldings, type HoldingAccount } from '@/lib/snaptrade'
+import { getOutcomesSummary } from '@/lib/publicStats'
 
 type HomeUser = {
   id: string
@@ -30,16 +33,105 @@ const TIER_STYLE: Record<UserTier, { label: string; bg: string; text: string; bo
   max:  { label: 'Max',  bg: 'rgba(124,58,237,0.15)', text: '#a78bfa', border: 'rgba(124,58,237,0.4)' },
 }
 
-const OUTCOME_NOTIF_TYPES = ['signal_hit_target', 'signal_hit_stop', 'signal_expired'] as const
-
-async function getUnreadOutcomeNotifications(clerkId: string) {
+// Full NotificationType taxonomy (lib/notifications.ts / NotificationBell.tsx)
+// — was filtered to just 3 outcome types here, a stripped-down duplicate of
+// what the Header's NotificationBell already shows in full. No type filter
+// now; UnreadActivityPanel handles the mark-read interaction.
+async function getUnreadActivity(clerkId: string): Promise<UnreadActivityItem[]> {
   try {
-    return await prisma.notification.findMany({
-      where: { userId: clerkId, isRead: false, type: { in: [...OUTCOME_NOTIF_TYPES] } },
+    const rows = await prisma.notification.findMany({
+      where: { userId: clerkId, isRead: false },
       orderBy: { createdAt: 'desc' },
-      take: 5,
+      take: 8,
     })
+    return rows.map((n) => ({
+      id: n.id,
+      type: n.type,
+      title: n.title,
+      body: n.body,
+      linkUrl: n.linkUrl,
+      createdAt: n.createdAt.toISOString(),
+    }))
   } catch { return [] }
+}
+
+// Today's single highest-confidence active signal — same isActive + confidence-desc
+// pattern already used by app/api/admin/og-signals/route.ts, just findFirst
+// instead of findMany/take.
+async function getTodaysTopSignal(): Promise<SpotlightSignal | null> {
+  try {
+    const s = await prisma.signal.findFirst({
+      where: { isActive: true },
+      orderBy: { confidence: 'desc' },
+      select: {
+        ticker: true, companyName: true, signalType: true, confidence: true,
+        entryZoneLow: true, entryZoneHigh: true, targetPrice: true, stopLoss: true,
+        timeHorizon: true, thesis: true,
+      },
+    })
+    return s
+  } catch { return null }
+}
+
+const SIGNIFICANCE_RANK: Record<string, number> = { High: 3, Medium: 2, Low: 1 }
+
+// Most notable recent politician trade. PoliticianTrade.significance is a
+// free-text string ('Low'/'Medium'/'High'), not an enum — a Prisma
+// `orderBy: { significance: 'desc' }` would sort it alphabetically
+// ('Medium' > 'Low' > 'High'), which is NOT the real severity order. Instead:
+// pull the most recent batch (already the politician-scanner page's own
+// orderBy: filedAt desc pattern) and rank in application code.
+async function getNotableTrade() {
+  try {
+    const recent = await prisma.politicianTrade.findMany({
+      where: { isIncomplete: false },
+      orderBy: { filedAt: 'desc' },
+      take: 30,
+      select: {
+        politicianName: true, party: true, ticker: true, companyName: true,
+        tradeType: true, amountRange: true, significance: true, filedAt: true,
+      },
+    })
+    if (recent.length === 0) return null
+    return recent.slice().sort((a, b) => {
+      const rankDiff = (SIGNIFICANCE_RANK[b.significance] ?? 0) - (SIGNIFICANCE_RANK[a.significance] ?? 0)
+      return rankDiff !== 0 ? rankDiff : b.filedAt.getTime() - a.filedAt.getTime()
+    })[0]
+  } catch { return null }
+}
+
+// Same weekday/time window logic as app/movers/page.tsx's getSessionWindows
+// — only the currently-live extended session (if any) is shown. Outside
+// those windows (most of the day, and all weekend) this deliberately
+// returns no session rather than showing stale or empty movers data.
+function getLiveExtendedSession(): 'premarket' | 'afterhours' | null {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York',
+    hour: 'numeric', minute: 'numeric', weekday: 'short', hour12: false,
+  }).formatToParts(new Date())
+  const weekday = parts.find((p) => p.type === 'weekday')?.value ?? ''
+  const hour = parseInt(parts.find((p) => p.type === 'hour')?.value ?? '0', 10)
+  const minute = parseInt(parts.find((p) => p.type === 'minute')?.value ?? '0', 10)
+  const mins = hour * 60 + minute
+  if (weekday === 'Sat' || weekday === 'Sun') return null
+  if (mins >= 4 * 60 && mins < 9 * 60 + 30) return 'premarket'
+  if (mins >= 16 * 60 && mins < 20 * 60) return 'afterhours'
+  return null
+}
+
+const MIN_GAIN_PCT_CHANGE = 4
+const MIN_LOSS_PCT_CHANGE = -5
+
+async function getTopMovers(session: 'premarket' | 'afterhours' | null) {
+  if (!session) return { session: null, rows: [] }
+  try {
+    const rows = await prisma.moverSnapshot.findMany({
+      where: { session, OR: [{ pctChange: { gte: MIN_GAIN_PCT_CHANGE } }, { pctChange: { lte: MIN_LOSS_PCT_CHANGE } }] },
+      select: { ticker: true, pctChange: true, extendedLastPrice: true },
+    })
+    const top = rows.slice().sort((a, b) => Math.abs(b.pctChange) - Math.abs(a.pctChange)).slice(0, 4)
+    return { session, rows: top }
+  } catch { return { session, rows: [] } }
 }
 
 /** Reuses the same "best result to date" row the marketing page shows, trimmed to a single small card. */
@@ -116,12 +208,17 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
     : null
 
   const marketStatus = getMarketStatus()
+  const liveSession = getLiveExtendedSession()
 
-  const [unreadNotifications, latestFeatured, recentActiveSignals, holdingsPanel] = await Promise.all([
-    getUnreadOutcomeNotifications(user.clerkId),
+  const [unreadActivity, latestFeatured, recentActiveSignals, holdingsPanel, outcomesSummary, topSignal, notableTrade, topMovers] = await Promise.all([
+    getUnreadActivity(user.clerkId),
     getLatestFeatured(),
     getRecentActiveSignals(),
     getHoldingsPanel(user.clerkId),
+    getOutcomesSummary(),
+    getTodaysTopSignal(),
+    getNotableTrade(),
+    getTopMovers(liveSession),
   ])
 
   // Awaited (not fire-and-forget) — a serverless function isn't guaranteed
@@ -139,34 +236,12 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
       <Header />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* ── Unread outcome notifications — the page's actual reason to
-            exist, so it leads. Collapses entirely when empty rather than
-            showing an empty state up top. ── */}
-        {unreadNotifications.length > 0 && (
-          <div className="mb-6" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
-            <div className="flex items-center gap-2 px-4 pt-3">
-              <Bell className="w-4 h-4" style={{ color: 'var(--watch)' }} />
-              <span className="type-h3">
-                {unreadNotifications.length} signal{unreadNotifications.length === 1 ? '' : 's'} need{unreadNotifications.length === 1 ? 's' : ''} your attention
-              </span>
-            </div>
-            <div className="mt-2">
-              {unreadNotifications.map((n) => {
-                const accent = n.type === 'signal_hit_target' ? 'var(--outcome-hit)' : n.type === 'signal_hit_stop' ? 'var(--outcome-miss)' : 'var(--watch)'
-                return (
-                  <div
-                    key={n.id}
-                    className="px-4 py-2.5"
-                    style={{ borderLeft: `3px solid ${accent}`, borderTop: '1px solid var(--border-subtle)' }}
-                  >
-                    <p className="text-sm font-semibold" style={{ color: 'var(--text-high)' }}>{n.title}</p>
-                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-w50)' }}>{n.body}</p>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
+        {/* ── Unread activity — the page's actual reason to exist, so it
+            leads. Full NotificationType taxonomy (was 3 outcome types),
+            with real mark-read interactivity via UnreadActivityPanel.
+            Collapses entirely when empty rather than showing an empty
+            state up top. ── */}
+        <UnreadActivityPanel initial={unreadActivity} />
 
         {/* ── Top fold: asymmetric — wider left (identity), narrower right
             (live status) — instead of full-width stacked strips. ── */}
@@ -192,6 +267,27 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
           </div>
         </div>
 
+        {/* ── Track record — compact, real, honest: same getOutcomesSummary()
+            logic as the marketing page's OutcomesStrip (now shared via
+            lib/publicStats.ts), respecting its own MIN_SAMPLE gate. Renders
+            nothing if the sample isn't big enough yet to be convincing. ── */}
+        {outcomesSummary && (
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 px-4 py-2.5 mb-3" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+            <span className="data-label" style={{ color: 'var(--text-dim)' }}>Track Record</span>
+            <span className="font-data text-sm font-bold" style={{ color: '#009BFF' }}>{outcomesSummary.window.winRatePct}%</span>
+            <span className="text-xs" style={{ color: 'var(--text-w50)' }}>win rate (last {outcomesSummary.window.size} resolved)</span>
+            <span className="text-xs" style={{ color: 'var(--text-w40)' }}>
+              <span className="font-data" style={{ color: 'var(--buy)' }}>{outcomesSummary.allTime.hitTarget}</span> hit target ·{' '}
+              <span className="font-data" style={{ color: 'var(--short)' }}>{outcomesSummary.allTime.hitStop}</span> stopped out (all-time)
+            </span>
+          </div>
+        )}
+
+        {/* ── Today's Top Signal — expand-on-click spotlight, same
+            interaction pattern as SignalRow.tsx's expanded state on the
+            real dashboard, no live-price fetch needed. ── */}
+        {topSignal && <TopSignalSpotlight signal={topSignal} />}
+
         {/* ── Portfolio — the page's focal section: live brokerage positions,
             not just a link out to them. Bigger box than the sections below
             since this is what the user actually opens the page to check.
@@ -205,6 +301,68 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
             something fixable here. Revisit if/when that's upgraded. ── */}
         <PerformanceSummary state={holdingsPanel} />
         <HoldingsPanel state={holdingsPanel} />
+
+        {/* ── Market Pulse — real, frequently-refreshing data outside the
+            user's own portfolio: most notable recent politician trade
+            (PoliticianTrade.significance-ranked, not decoration) and the
+            currently-live premarket/after-hours movers snapshot. Movers
+            sub-section only renders during the actual live window
+            (getLiveExtendedSession) — outside that window (most of the
+            day, all weekend) MoverSnapshot data is stale/empty by design,
+            so showing nothing here is the honest choice, not a bug. ── */}
+        {(notableTrade || topMovers.rows.length > 0) && (
+          <div className="mb-6" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+            <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
+              <span className="type-h3">Market Pulse</span>
+            </div>
+
+            {notableTrade && (
+              <Link
+                href="/politician-scanner"
+                className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-white/[0.02] transition-colors"
+                style={{ borderTop: '1px solid var(--border-subtle)' }}
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <Landmark className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--watch)' }} />
+                  <span className="text-sm truncate" style={{ color: 'var(--text-high)' }}>
+                    <span className="font-semibold">{notableTrade.politicianName}</span> ({notableTrade.party.charAt(0)}) {notableTrade.tradeType.toLowerCase()}{' '}
+                    <span className="font-data font-semibold">{notableTrade.ticker}</span>
+                  </span>
+                </div>
+                <span className="font-data text-xs shrink-0" style={{ color: 'var(--text-w50)' }}>{notableTrade.amountRange}</span>
+              </Link>
+            )}
+
+            {topMovers.rows.length > 0 && (
+              <div className="overflow-x-auto" style={{ borderTop: notableTrade ? '1px solid var(--border-subtle)' : undefined }}>
+                <div className="flex items-center gap-2 px-4 pt-2.5">
+                  {topMovers.session === 'premarket'
+                    ? <Sunrise className="w-3.5 h-3.5" style={{ color: 'var(--watch)' }} />
+                    : <Moon className="w-3.5 h-3.5" style={{ color: 'var(--watch)' }} />}
+                  <span className="data-label" style={{ color: 'var(--text-dim)' }}>
+                    {topMovers.session === 'premarket' ? 'Premarket Movers' : 'After-Hours Movers'}
+                  </span>
+                </div>
+                <table className="w-full text-sm">
+                  <tbody>
+                    {topMovers.rows.map((m) => {
+                      const positive = m.pctChange >= 0
+                      return (
+                        <tr key={m.ticker}>
+                          <td className="px-4 py-1.5 font-data font-semibold" style={{ color: 'var(--text-high)' }}>{m.ticker}</td>
+                          <td className="px-3 py-1.5 text-right font-data" style={{ color: 'var(--text-w50)' }}>{money(m.extendedLastPrice, 'USD')}</td>
+                          <td className="px-4 py-1.5 text-right font-data font-semibold" style={{ color: positive ? 'var(--buy)' : 'var(--short)' }}>
+                            {positive ? '+' : ''}{m.pctChange.toFixed(1)}%
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ── Quick actions: compact icon+label chip row, not description
             tiles — these are secondary shortcuts, not features being sold. ── */}

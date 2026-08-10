@@ -9,11 +9,11 @@ import EdgeCarousel from '@/components/EdgeCarousel'
 import Testimonials from '@/components/Testimonials'
 import HowItWorks from '@/components/HowItWorks'
 import WeeklyFeaturedCard, { type WeeklyFeatured } from '@/components/WeeklyFeaturedCard'
-import OutcomesStrip, { type OutcomesSummary } from '@/components/OutcomesStrip'
+import OutcomesStrip from '@/components/OutcomesStrip'
 import type { ShortHorizonOutcomesSummary } from '@/components/ShortHorizonOutcomesStrip'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
-import { PUBLIC_TRACK_RECORD_FILTER } from '@/lib/publicStats'
+import { PUBLIC_TRACK_RECORD_FILTER, getOutcomesSummary } from '@/lib/publicStats'
 
 /**
  * The hero's showcase: either the highest-gaining CLOSED signal recorded to
@@ -62,77 +62,11 @@ async function getHeroStats(): Promise<{ tradeCount: number; memberCount: number
   }
 }
 
-// Real track record for the outcomes strip — wins AND losses, never hidden.
-// Re-blended across ALL timeframe categories (intraday/days_1_3/momentum
-// alongside swing/long_term) per explicit request, reversing the Phase 3
-// split. That split existed because the categories have measurably
-// different performance (see ShortHorizonOutcomesStrip's doc comment for
-// the actual numbers this session pulled) — blending them again means this
-// single win rate is now a mix of populations that perform very
-// differently, not a like-for-like comparison. Documented here rather than
-// silently changed back.
-//
-// UNVERIFIABLE outcomes (Phase 1b — a stored single price snapshot that
-// didn't resolve to a definitive win/loss/expired under the corrected
-// SHORT-direction logic) are excluded from every count and denominator
-// below, exactly like LEFT_ZONE (Phase 2a — a signal that never validly
-// entered its zone). Neither represents a resolved thesis outcome.
-const CLOSED_OUTCOMES = ['HIT_TARGET', 'HIT_STOP', 'EXPIRED'] as const
-// Window pool for the strip itself deliberately excludes EXPIRED — it's
-// "last 20 signals that resolved to a win or a loss," not "last 20 closed
-// signals." This raises the displayed win rate vs. an EXPIRED-inclusive
-// denominator by construction, so the label on OutcomesStrip must say
-// "resolved" rather than imply it's the unfiltered last 20. allTime totals
-// below still include EXPIRED — only the window pool narrows.
-const RESOLVED_OUTCOMES = ['HIT_TARGET', 'HIT_STOP'] as const
-const ALL_TIMEFRAME_CATEGORIES = ['intraday', 'days_1_3', 'swing', 'long_term', 'momentum']
-const MIN_SAMPLE = 25 // an unconvincing number is worse than no number
-
-async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
-  try {
-    // PUBLIC_TRACK_RECORD_FILTER excludes hand-created/hand-edited signals
-    // from every count and denominator below — they are not algorithm
-    // output and would misrepresent the published track record.
-    const catFilter = { timeframeCategory: { in: ALL_TIMEFRAME_CATEGORIES }, ...PUBLIC_TRACK_RECORD_FILTER }
-    const [allTimeHitTarget, allTimeHitStop, allTimeExpired] = await Promise.all([
-      prisma.signal.count({ where: { outcome: 'HIT_TARGET', ...catFilter } }),
-      prisma.signal.count({ where: { outcome: 'HIT_STOP', ...catFilter } }),
-      prisma.signal.count({ where: { outcome: 'EXPIRED', ...catFilter } }),
-    ])
-    const allTimeClosedTotal = allTimeHitTarget + allTimeHitStop + allTimeExpired
-    if (allTimeClosedTotal < MIN_SAMPLE) return null
-
-    const recentResolved = await prisma.signal.findMany({
-      where: { outcome: { in: [...RESOLVED_OUTCOMES] }, ...catFilter },
-      orderBy: { outcomeCheckedAt: 'desc' },
-      take: 20,
-      select: { outcome: true },
-    })
-
-    const windowHitTarget = recentResolved.filter((s) => s.outcome === 'HIT_TARGET').length
-    const windowHitStop = recentResolved.filter((s) => s.outcome === 'HIT_STOP').length
-
-    const windowWinRatePct = recentResolved.length > 0
-      ? Math.round((windowHitTarget / recentResolved.length) * 1000) / 10
-      : 0
-
-    return {
-      window: {
-        hitTarget: windowHitTarget,
-        hitStop: windowHitStop,
-        size: recentResolved.length,
-        winRatePct: windowWinRatePct,
-      },
-      allTime: {
-        hitTarget: allTimeHitTarget,
-        hitStop: allTimeHitStop,
-        expired: allTimeExpired,
-      },
-    }
-  } catch {
-    return null
-  }
-}
+// getOutcomesSummary() (the real, all-timeframe track record used by
+// OutcomesStrip below) now lives in lib/publicStats.ts, imported above —
+// moved there so components/LoggedInHome.tsx can show the same real numbers
+// without duplicating this calculation. Logic unchanged.
+const MIN_SAMPLE = 25 // an unconvincing number is worse than no number — also used by getShortHorizonOutcomesSummary below
 
 // Short-horizon (intraday / days_1_3 / momentum) track record — removed from
 // the landing page again per request. getShortHorizonOutcomesSummary() and

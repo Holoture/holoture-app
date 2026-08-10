@@ -24,7 +24,7 @@ type Notification = {
 // at the same 12s period instead of adding a genuinely separate cadence.
 const POLL_INTERVAL_MS = 12_000
 
-const TYPE_ICON: Record<string, typeof Bell> = {
+export const TYPE_ICON: Record<string, typeof Bell> = {
   zone_entered: Target,
   signal_hit_target: Target,
   signal_hit_stop: ShieldAlert,
@@ -41,7 +41,7 @@ const TYPE_ICON: Record<string, typeof Bell> = {
   maintenance: Wrench,
 }
 
-function iconFor(type: string) {
+export function iconFor(type: string) {
   return TYPE_ICON[type as NotificationType] ?? Bell
 }
 
