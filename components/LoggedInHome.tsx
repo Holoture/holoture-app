@@ -282,12 +282,6 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
           </div>
         </div>
 
-        {/* ── Holoture Market Sentiment Index — our own composite, computed
-            once daily by cron/sentiment-index (see lib/sentimentIndex.ts).
-            Expand-on-click reveals the component breakdown. Renders nothing
-            until the first cron run has produced a row. ── */}
-        <SentimentGauge data={sentiment} />
-
         {/* ── Today's Top Signal — expand-on-click spotlight, same
             interaction pattern as SignalRow.tsx's expanded state on the
             real dashboard, no live-price fetch needed. ── */}
@@ -416,6 +410,12 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
             </Link>
           </div>
         )}
+
+        {/* ── Holoture Market Sentiment Index — our own composite, computed
+            once daily by cron/sentiment-index (see lib/sentimentIndex.ts).
+            Expand-on-click reveals the component breakdown. Renders nothing
+            until the first cron run has produced a row. ── */}
+        <SentimentGauge data={sentiment} />
 
         {/* ── What's new ── */}
         {latestFeatured && (
