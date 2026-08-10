@@ -85,7 +85,8 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Unknown or missing action' }, { status: 400 })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
+    const responseData = (err as { response?: { data?: unknown; status?: number } })?.response?.data
     console.error('[test-snaptrade]', err)
-    return NextResponse.json({ error: msg }, { status: 500 })
+    return NextResponse.json({ error: msg, snaptradeResponse: responseData }, { status: 500 })
   }
 }
