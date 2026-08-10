@@ -13,8 +13,8 @@
  */
 
 import { NextResponse } from 'next/server'
-import { auth, currentUser } from '@clerk/nextjs/server'
-import { prisma } from '@/lib/prisma'
+import { auth } from '@clerk/nextjs/server'
+import { getOrCreateUser } from '@/lib/user'
 import { checkRateLimit, tooManyRequests, DEFAULT_LIMIT, DEFAULT_WINDOW_MS } from '@/lib/rate-limit'
 
 async function syncUser() {
@@ -26,42 +26,22 @@ async function syncUser() {
   const rl = checkRateLimit(`user-sync:${userId}`, DEFAULT_LIMIT, DEFAULT_WINDOW_MS)
   if (!rl.success) return tooManyRequests(rl.retryAfter!)
 
-  const clerkUser = await currentUser()
-  if (!clerkUser) return NextResponse.json({ error: 'Clerk user not found' }, { status: 404 })
-
-  const email = clerkUser.emailAddresses[0]?.emailAddress ?? ''
-
+  // Delegates to lib/user.ts's getOrCreateUser — was its own separate
+  // prisma.user.upsert here, which meant a brand-new user could get their
+  // row created by THIS route (fired client-side from Header.tsx on every
+  // mount) racing ahead of a server component's getOrCreateUser call on the
+  // same page load. Harmless for the row itself (idempotent upsert either
+  // way), but referral attribution (lib/referral.ts#attributeReferral) only
+  // runs inside getOrCreateUser's create path — if this route won the race
+  // first, a referred signup could silently never get attributed. One path
+  // now, so referral attribution always runs exactly once, wherever the
+  // create actually happens.
   try {
-    const user = await prisma.user.upsert({
-      where:  { clerkId: userId },
-      create: { clerkId: userId, email },
-      update: { email },
-    })
+    const user = await getOrCreateUser()
+    if (!user) return NextResponse.json({ error: 'Clerk user not found' }, { status: 404 })
     return NextResponse.json({ ok: true, user })
-  } catch (e: unknown) {
-    const prismaErr = e as { code?: string }
-
-    // P2002 = unique constraint on email — happens when switching Clerk keys
-    // (same Google account, new clerkId). Migrate the row to the new ID.
-    if (prismaErr?.code === 'P2002' && email) {
-      try {
-        const existing = await prisma.user.findUnique({ where: { email } })
-        if (existing) {
-          // Log migration without exposing the email address.
-          console.log(`[user/sync] migrating clerkId for user id=${existing.id}`)
-          const migrated = await prisma.user.update({
-            where: { id: existing.id },
-            data:  { clerkId: userId, email },
-          })
-          return NextResponse.json({ ok: true, migrated: true, user: migrated })
-        }
-      } catch {
-        // Migration failed — fall through to generic error.
-      }
-    }
-
-    // Never expose database error details to the client.
-    console.error('[user/sync] upsert error code:', prismaErr?.code ?? 'unknown')
+  } catch (e) {
+    console.error('[user/sync] getOrCreateUser failed', e)
     return NextResponse.json({ error: 'Failed to sync user' }, { status: 500 })
   }
 }

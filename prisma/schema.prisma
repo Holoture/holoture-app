@@ -25,6 +25,12 @@ model User {
   // account creation, so the vast majority of users who never visit that
   // page never get a wasted code.
   referralCode         String?         @unique
+  // Set every time the logged-in home page (app/page.tsx's authed branch)
+  // renders for this user — read FIRST (to compute "signals since your
+  // last visit"), then updated to now. Null means "never visited" (brand
+  // new account), which the page treats as a first-visit empty state
+  // rather than "0 new signals."
+  lastVisitedAt        DateTime?
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
   redemptions          RedemptionLog[]
