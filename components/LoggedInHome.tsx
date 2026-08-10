@@ -123,14 +123,39 @@ function getLiveExtendedSession(): 'premarket' | 'afterhours' | null {
 const MIN_GAIN_PCT_CHANGE = 4
 const MIN_LOSS_PCT_CHANGE = -5
 
+// Matches app/movers/page.tsx's real /movers page: MoversTable there
+// overlays a live quote (LiveQuoteCache) on top of the cron snapshot,
+// recomputing $/% change from the live price against the same reference
+// price, since MoverSnapshot itself is only refreshed every 5 minutes by
+// cron/movers-snapshot. This card was using the raw, potentially-stale
+// snapshot values directly — out of step with what /movers actually shows
+// at the same moment. Same overlay math here, just done server-side once
+// at render instead of client-side polling.
 async function getTopMovers(session: 'premarket' | 'afterhours' | null) {
   if (!session) return { session: null, rows: [] }
   try {
     const rows = await prisma.moverSnapshot.findMany({
       where: { session, OR: [{ pctChange: { gte: MIN_GAIN_PCT_CHANGE } }, { pctChange: { lte: MIN_LOSS_PCT_CHANGE } }] },
-      select: { ticker: true, pctChange: true, extendedLastPrice: true },
+      select: { ticker: true, pctChange: true, extendedLastPrice: true, regularClosePrice: true },
     })
-    const top = rows.slice().sort((a, b) => Math.abs(b.pctChange) - Math.abs(a.pctChange)).slice(0, 4)
+    if (rows.length === 0) return { session, rows: [] }
+
+    const liveQuotes = await prisma.liveQuoteCache.findMany({
+      where: { ticker: { in: rows.map((r) => r.ticker) } },
+      select: { ticker: true, price: true },
+    })
+    const liveByTicker = new Map(liveQuotes.map((q) => [q.ticker, q.price]))
+
+    const merged = rows.map((r) => {
+      const live = liveByTicker.get(r.ticker)
+      if (live == null || r.regularClosePrice <= 0) {
+        return { ticker: r.ticker, extendedLastPrice: r.extendedLastPrice, pctChange: r.pctChange }
+      }
+      const pctChange = ((live - r.regularClosePrice) / r.regularClosePrice) * 100
+      return { ticker: r.ticker, extendedLastPrice: live, pctChange }
+    })
+
+    const top = merged.sort((a, b) => Math.abs(b.pctChange) - Math.abs(a.pctChange)).slice(0, 4)
     return { session, rows: top }
   } catch { return { session, rows: [] } }
 }
