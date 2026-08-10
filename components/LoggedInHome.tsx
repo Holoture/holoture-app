@@ -10,6 +10,7 @@ import MarketStatusBanner from '@/components/MarketStatusBanner'
 import { getMarketStatus } from '@/lib/marketStatus'
 import { prisma } from '@/lib/prisma'
 import { computeTier, type UserTier } from '@/lib/user'
+import { getHoldings, type HoldingAccount } from '@/lib/snaptrade'
 
 type HomeUser = {
   id: string
@@ -74,6 +75,38 @@ async function getRecentActiveSignals() {
   } catch { return [] }
 }
 
+type HoldingsPanelState =
+  | { status: 'not_connected' }
+  | { status: 'error' }
+  | { status: 'ok'; accounts: HoldingAccount[]; activeSignals: Map<string, { signalType: string }> }
+
+// Live read straight from SnapTrade (same call as /api/snaptrade/holdings) —
+// no caching layer, so a broken/expired connection surfaces as an 'error'
+// state here rather than failing the whole page render.
+async function getHoldingsPanel(clerkId: string): Promise<HoldingsPanelState> {
+  let accounts: HoldingAccount[] | null
+  try {
+    accounts = await getHoldings(clerkId)
+  } catch {
+    return { status: 'error' }
+  }
+  if (accounts === null) return { status: 'not_connected' }
+
+  const heldTickers = [...new Set(accounts.flatMap((a) => a.positions.map((p) => p.symbol)))]
+  let activeSignals = new Map<string, { signalType: string }>()
+  if (heldTickers.length) {
+    try {
+      const signals = await prisma.signal.findMany({
+        where: { ticker: { in: heldTickers }, isActive: true },
+        select: { ticker: true, signalType: true },
+      })
+      activeSignals = new Map(signals.map((s) => [s.ticker, { signalType: s.signalType }]))
+    } catch { /* non-fatal — badges just won't show */ }
+  }
+
+  return { status: 'ok', accounts, activeSignals }
+}
+
 export default async function LoggedInHome({ user }: { user: HomeUser }) {
   const clerkUser = await currentUser()
   // firstName is frequently null (e.g. email/password sign-up with no name
@@ -104,12 +137,13 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
   const isFirstVisit = user.lastVisitedAt === null
   const sinceTimestamp = user.lastVisitedAt ?? new Date(0)
 
-  const [newSignalsCount, unreadNotifications, trackedSignals, latestFeatured, recentActiveSignals] = await Promise.all([
+  const [newSignalsCount, unreadNotifications, trackedSignals, latestFeatured, recentActiveSignals, holdingsPanel] = await Promise.all([
     prisma.signal.count({ where: { isActive: true, createdAt: { gt: sinceTimestamp } } }).catch(() => 0),
     getUnreadOutcomeNotifications(user.clerkId),
     getTrackedSignals(user.clerkId),
     getLatestFeatured(),
     getRecentActiveSignals(),
+    getHoldingsPanel(user.clerkId),
   ])
 
   // Awaited (not fire-and-forget) — a serverless function isn't guaranteed
@@ -193,6 +227,11 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
           </div>
         </div>
 
+        {/* ── Holdings — the page's focal section: live brokerage positions,
+            not just a link out to them. Bigger box than the sections below
+            since this is what the user actually opens the page to check. ── */}
+        <HoldingsPanel state={holdingsPanel} />
+
         {/* ── At-a-glance: tracked-signal status, routine (not the alert
             content above). ── */}
         {isFirstVisit ? (
@@ -251,14 +290,13 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
 
         {/* ── Quick actions: secondary shortcuts, not a duplicate of the
             active-signals section below. ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
           {isMax ? (
             <QuickAction href="/options" icon={<Zap className="w-4 h-4" />} title="Options" desc="CALL & PUT ideas" accent="#a78bfa" />
           ) : (
             <QuickAction href="/pricing" icon={<Crown className="w-4 h-4" />} title="Upgrade to Max" desc="Unlock options signals" accent="#a78bfa" />
           )}
           <QuickAction href="/politician-scanner" icon={<Landmark className="w-4 h-4" />} title="Scanners" desc="Politician & insider activity" />
-          <QuickAction href="/account/holdings" icon={<Wallet className="w-4 h-4" />} title="Holdings" desc="Your brokerage positions" accent="#009BFF" />
           <QuickAction href="/refer" icon={<Gift className="w-4 h-4" />} title="Refer a Friend" desc="You both get a free month" />
         </div>
 
@@ -318,6 +356,116 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function money(n: number | null, currency: string | null) {
+  if (n == null) return '—'
+  return n.toLocaleString('en-US', { style: 'currency', currency: currency ?? 'USD', maximumFractionDigits: 2 })
+}
+
+function HoldingsPanel({ state }: { state: HoldingsPanelState }) {
+  if (state.status === 'not_connected') {
+    return (
+      <div className="p-8 mb-8 text-center" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+        <Wallet className="w-6 h-6 mx-auto mb-3" style={{ color: '#009BFF' }} />
+        <p className="font-semibold mb-1" style={{ color: 'var(--text-high)' }}>Connect your brokerage</p>
+        <p className="text-sm mb-5" style={{ color: 'var(--text-w50)' }}>
+          See your real positions here, right next to your signals — no more switching tabs.
+        </p>
+        <Link
+          href="/account/devices"
+          className="inline-flex items-center gap-2 px-5 py-2.5 font-semibold text-sm hover:opacity-90 transition-opacity"
+          style={{ backgroundColor: '#009BFF', color: 'white' }}
+        >
+          Connect Brokerage <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+    )
+  }
+
+  if (state.status === 'error') {
+    return (
+      <div className="p-6 mb-8 text-center" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+        <p className="text-sm" style={{ color: 'var(--text-w50)' }}>
+          Couldn&apos;t load your holdings right now.{' '}
+          <Link href="/account/holdings" className="underline" style={{ color: '#009BFF' }}>Try the full holdings page →</Link>
+        </p>
+      </div>
+    )
+  }
+
+  const totalValue = state.accounts.reduce((sum, a) => sum + (a.totalValue ?? 0), 0)
+  const currency = state.accounts[0]?.currency ?? 'USD'
+  const positions = state.accounts
+    .flatMap((a) => a.positions.map((p) => ({ ...p, accountName: a.name })))
+    .sort((a, b) => (b.marketValue ?? 0) - (a.marketValue ?? 0))
+  const shown = positions.slice(0, 8)
+  const remaining = positions.length - shown.length
+
+  return (
+    <div className="overflow-hidden mb-8" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+      <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+        <div className="flex items-center gap-2">
+          <Wallet className="w-4 h-4" style={{ color: '#009BFF' }} />
+          <span className="type-h2" style={{ fontSize: 18 }}>Holdings</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="font-data text-base font-bold" style={{ color: 'var(--text-high)' }}>{money(totalValue, currency)}</span>
+          <Link href="/account/holdings" className="text-xs font-semibold hover:opacity-75 transition-opacity" style={{ color: '#009BFF' }}>
+            Manage →
+          </Link>
+        </div>
+      </div>
+
+      {positions.length === 0 ? (
+        <p className="px-5 py-8 text-sm text-center" style={{ color: 'var(--text-w50)' }}>No positions yet in your connected account.</p>
+      ) : (
+        <div>
+          {shown.map((p, i) => {
+            const signal = state.activeSignals.get(p.symbol)
+            const plPositive = (p.unrealizedPL ?? 0) >= 0
+            return (
+              <div key={`${p.symbol}-${i}`} className="flex items-center justify-between px-5 py-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="font-data font-semibold text-sm" style={{ color: 'var(--text-high)' }}>{p.symbol}</span>
+                  <span className="text-xs truncate hidden sm:inline" style={{ color: 'var(--text-w40)' }}>
+                    {p.units ?? '—'} units · {p.accountName ?? 'Account'}
+                  </span>
+                  {signal && (
+                    <span
+                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded uppercase tracking-wide shrink-0"
+                      style={{
+                        backgroundColor: signal.signalType === 'SHORT' ? 'rgba(229,72,77,0.12)' : 'rgba(0,199,118,0.12)',
+                        color: signal.signalType === 'SHORT' ? 'var(--short)' : 'var(--buy)',
+                      }}
+                    >
+                      Signal
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-4 shrink-0">
+                  {p.unrealizedPL != null && (
+                    <span className="font-data text-xs font-semibold hidden sm:inline" style={{ color: plPositive ? 'var(--buy)' : 'var(--short)' }}>
+                      {plPositive ? '+' : ''}{money(p.unrealizedPL, p.currency)}
+                    </span>
+                  )}
+                  <span className="font-data text-sm font-bold" style={{ color: 'var(--text-high)' }}>{money(p.marketValue, p.currency)}</span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      <Link
+        href="/account/holdings"
+        className="flex items-center justify-center gap-1.5 px-5 py-3 text-sm font-semibold hover:opacity-80 transition-opacity"
+        style={{ borderTop: '1px solid var(--border)', color: '#009BFF' }}
+      >
+        {remaining > 0 ? `View ${remaining} more` : 'View full holdings'} <ArrowRight className="w-3.5 h-3.5" />
+      </Link>
     </div>
   )
 }
