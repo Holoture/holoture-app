@@ -271,19 +271,12 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
         {latestFeatured && (
           <div className="p-5" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
             <p className="eyebrow mb-3">What&apos;s New</p>
-            <div className="flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-sm" style={{ color: 'var(--text-high)' }}>
-                  <span className="font-data font-bold">{latestFeatured.ticker}</span> — this week&apos;s featured result:{' '}
-                  <span className="font-data font-bold" style={{ color: 'var(--outcome-hit)' }}>
-                    +{latestFeatured.realizedGainPercent.toFixed(1)}%
-                  </span>
-                </p>
-              </div>
-              <Link href="/#track-record" className="text-xs font-semibold shrink-0 hover:opacity-75 transition-opacity" style={{ color: '#009BFF' }}>
-                See track record →
-              </Link>
-            </div>
+            <p className="text-sm" style={{ color: 'var(--text-high)' }}>
+              <span className="font-data font-bold">{latestFeatured.ticker}</span> — this week&apos;s featured result:{' '}
+              <span className="font-data font-bold" style={{ color: 'var(--outcome-hit)' }}>
+                +{latestFeatured.realizedGainPercent.toFixed(1)}%
+              </span>
+            </p>
           </div>
         )}
       </div>
