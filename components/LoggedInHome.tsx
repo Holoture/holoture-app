@@ -59,9 +59,32 @@ async function getLatestFeatured() {
   } catch { return null }
 }
 
+// Same active-signal pool the real dashboard shows (isActive: true,
+// signalDate desc) — just the 5 most recent, with a "View more" link to the
+// full board rather than rebuilding it here.
+async function getRecentActiveSignals() {
+  try {
+    return await prisma.signal.findMany({
+      where: { isActive: true },
+      orderBy: { signalDate: 'desc' },
+      take: 5,
+      select: { id: true, ticker: true, signalType: true, confidence: true, targetPrice: true },
+    })
+  } catch { return [] }
+}
+
 export default async function LoggedInHome({ user }: { user: HomeUser }) {
   const clerkUser = await currentUser()
-  const firstName = clerkUser?.firstName || 'there'
+  // firstName is frequently null (e.g. email/password sign-up with no name
+  // collected, or an OAuth provider that doesn't share it) — fall back to
+  // the Clerk username, then the email's local part, before the generic
+  // "there". Was firstName-or-"there" only, which showed the generic
+  // greeting for most real accounts.
+  const firstName =
+    clerkUser?.firstName ||
+    clerkUser?.username ||
+    clerkUser?.emailAddresses[0]?.emailAddress?.split('@')[0] ||
+    'there'
 
   const tier = computeTier(user)
   const isMax = tier === 'max'
@@ -80,11 +103,12 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
   const isFirstVisit = user.lastVisitedAt === null
   const sinceTimestamp = user.lastVisitedAt ?? new Date(0)
 
-  const [newSignalsCount, unreadNotifications, trackedSignals, latestFeatured] = await Promise.all([
+  const [newSignalsCount, unreadNotifications, trackedSignals, latestFeatured, recentActiveSignals] = await Promise.all([
     prisma.signal.count({ where: { isActive: true, createdAt: { gt: sinceTimestamp } } }).catch(() => 0),
     getUnreadOutcomeNotifications(user.clerkId),
     getTrackedSignals(user.clerkId),
     getLatestFeatured(),
+    getRecentActiveSignals(),
   ])
 
   // Awaited (not fire-and-forget) — a serverless function isn't guaranteed
@@ -107,7 +131,7 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
             exist, so it leads. Collapses entirely when empty rather than
             showing an empty state up top. ── */}
         {unreadNotifications.length > 0 && (
-          <div className="term-panel mb-8" style={{ backgroundColor: 'var(--bg-raised)' }}>
+          <div className="mb-8" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
             <div className="flex items-center gap-2 px-5 pt-4">
               <Bell className="w-4 h-4" style={{ color: 'var(--watch)' }} />
               <span className="type-h2" style={{ fontSize: 18 }}>
@@ -159,7 +183,7 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
         {/* ── At-a-glance: tracked-signal status, routine (not the alert
             content above). ── */}
         {isFirstVisit ? (
-          <div className="term-panel p-8 mb-8 text-center" style={{ backgroundColor: 'var(--bg-raised)' }}>
+          <div className="p-8 mb-8 text-center" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
             <Sparkles className="w-6 h-6 mx-auto mb-3" style={{ color: '#009BFF' }} />
             <p className="font-semibold mb-1" style={{ color: 'var(--text-high)' }}>You&apos;re all set</p>
             <p className="text-sm mb-5" style={{ color: 'var(--text-w50)' }}>
@@ -174,7 +198,7 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
             </Link>
           </div>
         ) : (
-          <div className="term-panel overflow-hidden mb-8" style={{ backgroundColor: 'var(--bg-raised)' }}>
+          <div className="overflow-hidden mb-8" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
             <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
               <div className="flex items-center gap-2">
                 <Radio className="w-4 h-4" style={{ color: '#009BFF' }} />
@@ -217,8 +241,8 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
         <div className="mb-8">
           <Link
             href="/dashboard"
-            className="term-panel flex items-center gap-5 p-6 mb-3 hover:opacity-90 transition-opacity group"
-            style={{ backgroundColor: 'var(--bg-raised)' }}
+            className="flex items-center gap-5 p-6 mb-3 hover:opacity-90 transition-opacity group"
+            style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}
           >
             <div
               className="w-14 h-14 flex items-center justify-center shrink-0"
@@ -248,9 +272,45 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
           </div>
         </div>
 
+        {/* ── Active signals — a real 5-row preview of the dashboard, not a
+            rebuild of it; "View more" is the only way to see the rest. ── */}
+        {recentActiveSignals.length > 0 && (
+          <div className="mb-8" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+            <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+              <span className="font-semibold" style={{ color: 'var(--text-high)' }}>Active Signals</span>
+              <Link href="/dashboard" className="text-xs font-semibold hover:opacity-75 transition-opacity" style={{ color: '#009BFF' }}>
+                View more →
+              </Link>
+            </div>
+            <div>
+              {recentActiveSignals.map((s) => (
+                <div key={s.id} className="flex items-center justify-between px-5 py-2.5" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                  <div className="flex items-center gap-2">
+                    {s.signalType === 'BUY'
+                      ? <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--buy)' }} />
+                      : <TrendingDown className="w-3.5 h-3.5" style={{ color: 'var(--short)' }} />}
+                    <span className="font-data font-semibold text-sm" style={{ color: 'var(--text-high)' }}>{s.ticker}</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="font-data text-xs" style={{ color: 'var(--text-w50)' }}>Target ${s.targetPrice.toFixed(2)}</span>
+                    <span className="font-data text-xs font-bold" style={{ color: '#009BFF' }}>{s.confidence.toFixed(0)}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Link
+              href="/dashboard"
+              className="flex items-center justify-center gap-1.5 px-5 py-3 text-sm font-semibold hover:opacity-80 transition-opacity"
+              style={{ borderTop: '1px solid var(--border)', color: '#009BFF' }}
+            >
+              View more <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )}
+
         {/* ── What's new ── */}
         {latestFeatured && (
-          <div className="term-panel p-5" style={{ backgroundColor: 'var(--bg-raised)' }}>
+          <div className="p-5" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
             <p className="eyebrow mb-3">What&apos;s New</p>
             <div className="flex items-center justify-between gap-4">
               <div className="min-w-0">
