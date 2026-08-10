@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { currentUser } from '@clerk/nextjs/server'
 import {
   TrendingUp, TrendingDown, ArrowRight, Crown, Zap, Landmark,
-  Gift, Bell, Sparkles, Radio, Wallet,
+  Gift, Bell, Wallet,
 } from 'lucide-react'
 import Header from '@/components/Header'
 import ScrollBackground from '@/components/ScrollBackground'
@@ -39,17 +39,6 @@ async function getUnreadOutcomeNotifications(clerkId: string) {
       where: { userId: clerkId, isRead: false, type: { in: [...OUTCOME_NOTIF_TYPES] } },
       orderBy: { createdAt: 'desc' },
       take: 5,
-    })
-  } catch { return [] }
-}
-
-async function getTrackedSignals(clerkId: string) {
-  try {
-    return await prisma.trackedSignal.findMany({
-      where: { userId: clerkId },
-      orderBy: { createdAt: 'desc' },
-      take: 5,
-      include: { signal: { select: { ticker: true, signalType: true, outcome: true } } },
     })
   } catch { return [] }
 }
@@ -129,18 +118,8 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
 
   const marketStatus = getMarketStatus()
 
-  // First-visit state: lastVisitedAt is only null before this page has ever
-  // rendered for this user (set below via a fire-and-forget update). Treated
-  // as "welcome" rather than "0 new signals" — those read the same to a
-  // returning user with a genuinely quiet day, but a brand-new user has no
-  // baseline to compare against yet.
-  const isFirstVisit = user.lastVisitedAt === null
-  const sinceTimestamp = user.lastVisitedAt ?? new Date(0)
-
-  const [newSignalsCount, unreadNotifications, trackedSignals, latestFeatured, recentActiveSignals, holdingsPanel] = await Promise.all([
-    prisma.signal.count({ where: { isActive: true, createdAt: { gt: sinceTimestamp } } }).catch(() => 0),
+  const [unreadNotifications, latestFeatured, recentActiveSignals, holdingsPanel] = await Promise.all([
     getUnreadOutcomeNotifications(user.clerkId),
-    getTrackedSignals(user.clerkId),
     getLatestFeatured(),
     getRecentActiveSignals(),
     getHoldingsPanel(user.clerkId),
@@ -155,7 +134,6 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
   await prisma.user.update({ where: { id: user.id }, data: { lastVisitedAt: new Date() } }).catch(() => {})
 
   const tierStyle = TIER_STYLE[tier]
-  const hasTrackedActivity = trackedSignals.length > 0
 
   return (
     <div className="min-h-screen relative">
@@ -240,62 +218,6 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
             something fixable here. Revisit if/when that's upgraded. ── */}
         <PerformanceSummary state={holdingsPanel} />
         <HoldingsPanel state={holdingsPanel} />
-
-        {/* ── At-a-glance: tracked-signal status, routine (not the alert
-            content above). ── */}
-        {isFirstVisit ? (
-          <div className="p-8 mb-8 text-center" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
-            <Sparkles className="w-6 h-6 mx-auto mb-3" style={{ color: '#009BFF' }} />
-            <p className="font-semibold mb-1" style={{ color: 'var(--text-high)' }}>You&apos;re all set</p>
-            <p className="text-sm mb-5" style={{ color: 'var(--text-w50)' }}>
-              You haven&apos;t tracked any signals yet — browse today&apos;s board to find your first pick.
-            </p>
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 px-5 py-2.5 font-semibold text-sm hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#009BFF', color: 'white' }}
-            >
-              Browse Today&apos;s Signals <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        ) : (
-          <div className="overflow-hidden mb-8" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
-            <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-              <div className="flex items-center gap-2">
-                <Radio className="w-4 h-4" style={{ color: '#009BFF' }} />
-                <span className="font-semibold" style={{ color: 'var(--text-high)' }}>Since your last visit</span>
-              </div>
-              <span className="font-data text-sm font-bold" style={{ color: '#009BFF' }}>
-                {newSignalsCount} new signal{newSignalsCount === 1 ? '' : 's'}
-              </span>
-            </div>
-
-            {!hasTrackedActivity ? (
-              <p className="px-5 py-6 text-sm" style={{ color: 'var(--text-w50)' }}>
-                Nothing on your tracker yet. <Link href="/tracker" className="underline" style={{ color: '#009BFF' }}>View your tracker →</Link>
-              </p>
-            ) : (
-              <div>
-                {trackedSignals.map((t) => {
-                  const outcome = t.signal.outcome
-                  const outcomeColor = outcome === 'HIT_TARGET' ? 'var(--outcome-hit)' : outcome === 'HIT_STOP' ? 'var(--outcome-miss)' : 'var(--text-w45)'
-                  const outcomeLabel = outcome === 'HIT_TARGET' ? 'Hit target' : outcome === 'HIT_STOP' ? 'Hit stop' : outcome === 'EXPIRED' ? 'Expired' : 'Watching'
-                  return (
-                    <div key={t.id} className="flex items-center justify-between px-5 py-2.5" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      <div className="flex items-center gap-2">
-                        {t.signal.signalType === 'BUY'
-                          ? <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--buy)' }} />
-                          : <TrendingDown className="w-3.5 h-3.5" style={{ color: 'var(--short)' }} />}
-                        <span className="font-data font-semibold text-sm" style={{ color: 'var(--text-high)' }}>{t.signal.ticker}</span>
-                      </div>
-                      <span className="text-xs font-bold" style={{ color: outcomeColor }}>{outcomeLabel}</span>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-        )}
 
         {/* ── Quick actions: secondary shortcuts, not a duplicate of the
             active-signals section below. ── */}
