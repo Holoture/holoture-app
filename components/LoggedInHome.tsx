@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { currentUser } from '@clerk/nextjs/server'
 import {
   TrendingUp, TrendingDown, ArrowRight, Crown, Zap, Landmark,
-  Gift, Bell, Sparkles, Radio,
+  Gift, Bell, Sparkles, Radio, Wallet,
 } from 'lucide-react'
 import Header from '@/components/Header'
 import ScrollBackground from '@/components/ScrollBackground'
@@ -251,13 +251,14 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
 
         {/* ── Quick actions: secondary shortcuts, not a duplicate of the
             active-signals section below. ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           {isMax ? (
             <QuickAction href="/options" icon={<Zap className="w-4 h-4" />} title="Options" desc="CALL & PUT ideas" accent="#a78bfa" />
           ) : (
             <QuickAction href="/pricing" icon={<Crown className="w-4 h-4" />} title="Upgrade to Max" desc="Unlock options signals" accent="#a78bfa" />
           )}
           <QuickAction href="/politician-scanner" icon={<Landmark className="w-4 h-4" />} title="Scanners" desc="Politician & insider activity" />
+          <QuickAction href="/account/holdings" icon={<Wallet className="w-4 h-4" />} title="Holdings" desc="Your brokerage positions" accent="#009BFF" />
           <QuickAction href="/refer" icon={<Gift className="w-4 h-4" />} title="Refer a Friend" desc="You both get a free month" />
         </div>
 
