@@ -227,9 +227,18 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
           </div>
         </div>
 
-        {/* ── Holdings — the page's focal section: live brokerage positions,
+        {/* ── Portfolio — the page's focal section: live brokerage positions,
             not just a link out to them. Bigger box than the sections below
-            since this is what the user actually opens the page to check. ── */}
+            since this is what the user actually opens the page to check.
+            PerformanceSummary sits above it and is derived entirely from the
+            same position-level cost-basis data (real, already fetched) —
+            NOT a historical return chart. SnapTrade's actual history/return-
+            rate endpoints (getAccountBalanceHistory, getUserAccountReturnRates)
+            were tested live against the sandbox connection and both return a
+            real 403 "Feature is not enabled for this customer or this
+            connection" — a plan-tier gate on the SnapTrade account, not
+            something fixable here. Revisit if/when that's upgraded. ── */}
+        <PerformanceSummary state={holdingsPanel} />
         <HoldingsPanel state={holdingsPanel} />
 
         {/* ── At-a-glance: tracked-signal status, routine (not the alert
@@ -365,6 +374,48 @@ function money(n: number | null, currency: string | null) {
   return n.toLocaleString('en-US', { style: 'currency', currency: currency ?? 'USD', maximumFractionDigits: 2 })
 }
 
+// Derived from real position-level cost-basis data already fetched for the
+// Portfolio panel below — total unrealized gain/loss, not a historical
+// return chart. SnapTrade's actual history/return-rate endpoints
+// (getAccountBalanceHistory, getUserAccountReturnRates) were confirmed live
+// to return 403 "Feature is not enabled for this customer or this
+// connection" for this account — a plan-tier gate, not something we can
+// build around today. Renders nothing for not_connected/error states,
+// which the Portfolio panel below already surfaces.
+function PerformanceSummary({ state }: { state: HoldingsPanelState }) {
+  if (state.status !== 'ok') return null
+  const positions = state.accounts.flatMap((a) => a.positions)
+  if (positions.length === 0) return null
+
+  const totalValue = positions.reduce((sum, p) => sum + (p.marketValue ?? 0), 0)
+  const totalCostBasis = positions.reduce((sum, p) => sum + (p.units != null && p.costBasis != null ? p.units * p.costBasis : 0), 0)
+  const totalPL = positions.reduce((sum, p) => sum + (p.unrealizedPL ?? 0), 0)
+  const plPercent = totalCostBasis !== 0 ? (totalPL / totalCostBasis) * 100 : null
+  const plPositive = totalPL >= 0
+  const currency = state.accounts[0]?.currency ?? 'USD'
+
+  return (
+    <div className="grid grid-cols-3 gap-3 mb-3">
+      <div className="p-4" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+        <p className="eyebrow mb-1">Total Value</p>
+        <p className="font-data text-lg font-bold" style={{ color: 'var(--text-high)' }}>{money(totalValue, currency)}</p>
+      </div>
+      <div className="p-4" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+        <p className="eyebrow mb-1">Unrealized P/L</p>
+        <p className="font-data text-lg font-bold" style={{ color: plPositive ? 'var(--outcome-hit)' : 'var(--outcome-miss)' }}>
+          {plPositive ? '+' : ''}{money(totalPL, currency)}
+        </p>
+      </div>
+      <div className="p-4" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+        <p className="eyebrow mb-1">Return</p>
+        <p className="font-data text-lg font-bold" style={{ color: plPositive ? 'var(--outcome-hit)' : 'var(--outcome-miss)' }}>
+          {plPercent != null ? `${plPositive ? '+' : ''}${plPercent.toFixed(1)}%` : '—'}
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function HoldingsPanel({ state }: { state: HoldingsPanelState }) {
   if (state.status === 'not_connected') {
     return (
@@ -409,7 +460,7 @@ function HoldingsPanel({ state }: { state: HoldingsPanelState }) {
       <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
         <div className="flex items-center gap-2">
           <Wallet className="w-4 h-4" style={{ color: '#009BFF' }} />
-          <span className="type-h2" style={{ fontSize: 18 }}>Holdings</span>
+          <span className="type-h2" style={{ fontSize: 18 }}>Portfolio</span>
         </div>
         <div className="flex items-center gap-4">
           <span className="font-data text-base font-bold" style={{ color: 'var(--text-high)' }}>{money(totalValue, currency)}</span>
