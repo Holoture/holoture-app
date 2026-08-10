@@ -69,8 +69,8 @@ export async function GET(req: Request) {
       if (!connection) return NextResponse.json({ error: 'no test connection row' }, { status: 404 })
       const client = getSnaptradeClient()
       const userSecret = decrypt(connection.snapTradeUserSecretEncrypted)
-      await client.connections.removeBrokerageAuthorization({
-        authorizationId,
+      await client.connections.deleteConnection({
+        connectionId: authorizationId,
         userId: connection.snapTradeUserId,
         userSecret,
       })
