@@ -12,7 +12,6 @@ import { getMarketStatus } from '@/lib/marketStatus'
 import { prisma } from '@/lib/prisma'
 import { computeTier, type UserTier } from '@/lib/user'
 import { getHoldings, type HoldingAccount } from '@/lib/snaptrade'
-import { getOutcomesSummary } from '@/lib/publicStats'
 
 type HomeUser = {
   id: string
@@ -210,12 +209,11 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
   const marketStatus = getMarketStatus()
   const liveSession = getLiveExtendedSession()
 
-  const [unreadActivity, latestFeatured, recentActiveSignals, holdingsPanel, outcomesSummary, topSignal, notableTrade, topMovers] = await Promise.all([
+  const [unreadActivity, latestFeatured, recentActiveSignals, holdingsPanel, topSignal, notableTrade, topMovers] = await Promise.all([
     getUnreadActivity(user.clerkId),
     getLatestFeatured(),
     getRecentActiveSignals(),
     getHoldingsPanel(user.clerkId),
-    getOutcomesSummary(),
     getTodaysTopSignal(),
     getNotableTrade(),
     getTopMovers(liveSession),
@@ -266,22 +264,6 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
             <MarketStatusBanner {...marketStatus} />
           </div>
         </div>
-
-        {/* ── Track record — compact, real, honest: same getOutcomesSummary()
-            logic as the marketing page's OutcomesStrip (now shared via
-            lib/publicStats.ts), respecting its own MIN_SAMPLE gate. Renders
-            nothing if the sample isn't big enough yet to be convincing. ── */}
-        {outcomesSummary && (
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 px-4 py-2.5 mb-3" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
-            <span className="data-label" style={{ color: 'var(--text-dim)' }}>Track Record</span>
-            <span className="font-data text-sm font-bold" style={{ color: '#009BFF' }}>{outcomesSummary.window.winRatePct}%</span>
-            <span className="text-xs" style={{ color: 'var(--text-w50)' }}>win rate (last {outcomesSummary.window.size} resolved)</span>
-            <span className="text-xs" style={{ color: 'var(--text-w40)' }}>
-              <span className="font-data" style={{ color: 'var(--buy)' }}>{outcomesSummary.allTime.hitTarget}</span> hit target ·{' '}
-              <span className="font-data" style={{ color: 'var(--short)' }}>{outcomesSummary.allTime.hitStop}</span> stopped out (all-time)
-            </span>
-          </div>
-        )}
 
         {/* ── Today's Top Signal — expand-on-click spotlight, same
             interaction pattern as SignalRow.tsx's expanded state on the
