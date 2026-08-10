@@ -70,6 +70,15 @@
   --short: #E5484D;
   --watch: #E8A33D;
 
+  /* ── Outcome valence (win/loss on a resolved signal) — a distinct axis
+     from direction above. A SHORT signal that HITs its target is still a
+     win (green), so outcome coloring must never alias --buy/--short
+     directly even though the hex values happen to match today; keeping
+     these separate means changing direction colors can't silently change
+     outcome colors and vice versa. ── */
+  --outcome-hit:  #00C776;
+  --outcome-miss: #E5484D;
+
   --border:        var(--line);
   --border-subtle: var(--line-faint);
   --border-faint:  var(--line-faint);
