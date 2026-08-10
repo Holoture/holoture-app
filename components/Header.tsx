@@ -38,12 +38,15 @@ const SCANNERS_MENU: DropdownItemConfig[] = [
   { href: '/catalyst-alerts',    label: 'Catalyst Alerts',    available: true, desc: 'High-risk news-driven moves' },
 ]
 
+const SUBSCRIPTION_MENU: DropdownItemConfig[] = [
+  { href: '/pricing', label: 'Plans & Billing', available: true, desc: 'Compare tiers, manage your subscription' },
+  { href: '/refer',   label: 'Refer a Friend',  available: true, desc: 'Invite a friend, you both get a free month' },
+]
+
 const NAV_LINKS = [
   { href: '/learn', label: 'Learn' },
   { href: '/tracker', label: 'Tracker' },
-  { href: '/refer', label: 'Refer a Friend' },
   { href: '/support', label: 'Support' },
-  { href: '/pricing', label: 'Subscription' },
 ]
 
 export default function Header() {
@@ -63,6 +66,7 @@ export default function Header() {
   const signalsActive = pathname === '/dashboard' || pathname === '/options' || pathname.startsWith('/signals')
   const marketsActive = MARKETS_MENU.some((m) => pathname === m.href)
   const scannersActive = SCANNERS_MENU.some((s) => pathname === s.href)
+  const subscriptionActive = SUBSCRIPTION_MENU.some((s) => pathname === s.href)
 
   return (
     <header
@@ -82,6 +86,7 @@ export default function Header() {
             <NavDropdown label="Signals" items={SIGNALS_MENU} active={signalsActive} />
             <NavDropdown label="Markets" items={MARKETS_MENU} active={marketsActive} />
             <NavDropdown label="Scanners" items={SCANNERS_MENU} active={scannersActive} />
+            <NavDropdown label="Subscription" items={SUBSCRIPTION_MENU} active={subscriptionActive} />
             {NAV_LINKS.map(({ href, label }) => (
               <NavLink key={href} href={href} active={pathname === href}>
                 {label}
@@ -156,6 +161,13 @@ export default function Header() {
               label="Scanners"
               items={SCANNERS_MENU}
               defaultExpanded={SCANNERS_MENU.some((s) => pathname === s.href)}
+              pathname={pathname}
+              onNavigate={() => setMobileOpen(false)}
+            />
+            <MobileDropdownSection
+              label="Subscription"
+              items={SUBSCRIPTION_MENU}
+              defaultExpanded={SUBSCRIPTION_MENU.some((s) => pathname === s.href)}
               pathname={pathname}
               onNavigate={() => setMobileOpen(false)}
             />
