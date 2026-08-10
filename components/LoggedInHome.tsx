@@ -5,7 +5,6 @@ import {
   Gift, Bell, Wallet,
 } from 'lucide-react'
 import Header from '@/components/Header'
-import ScrollBackground from '@/components/ScrollBackground'
 import MarketStatusBanner from '@/components/MarketStatusBanner'
 import { getMarketStatus } from '@/lib/marketStatus'
 import { prisma } from '@/lib/prisma'
@@ -136,44 +135,32 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
   const tierStyle = TIER_STYLE[tier]
 
   return (
-    <div className="min-h-screen relative">
-      {/* Same lattice as the marketing page, scoped down: forced static (no
-          scroll-linked drift — this page is short and reloads every visit,
-          so skipping the scroll listener entirely is also cheaper) and at
-          40% of the marketing page's line opacity, since this page's job is
-          fast scanning, not ambience. The outer wrapper no longer paints an
-          opaque background (body's own var(--bg-primary) still shows
-          through everywhere) so the lattice is actually visible; every
-          text-bearing card below still has its own solid var(--bg-raised)/
-          var(--bg-surface) background, so content readability is unaffected
-          — only the bare page gutters (behind the greeting line, between
-          cards) show the lattice at all. */}
-      <ScrollBackground forceStatic opacityScale={0.4} />
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Header />
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* ── Unread outcome notifications — the page's actual reason to
             exist, so it leads. Collapses entirely when empty rather than
             showing an empty state up top. ── */}
         {unreadNotifications.length > 0 && (
-          <div className="mb-8" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
-            <div className="flex items-center gap-2 px-5 pt-4">
+          <div className="mb-6" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+            <div className="flex items-center gap-2 px-4 pt-3">
               <Bell className="w-4 h-4" style={{ color: 'var(--watch)' }} />
-              <span className="type-h2" style={{ fontSize: 18 }}>
+              <span className="type-h3">
                 {unreadNotifications.length} signal{unreadNotifications.length === 1 ? '' : 's'} need{unreadNotifications.length === 1 ? 's' : ''} your attention
               </span>
             </div>
-            <div className="mt-3">
+            <div className="mt-2">
               {unreadNotifications.map((n) => {
                 const accent = n.type === 'signal_hit_target' ? 'var(--outcome-hit)' : n.type === 'signal_hit_stop' ? 'var(--outcome-miss)' : 'var(--watch)'
                 return (
                   <div
                     key={n.id}
-                    className="px-5 py-3.5"
+                    className="px-4 py-2.5"
                     style={{ borderLeft: `3px solid ${accent}`, borderTop: '1px solid var(--border-subtle)' }}
                   >
-                    <p className="text-base font-semibold" style={{ color: 'var(--text-high)' }}>{n.title}</p>
-                    <p className="text-sm mt-0.5" style={{ color: 'var(--text-w50)' }}>{n.body}</p>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--text-high)' }}>{n.title}</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-w50)' }}>{n.body}</p>
                   </div>
                 )
               })}
@@ -183,9 +170,9 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
 
         {/* ── Top fold: asymmetric — wider left (identity), narrower right
             (live status) — instead of full-width stacked strips. ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-5 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <span className="type-h2" style={{ fontSize: 20 }}>Welcome back, {firstName}</span>
+            <span className="type-h3">Welcome back, {firstName}</span>
             <span
               className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold"
               style={{ backgroundColor: tierStyle.bg, color: tierStyle.text, border: `1px solid ${tierStyle.border}` }}
@@ -195,7 +182,7 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
               <span className="font-data">{tierStyle.label}</span>
             </span>
             {isTrialing && daysLeft !== null && (
-              <span className="text-xs font-semibold" style={{ color: '#1D9E75' }}>
+              <span className="text-xs font-semibold" style={{ color: 'var(--trial)' }}>
                 Trial — <span className="font-data">{daysLeft === 0 ? 'ends today' : `${daysLeft} day${daysLeft === 1 ? '' : 's'} left`}</span>
               </span>
             )}
@@ -219,31 +206,31 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
         <PerformanceSummary state={holdingsPanel} />
         <HoldingsPanel state={holdingsPanel} />
 
-        {/* ── Quick actions: secondary shortcuts, not a duplicate of the
-            active-signals section below. ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+        {/* ── Quick actions: compact icon+label chip row, not description
+            tiles — these are secondary shortcuts, not features being sold. ── */}
+        <div className="flex flex-wrap gap-2 mb-6">
           {isMax ? (
-            <QuickAction href="/options" icon={<Zap className="w-4 h-4" />} title="Options" desc="CALL & PUT ideas" accent="#a78bfa" />
+            <QuickAction href="/options" icon={<Zap className="w-4 h-4" />} title="Options" accent="#a78bfa" />
           ) : (
-            <QuickAction href="/pricing" icon={<Crown className="w-4 h-4" />} title="Upgrade to Max" desc="Unlock options signals" accent="#a78bfa" />
+            <QuickAction href="/pricing" icon={<Crown className="w-4 h-4" />} title="Upgrade to Max" accent="#a78bfa" />
           )}
-          <QuickAction href="/politician-scanner" icon={<Landmark className="w-4 h-4" />} title="Scanners" desc="Politician & insider activity" />
-          <QuickAction href="/refer" icon={<Gift className="w-4 h-4" />} title="Refer a Friend" desc="You both get a free month" />
+          <QuickAction href="/politician-scanner" icon={<Landmark className="w-4 h-4" />} title="Scanners" />
+          <QuickAction href="/refer" icon={<Gift className="w-4 h-4" />} title="Refer a Friend" />
         </div>
 
         {/* ── Active signals — a real 5-row preview of the dashboard, not a
             rebuild of it; "View more" is the only way to see the rest. ── */}
         {recentActiveSignals.length > 0 && (
-          <div className="mb-8" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
-            <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-              <span className="font-semibold" style={{ color: 'var(--text-high)' }}>Active Signals</span>
+          <div className="mb-6" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+            <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
+              <span className="type-h3">Active Signals</span>
               <Link href="/dashboard" className="text-xs font-semibold hover:opacity-75 transition-opacity" style={{ color: '#009BFF' }}>
                 View more →
               </Link>
             </div>
             <div>
               {recentActiveSignals.map((s) => (
-                <div key={s.id} className="flex items-center justify-between px-5 py-2.5" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                <div key={s.id} className="flex items-center justify-between px-4 py-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                   <div className="flex items-center gap-2">
                     {s.signalType === 'BUY'
                       ? <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--buy)' }} />
@@ -259,7 +246,7 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
             </div>
             <Link
               href="/dashboard"
-              className="flex items-center justify-center gap-1.5 px-5 py-3 text-sm font-semibold hover:opacity-80 transition-opacity"
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold hover:opacity-80 transition-opacity"
               style={{ borderTop: '1px solid var(--border)', color: '#009BFF' }}
             >
               View more <ArrowRight className="w-3.5 h-3.5" />
@@ -269,8 +256,8 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
 
         {/* ── What's new ── */}
         {latestFeatured && (
-          <div className="p-5" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
-            <p className="eyebrow mb-3">What&apos;s New</p>
+          <div className="p-4" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+            <p className="eyebrow mb-2">What&apos;s New</p>
             <p className="text-sm" style={{ color: 'var(--text-high)' }}>
               <span className="font-data font-bold">{latestFeatured.ticker}</span> — this week&apos;s featured result:{' '}
               <span className="font-data font-bold" style={{ color: 'var(--outcome-hit)' }}>
@@ -310,20 +297,20 @@ function PerformanceSummary({ state }: { state: HoldingsPanelState }) {
   const currency = state.accounts[0]?.currency ?? 'USD'
 
   return (
-    <div className="grid grid-cols-3 gap-3 mb-3">
-      <div className="p-4" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+      <div className="px-3 py-2.5" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
         <p className="eyebrow mb-1">Total Value</p>
-        <p className="font-data text-lg font-bold" style={{ color: 'var(--text-high)' }}>{money(totalValue, currency)}</p>
+        <p className="font-data text-base font-bold" style={{ color: 'var(--text-high)' }}>{money(totalValue, currency)}</p>
       </div>
-      <div className="p-4" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+      <div className="px-3 py-2.5" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
         <p className="eyebrow mb-1">Unrealized P/L</p>
-        <p className="font-data text-lg font-bold" style={{ color: plPositive ? 'var(--outcome-hit)' : 'var(--outcome-miss)' }}>
+        <p className="font-data text-base font-bold" style={{ color: plPositive ? 'var(--outcome-hit)' : 'var(--outcome-miss)' }}>
           {plPositive ? '+' : ''}{money(totalPL, currency)}
         </p>
       </div>
-      <div className="p-4" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+      <div className="px-3 py-2.5" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
         <p className="eyebrow mb-1">Return</p>
-        <p className="font-data text-lg font-bold" style={{ color: plPositive ? 'var(--outcome-hit)' : 'var(--outcome-miss)' }}>
+        <p className="font-data text-base font-bold" style={{ color: plPositive ? 'var(--outcome-hit)' : 'var(--outcome-miss)' }}>
           {plPercent != null ? `${plPositive ? '+' : ''}${plPercent.toFixed(1)}%` : '—'}
         </p>
       </div>
@@ -334,15 +321,15 @@ function PerformanceSummary({ state }: { state: HoldingsPanelState }) {
 function HoldingsPanel({ state }: { state: HoldingsPanelState }) {
   if (state.status === 'not_connected') {
     return (
-      <div className="p-8 mb-8 text-center" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
-        <Wallet className="w-6 h-6 mx-auto mb-3" style={{ color: '#009BFF' }} />
-        <p className="font-semibold mb-1" style={{ color: 'var(--text-high)' }}>Connect your brokerage</p>
-        <p className="text-sm mb-5" style={{ color: 'var(--text-w50)' }}>
+      <div className="p-6 mb-6 text-center" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+        <Wallet className="w-6 h-6 mx-auto mb-2" style={{ color: '#009BFF' }} />
+        <p className="type-h3 mb-1">Connect your brokerage</p>
+        <p className="text-sm mb-4" style={{ color: 'var(--text-w50)' }}>
           See your real positions here, right next to your signals — no more switching tabs.
         </p>
         <Link
           href="/account/devices"
-          className="inline-flex items-center gap-2 px-5 py-2.5 font-semibold text-sm hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 px-4 py-2 font-semibold text-sm hover:opacity-90 transition-opacity"
           style={{ backgroundColor: '#009BFF', color: 'white' }}
         >
           Connect Brokerage <ArrowRight className="w-4 h-4" />
@@ -353,7 +340,7 @@ function HoldingsPanel({ state }: { state: HoldingsPanelState }) {
 
   if (state.status === 'error') {
     return (
-      <div className="p-6 mb-8 text-center" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+      <div className="p-4 mb-6 text-center" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
         <p className="text-sm" style={{ color: 'var(--text-w50)' }}>
           Couldn&apos;t load your holdings right now.{' '}
           <Link href="/account/holdings" className="underline" style={{ color: '#009BFF' }}>Try the full holdings page →</Link>
@@ -365,20 +352,20 @@ function HoldingsPanel({ state }: { state: HoldingsPanelState }) {
   const totalValue = state.accounts.reduce((sum, a) => sum + (a.totalValue ?? 0), 0)
   const currency = state.accounts[0]?.currency ?? 'USD'
   const positions = state.accounts
-    .flatMap((a) => a.positions.map((p) => ({ ...p, accountName: a.name })))
+    .flatMap((a) => a.positions)
     .sort((a, b) => (b.marketValue ?? 0) - (a.marketValue ?? 0))
   const shown = positions.slice(0, 8)
   const remaining = positions.length - shown.length
 
   return (
-    <div className="overflow-hidden mb-8" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
-      <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+    <div className="overflow-hidden mb-6" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+      <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
         <div className="flex items-center gap-2">
           <Wallet className="w-4 h-4" style={{ color: '#009BFF' }} />
-          <span className="type-h2" style={{ fontSize: 18 }}>Portfolio</span>
+          <span className="type-h3">Portfolio</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="font-data text-base font-bold" style={{ color: 'var(--text-high)' }}>{money(totalValue, currency)}</span>
+          <span className="font-data text-sm font-bold" style={{ color: 'var(--text-high)' }}>{money(totalValue, currency)}</span>
           <Link href="/account/holdings" className="text-xs font-semibold hover:opacity-75 transition-opacity" style={{ color: '#009BFF' }}>
             Manage →
           </Link>
@@ -386,48 +373,59 @@ function HoldingsPanel({ state }: { state: HoldingsPanelState }) {
       </div>
 
       {positions.length === 0 ? (
-        <p className="px-5 py-8 text-sm text-center" style={{ color: 'var(--text-w50)' }}>No positions yet in your connected account.</p>
+        <p className="px-4 py-6 text-sm text-center" style={{ color: 'var(--text-w50)' }}>No positions yet in your connected account.</p>
       ) : (
-        <div>
-          {shown.map((p, i) => {
-            const signal = state.activeSignals.get(p.symbol)
-            const plPositive = (p.unrealizedPL ?? 0) >= 0
-            return (
-              <div key={`${p.symbol}-${i}`} className="flex items-center justify-between px-5 py-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-data font-semibold text-sm" style={{ color: 'var(--text-high)' }}>{p.symbol}</span>
-                  <span className="text-xs truncate hidden sm:inline" style={{ color: 'var(--text-w40)' }}>
-                    {p.units ?? '—'} units · {p.accountName ?? 'Account'}
-                  </span>
-                  {signal && (
-                    <span
-                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded uppercase tracking-wide shrink-0"
-                      style={{
-                        backgroundColor: signal.signalType === 'SHORT' ? 'rgba(229,72,77,0.12)' : 'rgba(0,199,118,0.12)',
-                        color: signal.signalType === 'SHORT' ? 'var(--short)' : 'var(--buy)',
-                      }}
-                    >
-                      Signal
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-4 shrink-0">
-                  {p.unrealizedPL != null && (
-                    <span className="font-data text-xs font-semibold hidden sm:inline" style={{ color: plPositive ? 'var(--buy)' : 'var(--short)' }}>
-                      {plPositive ? '+' : ''}{money(p.unrealizedPL, p.currency)}
-                    </span>
-                  )}
-                  <span className="font-data text-sm font-bold" style={{ color: 'var(--text-high)' }}>{money(p.marketValue, p.currency)}</span>
-                </div>
-              </div>
-            )
-          })}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--border)' }}>
+                <th className="data-label text-left px-4 py-2 font-normal">Symbol</th>
+                <th className="data-label text-right px-3 py-2 font-normal">Qty</th>
+                <th className="data-label text-right px-3 py-2 font-normal">Price</th>
+                <th className="data-label text-right px-3 py-2 font-normal">Value</th>
+                <th className="data-label text-right px-3 py-2 font-normal">P/L</th>
+                <th className="data-label text-right px-4 py-2 font-normal">Signal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {shown.map((p, i) => {
+                const signal = state.activeSignals.get(p.symbol)
+                const plPositive = (p.unrealizedPL ?? 0) >= 0
+                return (
+                  <tr key={`${p.symbol}-${i}`} style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                    <td className="px-4 py-2 font-data font-semibold whitespace-nowrap" style={{ color: 'var(--text-high)' }}>{p.symbol}</td>
+                    <td className="px-3 py-2 text-right font-data whitespace-nowrap" style={{ color: 'var(--text-w50)' }}>{p.units ?? '—'}</td>
+                    <td className="px-3 py-2 text-right font-data whitespace-nowrap" style={{ color: 'var(--text-w50)' }}>{money(p.price, p.currency)}</td>
+                    <td className="px-3 py-2 text-right font-data font-bold whitespace-nowrap" style={{ color: 'var(--text-high)' }}>{money(p.marketValue, p.currency)}</td>
+                    <td className="px-3 py-2 text-right font-data font-semibold whitespace-nowrap" style={{ color: p.unrealizedPL == null ? 'var(--text-w40)' : plPositive ? 'var(--buy)' : 'var(--short)' }}>
+                      {p.unrealizedPL == null ? '—' : `${plPositive ? '+' : ''}${money(p.unrealizedPL, p.currency)}`}
+                    </td>
+                    <td className="px-4 py-2 text-right whitespace-nowrap">
+                      {signal ? (
+                        <span
+                          className="text-[10px] font-semibold px-1.5 py-0.5 uppercase tracking-wide"
+                          style={{
+                            backgroundColor: signal.signalType === 'SHORT' ? 'rgba(229,72,77,0.12)' : 'rgba(0,199,118,0.12)',
+                            color: signal.signalType === 'SHORT' ? 'var(--short)' : 'var(--buy)',
+                          }}
+                        >
+                          Active
+                        </span>
+                      ) : (
+                        <span style={{ color: 'var(--text-w30)' }}>—</span>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       )}
 
       <Link
         href="/account/holdings"
-        className="flex items-center justify-center gap-1.5 px-5 py-3 text-sm font-semibold hover:opacity-80 transition-opacity"
+        className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold hover:opacity-80 transition-opacity"
         style={{ borderTop: '1px solid var(--border)', color: '#009BFF' }}
       >
         {remaining > 0 ? `View ${remaining} more` : 'View full holdings'} <ArrowRight className="w-3.5 h-3.5" />
@@ -437,31 +435,21 @@ function HoldingsPanel({ state }: { state: HoldingsPanelState }) {
 }
 
 function QuickAction({
-  href, icon, title, desc, accent = '#009BFF',
+  href, icon, title, accent = '#009BFF',
 }: {
   href: string
   icon: React.ReactNode
   title: string
-  desc: string
   accent?: string
 }) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 p-4 hover:opacity-90 transition-opacity group"
+      className="inline-flex items-center gap-2 px-3.5 py-2 hover:opacity-80 transition-opacity"
       style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}
     >
-      <div
-        className="w-9 h-9 flex items-center justify-center shrink-0"
-        style={{ backgroundColor: `${accent}20`, color: accent }}
-      >
-        {icon}
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="font-semibold text-sm" style={{ color: 'var(--text-high)' }}>{title}</p>
-        <p className="text-xs" style={{ color: 'var(--text-w50)' }}>{desc}</p>
-      </div>
-      <ArrowRight className="w-3.5 h-3.5 shrink-0 opacity-40 group-hover:opacity-80 transition-opacity" style={{ color: 'var(--text-w50)' }} />
+      <span style={{ color: accent }}>{icon}</span>
+      <span className="text-sm font-semibold" style={{ color: 'var(--text-high)' }}>{title}</span>
     </Link>
   )
 }

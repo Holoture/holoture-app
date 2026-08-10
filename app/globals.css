@@ -79,6 +79,13 @@
   --outcome-hit:  #00C776;
   --outcome-miss: #E5484D;
 
+  /* Trial-countdown green — deliberately distinct from --buy: it flags a
+     billing-state notice, not a market direction, and the two shouldn't
+     become visually interchangeable just because the hexes are close. Was
+     duplicated as a bare #1D9E75 literal in both dashboard/page.tsx and
+     LoggedInHome.tsx with no shared source of truth. */
+  --trial: #1D9E75;
+
   --border:        var(--line);
   --border-subtle: var(--line-faint);
   --border-faint:  var(--line-faint);
@@ -165,6 +172,18 @@ body {
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.15;
+  color: var(--text-high);
+}
+
+/* Panel/section header — smaller than h2, for repeated in-product headers
+   (card titles, panel headers) rather than page-level section breaks.
+   Exists so components stop reinventing ad-hoc inline fontSize overrides of
+   .type-h2 — use this instead of style={{ fontSize: 18 }} on a type-h2. */
+.type-h3 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
   color: var(--text-high);
 }
 

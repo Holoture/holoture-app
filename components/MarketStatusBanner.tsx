@@ -45,10 +45,10 @@ export default function MarketStatusBanner({
     return (
       <div className="flex items-center gap-2 mb-6">
         <span className="relative flex w-2 h-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#4ade80' }} />
-          <span className="relative inline-flex rounded-full w-2 h-2" style={{ backgroundColor: '#4ade80' }} />
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--buy)' }} />
+          <span className="relative inline-flex rounded-full w-2 h-2" style={{ backgroundColor: 'var(--buy)' }} />
         </span>
-        <span className="text-sm font-bold" style={{ color: '#4ade80' }}>Market open</span>
+        <span className="text-sm font-bold" style={{ color: 'var(--buy)' }}>Market open</span>
       </div>
     )
   }
@@ -62,8 +62,8 @@ export default function MarketStatusBanner({
       style={{ backgroundColor: 'rgba(251,191,36,0.05)' }}
     >
       <div className="flex items-center gap-2">
-        <Clock className="w-4 h-4 shrink-0" style={{ color: '#fbbf24' }} />
-        <span className="text-sm font-bold" style={{ color: '#fbbf24' }}>{headline}</span>
+        <Clock className="w-4 h-4 shrink-0" style={{ color: 'var(--watch)' }} />
+        <span className="text-sm font-bold" style={{ color: 'var(--watch)' }}>{headline}</span>
       </div>
       {nextOpenAt && (
         <div className="flex items-center gap-2 text-sm">

@@ -150,7 +150,7 @@ export default async function DashboardPage() {
       {isTrialing && trialEndsAt ? (
         <div
           className="px-4 py-3 text-sm text-center font-semibold"
-          style={{ backgroundColor: 'rgba(29,158,117,0.12)', borderBottom: '1px solid rgba(29,158,117,0.25)', color: '#1D9E75' }}
+          style={{ backgroundColor: 'rgba(29,158,117,0.12)', borderBottom: '1px solid rgba(29,158,117,0.25)', color: 'var(--trial)' }}
         >
           ⏰{' '}
           {daysLeft === 0
@@ -158,7 +158,7 @@ export default async function DashboardPage() {
             : `Your Pro trial ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'} — you won't be charged until ${trialEndDate}.`
           }
           {' '}
-          <a href="/pricing" className="underline hover:opacity-80 transition-opacity" style={{ color: '#1D9E75' }}>
+          <a href="/pricing" className="underline hover:opacity-80 transition-opacity" style={{ color: 'var(--trial)' }}>
             Manage plan
           </a>
         </div>
