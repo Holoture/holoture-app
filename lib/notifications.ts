@@ -27,6 +27,7 @@ export type NotificationType =
   | 'new_thesis'
   | 'market_holiday'
   | 'maintenance'
+  | 'referral_reward'
 
 type NotificationInput = {
   userId: string

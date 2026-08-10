@@ -41,6 +41,7 @@ const SCANNERS_MENU: DropdownItemConfig[] = [
 const NAV_LINKS = [
   { href: '/learn', label: 'Learn' },
   { href: '/tracker', label: 'Tracker' },
+  { href: '/refer', label: 'Refer a Friend' },
   { href: '/support', label: 'Support' },
   { href: '/pricing', label: 'Subscription' },
 ]

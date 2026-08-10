@@ -1,7 +1,10 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
+import { cookies } from 'next/headers'
 import { prisma } from './prisma'
 
 export type UserTier = 'free' | 'pro' | 'max'
+
+const REFERRAL_COOKIE = 'holo_ref'
 
 export async function getOrCreateUser() {
   const { userId } = await auth()
@@ -12,12 +15,25 @@ export async function getOrCreateUser() {
 
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? ''
 
+  // Referral attribution only ever runs on genuine account creation — check
+  // existence first rather than relying on upsert's create/update branches,
+  // so a returning user's every page load can't re-trigger it.
+  const existing = await prisma.user.findUnique({ where: { clerkId: userId } })
+  if (existing) return existing
+
   try {
-    const user = await prisma.user.upsert({
-      where: { clerkId: userId },
-      update: {},
-      create: { clerkId: userId, email },
-    })
+    const user = await prisma.user.create({ data: { clerkId: userId, email } })
+
+    try {
+      const refCode = (await cookies()).get(REFERRAL_COOKIE)?.value
+      if (refCode) {
+        const { attributeReferral } = await import('./referral')
+        await attributeReferral(userId, email, refCode.toUpperCase())
+      }
+    } catch (e) {
+      console.error('[getOrCreateUser] referral attribution failed', e)
+    }
+
     return user
   } catch (e: unknown) {
     // First try: maybe the upsert raced and the record exists by clerkId now

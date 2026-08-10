@@ -20,9 +20,58 @@ model User {
   isLifetimeMax        Boolean         @default(false)
   maxExpiresAt         DateTime?
   trialEndsAt          DateTime?
+  // Permanent, unique per user — generated lazily on first visit to the
+  // Refer a Friend page (lib/referral.ts#getOrCreateReferralCode), not at
+  // account creation, so the vast majority of users who never visit that
+  // page never get a wasted code.
+  referralCode         String?         @unique
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
   redemptions          RedemptionLog[]
+  referralsMade        Referral[]      @relation("Referrer")
+}
+
+// ── Referral program ─────────────────────────────────────────────────────────
+//
+// Lifecycle: PENDING (referee created an account via the link) -> SIGNED_UP
+// (referee started a real Pro trial — same TrialRecord path/anti-abuse gates
+// as any other trial, see app/api/stripe/checkout/route.ts) -> VALIDATED
+// (the trial ran its full course and converted to a paid subscription
+// without being canceled — Stripe's own trialing->active transition IS the
+// anti-abuse window; a cancellation or failed charge during the trial never
+// reaches 'active') -> REWARDED (both sides' rewards applied). EXPIRED means
+// the referee canceled/never converted — no reward.
+//
+// referrerRewardApplied can be false on a REWARDED row even though
+// refereeRewardApplied is true: the referee is always rewarded once
+// genuinely validated, but the REFERRER's reward is capped (see
+// REFERRER_REWARD_CAP in lib/referral.ts) — a referrer past the cap still
+// gets credit for the referral (visible in their history) but no further
+// free month, which is the documented worst-case-abuse bound from the spec.
+model Referral {
+  id                    String    @id @default(cuid())
+  referrerUserId        String // Clerk id
+  referrerEmail         String
+  referrer              User      @relation("Referrer", fields: [referrerUserId], references: [clerkId])
+  refereeEmail          String
+  refereeUserId         String? // Clerk id — set once the referee actually creates an account
+  referralCode          String
+  status                String    @default("PENDING") // PENDING | SIGNED_UP | VALIDATED | REWARDED | EXPIRED
+  createdAt             DateTime  @default(now())
+  validatedAt           DateTime?
+  rewardedAt            DateTime?
+  referrerRewardApplied Boolean   @default(false)
+  refereeRewardApplied  Boolean   @default(false)
+  // Human-readable audit trail for support — e.g. "Extended proExpiresAt by
+  // 30 days (was free tier)" or "$15.00 Stripe balance credit (was Pro)" or
+  // "skipped — referrer at 5/5 reward cap".
+  referrerRewardNote    String    @default("")
+  refereeRewardNote     String    @default("")
+
+  @@index([referrerUserId])
+  @@index([refereeUserId])
+  @@index([referralCode])
+  @@index([status])
 }
 
 model PromoCode {

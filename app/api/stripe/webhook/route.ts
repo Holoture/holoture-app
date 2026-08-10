@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
 import { createNotification } from '@/lib/notifications'
+import { markRefereeSignedUp, processReferralValidation, expireReferral } from '@/lib/referral'
 import type Stripe from 'stripe'
 
 /** Looks up the Clerk id for a Stripe customer — every notification write here needs it since Notification.userId is the Clerk id, not the internal User.id. */
@@ -50,6 +51,14 @@ export async function POST(req: NextRequest) {
 
         const trialEndsAt = sub.trial_end ? new Date(sub.trial_end * 1000) : null
 
+        // Captured BEFORE the overwrite below — the referral validation
+        // signal is specifically the trialing -> active transition, which
+        // only exists as a comparison against the prior stored status.
+        const priorUser = await prisma.user.findFirst({
+          where: { stripeCustomerId: customerId },
+          select: { clerkId: true, subscriptionStatus: true },
+        })
+
         await prisma.user.updateMany({
           where: { stripeCustomerId: customerId },
           data:  { stripeSubscriptionId: sub.id, subscriptionStatus: status, tier, trialEndsAt },
@@ -85,7 +94,22 @@ export async function POST(req: NextRequest) {
                 }).catch(() => {}) // ignore race-condition duplicates
               }
             }
+            // Referee started a genuine, anti-abuse-gated trial — advance
+            // their referral (if any) from PENDING to SIGNED_UP. Not yet a
+            // reward; that only happens on real conversion below.
+            await markRefereeSignedUp(clerkId).catch(() => {})
           }
+        }
+
+        // ── Referral validation: trial ran its course and converted ─────────
+        // Only fires on the exact trialing -> active transition, which Stripe
+        // only produces after the 7-day trial elapses and the first real
+        // charge succeeds. A cancellation or failed charge during the trial
+        // never reaches 'active', so it can't trigger this.
+        if (priorUser?.clerkId && priorUser.subscriptionStatus === 'trialing' && status === 'active') {
+          await processReferralValidation(priorUser.clerkId).catch((e) =>
+            console.error('[stripe webhook] processReferralValidation failed', e)
+          )
         }
         break
       }
@@ -93,10 +117,14 @@ export async function POST(req: NextRequest) {
       case 'customer.subscription.deleted': {
         const sub        = event.data.object as Stripe.Subscription
         const customerId = sub.customer as string
+        const clerkId = await clerkIdForCustomer(customerId)
         await prisma.user.updateMany({
           where: { stripeCustomerId: customerId },
           data:  { stripeSubscriptionId: sub.id, subscriptionStatus: 'canceled', tier: 'free', trialEndsAt: null },
         })
+        // Canceled before converting (still PENDING/SIGNED_UP) — no reward.
+        // A no-op if the referral already reached VALIDATED/REWARDED.
+        if (clerkId) await expireReferral(clerkId).catch(() => {})
         break
       }
 
