@@ -689,6 +689,28 @@ model NewsCatalystRawItem {
 // A raw item becomes a row here only after clearing ALL THREE gates: catalyst
 // category match, ticker resolution (high or low confidence — never a guess
 // with no match at all), and volume confirmation. See lib/newsCatalyst.ts.
+// Per-run funnel counters for the catalyst pipeline. Added 2026-08-10:
+// answering "where does the funnel drop to zero" previously required a
+// manual audit re-running the gate functions over stored raw items, because
+// nothing persisted the per-stage counts. Every run now writes one row, so
+// the drop-off stage is queryable directly.
+model NewsCatalystRunLog {
+  id                 String   @id @default(cuid())
+  ranAt              DateTime @default(now())
+  marketSession      String
+  feedsPolled        Int
+  itemsFetched       Int
+  newItems           Int
+  passedCategory     Int
+  resolvedTickerHigh Int
+  resolvedTickerLow  Int
+  discardedNoTicker  Int
+  passedVolume       Int
+  alertsCreated      Int
+
+  @@index([ranAt])
+}
+
 model NewsCatalystAlert {
   id                        String    @id @default(cuid())
   ticker                    String

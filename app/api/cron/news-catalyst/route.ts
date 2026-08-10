@@ -21,6 +21,7 @@ import {
   FEED_URLS, parseRssItems, filterUnseenItems, matchCatalystCategory,
   resolveTicker, checkVolumeConfirmation,
 } from '@/lib/newsCatalyst'
+import { getMarketSession } from '@/lib/marketSession'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -37,6 +38,7 @@ export async function GET(req: Request) {
   try {
     const stats = {
       feedsPolled: 0, itemsFetched: 0, newItems: 0,
+      passedCategory: 0, resolvedTickerHigh: 0, resolvedTickerLow: 0, passedVolume: 0,
       rejected: { noCatalystCategory: 0, noTicker: 0, volumeNotConfirmed: 0 },
       alertsCreated: [] as string[],
     }
@@ -88,12 +90,16 @@ export async function GET(req: Request) {
 
         const category = matchCatalystCategory(fullText)
         if (!category) { stats.rejected.noCatalystCategory++; continue }
+        stats.passedCategory++
 
         const resolved = await resolveTicker(fullText)
         if (!resolved) { stats.rejected.noTicker++; continue }
+        if (resolved.confidence === 'high') stats.resolvedTickerHigh++
+        else stats.resolvedTickerLow++
 
         const confirmation = await checkVolumeConfirmation(resolved.ticker)
         if (!confirmation || !confirmation.confirmed) { stats.rejected.volumeNotConfirmed++; continue }
+        stats.passedVolume++
 
         await prisma.newsCatalystAlert.create({
           data: {
@@ -112,6 +118,23 @@ export async function GET(req: Request) {
         stats.alertsCreated.push(resolved.ticker)
       }
     }
+
+    // Persist the funnel so the drop-off stage is queryable without a
+    // manual audit — see NewsCatalystRunLog's schema comment.
+    await prisma.newsCatalystRunLog.create({
+      data: {
+        marketSession: getMarketSession(),
+        feedsPolled: stats.feedsPolled,
+        itemsFetched: stats.itemsFetched,
+        newItems: stats.newItems,
+        passedCategory: stats.passedCategory,
+        resolvedTickerHigh: stats.resolvedTickerHigh,
+        resolvedTickerLow: stats.resolvedTickerLow,
+        discardedNoTicker: stats.rejected.noTicker,
+        passedVolume: stats.passedVolume,
+        alertsCreated: stats.alertsCreated.length,
+      },
+    }).catch(() => {}) // telemetry must never break ingestion
 
     return NextResponse.json({ ok: true, ...stats })
   } catch (err) {
