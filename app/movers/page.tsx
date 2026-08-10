@@ -94,7 +94,7 @@ function SessionSection({
         </div>
       ) : (
         <div className="mt-3">
-          <MoversTable rows={rows.map((r) => ({ ticker: r.ticker, companyName: r.companyName, extendedLastPrice: r.extendedLastPrice, pctChange: r.pctChange, dollarChange: r.dollarChange, referencePrice: r.regularClosePrice }))} />
+          <MoversTable isLive={isLive} rows={rows.map((r) => ({ ticker: r.ticker, companyName: r.companyName, extendedLastPrice: r.extendedLastPrice, pctChange: r.pctChange, dollarChange: r.dollarChange, referencePrice: r.regularClosePrice }))} />
         </div>
       )}
     </div>

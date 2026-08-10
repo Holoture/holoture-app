@@ -87,32 +87,48 @@ export async function GET(req: Request) {
     for (let i = 0; i < tickers.length; i += CHUNK) chunks.push(tickers.slice(i, i + CHUNK))
     const quoteEntries = await Promise.all(chunks.map((c) => getExtendedHoursQuotes(c)))
 
-    // Reference price differs by session — see getExtendedHoursQuotes'
-    // doc comment in lib/schwab.ts for the full reasoning. In short:
-    // Schwab's quote.closePrice is always the PRIOR completed regular
-    // session's close (verified live — it does not update to reflect
-    // today's own close once today's regular session ends). That makes it
-    // the correct baseline for premarket (today hasn't opened yet, so
-    // "previous regular close" really is closePrice), but the WRONG
-    // baseline for after-hours — using it there would measure the after-
-    // hours price against yesterday's close, silently folding today's
-    // entire regular-session move into what's supposed to be an
-    // after-hours-only number. quote.lastPrice (today's final regular-
-    // session print, frozen once the session ends) is the correct
-    // after-hours baseline instead.
+    // ── REWRITTEN 2026-08-10 after a live three-way audit proved the old
+    //    mapping produced sign-flipped, magnitude-wrong numbers. ──
+    //
+    // The `extended` block is NOT the current price. Verified live at
+    // 18:26 ET inside an active after-hours session: every sampled
+    // ticker's extended.tradeTime was 03:42-03:59 ET (14+ hours stale)
+    // with totalVolume 0. Reading it as "the extended price" and
+    // comparing it against quote.lastPrice (which actually IS the live
+    // extended price) inverted the calculation — PAYC rendered +41.69%
+    // when its real after-hours move was -29.45%.
+    //
+    // Correct mapping, each field verified against Schwab's own computed
+    // values AND an independent public quote for PAYC on 2026-08-10:
+    //   current price          = quote.lastPrice        (q.livePrice)
+    //   premarket reference    = quote.closePrice       (prior day's close)
+    //   after-hours reference  = regular.regularMarketLastPrice
+    //                            (TODAY's regular close, 213.45)
+    //
+    // For after-hours we take Schwab's own postMarketPercentChange rather
+    // than recomputing: it returned -29.45012884 for PAYC, matching the
+    // independent public source to the decimal. The locally-computed value
+    // is kept as a fallback for the rare row where Schwab omits it.
     const rows: { session: string; ticker: string; companyName: string | null; regularClosePrice: number; extendedLastPrice: number; pctChange: number; dollarChange: number }[] = []
     for (const map of quoteEntries) {
       for (const q of map.values()) {
-        const reference = session === 'premarket' ? q.regularClosePrice : q.regularLastPrice
+        const reference = session === 'premarket' ? q.regularClosePrice : q.regularMarketLastPrice
         if (reference <= 0) continue
-        const dollarChange = q.extendedLastPrice - reference
-        const pctChange = (dollarChange / reference) * 100
+        if (q.livePrice <= 0) continue
+
+        const dollarChange = q.livePrice - reference
+        const computedPct = (dollarChange / reference) * 100
+        // Schwab's own after-hours figure is authoritative when present.
+        const pctChange = session === 'afterhours' && q.postMarketPercentChange !== 0
+          ? q.postMarketPercentChange
+          : computedPct
+
         rows.push({
           session,
           ticker: q.symbol,
           companyName: q.companyName,
           regularClosePrice: reference, // holds the correct per-session reference price, see schema comment
-          extendedLastPrice: q.extendedLastPrice,
+          extendedLastPrice: q.livePrice, // column name is legacy; holds the LIVE extended price
           pctChange,
           dollarChange,
         })

@@ -17,25 +17,39 @@ export type MoverRow = {
 
 type SortDir = 'desc' | 'asc'
 
-export default function MoversTable({ rows }: { rows: MoverRow[] }) {
+export default function MoversTable({ rows, isLive = false }: { rows: MoverRow[]; isLive?: boolean }) {
   // This section's own sort control — separate from the main dashboard's
   // sort/filter, which only applies to the signal board.
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
   // Overlay the server-cached live quote on top of the last cron snapshot —
   // reads LiveQuoteCache via /api/live/quotes, never Schwab directly.
-  const tickers = useMemo(() => rows.map((r) => r.ticker), [rows])
+  //
+  // GATED ON isLive (added 2026-08-10). Two things had to be true for this
+  // overlay to be correct, and neither was:
+  //   1. referencePrice must be TODAY'S REGULAR CLOSE, not the live price.
+  //      cron/movers-snapshot previously stored quote.lastPrice as the
+  //      after-hours reference — but that field IS the live extended price,
+  //      so (live.price - reference) collapsed to ~0.00% (measured live:
+  //      PAYC 0.00 while the raw snapshot read +41.69%). Fixed at the
+  //      source: the reference column now holds regularMarketLastPrice.
+  //   2. The panel's session must be the one currently trading. A closed
+  //      "Last session" panel kept recomputing against a live cache that
+  //      updates during the OTHER session, so yesterday's after-hours rows
+  //      silently drifted once premarket opened. Frozen panels now render
+  //      the stored snapshot verbatim.
+  const tickers = useMemo(() => (isLive ? rows.map((r) => r.ticker) : []), [rows, isLive])
   const liveQuotes = useLiveQuotes(tickers, 12_000)
 
   const merged = useMemo(() => {
     return rows.map((r) => {
-      const live = liveQuotes[r.ticker]
+      const live = isLive ? liveQuotes[r.ticker] : undefined
       if (!live || r.referencePrice <= 0) return { ...r, liveUpdatedAt: null as string | null }
       const dollarChange = live.price - r.referencePrice
       const pctChange = (dollarChange / r.referencePrice) * 100
       return { ...r, extendedLastPrice: live.price, dollarChange, pctChange, liveUpdatedAt: live.lastUpdated }
     })
-  }, [rows, liveQuotes])
+  }, [rows, liveQuotes, isLive])
 
   const sorted = useMemo(() => {
     const arr = [...merged]

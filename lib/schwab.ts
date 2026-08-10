@@ -228,26 +228,56 @@ export type ExtendedHoursQuote = {
   extendedTradeTime: number // epoch ms
   pctChange: number // vs regularLastPrice — see getExtendedHoursQuotes doc
   securityStatus: string | null // "Normal" | "Halted" | "Closed"
+
+  // ── The fields that actually carry live extended-hours truth. Added
+  //    2026-08-10; prefer these over anything named `extended*` above. ──
+  /** LIVE price including extended trades (quote.lastPrice). */
+  livePrice: number
+  /** TODAY's regular-session close (regular.regularMarketLastPrice). The correct after-hours baseline. */
+  regularMarketLastPrice: number
+  /** Schwab's own after-hours $ change vs today's regular close. */
+  postMarketChange: number
+  /** Schwab's own after-hours % change vs today's regular close — verified against an independent public quote. */
+  postMarketPercentChange: number
 }
 
 /**
- * Batch premarket/after-hours quote fetch. Schwab's /quotes endpoint
- * exposes a dedicated `extended` object (lastPrice, totalVolume, tradeTime)
- * alongside the regular `quote` block, populated with whichever extended
- * session is currently active or most recently completed — the same field
- * works for both premarket and after-hours, no separate endpoint or
- * session-specific field needed. `reference.description` supplies the
- * company name the batch /quotes call otherwise omits.
+ * Batch premarket/after-hours quote fetch.
  *
- * % change is computed here as (extended.lastPrice - quote.lastPrice) /
- * quote.lastPrice, NOT against quote.closePrice (the prior COMPLETED
- * regular session's close, always — verified against a live response).
- * During premarket, quote.lastPrice already equals the prior day's last
- * trade (today's regular session hasn't opened yet), so this is
- * equivalent to comparing against yesterday's close. During after-hours,
- * quote.lastPrice is today's actual regular-session close, which is the
- * correct baseline for an after-hours move (using closePrice there would
- * incorrectly measure against the day-BEFORE-today's close instead).
+ * ── CORRECTED 2026-08-10 after a live three-way audit. Read this before
+ *    changing any field mapping here. ──
+ *
+ * The `extended` block is NOT a usable live price source on this
+ * entitlement. Proven live at 18:26 ET during an active after-hours
+ * session: every sampled ticker's `extended.tradeTime` was 03:42-03:59 ET
+ * — 14+ hours stale — with `extended.totalVolume: 0` and
+ * `extended.quoteTime: 0`. It appears to freeze after the overnight/
+ * premarket session and never update for after-hours. Treating it as
+ * "the current extended price" produced a sign-flipped, magnitude-wrong
+ * number (PAYC displayed +41.69% when the real after-hours move was
+ * -29.45%). `extendedLastPrice`/`extendedLastSize` are still returned
+ * below because other callers historically read them, but NOTHING should
+ * derive a current price or a liquidity figure from them.
+ *
+ * The correct fields, each verified against both Schwab's own computed
+ * values and an independent public quote for PAYC on 2026-08-10:
+ *   quote.lastPrice                  = the LIVE price, including extended
+ *                                      trades (150.5887 — matched the
+ *                                      public after-hours quote exactly)
+ *   regular.regularMarketLastPrice   = TODAY's regular-session close
+ *                                      (213.45 — matched "At close")
+ *   quote.closePrice                 = the PRIOR day's close (214.94)
+ *   quote.postMarketPercentChange    = Schwab's own after-hours % change
+ *                                      (-29.45012884 — matched the public
+ *                                      source to the decimal)
+ *
+ * A PRIOR VERSION OF THIS COMMENT CLAIMED quote.lastPrice is "today's
+ * final regular-session print, frozen once the session ends." That is
+ * empirically FALSE and was the root of the bug: during after-hours
+ * lastPrice tracks extended trades (150.5887), while the frozen regular
+ * close lives in regular.regularMarketLastPrice (213.45). The claim was
+ * most likely verified during premarket — where lastPrice genuinely IS a
+ * frozen prior-session value — and wrongly generalized to after-hours.
  *
  * Tickers with no real extended-session trade yet (extendedTradeTime = 0)
  * are omitted — a 0.0 last price is "no data," not a real quote.
@@ -258,13 +288,14 @@ export async function getExtendedHoursQuotes(symbols: string[]): Promise<Map<str
 
   const data = (await schwabGet('/quotes', {
     symbols: symbols.join(','),
-    fields: 'quote,extended,reference',
+    fields: 'quote,extended,regular,reference',
   })) as Record<
     string,
     {
       symbol: string
       quote?: Record<string, number>
       extended?: Record<string, number>
+      regular?: Record<string, number>
       reference?: { description?: string }
     }
   > | null
@@ -273,27 +304,35 @@ export async function getExtendedHoursQuotes(symbols: string[]): Promise<Map<str
   for (const [sym, entry] of Object.entries(data)) {
     const q = entry.quote
     const ext = entry.extended
-    if (!q || !ext) continue
-    const extendedTradeTime = ext.tradeTime ?? 0
-    const extendedLastPrice = ext.lastPrice ?? 0
-    if (extendedTradeTime === 0 || extendedLastPrice === 0) continue
+    if (!q) continue
 
-    const regularLastPrice = q.lastPrice ?? 0
-    if (regularLastPrice === 0) continue
+    // livePrice is the gating value now, not extended.lastPrice — a symbol
+    // with a live quote but a dead `extended` block (the normal case in
+    // after-hours, see the doc comment above) must NOT be dropped.
+    const livePrice = q.lastPrice ?? 0
+    if (livePrice === 0) continue
+
+    const extendedTradeTime = ext?.tradeTime ?? 0
+    const extendedLastPrice = ext?.lastPrice ?? 0
 
     out.set(sym, {
       symbol: entry.symbol ?? sym,
       companyName: entry.reference?.description ?? null,
-      regularLastPrice,
+      regularLastPrice: livePrice, // legacy alias — misleadingly named, see doc comment
       regularClosePrice: q.closePrice ?? 0,
       extendedLastPrice,
-      extendedVolume: ext.totalVolume ?? 0,
-      extendedBidPrice: ext.bidPrice ?? 0,
-      extendedAskPrice: ext.askPrice ?? 0,
-      extendedLastSize: ext.lastSize ?? 0,
+      extendedVolume: ext?.totalVolume ?? 0,
+      extendedBidPrice: ext?.bidPrice ?? 0,
+      extendedAskPrice: ext?.askPrice ?? 0,
+      extendedLastSize: ext?.lastSize ?? 0,
       extendedTradeTime,
-      pctChange: ((extendedLastPrice - regularLastPrice) / regularLastPrice) * 100,
+      pctChange: ((extendedLastPrice - livePrice) / livePrice) * 100,
       securityStatus: (q as unknown as { securityStatus?: string }).securityStatus ?? null,
+
+      livePrice,
+      regularMarketLastPrice: entry.regular?.regularMarketLastPrice ?? 0,
+      postMarketChange: q.postMarketChange ?? 0,
+      postMarketPercentChange: q.postMarketPercentChange ?? 0,
     })
   }
   return out

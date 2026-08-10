@@ -123,39 +123,24 @@ function getLiveExtendedSession(): 'premarket' | 'afterhours' | null {
 const MIN_GAIN_PCT_CHANGE = 4
 const MIN_LOSS_PCT_CHANGE = -5
 
-// Matches app/movers/page.tsx's real /movers page: MoversTable there
-// overlays a live quote (LiveQuoteCache) on top of the cron snapshot,
-// recomputing $/% change from the live price against the same reference
-// price, since MoverSnapshot itself is only refreshed every 5 minutes by
-// cron/movers-snapshot. This card was using the raw, potentially-stale
-// snapshot values directly — out of step with what /movers actually shows
-// at the same moment. Same overlay math here, just done server-side once
-// at render instead of client-side polling.
+// Reads MoverSnapshot directly — deliberately NO LiveQuoteCache overlay.
+//
+// Commit 1ac2315 added one here to match /movers. That was wrong in both
+// places and is reverted: LiveQuoteCache.price IS quote.lastPrice, which is
+// the same value cron/movers-snapshot already stores as the extended price,
+// so overlaying it against the stored reference collapsed the displayed
+// change toward ~0.00% (measured live: PAYC 0.00, LITE 0.00, DJT 0.00 while
+// the snapshot itself read +41.69%). The snapshot is refreshed every 5
+// minutes by its own cron and is now computed from the correct Schwab
+// fields — that is the single source of truth for this card.
 async function getTopMovers(session: 'premarket' | 'afterhours' | null) {
   if (!session) return { session: null, rows: [] }
   try {
     const rows = await prisma.moverSnapshot.findMany({
       where: { session, OR: [{ pctChange: { gte: MIN_GAIN_PCT_CHANGE } }, { pctChange: { lte: MIN_LOSS_PCT_CHANGE } }] },
-      select: { ticker: true, pctChange: true, extendedLastPrice: true, regularClosePrice: true },
+      select: { ticker: true, pctChange: true, extendedLastPrice: true },
     })
-    if (rows.length === 0) return { session, rows: [] }
-
-    const liveQuotes = await prisma.liveQuoteCache.findMany({
-      where: { ticker: { in: rows.map((r) => r.ticker) } },
-      select: { ticker: true, price: true },
-    })
-    const liveByTicker = new Map(liveQuotes.map((q) => [q.ticker, q.price]))
-
-    const merged = rows.map((r) => {
-      const live = liveByTicker.get(r.ticker)
-      if (live == null || r.regularClosePrice <= 0) {
-        return { ticker: r.ticker, extendedLastPrice: r.extendedLastPrice, pctChange: r.pctChange }
-      }
-      const pctChange = ((live - r.regularClosePrice) / r.regularClosePrice) * 100
-      return { ticker: r.ticker, extendedLastPrice: live, pctChange }
-    })
-
-    const top = merged.sort((a, b) => Math.abs(b.pctChange) - Math.abs(a.pctChange)).slice(0, 4)
+    const top = rows.slice().sort((a, b) => Math.abs(b.pctChange) - Math.abs(a.pctChange)).slice(0, 4)
     return { session, rows: top }
   } catch { return { session, rows: [] } }
 }
