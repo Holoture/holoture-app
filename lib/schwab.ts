@@ -239,6 +239,8 @@ export type ExtendedHoursQuote = {
   postMarketChange: number
   /** Schwab's own after-hours % change vs today's regular close — verified against an independent public quote. */
   postMarketPercentChange: number
+  /** Today's regular-session share volume (quote.totalVolume) — a real liquidity figure, unlike extended.totalVolume which is always 0 here. */
+  dayVolume: number
 }
 
 /**
@@ -333,6 +335,7 @@ export async function getExtendedHoursQuotes(symbols: string[]): Promise<Map<str
       regularMarketLastPrice: entry.regular?.regularMarketLastPrice ?? 0,
       postMarketChange: q.postMarketChange ?? 0,
       postMarketPercentChange: q.postMarketPercentChange ?? 0,
+      dayVolume: q.totalVolume ?? 0,
     })
   }
   return out

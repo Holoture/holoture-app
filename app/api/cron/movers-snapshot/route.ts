@@ -29,6 +29,16 @@ function verifyCron(req: Request): boolean {
 // never had a chance in a merged top-150 that also includes every
 // mega/large/mid health_care name. Capping per bucket instead gives every
 // size tier its own fair allocation.
+// Warrants (W/WS), units (U), and rights (R/RT) are not common stock and
+// price in fractions of a cent, where one odd-lot print is a 40% "move".
+// Same suffix heuristic already used in lib/newsCatalyst.ts to prefer a
+// common-stock ticker over its warrant when both share a company name.
+function isDerivativeTicker(ticker: string): boolean {
+  return /(WS|RT|W|U|R)$/.test(ticker) && ticker.length > 4
+}
+const MIN_PRICE = 0.50 // below this, tick size alone produces double-digit percentages
+const MIN_DAY_VOLUME = 50_000 // today's real regular-session share volume
+
 const ALL_BUCKETS: NasdaqMarketCapBucket[] = ['mega', 'large', 'mid', 'small', 'micro', 'nano']
 const PER_SECTOR_CAP = 300 // per bucket, per sector — 6 buckets x 11 sectors x 300 ceiling (most combos have far fewer)
 
@@ -70,6 +80,7 @@ export async function GET(req: Request) {
   if (!verifyCron(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
+    const runStartedAt = new Date()
     const { premarketLive, afterhoursLive } = getSessionWindows()
     const session: 'premarket' | 'afterhours' | null = premarketLive ? 'premarket' : afterhoursLive ? 'afterhours' : null
     if (!session) {
@@ -116,6 +127,27 @@ export async function GET(req: Request) {
         if (reference <= 0) continue
         if (q.livePrice <= 0) continue
 
+        // ── Junk filters, added 2026-08-10. ──
+        // The old code implicitly excluded these: it dropped any symbol
+        // whose `extended` block was empty, which happened to exclude
+        // everything that doesn't really trade after hours. Removing that
+        // (correctly — the block is stale, see above) let warrants and
+        // sub-penny names flood the list: a single odd-lot print on a
+        // $0.008 warrant renders as a -40% "mover". Row count tripled
+        // (74 -> 235) and the top of the list filled with BZFDW, ONFOW,
+        // LOTWW, VFSWW. The percentages were arithmetically correct but
+        // the list was unusable, so the filter is restored explicitly
+        // rather than as a side effect of a stale-data bug.
+        //
+        // NOTE: this is deliberately NOT the signal-board liquidity floor.
+        // The movers page is explicitly "unfiltered, includes low-liquidity
+        // movers" — small caps still belong here. This only removes
+        // non-common-stock derivatives and prices/volumes so low that a
+        // single print produces a meaningless percentage.
+        if (isDerivativeTicker(q.symbol)) continue
+        if (q.livePrice < MIN_PRICE || reference < MIN_PRICE) continue
+        if (q.dayVolume < MIN_DAY_VOLUME) continue
+
         const dollarChange = q.livePrice - reference
         const computedPct = (dollarChange / reference) * 100
         // Schwab's own after-hours figure is authoritative when present.
@@ -157,7 +189,20 @@ export async function GET(req: Request) {
     }
     await Promise.all(Array.from({ length: Math.min(CONCURRENCY, rows.length) }, worker))
 
-    return NextResponse.json({ ok: true, session, universeSize: tickers.length, capturedRows: rows.length })
+    // Evict rows this run did not refresh. Added 2026-08-10: the table was
+    // upsert-only, so any ticker that stopped qualifying kept its LAST
+    // KNOWN values forever — it never disappeared, it just froze. That is
+    // why warrants and sub-penny names (VFSWW, BZFDW, ONFOW, LOTWW)
+    // remained at the top of the movers list even after a filter excluded
+    // them, and why a ticker that spiked once could sit on the page for
+    // the rest of the session showing a move that had already reverted.
+    // capturedAt is @updatedAt, so every row touched above has a timestamp
+    // at or after runStartedAt; anything older was not seen this run.
+    const evicted = await prisma.moverSnapshot.deleteMany({
+      where: { session, capturedAt: { lt: runStartedAt } },
+    })
+
+    return NextResponse.json({ ok: true, session, universeSize: tickers.length, capturedRows: rows.length, evictedStaleRows: evicted.count })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('[cron/movers-snapshot]', msg)
