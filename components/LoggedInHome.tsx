@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { currentUser } from '@clerk/nextjs/server'
 import {
   TrendingUp, TrendingDown, ArrowRight, Crown, Zap, Landmark,
-  Wallet, Sunrise, Moon, LineChart, Bell, Users,
+  Wallet, Sunrise, Moon, LineChart, Bell, Users, Newspaper,
 } from 'lucide-react'
 import Header from '@/components/Header'
 import MarketStatusBanner from '@/components/MarketStatusBanner'
@@ -381,6 +381,7 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
           <QuickAction href="/politician-scanner" icon={<Landmark className="w-4 h-4" />} title="Politician Scanner" />
           <QuickAction href="/insider-scanner" icon={<Users className="w-4 h-4" />} title="Insider Scanner" />
           <QuickAction href="/trends" icon={<TrendingUp className="w-4 h-4" />} title="Trends" />
+          <QuickAction href="/news" icon={<Newspaper className="w-4 h-4" />} title="News" />
         </div>
 
         {/* ── Active signals — a real 5-row preview of the dashboard, not a
