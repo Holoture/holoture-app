@@ -54,3 +54,12 @@ export const EXTENDED_MAX_SPREAD_PCT = 1.5     // bid/ask spread as % of mid —
 export const EXTENDED_MIN_LAST_TRADE_DOLLARS = 5_000 // lastPrice x lastSize of the most recent print — a real trade actually happened at real size
 export const EXTENDED_MIN_PRICE = 3            // penny-stock floor, same as the momentum scanner
 export const EXTENDED_MAX_QUOTE_AGE_MIN = 20   // reject stale prints — a 20min-old last trade is itself a liquidity warning
+
+/**
+ * Minimum regular-session DOLLAR volume for an extended-hours candidate.
+ * Replaces EXTENDED_MIN_LAST_TRADE_DOLLARS, which read the dead `extended`
+ * block (see lib/scheduledSignals.ts). A name that trades $2M+ during the
+ * day has real extended-hours depth; one that doesn't, doesn't — this is a
+ * proxy, but it is built on a field Schwab actually populates.
+ */
+export const EXTENDED_MIN_DAY_DOLLAR_VOLUME = 2_000_000

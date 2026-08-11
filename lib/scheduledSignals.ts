@@ -46,9 +46,9 @@
  * included: candidates are drawn ONLY from TickerUniverse (the same
  * weekly-screened, dollar-volume-floored pool cron/signals and the old
  * cron/extended-signals both used). Premarket/after-hours slots ALSO gate on
- * EXTENDED_MAX_SPREAD_PCT / EXTENDED_MIN_LAST_TRADE_DOLLARS (bid/ask spread
- * + last-print size) because Schwab's regular quote block is stale outside
- * regular hours — that's a data-source necessity, not a standards relaxation;
+ * EXTENDED_MIN_DAY_DOLLAR_VOLUME (real regular-session dollar volume) as a
+ * depth proxy, because Schwab's `extended` block is structurally dead on
+ * this entitlement — that's a data-source necessity, not a standards relaxation;
  * the admission floor (TickerUniverse membership) is exactly the same as
  * every regular-hours slot.
  *
@@ -69,9 +69,8 @@ import { getQuotes, getExtendedHoursQuotes } from '@/lib/schwab'
 import { notifySignalDigest } from '@/lib/notifications'
 import {
   EXTENDED_MAX_SPREAD_PCT,
-  EXTENDED_MIN_LAST_TRADE_DOLLARS,
+  EXTENDED_MIN_DAY_DOLLAR_VOLUME,
   EXTENDED_MIN_PRICE,
-  EXTENDED_MAX_QUOTE_AGE_MIN,
 } from '@/lib/liquidityFloor'
 
 export function verifyCronSecret(req: Request): boolean {
@@ -400,52 +399,79 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
     for (let i = 0; i < universe.length; i += CHUNK) chunks.push(universe.slice(i, i + CHUNK))
     const quoteMaps = await Promise.all(chunks.map((c) => getExtendedHoursQuotes(c)))
 
+    // ── REWRITTEN 2026-08-10. Every gate below previously read Schwab's
+    //    `extended` block, which is DEAD on this entitlement. ──
+    //
+    // Proven live during an active after-hours session: extended.tradeTime
+    // was 14+ hours stale (03:42 ET at 18:26 ET), extended.totalVolume was
+    // 0, extended.quoteTime was 0, and extended.lastSize was a 37-share
+    // odd lot. The consequences, each confirmed by a real dry run that
+    // scanned 173 tickers and qualified 0:
+    //   - price gate  read extended.lastPrice, which is 0 for most symbols
+    //                 -> rejected 115/173 outright
+    //   - move gate   read pctChange = (extended.lastPrice - livePrice) /
+    //                 livePrice, the same inverted formula that made the
+    //                 movers page show +41.69% for a -29.45% move
+    //                 -> rejected the remaining 58/173
+    //   - size gate   read extended.lastPrice * extended.lastSize; on PAYC,
+    //                 a $9.5B mega-cap, that came to $7,895 against a
+    //                 $5,000 bar, from a 14-hour-old print
+    //   - stale gate  compared now against extended.tradeTime, so in
+    //                 after-hours EVERY symbol read ~900 minutes old
+    //                 against a 20-minute limit
+    // Nothing could pass. A prior pass correctly identified that the
+    // spread gate was unpassable and demoted it to advisory, but left the
+    // other four gates reading the same dead block.
+    //
+    // Now uses the same live fields that fixed cron/movers-snapshot:
+    // livePrice (quote.lastPrice), regularMarketLastPrice / closePrice for
+    // the correct per-session baseline, and dayVolume (the real regular-
+    // session volume) for liquidity. The staleness gate is removed rather
+    // than re-pointed: livePrice IS the current print, so there is no
+    // separate timestamp to age out.
     for (const map of quoteMaps) {
       for (const q of map.values()) {
-        if (q.extendedLastPrice < EXTENDED_MIN_PRICE) { rejected.price++; continue }
-        if (q.pctChange <= 0) { rejected.move++; continue } // BUY-only: down-moves excluded outright, not just filtered by magnitude
-        const existing = activeByTicker.get(q.symbol)
-        if (existing && !isMateriallyChanged(existing, q.extendedLastPrice)) { rejected.dedup++; continue }
-        if (Math.abs(q.pctChange) < slot.minPctMove) { rejected.move++; continue }
+        if (q.livePrice < EXTENDED_MIN_PRICE) { rejected.price++; continue }
 
-        // Spread is ADVISORY ONLY, never a hard gate — investigation (a real
-        // spread%/last-print-size sample pulled live during an actual
-        // after-hours window) found Schwab doesn't return usable bid/ask
-        // for extended quotes on
-        // this entitlement (mid/bid/ask all read as missing on every real
-        // candidate checked), the same class of gap already documented for
-        // extended.totalVolume elsewhere in this file. A hard gate on data
-        // that's structurally never populated meant NOTHING could ever pass,
-        // regardless of what threshold value was set — confirmed via a real
-        // production run: zero premarket/afterhours signals ever created.
-        // lastTradeDollars (real, populated) is now the sole hard liquidity
-        // gate; spread still contributes a scoring bonus when it happens to
-        // be available, but a missing spread no longer excludes a candidate.
+        // Correct per-session baseline. Premarket compares to the prior
+        // regular close; after-hours compares to TODAY's regular close,
+        // using Schwab's own postMarketPercentChange when present (it
+        // matched an independent public quote to the decimal).
+        const baseline = slot.session === 'premarket' ? q.regularClosePrice : q.regularMarketLastPrice
+        if (baseline <= 0) { rejected.price++; continue }
+        const pctMove = slot.session === 'afterhours' && q.postMarketPercentChange !== 0
+          ? q.postMarketPercentChange
+          : ((q.livePrice - baseline) / baseline) * 100
+
+        if (pctMove <= 0) { rejected.move++; continue } // BUY-only: down-moves excluded outright, not just filtered by magnitude
+        const existing = activeByTicker.get(q.symbol)
+        if (existing && !isMateriallyChanged(existing, q.livePrice)) { rejected.dedup++; continue }
+        if (Math.abs(pctMove) < slot.minPctMove) { rejected.move++; continue }
+
+        // Liquidity from real regular-session dollar volume. extended
+        // volume/size/spread are all structurally unavailable here, so the
+        // honest proxy is how heavily the name actually trades — a stock
+        // with real daytime volume has real extended-hours depth. Spread
+        // stays advisory-only when Schwab happens to return it.
+        const dayDollarVolume = q.livePrice * q.dayVolume
+        if (dayDollarVolume < EXTENDED_MIN_DAY_DOLLAR_VOLUME) { rejected.size++; continue }
+
         const mid = (q.extendedBidPrice + q.extendedAskPrice) / 2
         const spreadPct = mid > 0 && q.extendedBidPrice > 0 && q.extendedAskPrice > 0
           ? ((q.extendedAskPrice - q.extendedBidPrice) / mid) * 100
           : null
-
-        const lastTradeDollars = q.extendedLastPrice * q.extendedLastSize
-        if (lastTradeDollars < EXTENDED_MIN_LAST_TRADE_DOLLARS) { rejected.size++; continue }
-
-        const quoteAgeMin = (now - q.extendedTradeTime) / 60_000
-        if (quoteAgeMin > EXTENDED_MAX_QUOTE_AGE_MIN || quoteAgeMin < 0) { rejected.stale++; continue }
-
         const spreadScore = spreadPct !== null && spreadPct <= EXTENDED_MAX_SPREAD_PCT
           ? Math.min(6, Math.max(0, (EXTENDED_MAX_SPREAD_PCT - spreadPct) * 3))
           : 0
-        const sizeScore = Math.min(4, (lastTradeDollars / EXTENDED_MIN_LAST_TRADE_DOLLARS) * 1.5)
+        const volumeScore = Math.min(4, (dayDollarVolume / EXTENDED_MIN_DAY_DOLLAR_VOLUME) * 1.5)
 
         candidates.push({
           ticker: q.symbol,
-          price: Math.round(q.extendedLastPrice * 100) / 100,
-          pctMove: Math.round(q.pctChange * 100) / 100,
+          price: Math.round(q.livePrice * 100) / 100,
+          pctMove: Math.round(pctMove * 100) / 100,
           direction: 'BUY',
-          liquidityBonus: spreadScore + sizeScore,
-          liquidityNote: spreadPct !== null
-            ? `${Math.round(spreadPct * 100) / 100}% spread, $${Math.round(lastTradeDollars).toLocaleString()} last print`
-            : `$${Math.round(lastTradeDollars).toLocaleString()} last print (spread unavailable)`,
+          liquidityBonus: spreadScore + volumeScore,
+          liquidityNote: `$${Math.round(dayDollarVolume).toLocaleString()} traded today`,
           supersedesId: existing?.id,
         })
       }
@@ -462,7 +488,7 @@ export async function runSlot(slotId: SlotId, isDryRun: boolean) {
       qualified: candidates.length,
       wouldCreate: shortlist,
       rejected,
-      thresholds: { minPctMove: slot.minPctMove, minConfidence: slot.minConfidence, maxSpreadPct: EXTENDED_MAX_SPREAD_PCT, minLastTradeDollars: EXTENDED_MIN_LAST_TRADE_DOLLARS },
+      thresholds: { minPctMove: slot.minPctMove, minConfidence: slot.minConfidence, maxSpreadPct: EXTENDED_MAX_SPREAD_PCT, minDayDollarVolume: EXTENDED_MIN_DAY_DOLLAR_VOLUME },
     }
   }
 
