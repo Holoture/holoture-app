@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-10",
-    "filed_at": "2026-08-10"
+    "traded_at": "2026-08-11",
+    "filed_at": "2026-08-11"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,30 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-10",
-    "filed_at": "2026-08-10"
+    "traded_at": "2026-08-11",
+    "filed_at": "2026-08-11"
+  },
+  {
+    "politician_name": "Christian D. Menefee",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PINS",
+    "company_name": "SP Pinterest, Inc. Class A Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-07",
+    "filed_at": "2026-08-07"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CCI",
+    "company_name": "Crown Castle Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-06",
+    "filed_at": "2026-08-06"
   },
   {
     "politician_name": "April McClain Delaney",
@@ -259,6 +281,17 @@
     "ticker": "TDG",
     "company_name": "DC Transdigm Group Incorporated",
     "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-28",
+    "filed_at": "2026-08-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CARR",
+    "company_name": "Carrier Global Corporation Common",
+    "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-28",
     "filed_at": "2026-08-01"
@@ -1089,6 +1122,28 @@
     "filed_at": "2026-07-03"
   },
   {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LLY",
+    "company_name": "Eli Lilly and Company Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-01",
+    "filed_at": "2026-07-01"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "KLAC",
+    "company_name": "KLA Corporation - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-01",
+    "filed_at": "2026-07-01"
+  },
+  {
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
@@ -1342,6 +1397,17 @@
     "filed_at": "2026-07-06"
   },
   {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOGL",
+    "company_name": "Alphabet Inc. - Class A Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-29",
+    "filed_at": "2026-06-29"
+  },
+  {
     "politician_name": "Cleo Fields",
     "party": "Democrat",
     "chamber": "House",
@@ -1351,6 +1417,61 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-06-26",
     "filed_at": "2026-06-26"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOGL",
+    "company_name": "Alphabet Inc. - Class A Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-25",
+    "filed_at": "2026-06-25"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AMZN",
+    "company_name": "Amazon.com, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-25",
+    "filed_at": "2026-06-25"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MU",
+    "company_name": "Micron Technology, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-25",
+    "filed_at": "2026-06-25"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "Microsoft Corporation - Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-25",
+    "filed_at": "2026-06-25"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "NVIDIA Corporation - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-25",
+    "filed_at": "2026-06-25"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
@@ -4618,6 +4739,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-05-06",
     "filed_at": "2026-05-31"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "META",
+    "company_name": "Meta Platforms, Inc. - Class A",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-05-06",
+    "filed_at": "2026-05-06"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PLTR",
+    "company_name": "Palantir Technologies Inc. - Class A",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-05-06",
+    "filed_at": "2026-05-06"
   },
   {
     "politician_name": "Greg Stanton",
@@ -10241,6 +10384,17 @@
     "filed_at": "2026-03-01"
   },
   {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "Microsoft Corporation - Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-20",
+    "filed_at": "2026-02-20"
+  },
+  {
     "politician_name": "Richard W. Allen",
     "party": "Unknown",
     "chamber": "House",
@@ -11720,6 +11874,17 @@
     "chamber": "House",
     "ticker": "GNPX",
     "company_name": "Genprex, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-05",
+    "filed_at": "2026-02-05"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "Microsoft Corporation - Common",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-05",
@@ -14135,6 +14300,28 @@
     "filed_at": "2026-01-22"
   },
   {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "META",
+    "company_name": "Meta Platforms, Inc. - Class A",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-09",
+    "filed_at": "2026-01-09"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PLTR",
+    "company_name": "Palantir Technologies Inc. - Class A",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-09",
+    "filed_at": "2026-01-09"
+  },
+  {
     "politician_name": "David J. Taylor",
     "party": "Republican",
     "chamber": "House",
@@ -14450,6 +14637,17 @@
     "company_name": "VSNT",
     "trade_type": "BUY",
     "amount_range": "Unknown",
+    "traded_at": "2026-01-02",
+    "filed_at": "2026-01-02"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LLY",
+    "company_name": "Eli Lilly and Company Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-01-02",
     "filed_at": "2026-01-02"
   },
@@ -17028,6 +17226,17 @@
     "filed_at": "2026-01-09"
   },
   {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "KO",
+    "company_name": "Coca-Cola Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-03",
+    "filed_at": "2025-12-03"
+  },
+  {
     "politician_name": "April McClain Delaney",
     "party": "Democrat",
     "chamber": "House",
@@ -17191,6 +17400,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-02",
     "filed_at": "2025-12-31"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LLY",
+    "company_name": "Eli Lilly and Company Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-02",
+    "filed_at": "2025-12-02"
   },
   {
     "politician_name": "Dwight Evans",
@@ -17532,6 +17752,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-10-16",
     "filed_at": "2025-11-01"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GEV",
+    "company_name": "GE Vernova Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-10-06",
+    "filed_at": "2025-10-06"
   },
   {
     "politician_name": "Julie Johnson",
@@ -18007,6 +18238,17 @@
     "filed_at": "2025-10-01"
   },
   {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "META",
+    "company_name": "Meta Platforms, Inc. - Class A",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-09-18",
+    "filed_at": "2025-09-18"
+  },
+  {
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
@@ -18093,6 +18335,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-08-08",
     "filed_at": "2025-09-01"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "NVIDIA Corporation - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-08-01",
+    "filed_at": "2025-08-01"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "NVIDIA Corporation - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-07-31",
+    "filed_at": "2025-07-31"
   },
   {
     "politician_name": "Julia Letlow",
@@ -18260,6 +18524,28 @@
     "filed_at": "2025-08-11"
   },
   {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOGL",
+    "company_name": "Alphabet Inc. - Class A Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-07-03",
+    "filed_at": "2025-07-03"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AMZN",
+    "company_name": "Amazon.com, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-07-03",
+    "filed_at": "2025-07-03"
+  },
+  {
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
@@ -18401,6 +18687,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-05-07",
     "filed_at": "2025-06-03"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PRU",
+    "company_name": "Prudential Financial, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-05-07",
+    "filed_at": "2025-05-07"
   },
   {
     "politician_name": "Julia Letlow",
@@ -18865,6 +19162,17 @@
     "filed_at": "2025-08-11"
   },
   {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ORCL",
+    "company_name": "Oracle Corporation Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-01-14",
+    "filed_at": "2025-01-14"
+  },
+  {
     "politician_name": "Ritchie John Torres",
     "party": "Unknown",
     "chamber": "House",
@@ -18920,6 +19228,28 @@
     "filed_at": "2025-08-11"
   },
   {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NOW",
+    "company_name": "ServiceNow, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2024-12-16",
+    "filed_at": "2024-12-16"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "TMO",
+    "company_name": "Thermo Fisher Scientific Inc Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2024-12-12",
+    "filed_at": "2024-12-12"
+  },
+  {
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
@@ -18940,6 +19270,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2024-12-06",
     "filed_at": "2025-08-11"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PFE",
+    "company_name": "Pfizer, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2024-11-26",
+    "filed_at": "2024-11-26"
   },
   {
     "politician_name": "Julia Letlow",
