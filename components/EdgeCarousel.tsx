@@ -40,6 +40,27 @@ const SLIDES: Slide[] = [
       'Track when CEOs, CFOs, and board members buy their own company stock with personal money — one of the most bullish signals in the market.',
     pills: ['Form 4 Filings', 'Significance Score', 'Cluster Buy Detection'],
   },
+  {
+    image: '/screenshots/movers.png',
+    title: 'Premarket & After-Hours Movers',
+    description:
+      'Real price moves before the bell and after the close, pulled from the same broad market-cap universe as our signal pipeline. See what moved, by how much, and against the correct session reference price.',
+    pills: ['Premarket', 'After-Hours', 'Real % Change'],
+  },
+  {
+    image: '/screenshots/catalyst-alerts.png',
+    title: 'News Catalyst Alerts',
+    description:
+      'Automated detection of contract awards, M&A, and other high-impact news on small and mid-cap names — confirmed against real trading volume before anything is surfaced, never on the headline alone.',
+    pills: ['Contract Awards', 'M&A Detection', 'Volume-Confirmed'],
+  },
+  {
+    image: '/screenshots/sentiment.png',
+    title: 'Holoture Market Sentiment Index',
+    description:
+      'Our own 0–100 composite of market breadth, momentum, volatility, and our own live signal mix — not a reproduction of any third-party index. Updated daily, with the full component breakdown shown on click.',
+    pills: ['0–100 Composite', 'Daily Update', 'Full Breakdown'],
+  },
 ]
 
 const AUTO_ADVANCE_MS = 6000
@@ -97,8 +118,8 @@ export default function EdgeCarousel() {
         <SectionHeader
           index="01"
           eyebrow="One platform"
-          title="One Platform, Four Edges"
-          subhead="Signals, options, and the scanners that show you where the smart money moves."
+          title="One Platform, Every Edge"
+          subhead="Signals, options, scanners, market movers, catalyst alerts, and our own sentiment read — all in one place."
         />
 
         {/* ── Carousel ── */}

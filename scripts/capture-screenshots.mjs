@@ -12,6 +12,14 @@
  * Env:
  *   BASE_URL   target origin (default https://www.holoture.com)
  *   HEADLESS   set to "1" to force headless (only works once a session exists)
+ *
+ * 2026-08-12: routes updated for the current nav (options moved off the
+ * dashboard's ?tab= query to its own /options page; Politician/Insider
+ * Scanner are unchanged URLs, just regrouped under the header's "Scanners"
+ * dropdown). Three new full-page/element targets added for the carousel
+ * expansion — movers, catalyst alerts, and an element-level crop of the
+ * Holoture Market Sentiment Index (which only exists embedded on the
+ * signed-in landing page, not as its own route).
  */
 import puppeteer from 'puppeteer'
 import path from 'node:path'
@@ -25,10 +33,18 @@ const BASE_URL = process.env.BASE_URL ?? 'https://www.holoture.com'
 const HEADLESS = process.env.HEADLESS === '1'
 
 const TARGETS = [
-  { path: '/dashboard',              file: 'signals.png' },
-  { path: '/dashboard?tab=options',  file: 'options.png' },
-  { path: '/politician-scanner',     file: 'politician.png' },
-  { path: '/insider-scanner',        file: 'insider.png' },
+  { path: '/dashboard',          file: 'signals.png' },
+  { path: '/options',            file: 'options.png' },
+  { path: '/politician-scanner', file: 'politician.png' },
+  { path: '/insider-scanner',    file: 'insider.png' },
+  { path: '/movers',             file: 'movers.png' },
+  { path: '/catalyst-alerts',    file: 'catalyst-alerts.png' },
+  // Element-level crop, not a full page — the sentiment index only exists
+  // embedded in the Market Pulse panel on the signed-in landing page ('/'
+  // while authenticated resolves to LoggedInHome, not the marketing page).
+  // `expandSelector` is clicked first so the screenshot shows the expanded
+  // component-breakdown state, not just the collapsed score+gauge line.
+  { path: '/', file: 'sentiment.png', elementSelector: '[data-screenshot="sentiment-gauge"]', expandSelector: '[data-screenshot="sentiment-gauge"] button' },
 ]
 
 function prompt(q) {
@@ -56,7 +72,22 @@ for (const t of TARGETS) {
   await page.goto(url, { waitUntil: 'networkidle2' })
   // Give client-rendered data (signals, tables) a moment to settle.
   await new Promise((r) => setTimeout(r, 2500))
-  await page.screenshot({ path: path.join(OUT, t.file) })
+
+  if (t.expandSelector) {
+    await page.click(t.expandSelector).catch(() => console.log(`  (expand click failed for ${t.file} — capturing collapsed state)`))
+    await new Promise((r) => setTimeout(r, 400)) // let the expand transition finish
+  }
+
+  if (t.elementSelector) {
+    const el = await page.$(t.elementSelector)
+    if (!el) {
+      console.log(`  ✗ selector "${t.elementSelector}" not found — skipping ${t.file}`)
+      continue
+    }
+    await el.screenshot({ path: path.join(OUT, t.file) })
+  } else {
+    await page.screenshot({ path: path.join(OUT, t.file) })
+  }
   console.log(`  saved public/screenshots/${t.file}`)
 }
 

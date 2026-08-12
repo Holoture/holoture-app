@@ -47,6 +47,7 @@ export default function SentimentGauge({ data, embedded = false }: { data: Senti
 
   return (
     <div
+      data-screenshot="sentiment-gauge"
       className={embedded ? '' : 'mb-6'}
       style={embedded
         ? { borderTop: '1px solid var(--border-subtle)' }
