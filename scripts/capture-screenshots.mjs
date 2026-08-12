@@ -22,9 +22,15 @@
  * signed-in landing page, not as its own route).
  */
 import puppeteer from 'puppeteer'
+import sharp from 'sharp'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import readline from 'node:readline'
+
+// Matches app/globals.css's --bg-base — the real page background this card
+// sits on, so padding blends in rather than reading as a visible bar.
+const PAGE_BG = { r: 0x0f, g: 0x10, b: 0x12 }
+const CAROUSEL_ASPECT = 16 / 10
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -84,7 +90,30 @@ for (const t of TARGETS) {
       console.log(`  ✗ selector "${t.elementSelector}" not found — skipping ${t.file}`)
       continue
     }
-    await el.screenshot({ path: path.join(OUT, t.file) })
+    const outPath = path.join(OUT, t.file)
+    await el.screenshot({ path: outPath })
+
+    // Element crops rarely land at the carousel's native 16:10 frame. The
+    // carousel renders images with objectFit:cover, which would otherwise
+    // CROP real content off the sides — confirmed on the sentiment card
+    // (1916x796, ratio 2.41) where the cover-fit crop cut into the weight
+    // percentages sitting near the left/right edges. Pad onto a real
+    // 16:10 canvas instead, matching the page background, so cover-fit
+    // never has anything to crop.
+    const meta = await sharp(outPath).metadata()
+    const ratio = meta.width / meta.height
+    if (Math.abs(ratio - CAROUSEL_ASPECT) > 0.02) {
+      const canvasW = meta.width
+      const canvasH = Math.round(canvasW / CAROUSEL_ASPECT)
+      const top = Math.max(0, Math.round((canvasH - meta.height) / 2))
+      await sharp({ create: { width: canvasW, height: canvasH, channels: 3, background: PAGE_BG } })
+        .composite([{ input: outPath, top, left: 0 }])
+        .png()
+        .toFile(outPath + '.tmp')
+      const fs = await import('node:fs/promises')
+      await fs.rename(outPath + '.tmp', outPath)
+      console.log(`  padded ${t.file} to ${canvasW}x${canvasH} (16:10) to avoid cover-fit cropping`)
+    }
   } else {
     await page.screenshot({ path: path.join(OUT, t.file) })
   }
