@@ -38,7 +38,7 @@ function ComponentRow({ name, weight, score, detail }: { name: string; weight: n
  * work" transparency as a signal's thesis rather than just its confidence
  * number — real interactivity, not decoration.
  */
-export default function SentimentGauge({ data }: { data: SentimentDisplayData | null }) {
+export default function SentimentGauge({ data, embedded = false }: { data: SentimentDisplayData | null; embedded?: boolean }) {
   const [expanded, setExpanded] = useState(false)
   if (!data) return null
 
@@ -46,7 +46,12 @@ export default function SentimentGauge({ data }: { data: SentimentDisplayData | 
   const accent = LABEL_COLOR[label] ?? 'var(--watch)'
 
   return (
-    <div className="mb-6" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
+    <div
+      className={embedded ? '' : 'mb-6'}
+      style={embedded
+        ? { borderTop: '1px solid var(--border-subtle)' }
+        : { backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}
+    >
       <button
         onClick={() => setExpanded((e) => !e)}
         className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-white/[0.02] transition-colors"

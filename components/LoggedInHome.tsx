@@ -311,18 +311,22 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
         <HoldingsPanel state={holdingsPanel} />
 
         {/* ── Market Pulse — real, frequently-refreshing data outside the
-            user's own portfolio: most notable recent politician trade
-            (PoliticianTrade.significance-ranked, not decoration) and the
-            currently-live premarket/after-hours movers snapshot. Movers
-            sub-section only renders during the actual live window
-            (getLiveExtendedSession) — outside that window (most of the
-            day, all weekend) MoverSnapshot data is stale/empty by design,
-            so showing nothing here is the honest choice, not a bug. ── */}
-        {(notableTrade || topMovers.rows.length > 0) && (
+            user's own portfolio: the Holoture Market Sentiment Index (our
+            own composite, computed once daily by cron/sentiment-index),
+            most notable recent politician trade (PoliticianTrade.significance-
+            ranked, not decoration), and the currently-live premarket/after-
+            hours movers snapshot. Movers sub-section only renders during
+            the actual live window (getLiveExtendedSession) — outside that
+            window (most of the day, all weekend) MoverSnapshot data is
+            stale/empty by design, so showing nothing here is the honest
+            choice, not a bug. ── */}
+        {(sentiment || notableTrade || topMovers.rows.length > 0) && (
           <div className="mb-6" style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}>
             <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
               <span className="type-h3">Market Pulse</span>
             </div>
+
+            <SentimentGauge data={sentiment} embedded />
 
             {notableTrade && (
               <Link
@@ -342,7 +346,7 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
             )}
 
             {topMovers.rows.length > 0 && (
-              <div className="overflow-x-auto" style={{ borderTop: notableTrade ? '1px solid var(--border-subtle)' : undefined }}>
+              <div className="overflow-x-auto" style={{ borderTop: (sentiment || notableTrade) ? '1px solid var(--border-subtle)' : undefined }}>
                 <div className="flex items-center gap-2 px-4 pt-2.5">
                   {topMovers.session === 'premarket'
                     ? <Sunrise className="w-3.5 h-3.5" style={{ color: 'var(--watch)' }} />
@@ -419,12 +423,6 @@ export default async function LoggedInHome({ user }: { user: HomeUser }) {
             </Link>
           </div>
         )}
-
-        {/* ── Holoture Market Sentiment Index — our own composite, computed
-            once daily by cron/sentiment-index (see lib/sentimentIndex.ts).
-            Expand-on-click reveals the component breakdown. Renders nothing
-            until the first cron run has produced a row. ── */}
-        <SentimentGauge data={sentiment} />
 
         {/* ── What's new ── */}
         {latestFeatured && (
