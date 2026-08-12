@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-11",
-    "filed_at": "2026-08-11"
+    "traded_at": "2026-08-12",
+    "filed_at": "2026-08-12"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-11",
-    "filed_at": "2026-08-11"
+    "traded_at": "2026-08-12",
+    "filed_at": "2026-08-12"
   },
   {
     "politician_name": "Christian D. Menefee",
@@ -64,6 +64,50 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-06",
     "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CMCSA",
+    "company_name": "JT Comcast Corporation - Class A",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-08-05"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DEO",
+    "company_name": "JT Diageo plc Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-08-05"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MDLZ",
+    "company_name": "JT Mondelez International, Inc. - Class A",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-08-05"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "VSNT",
+    "company_name": "JT Versant Media Group, Inc. - Class A",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-08-05"
   },
   {
     "politician_name": "April McClain Delaney",
@@ -462,6 +506,17 @@
     "filed_at": "2026-08-01"
   },
   {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GOOGN",
+    "company_name": "Convertible Preferred Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-24",
+    "filed_at": "2026-08-06"
+  },
+  {
     "politician_name": "Pete Sessions",
     "party": "Republican",
     "chamber": "House",
@@ -548,6 +603,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-23",
     "filed_at": "2026-08-01"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GOOGM",
+    "company_name": "Convertible Preferred Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-23",
+    "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CCI",
+    "company_name": "JT Crown Castle Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-23",
+    "filed_at": "2026-08-06"
   },
   {
     "politician_name": "April McClain Delaney",
@@ -649,6 +726,28 @@
     "filed_at": "2026-08-01"
   },
   {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NICE",
+    "company_name": "Shares each representing one",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-20",
+    "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "SAIL",
+    "company_name": "JT SailPoint Technologies Holdings, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-20",
+    "filed_at": "2026-08-06"
+  },
+  {
     "politician_name": "James A. Himes",
     "party": "Democrat",
     "chamber": "House",
@@ -726,6 +825,39 @@
     "filed_at": "2026-08-01"
   },
   {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GOOGN",
+    "company_name": "Convertible Preferred Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-17",
+    "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GTLS",
+    "company_name": "JT Chart Industries, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-17",
+    "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MNST",
+    "company_name": "JT Monster Beverage Corporation -",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-17",
+    "filed_at": "2026-08-06"
+  },
+  {
     "politician_name": "David J. Taylor",
     "party": "Republican",
     "chamber": "House",
@@ -734,6 +866,39 @@
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-17",
+    "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CRWD",
+    "company_name": "JT CrowdStrike Holdings, Inc. - Class A",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-15",
+    "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "John J Mr III. McGuire",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "AMAT",
+    "company_name": "SP Applied Materials, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-15",
+    "filed_at": "2026-08-07"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "FN",
+    "company_name": "JT Fabrinet Ordinary Shares",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-14",
     "filed_at": "2026-08-06"
   },
   {
