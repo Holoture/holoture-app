@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-12",
-    "filed_at": "2026-08-12"
+    "traded_at": "2026-08-13",
+    "filed_at": "2026-08-13"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-12",
-    "filed_at": "2026-08-12"
+    "traded_at": "2026-08-13",
+    "filed_at": "2026-08-13"
   },
   {
     "politician_name": "Christian D. Menefee",
@@ -856,6 +856,39 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-17",
     "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "Mike Kelly",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ABT",
+    "company_name": "SP Abbott Laboratories Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-17",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Mike Kelly",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PEP",
+    "company_name": "SP Pepsico, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$15,001 - $50,000",
+    "traded_at": "2026-07-17",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Mike Kelly",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DIS",
+    "company_name": "SP Walt Disney Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-17",
+    "filed_at": "2026-08-12"
   },
   {
     "politician_name": "David J. Taylor",
