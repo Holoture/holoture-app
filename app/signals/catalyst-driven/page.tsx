@@ -7,18 +7,23 @@ import MarketStatusBanner from '@/components/MarketStatusBanner'
 import { getMarketStatus } from '@/lib/marketStatus'
 import AuthLoadingGate from '@/components/AuthLoadingGate'
 import EventDrivenSignalsClient from '@/components/EventDrivenSignalsClient' // filename unchanged (internal, not user-facing) — page renamed to "Catalyst-Driven"
-import { Zap } from 'lucide-react'
+import CatalystAlertsClient from '@/components/CatalystAlertsClient'
+import { Zap, AlertTriangle } from 'lucide-react'
 
-// Real Signal rows only — same model, same liquidity floor, same quality
-// gates as every other signal category. Filtered to catalystType != null,
-// which cron/signals/route.ts only ever sets AFTER a candidate has already
-// cleared fetchStockData()'s price/dollar-volume gates. This is NOT the
-// separate, unvetted News Catalyst Alerts feature (NewsCatalystAlert model,
-// GlobeNewswire-sourced, no liquidity floor) — see prisma/schema.prisma's
-// Signal.catalystType comment for the full distinction. Page label is
-// "Catalyst-Driven" per explicit instruction, despite the real name
-// collision with Catalyst Alerts (flagged when renamed from "Event-Driven",
-// which was chosen specifically to avoid that collision).
+// ── REVISED: now deliberately UNVETTED, per explicit instruction — a
+// reversal of this feature's original design. Two real, distinct sources
+// feed this page now:
+//   1. Signal rows with catalystType != null. As of cron/catalyst-signals/
+//      route.ts, some of these bypass the liquidity floor entirely (thin/
+//      illiquid names are admissible there) — NOT "same liquidity floor as
+//      every other signal" anymore. cron/signals' own catalyst-tagged
+//      output (still floor-gated) is mixed in here too; there is currently
+//      no per-row way to tell which pipeline produced a given signal.
+//   2. The separate News Catalyst Alerts feed (NewsCatalystAlert,
+//      GlobeNewswire-sourced, no liquidity floor, was previously kept off
+//      this page on purpose) is now embedded directly below, reusing
+//      components/CatalystAlertsClient.tsx as-is rather than duplicating
+//      its fetch/render logic.
 async function getCatalystDrivenSignals() {
   return prisma.signal.findMany({
     where: { isActive: true, catalystType: { not: null } },
@@ -62,11 +67,25 @@ export default async function CatalystDrivenSignalsPage() {
             </span>
           </div>
           <p className="text-sm" style={{ color: 'var(--text-w50)' }}>
-            Fully-vetted signals where the primary driver is an identifiable event — earnings, a contract win, M&amp;A, an FDA decision, or a guidance change — not pure technical setups. Same liquidity floor and quality gates as every other signal on this platform.
+            Signals and alerts driven by an identifiable event — earnings, a contract win, M&amp;A, an FDA decision, or a guidance change — not pure technical setups.
           </p>
+          <div
+            className="flex items-start gap-2 mt-4 px-4 py-3 rounded-lg"
+            style={{ backgroundColor: 'rgba(226,75,74,0.08)', border: '1px solid rgba(226,75,74,0.25)' }}
+          >
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#E24B4A' }} />
+            <p className="text-xs" style={{ color: 'var(--text-w60)' }}>
+              Unvetted. Some signals below are NOT subject to the liquidity floor applied elsewhere on this platform — thin, illiquid names are admissible here. This page also embeds the separate News Catalyst Alerts feed (GlobeNewswire-sourced, no liquidity floor, best-effort ticker matching). Not financial advice.
+            </p>
+          </div>
         </div>
 
         <EventDrivenSignalsClient signals={serialized} tier={tier} />
+
+        <div className="mt-10">
+          <p className="eyebrow mb-3">News Catalyst Alerts</p>
+          <CatalystAlertsClient />
+        </div>
       </div>
     </div>
   )
