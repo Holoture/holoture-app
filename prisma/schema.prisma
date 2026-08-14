@@ -138,6 +138,23 @@ model Signal {
   bestEntryTime  String?
   expectedMove   String?
   catalyst       String?
+  // ── Event-driven flag for a NORMAL, fully-vetted signal — NOT the same
+  // thing as `catalyst` above (free-text color commentary already written
+  // for momentum/scheduled-signal cards) and NOT the separate unvetted
+  // News Catalyst Alerts feature (NewsCatalystAlert model, GlobeNewswire-
+  // sourced, no liquidity floor, own risk banner — see lib/newsCatalyst.ts).
+  // A signal here has already passed the exact same liquidity floor and
+  // quality gates as any other category; this only TAGS it when Claude's
+  // own generation-time assessment names a concrete, identifiable event
+  // as the primary driver (earnings, contract win, M&A, FDA decision,
+  // guidance change). NULL is the default and correct outcome for most
+  // signals — never force one.
+  // One of: 'EARNINGS' | 'CONTRACT' | 'MA' | 'FDA' | 'GUIDANCE' | 'OTHER' | null
+  catalystType    String?
+  // Short plain-language description of the event, e.g. "Q2 earnings
+  // beat: gross margin expanded 530bps". Only ever set alongside
+  // catalystType — never populated on its own.
+  catalystSummary String?
   // Real intraday spike detection (volume + volatility, quantitatively gated
   // — not the old client-side isMomentum(BUY && confidence>=75) mislabeling).
   // Distinct from that legacy tab so real and fake "momentum" signals never

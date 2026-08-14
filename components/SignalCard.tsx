@@ -32,6 +32,11 @@ export type Signal = {
   bestEntryTime?: string | null
   expectedMove?: string | null
   catalyst?: string | null
+  // Event-driven vetted-signal tag — see prisma/schema.prisma's Signal.catalystType
+  // comment for the distinction from `catalyst` above and from the separate
+  // unvetted News Catalyst Alerts feature.
+  catalystType?: string | null
+  catalystSummary?: string | null
 }
 
 function SignalTypeBadge({ type }: { type: string }) {

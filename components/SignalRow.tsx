@@ -9,6 +9,7 @@ import type { Signal } from './SignalCard'
 import TrackerButton from './TrackerButton'
 import LiveIndicator from './LiveIndicator'
 import LivePulseDot from './LivePulseDot'
+import { isValidCatalystType, CATALYST_TYPE_LABEL } from '@/lib/catalystType'
 
 const SignalChart = dynamic(() => import('./SignalChart'), { ssr: false })
 
@@ -63,6 +64,19 @@ function SignalBadge({ type }: { type: string }) {
       style={{ backgroundColor: s.bg, color: s.color, border: `1px solid ${s.border}` }}
     >
       {type}
+    </span>
+  )
+}
+
+/** Vetted event-driven tag — NOT the separate unvetted News Catalyst Alerts feature. */
+function CatalystBadge({ type }: { type: string }) {
+  if (!isValidCatalystType(type)) return null
+  return (
+    <span
+      className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold whitespace-nowrap"
+      style={{ backgroundColor: 'rgba(34,211,238,0.15)', color: '#22d3ee', border: '1px solid rgba(34,211,238,0.3)' }}
+    >
+      {CATALYST_TYPE_LABEL[type]}
     </span>
   )
 }
@@ -311,6 +325,11 @@ export default function SignalRow({
                     {formatDateTimeEST(signal.createdAt)}
                   </div>
                 )}
+                {signal.catalystType && (
+                  <div className="mt-1">
+                    <CatalystBadge type={signal.catalystType} />
+                  </div>
+                )}
                 {sessionBadge && (
                   <div
                     className="flex items-center gap-1 mt-1"
@@ -478,6 +497,7 @@ export default function SignalRow({
                   {signal.sector}
                 </span>
                 <UpsideCell signal={signal} obscured={false} compact />
+                {signal.catalystType && <CatalystBadge type={signal.catalystType} />}
                 <SignalBadge type={signal.signalType} />
               </>
             )}
@@ -647,6 +667,17 @@ export default function SignalRow({
                 <p className="text-sm leading-relaxed" style={{ color: 'var(--text-w75)' }}>
                   {signal.aiSummary}
                 </p>
+                {signal.catalystType && signal.catalystSummary && (
+                  <div
+                    className="flex items-start gap-2 mt-3 px-3 py-2 rounded"
+                    style={{ backgroundColor: 'rgba(34,211,238,0.08)', border: '1px solid rgba(34,211,238,0.25)' }}
+                  >
+                    <CatalystBadge type={signal.catalystType} />
+                    <p className="text-sm leading-relaxed" style={{ color: 'var(--text-w75)' }}>
+                      {signal.catalystSummary}
+                    </p>
+                  </div>
+                )}
                 <button
                   onClick={e => { e.stopPropagation(); setThesisExpanded(v => !v) }}
                   className="mt-2 text-sm font-medium hover:opacity-75 transition-opacity"
