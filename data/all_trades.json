@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-13",
-    "filed_at": "2026-08-13"
+    "traded_at": "2026-08-14",
+    "filed_at": "2026-08-14"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-13",
-    "filed_at": "2026-08-13"
+    "traded_at": "2026-08-14",
+    "filed_at": "2026-08-14"
   },
   {
     "politician_name": "Christian D. Menefee",
@@ -104,6 +104,17 @@
     "chamber": "House",
     "ticker": "VSNT",
     "company_name": "JT Versant Media Group, Inc. - Class A",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-08-05"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "OGN",
+    "company_name": "OGN",
     "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-05",
