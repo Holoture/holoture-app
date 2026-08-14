@@ -21,6 +21,12 @@ type DropdownItemConfig = {
 const SIGNALS_MENU: DropdownItemConfig[] = [
   { href: '/dashboard', label: 'Equities', available: true,  desc: 'Stock signal board' },
   { href: '/options',   label: 'Options',  available: true,  desc: 'CALL & PUT ideas' },
+  // "Event-Driven" (not "Catalyst") is deliberate — avoids collision with
+  // the separate, unvetted "Catalyst Alerts" scanner below. Same Signal
+  // model/liquidity floor as every other tab here, just filtered to
+  // catalystType != null (see prisma/schema.prisma's Signal.catalystType
+  // comment for the full distinction).
+  { href: '/signals/event-driven',  label: 'Event-Driven', available: true, desc: 'Earnings, M&A, FDA — fully vetted' },
   { href: '/signals/futures',       label: 'Futures',  available: false, desc: 'Coming soon' },
   { href: '/signals/forex',         label: 'Forex',    available: false, desc: 'Coming soon' },
 ]

@@ -41,13 +41,6 @@ function is1to3Days(s: Signal): boolean {
 function isShortTermSignal(s: Signal): boolean {
   return isIntraday(s) || is1to3Days(s)
 }
-// Vetted event-driven tag (Signal.catalystType) — NOT the separate unvetted
-// News Catalyst Alerts feature (/catalyst-alerts, own nav item under
-// Scanners). Named "Event-Driven" here specifically to avoid that name
-// collision; the underlying field is still called catalystType.
-function isEventDriven(s: Signal): boolean {
-  return !!s.catalystType
-}
 // Display/filter-only union — the stored timeframeCategory enum values
 // (intraday, days_1_3, momentum) are untouched; this just groups them
 // under one "Momentum" tab since all three are short-fuse, high-risk
@@ -124,7 +117,7 @@ function getDailyFreePickIds(signals: Signal[]): Set<string> {
 // stays a valid tab value (SignalHistoryTab still renders the same way)
 // but is no longer listed in CATEGORY_TABS — it's a demoted link next to
 // the tab bar now, not a peer signal-type tab.
-type CategoryTab = 'all' | 'large-cap' | 'small-cap' | 'swing-trade' | 'long-term' | 'momentum' | 'event-driven' | 'history'
+type CategoryTab = 'all' | 'large-cap' | 'small-cap' | 'swing-trade' | 'long-term' | 'momentum' | 'history'
 type TypeFilter = 'all' | 'BUY' | 'WATCH' | 'SHORT'
 type TimeframeFilter = 'all' | 'momentum' | 'swing' | 'long'
 type SortKey = 'confidence-desc' | 'confidence-asc' | 'ticker-asc' | 'recent' | 'time-sensitivity' | 'upside-desc' | 'upside-asc'
@@ -137,7 +130,6 @@ const CATEGORY_TABS: { key: CategoryTab; label: string }[] = [
   { key: 'small-cap',    label: 'Small Cap' },
   { key: 'swing-trade',  label: 'Swing Trade' },
   { key: 'long-term',    label: 'Long Term' },
-  { key: 'event-driven', label: 'Event-Driven' },
 ]
 
 // Sections for the "All Signals" overview — first-match-wins, Momentum
@@ -404,7 +396,6 @@ export default function SignalBoardClient({
       'swing-trade': isSwingTrade,
       'long-term':  isLongTerm,
       'momentum':   isMomentumGroup,
-      'event-driven': isEventDriven,
     }
     const fn = matchFns[activeTab]
     if (!fn) return sorted
@@ -967,8 +958,6 @@ export default function SignalBoardClient({
               {categorySignals.length === 0 ? (
                 activeTab === 'momentum' && sessionFilter !== 'all' ? (
                   <EmptyCategory message={`No ${SESSION_CHIPS.find(c => c.key === sessionFilter)?.label.toLowerCase()} momentum signals right now.`} />
-                ) : activeTab === 'event-driven' ? (
-                  <EmptyCategory message="No catalyst-driven setups cleared today's threshold." />
                 ) : (
                   <EmptyFilter />
                 )
