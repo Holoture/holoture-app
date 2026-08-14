@@ -56,9 +56,9 @@ export default async function CatalystDrivenSignalsPage() {
             </h1>
             <span
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold"
-              style={{ backgroundColor: 'rgba(34,211,238,0.15)', color: '#22d3ee', border: '1px solid rgba(34,211,238,0.3)' }}
+              style={{ backgroundColor: 'rgba(226,75,74,0.15)', color: '#E24B4A', border: '1px solid rgba(226,75,74,0.3)' }}
             >
-              <Zap className="w-3 h-3" /> CATALYST
+              <Zap className="w-3 h-3" /> HIGH-RISK
             </span>
           </div>
           <p className="text-sm" style={{ color: 'var(--text-w50)' }}>
