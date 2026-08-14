@@ -6,7 +6,7 @@ import Header from '@/components/Header'
 import MarketStatusBanner from '@/components/MarketStatusBanner'
 import { getMarketStatus } from '@/lib/marketStatus'
 import AuthLoadingGate from '@/components/AuthLoadingGate'
-import EventDrivenSignalsClient from '@/components/EventDrivenSignalsClient'
+import EventDrivenSignalsClient from '@/components/EventDrivenSignalsClient' // filename unchanged (internal, not user-facing) — page renamed to "Catalyst-Driven"
 import { Zap } from 'lucide-react'
 
 // Real Signal rows only — same model, same liquidity floor, same quality
@@ -15,15 +15,18 @@ import { Zap } from 'lucide-react'
 // cleared fetchStockData()'s price/dollar-volume gates. This is NOT the
 // separate, unvetted News Catalyst Alerts feature (NewsCatalystAlert model,
 // GlobeNewswire-sourced, no liquidity floor) — see prisma/schema.prisma's
-// Signal.catalystType comment for the full distinction.
-async function getEventDrivenSignals() {
+// Signal.catalystType comment for the full distinction. Page label is
+// "Catalyst-Driven" per explicit instruction, despite the real name
+// collision with Catalyst Alerts (flagged when renamed from "Event-Driven",
+// which was chosen specifically to avoid that collision).
+async function getCatalystDrivenSignals() {
   return prisma.signal.findMany({
     where: { isActive: true, catalystType: { not: null } },
     orderBy: { confidence: 'desc' },
   })
 }
 
-export default async function EventDrivenSignalsPage() {
+export default async function CatalystDrivenSignalsPage() {
   const { userId } = await auth()
   if (!userId) return <AuthLoadingGate />
 
@@ -33,7 +36,7 @@ export default async function EventDrivenSignalsPage() {
   const tier = computeTier(user)
   const marketStatus = getMarketStatus()
 
-  const signals = await getEventDrivenSignals()
+  const signals = await getCatalystDrivenSignals()
   const serialized = signals.map((s) => ({
     ...s,
     signalDate: s.signalDate instanceof Date ? s.signalDate.toISOString() : String(s.signalDate),
@@ -49,7 +52,7 @@ export default async function EventDrivenSignalsPage() {
           <p className="eyebrow mb-1">Signals</p>
           <div className="flex items-center gap-2 mb-1">
             <h1 className="text-2xl sm:text-3xl" style={{ fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-high)' }}>
-              Event-Driven Signals
+              Catalyst-Driven Signals
             </h1>
             <span
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold"

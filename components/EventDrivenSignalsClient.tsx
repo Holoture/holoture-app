@@ -63,7 +63,8 @@ function renderColumnHeaders() {
 }
 
 /**
- * Standalone "Event-Driven" signals page — real, fully-vetted signals
+ * Standalone "Catalyst-Driven" signals page (component name kept as-is,
+ * internal only) — real, fully-vetted signals
  * (Signal.catalystType != null, filtered server-side before this component
  * ever sees them), rendered with the exact same SignalRow card format as
  * the main dashboard. This is a real filtered view of vetted signals, NOT
