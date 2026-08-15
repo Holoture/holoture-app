@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-14",
-    "filed_at": "2026-08-14"
+    "traded_at": "2026-08-15",
+    "filed_at": "2026-08-15"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-14",
-    "filed_at": "2026-08-14"
+    "traded_at": "2026-08-15",
+    "filed_at": "2026-08-15"
   },
   {
     "politician_name": "Christian D. Menefee",
@@ -17919,6 +17919,17 @@
     "filed_at": "2025-11-06"
   },
   {
+    "politician_name": "Shri Thanedar",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MSTR",
+    "company_name": "Strategy Inc - Class A Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2025-10-21",
+    "filed_at": "2025-10-21"
+  },
+  {
     "politician_name": "Julia Letlow",
     "party": "Republican",
     "chamber": "House",
@@ -19072,6 +19083,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-03-13",
     "filed_at": "2025-08-11"
+  },
+  {
+    "politician_name": "Carol Devine Miller",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "DGX",
+    "company_name": "DGX",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2025-03-10",
+    "filed_at": "2025-04-11"
+  },
+  {
+    "politician_name": "Carol Devine Miller",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "TGT",
+    "company_name": "TGT",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2025-03-10",
+    "filed_at": "2025-04-11"
   },
   {
     "politician_name": "Daniel Webster",
