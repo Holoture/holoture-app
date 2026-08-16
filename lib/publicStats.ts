@@ -30,6 +30,18 @@ import type { OutcomesSummary } from '@/components/OutcomesStrip'
 /** Spread into any Prisma `where` on Signal/OptionsSignal that feeds a public stat. */
 export const PUBLIC_TRACK_RECORD_FILTER = { isManual: false } as const
 
+// Catalyst-driven signals (Signal.catalystType != null) are excluded from
+// every public track-record surface — same rationale as
+// PUBLIC_TRACK_RECORD_FILTER above, extended to this newer field. Some
+// catalyst-tagged signals (cron/catalyst-signals) are explicitly unvetted
+// (no liquidity floor); blending them into the headline "Last 20 Resolved"
+// win rate would misrepresent what the core vetted algorithm produces,
+// exactly the outcome PUBLIC_TRACK_RECORD_FILTER already exists to prevent
+// for manual signals. Applied to ALL catalystType-tagged signals, not just
+// the unvetted ones, since there's currently no reliable per-row way to
+// tell which generation pipeline produced a given catalyst-tagged signal.
+export const EXCLUDE_CATALYST_DRIVEN = { catalystType: null } as const
+
 // Moved here from components/MarketingLandingPage.tsx (formerly app/page.tsx)
 // so components/LoggedInHome.tsx can show the same real track record without
 // duplicating this calculation. Logic unchanged from the original.
@@ -54,10 +66,11 @@ const MIN_SAMPLE = 25 // an unconvincing number is worse than no number
 
 export async function getOutcomesSummary(): Promise<OutcomesSummary | null> {
   try {
-    // PUBLIC_TRACK_RECORD_FILTER excludes hand-created/hand-edited signals
-    // from every count and denominator below — they are not algorithm
-    // output and would misrepresent the published track record.
-    const catFilter = { timeframeCategory: { in: ALL_TIMEFRAME_CATEGORIES }, ...PUBLIC_TRACK_RECORD_FILTER }
+    // PUBLIC_TRACK_RECORD_FILTER excludes hand-created/hand-edited signals;
+    // EXCLUDE_CATALYST_DRIVEN excludes catalystType-tagged signals (some of
+    // which are explicitly unvetted, no liquidity floor) — neither belongs
+    // in a published track-record claim about the core vetted algorithm.
+    const catFilter = { timeframeCategory: { in: ALL_TIMEFRAME_CATEGORIES }, ...PUBLIC_TRACK_RECORD_FILTER, ...EXCLUDE_CATALYST_DRIVEN }
     const [allTimeHitTarget, allTimeHitStop, allTimeExpired] = await Promise.all([
       prisma.signal.count({ where: { outcome: 'HIT_TARGET', ...catFilter } }),
       prisma.signal.count({ where: { outcome: 'HIT_STOP', ...catFilter } }),

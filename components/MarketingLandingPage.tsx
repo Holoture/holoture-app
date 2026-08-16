@@ -13,7 +13,7 @@ import OutcomesStrip from '@/components/OutcomesStrip'
 import type { ShortHorizonOutcomesSummary } from '@/components/ShortHorizonOutcomesStrip'
 import { prisma } from '@/lib/prisma'
 import { hasEverSubscribed } from '@/lib/user'
-import { PUBLIC_TRACK_RECORD_FILTER, getOutcomesSummary } from '@/lib/publicStats'
+import { PUBLIC_TRACK_RECORD_FILTER, EXCLUDE_CATALYST_DRIVEN, getOutcomesSummary } from '@/lib/publicStats'
 
 /**
  * The hero's showcase: either the highest-gaining CLOSED signal recorded to
@@ -79,7 +79,7 @@ const SHORT_HORIZON_CATEGORIES = ['intraday', 'days_1_3', 'momentum']
 
 async function getShortHorizonOutcomesSummary(): Promise<ShortHorizonOutcomesSummary | null> {
   try {
-    const catFilter = { timeframeCategory: { in: SHORT_HORIZON_CATEGORIES }, ...PUBLIC_TRACK_RECORD_FILTER }
+    const catFilter = { timeframeCategory: { in: SHORT_HORIZON_CATEGORIES }, ...PUBLIC_TRACK_RECORD_FILTER, ...EXCLUDE_CATALYST_DRIVEN }
     const [hitTarget, hitStop, expired, unverifiableCount] = await Promise.all([
       prisma.signal.count({ where: { outcome: 'HIT_TARGET', ...catFilter } }),
       prisma.signal.count({ where: { outcome: 'HIT_STOP', ...catFilter } }),
