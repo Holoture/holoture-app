@@ -222,7 +222,6 @@ export default function SignalsPanel({ signals, options }: { signals: AdminSigna
             <p className="ops-section-label mb-2">Confirm delete</p>
             <p style={{ fontSize: 12, color: 'var(--text-w70)' }}>
               Permanently delete <span style={{ color: '#fff', fontWeight: 700 }}>{confirmDelete.label}</span>?
-              {confirmDelete.kind === 'stock' && ' Any user tracker entries for this signal are removed with it.'}
               {' '}This cannot be undone.
             </p>
             <div className="flex gap-2 mt-4 justify-end">

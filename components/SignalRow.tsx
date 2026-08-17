@@ -6,7 +6,6 @@ import { ChevronDown, Lock, Clock } from 'lucide-react'
 import { formatCurrency, formatDateTimeEST } from '@/lib/utils'
 import { signalUpside } from '@/lib/signal-upside'
 import type { Signal } from './SignalCard'
-import TrackerButton from './TrackerButton'
 import LiveIndicator from './LiveIndicator'
 import LivePulseDot from './LivePulseDot'
 import { isValidCatalystType, CATALYST_TYPE_LABEL } from '@/lib/catalystType'
@@ -210,9 +209,6 @@ interface Props {
   isEven: boolean
   /** True for free users on any of their 5 fully-visible daily picks */
   isFreePick?: boolean
-  /** TrackedSignal record ID if this signal is being tracked, else null */
-  trackedId?: string | null
-  onTrackToggle?: (signalId: string, newTrackedId: string | null) => void
   /** Free user trying to view an intraday or 1-3 day signal (Pro+ only) */
   isShortTermLocked?: boolean
   /** Show colored timeframe badge instead of plain text */
@@ -230,8 +226,6 @@ export default function SignalRow({
   tier,
   isEven,
   isFreePick = false,
-  trackedId = null,
-  onTrackToggle,
   isShortTermLocked = false,
   timeframeBadge = null,
   sessionBadge = null,
@@ -451,16 +445,6 @@ export default function SignalRow({
             <div style={{ fontSize: 10, color: 'var(--text-w30)', marginTop: 2 }}>Timeframe</div>
           </div>
 
-          {/* Tracker */}
-          {onTrackToggle && (
-            <TrackerButton
-              signalId={signal.id}
-              ticker={signal.ticker}
-              trackedId={trackedId}
-              isObscured={isObscured}
-              onToggle={onTrackToggle}
-            />
-          )}
 
           {/* Chevron */}
           <ChevronDown
@@ -528,19 +512,6 @@ export default function SignalRow({
           {isFreePick && (
             <div style={{ fontSize: 10, color: '#1D9E75', fontWeight: 700 }}>
               ✦ Free Pick
-            </div>
-          )}
-
-          {/* Tracker (mobile) */}
-          {onTrackToggle && !isObscured && (
-            <div className="flex justify-end">
-              <TrackerButton
-                signalId={signal.id}
-                ticker={signal.ticker}
-                trackedId={trackedId}
-                isObscured={isObscured}
-                onToggle={onTrackToggle}
-              />
             </div>
           )}
 

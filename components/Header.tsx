@@ -52,7 +52,6 @@ const SUBSCRIPTION_MENU: DropdownItemConfig[] = [
 
 const NAV_LINKS = [
   { href: '/learn', label: 'Learn' },
-  { href: '/tracker', label: 'Tracker' },
   { href: '/support', label: 'Support' },
 ]
 

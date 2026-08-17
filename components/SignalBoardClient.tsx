@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect, useCallback } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { ChevronDown, Search, Unlock, History, RefreshCw, Clock, SlidersHorizontal, X } from 'lucide-react'
 import Link from 'next/link'
 import SignalRow from './SignalRow'
@@ -216,7 +216,6 @@ export default function SignalBoardClient({
   const [sessionFilter, setSessionFilter]     = useState<SessionFilter>('all')
   const [sortKey, setSortKey]                 = useState<SortKey>('confidence-desc')
   const [search, setSearch]                   = useState('')
-  const [trackedMap, setTrackedMap]           = useState<Map<string, string>>(new Map())
   const [afterClose, setAfterClose]           = useState(false)
   const [marketSession, setMarketSessionState] = useState<MarketSession>('closed')
 
@@ -247,24 +246,6 @@ export default function SignalBoardClient({
     return [...new Set(signals.map(s => s.ticker))]
   }, [signals])
   const liveQuotes = useLiveQuotes(isFree ? [] : allTickers, 12_000)
-
-  useEffect(() => {
-    fetch('/api/tracker')
-      .then(r => r.ok ? r.json() : [])
-      .then((data: { id: string; signalId: string }[]) => {
-        setTrackedMap(new Map(data.map(t => [t.signalId, t.id])))
-      })
-      .catch(() => {})
-  }, [])
-
-  const handleTrackToggle = useCallback((signalId: string, newTrackedId: string | null) => {
-    setTrackedMap(prev => {
-      const next = new Map(prev)
-      if (newTrackedId) next.set(signalId, newTrackedId)
-      else next.delete(signalId)
-      return next
-    })
-  }, [])
 
   const freePickIds = useMemo(() => (isFree ? getDailyFreePickIds(signals) : new Set<string>()), [signals, isFree])
 
@@ -487,8 +468,6 @@ export default function SignalBoardClient({
               tier={tier}
               isEven={idx % 2 === 0}
               isFreePick={isFree && freePickIds.has(s.id) && !isShortTermSignal(s)}
-              trackedId={trackedMap.get(s.id) ?? null}
-              onTrackToggle={handleTrackToggle}
               isShortTermLocked={isSTLocked}
               timeframeBadge={badge}
               sessionBadge={sessionBadgeFor(s)}

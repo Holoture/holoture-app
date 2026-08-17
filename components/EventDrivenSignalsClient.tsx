@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useMemo } from 'react'
 import SignalRow from './SignalRow'
 import type { Signal } from './SignalCard'
 import { useLiveQuotes } from '@/lib/useLiveQuotes'
@@ -71,34 +71,15 @@ function renderColumnHeaders() {
  * the separate unvetted News Catalyst Alerts feature.
  *
  * Deliberately lighter than SignalBoardClient — no category tabs (this
- * page IS the category), no session chips. Type filter + tracker wiring
- * mirror the same patterns from there for consistency.
+ * page IS the category), no session chips. Type filter mirrors the same
+ * pattern from there for consistency.
  */
 export default function EventDrivenSignalsClient({ signals, tier }: { signals: Signal[]; tier: 'free' | 'pro' | 'max' }) {
   const isFree = tier === 'free'
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
-  const [trackedMap, setTrackedMap] = useState<Map<string, string>>(new Map())
 
   const allTickers = useMemo(() => [...new Set(signals.map(s => s.ticker))], [signals])
   const liveQuotes = useLiveQuotes(isFree ? [] : allTickers, 12_000)
-
-  useEffect(() => {
-    fetch('/api/tracker')
-      .then(r => r.ok ? r.json() : [])
-      .then((data: { id: string; signalId: string }[]) => {
-        setTrackedMap(new Map(data.map(t => [t.signalId, t.id])))
-      })
-      .catch(() => {})
-  }, [])
-
-  const handleTrackToggle = useCallback((signalId: string, newTrackedId: string | null) => {
-    setTrackedMap(prev => {
-      const next = new Map(prev)
-      if (newTrackedId) next.set(signalId, newTrackedId)
-      else next.delete(signalId)
-      return next
-    })
-  }, [])
 
   const filtered = useMemo(() => {
     const list = typeFilter === 'all' ? signals : signals.filter(s => s.signalType === typeFilter)
@@ -135,8 +116,6 @@ export default function EventDrivenSignalsClient({ signals, tier }: { signals: S
                   tier={tier}
                   isEven={idx % 2 === 0}
                   isFreePick={false}
-                  trackedId={trackedMap.get(s.id) ?? null}
-                  onTrackToggle={handleTrackToggle}
                   isShortTermLocked={isSTLocked}
                   timeframeBadge={s.timeframeCategory === 'intraday' ? 'intraday' : s.timeframeCategory === 'days_1_3' ? '1-3days' : null}
                   livePrice={liveQuotes[s.ticker]?.price ?? null}

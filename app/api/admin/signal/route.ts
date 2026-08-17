@@ -199,8 +199,6 @@ export async function DELETE(req: Request) {
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 })
 
   try {
-    // TrackedSignal rows FK to Signal — remove them first or the delete fails.
-    await prisma.trackedSignal.deleteMany({ where: { signalId: id } })
     const signal = await prisma.signal.delete({ where: { id } })
     await logAdminAction({ adminId, action: 'signal.delete', target: signal.ticker, detail: `deleted ${signal.signalType} ${signal.ticker}` })
     return NextResponse.json({ ok: true })

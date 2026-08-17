@@ -186,7 +186,6 @@ model Signal {
   signalDate     DateTime        @default(now())
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
-  trackedBy      TrackedSignal[]
 
   // Added — table had zero non-PK indexes despite being filtered by ticker,
   // outcome, isActive constantly (dashboard, movers, admin, every public
@@ -393,23 +392,6 @@ model SignalGenerationLog {
   signalCount Int      @default(0)
   status      String   @default("success")
   error       String?
-}
-
-model TrackedSignal {
-  id          String    @id @default(cuid())
-  userId      String
-  signalId    String
-  signal      Signal    @relation(fields: [signalId], references: [id])
-  ticker      String
-  entryPrice  Float?
-  notes       String?
-  status      String    @default("watching")
-  outcome     String?
-  isPinned    Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  closedAt    DateTime?
-
-  @@unique([userId, signalId])
 }
 
 // In-app notification bell. userId is Clerk's id (matches User.clerkId),

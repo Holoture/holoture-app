@@ -18,10 +18,6 @@ import type { OutcomesSummary } from '@/components/OutcomesStrip'
  *     proof of what the algorithm produces
  *
  * Deliberately NOT applied to:
- *   - app/tracker/TrackerClient.tsx's per-user win rate. That is a user's
- *     own record of positions THEY chose to track, shown only to them — a
- *     personal tally, not a published claim about the algorithm. If a user
- *     tracks a manual signal, it belongs in their own numbers.
  *   - The admin panel itself, which deliberately reports manual-signal
  *     outcomes SEPARATELY (see getManualOutcomeCounts below) so the
  *     operator can see them without them ever reaching a public surface.

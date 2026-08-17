@@ -154,21 +154,6 @@ export const optionsSignalPatchSchema = z.object({
   realizedPnL:     z.number().nullable().optional(),
 })
 
-/** Tracker signal update */
-export const trackerPatchSchema = z.object({
-  notes:      z.string().max(2000).nullable().optional(),
-  entryPrice: z.number().positive().nullable().optional(),
-  isPinned:   z.boolean().optional(),
-  status:     z.enum(['watching', 'entered', 'closed']).optional(),
-  outcome:    z.enum(['win', 'loss', 'breakeven']).nullable().optional(),
-})
-
-/** Tracker signal creation */
-export const trackerCreateSchema = z.object({
-  signalId: z.string().min(1).max(100),
-  ticker:   z.string().trim().min(1).max(10).regex(/^[A-Za-z0-9.]{1,10}$/),
-})
-
 /**
  * Ticker symbol in a URL path parameter.
  * Accepts 1–10 alphanumeric characters + dots (e.g. "BRK.B").
