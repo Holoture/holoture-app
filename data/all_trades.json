@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-17",
-    "filed_at": "2026-08-17"
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-08-18"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-17",
-    "filed_at": "2026-08-17"
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-08-18"
   },
   {
     "politician_name": "Christian D. Menefee",
@@ -229,6 +229,248 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-30",
     "filed_at": "2026-08-01"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "ABT",
+    "company_name": "Abbott Laboratories Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "APD",
+    "company_name": "Air Products and Chemicals, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "AWK",
+    "company_name": "American Water Works Company, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "ADI",
+    "company_name": "Analog Devices, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "ADP",
+    "company_name": "Automatic Data Processing, Inc. -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "CSCO",
+    "company_name": "Cisco Systems, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "COST",
+    "company_name": "Costco Wholesale Corporation -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "EMR",
+    "company_name": "Emerson Electric Company Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "HD",
+    "company_name": "Home Depot, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "ITW",
+    "company_name": "Illinois Tool Works Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "ICE",
+    "company_name": "Intercontinental Exchange Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "JNJ",
+    "company_name": "Johnson & Johnson Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "LHX",
+    "company_name": "L3Harris Technologies, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "MCD",
+    "company_name": "McDonald's Corporation Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "MDT",
+    "company_name": "Medtronic plc. Ordinary Shares",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-13"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "Microsoft Corporation - Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "NEE",
+    "company_name": "NextEra Energy, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "PEP",
+    "company_name": "Pepsico, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "PG",
+    "company_name": "Procter & Gamble Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "O",
+    "company_name": "Realty Income Corporation Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "UNH",
+    "company_name": "UnitedHealth Group Incorporated",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Richard Dean Dr McCormick",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "V",
+    "company_name": "Visa Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-30",
+    "filed_at": "2026-08-12"
   },
   {
     "politician_name": "April McClain Delaney",
@@ -1296,6 +1538,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-02",
     "filed_at": "2026-08-01"
+  },
+  {
+    "politician_name": "Michael Patrick Guest",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "XOM",
+    "company_name": "XOM",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-02",
+    "filed_at": "2026-08-04"
   },
   {
     "politician_name": "Kevin Hern",
@@ -16641,6 +16894,39 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-12-17",
     "filed_at": "2026-01-07"
+  },
+  {
+    "politician_name": "Michael Patrick Guest",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "ABNB",
+    "company_name": "SP Airbnb, Inc. - Class A Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-16",
+    "filed_at": "2026-08-13"
+  },
+  {
+    "politician_name": "Michael Patrick Guest",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "CVX",
+    "company_name": "SP Chevron Corporation Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-16",
+    "filed_at": "2026-08-13"
+  },
+  {
+    "politician_name": "Michael Patrick Guest",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "ELF",
+    "company_name": "SP e.l.f. Beauty, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2025-12-16",
+    "filed_at": "2026-08-13"
   },
   {
     "politician_name": "Julia Letlow",
