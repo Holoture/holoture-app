@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-19",
-    "filed_at": "2026-08-19"
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-08-20"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-19",
-    "filed_at": "2026-08-19"
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-08-20"
   },
   {
     "politician_name": "Christian D. Menefee",
@@ -891,6 +891,28 @@
     "filed_at": "2026-08-01"
   },
   {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOGL",
+    "company_name": "GOOGL",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-22",
+    "filed_at": "2026-08-07"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SYK",
+    "company_name": "SYK",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-22",
+    "filed_at": "2026-08-07"
+  },
+  {
     "politician_name": "April McClain Delaney",
     "party": "Democrat",
     "chamber": "House",
@@ -1175,6 +1197,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-15",
     "filed_at": "2026-08-07"
+  },
+  {
+    "politician_name": "Richard W. Allen",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "ABT",
+    "company_name": "SP Abbott Laboratories Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-14",
+    "filed_at": "2026-08-17"
+  },
+  {
+    "politician_name": "Richard W. Allen",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "AVGO",
+    "company_name": "SP Broadcom Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-14",
+    "filed_at": "2026-08-17"
   },
   {
     "politician_name": "Josh Gottheimer",
@@ -1474,6 +1518,28 @@
     "filed_at": "2026-08-01"
   },
   {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AMZN",
+    "company_name": "Amazon.com, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-08",
+    "filed_at": "2026-08-03"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "TOST",
+    "company_name": "Toast, Inc. Class A Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-08",
+    "filed_at": "2026-08-03"
+  },
+  {
     "politician_name": "Rick Larsen",
     "party": "Democrat",
     "chamber": "House",
@@ -1527,6 +1593,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-07",
     "filed_at": "2026-08-01"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "EQT",
+    "company_name": "EQT Corporation Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-07",
+    "filed_at": "2026-08-03"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ESAB",
+    "company_name": "ESAB Corporation Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-07",
+    "filed_at": "2026-08-03"
   },
   {
     "politician_name": "April McClain Delaney",
