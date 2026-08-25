@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-24",
-    "filed_at": "2026-08-24"
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-08-25"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-24",
-    "filed_at": "2026-08-24"
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-08-25"
   },
   {
     "politician_name": "Tim Moore",
@@ -638,6 +638,17 @@
     "filed_at": "2026-08-01"
   },
   {
+    "politician_name": "Nancy Pelosi",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "BE",
+    "company_name": "SP Bloom Energy Corporation Class A",
+    "trade_type": "BUY",
+    "amount_range": "Unknown",
+    "traded_at": "2026-07-28",
+    "filed_at": "2026-07-28"
+  },
+  {
     "politician_name": "Maria Elvira Salazar",
     "party": "Republican",
     "chamber": "House",
@@ -823,6 +834,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-24",
     "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "Nancy Pelosi",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "BE",
+    "company_name": "SP Bloom Energy Corporation Class A",
+    "trade_type": "BUY",
+    "amount_range": "Unknown",
+    "traded_at": "2026-07-24",
+    "filed_at": "2026-07-24"
+  },
+  {
+    "politician_name": "Nancy Pelosi",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "INTC",
+    "company_name": "SP Intel Corporation - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "Unknown",
+    "traded_at": "2026-07-24",
+    "filed_at": "2026-07-24"
   },
   {
     "politician_name": "Pete Sessions",
