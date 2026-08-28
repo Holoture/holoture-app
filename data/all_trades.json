@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-27",
-    "filed_at": "2026-08-27"
+    "traded_at": "2026-08-28",
+    "filed_at": "2026-08-28"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-08-27",
-    "filed_at": "2026-08-27"
+    "traded_at": "2026-08-28",
+    "filed_at": "2026-08-28"
   },
   {
     "politician_name": "Michael Rulli",
@@ -1362,6 +1362,39 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-07-14",
     "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "Jared Moskowitz",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "AMAT",
+    "company_name": "Applied Materials, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-13",
+    "filed_at": "2026-07-31"
+  },
+  {
+    "politician_name": "Jared Moskowitz",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "STE",
+    "company_name": "STERIS plc",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-13",
+    "filed_at": "2026-07-31"
+  },
+  {
+    "politician_name": "Jared Moskowitz",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GWW",
+    "company_name": "GWW",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-13",
+    "filed_at": "2026-07-31"
   },
   {
     "politician_name": "Dan Newhouse",
