@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-02",
-    "filed_at": "2026-09-02"
+    "traded_at": "2026-09-03",
+    "filed_at": "2026-09-03"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,41 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-02",
-    "filed_at": "2026-09-02"
+    "traded_at": "2026-09-03",
+    "filed_at": "2026-09-03"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LOW",
+    "company_name": "JT Lowe's Companies, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRSH",
+    "company_name": "JT Marsh Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MDT",
+    "company_name": "JT Medtronic plc. Ordinary Shares",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-08-27"
   },
   {
     "politician_name": "Michael Rulli",
@@ -53,6 +86,72 @@
     "amount_range": "Unknown",
     "traded_at": "2026-08-24",
     "filed_at": "2026-08-24"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "MSFT",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-21",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CL",
+    "company_name": "JT Colgate-Palmolive Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HONA",
+    "company_name": "JT Honeywell Aerospace Inc. - Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "BUD",
+    "company_name": "ADR",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "KMB",
+    "company_name": "Kimberly-Clark Corporation -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CARR",
+    "company_name": "JT Carrier Global Corporation Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-14",
+    "filed_at": "2026-08-27"
   },
   {
     "politician_name": "Tim Moore",
@@ -75,6 +174,72 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-14",
     "filed_at": "2026-08-20"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "BA",
+    "company_name": "JT Boeing Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-13",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GAP",
+    "company_name": "Gap, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-13",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HD",
+    "company_name": "JT Home Depot, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-13",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HRL",
+    "company_name": "Hormel Foods Corporation Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-13",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NKE",
+    "company_name": "Nike, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-13",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "WAT",
+    "company_name": "JT Waters Corporation Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-13",
+    "filed_at": "2026-08-27"
   },
   {
     "politician_name": "Kelly Louise Morrison",
@@ -141,6 +306,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-11",
     "filed_at": "2026-08-20"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "OTIS",
+    "company_name": "JT Otis Worldwide Corporation",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-10",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DIS",
+    "company_name": "JT Walt Disney Company",
+    "trade_type": "SELL",
+    "amount_range": "$15,001 - $50,000",
+    "traded_at": "2026-08-10",
+    "filed_at": "2026-08-27"
   },
   {
     "politician_name": "Christian D. Menefee",
@@ -218,6 +405,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-05",
     "filed_at": "2026-08-05"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SOLS",
+    "company_name": "JT Solstice Advanced Materials Inc. -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-08-27"
   },
   {
     "politician_name": "April McClain Delaney",
