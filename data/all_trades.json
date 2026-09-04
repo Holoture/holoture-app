@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-03",
-    "filed_at": "2026-09-03"
+    "traded_at": "2026-09-04",
+    "filed_at": "2026-09-04"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-03",
-    "filed_at": "2026-09-03"
+    "traded_at": "2026-09-04",
+    "filed_at": "2026-09-04"
   },
   {
     "politician_name": "Kevin Hern",
@@ -143,6 +143,17 @@
     "filed_at": "2026-08-27"
   },
   {
+    "politician_name": "John J Mr III. McGuire",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "SP NVIDIA Corporation - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-01"
+  },
+  {
     "politician_name": "Kevin Hern",
     "party": "Republican",
     "chamber": "House",
@@ -240,6 +251,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-13",
     "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Michael Rulli",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ALL",
+    "company_name": "Allstate Corporation",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-12",
+    "filed_at": "2026-08-12"
   },
   {
     "politician_name": "Kelly Louise Morrison",
