@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-09",
-    "filed_at": "2026-09-09"
+    "traded_at": "2026-09-10",
+    "filed_at": "2026-09-10"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-09",
-    "filed_at": "2026-09-09"
+    "traded_at": "2026-09-10",
+    "filed_at": "2026-09-10"
   },
   {
     "politician_name": "David J. Taylor",
@@ -207,6 +207,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-18",
     "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "Lloyd Doggett",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PG",
+    "company_name": "Procter & Gamble Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-17",
+    "filed_at": "2026-09-08"
   },
   {
     "politician_name": "Kevin Hern",
