@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-10",
-    "filed_at": "2026-09-10"
+    "traded_at": "2026-09-11",
+    "filed_at": "2026-09-11"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-10",
-    "filed_at": "2026-09-10"
+    "traded_at": "2026-09-11",
+    "filed_at": "2026-09-11"
   },
   {
     "politician_name": "David J. Taylor",
@@ -99,6 +99,358 @@
     "filed_at": "2026-09-03"
   },
   {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "BRO",
+    "company_name": "DC Brown & Brown, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "BWXT",
+    "company_name": "DC BWX Technologies, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CHRW",
+    "company_name": "DC C.H. Robinson Worldwide, Inc. -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CLH",
+    "company_name": "DC Clean Harbors, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CNM",
+    "company_name": "DC Core & Main, Inc. Class A Common",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "EME",
+    "company_name": "DC EMCOR Group, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ENTG",
+    "company_name": "DC Entegris, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ESE",
+    "company_name": "DC ESCO Technologies Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LH",
+    "company_name": "DC Labcorp Holdings Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "FWONK",
+    "company_name": "Liberty Formula One Common Stock $250,000",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LTH",
+    "company_name": "DC Life Time Group Holdings, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LYV",
+    "company_name": "DC Live Nation Entertainment, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MKL",
+    "company_name": "DC Markel Group Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MLM",
+    "company_name": "DC Martin Marietta Materials, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NDAQ",
+    "company_name": "DC Nasdaq, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PKG",
+    "company_name": "DC Packaging Corporation of America",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PAYX",
+    "company_name": "DC Paychex, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-02"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "SCI",
+    "company_name": "DC Service Corporation International",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "SIG",
+    "company_name": "DC Signet Jewelers Limited Common",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "SGI",
+    "company_name": "DC Somnigroup International Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$100,001 - $250,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "STE",
+    "company_name": "DC STERIS plc",
+    "trade_type": "SELL",
+    "amount_range": "$100,001 - $250,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TDY",
+    "company_name": "DC Teledyne Technologies Incorporated",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MIDD",
+    "company_name": "DC The Middleby Corporation - Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TSCO",
+    "company_name": "DC Tractor Supply Company - Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TDG",
+    "company_name": "DC Transdigm Group Incorporated",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VIK",
+    "company_name": "DC Viking Holdings Ltd Ordinary Shares",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ESE",
+    "company_name": "DC ESCO Technologies Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "FWONK",
+    "company_name": "Liberty Formula One Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LTH",
+    "company_name": "DC Life Time Group Holdings, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TDY",
+    "company_name": "TDY",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MIDD",
+    "company_name": "MIDD",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VIK",
+    "company_name": "VIK",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-09-01"
+  },
+  {
     "politician_name": "Kevin Hern",
     "party": "Republican",
     "chamber": "House",
@@ -143,6 +495,17 @@
     "filed_at": "2026-08-24"
   },
   {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TDY",
+    "company_name": "TDY",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-21",
+    "filed_at": "2026-09-01"
+  },
+  {
     "politician_name": "Kevin Hern",
     "party": "Republican",
     "chamber": "House",
@@ -152,6 +515,61 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-21",
     "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ESE",
+    "company_name": "DC ESCO Technologies Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TDY",
+    "company_name": "TDY",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ESE",
+    "company_name": "DC ESCO Technologies Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MLM",
+    "company_name": "DC Martin Marietta Materials, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TDY",
+    "company_name": "TDY",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-01"
   },
   {
     "politician_name": "Kevin Hern",
@@ -174,6 +592,39 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-19",
     "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRK",
+    "company_name": "Merck & Company, Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRNA",
+    "company_name": "MRNA",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "QCOM",
+    "company_name": "QUALCOMM Incorporated -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-01"
   },
   {
     "politician_name": "Kevin Hern",
@@ -209,6 +660,17 @@
     "filed_at": "2026-09-01"
   },
   {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LYV",
+    "company_name": "LYV",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-17",
+    "filed_at": "2026-09-01"
+  },
+  {
     "politician_name": "Lloyd Doggett",
     "party": "Democrat",
     "chamber": "House",
@@ -218,6 +680,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-17",
     "filed_at": "2026-09-08"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CHRW",
+    "company_name": "DC C.H. Robinson Worldwide, Inc. -",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-14",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LYV",
+    "company_name": "LYV",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-14",
+    "filed_at": "2026-09-01"
   },
   {
     "politician_name": "Kevin Hern",
@@ -319,6 +803,28 @@
     "filed_at": "2026-08-27"
   },
   {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CHRW",
+    "company_name": "DC C.H. Robinson Worldwide, Inc. -",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-12",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TSCO",
+    "company_name": "TSCO",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-12",
+    "filed_at": "2026-09-01"
+  },
+  {
     "politician_name": "Michael Rulli",
     "party": "Republican",
     "chamber": "House",
@@ -328,6 +834,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-12",
     "filed_at": "2026-08-12"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "QCOM",
+    "company_name": "QUALCOMM Incorporated -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-12",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SPCX",
+    "company_name": "- Class A Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-12",
+    "filed_at": "2026-09-01"
   },
   {
     "politician_name": "Kelly Louise Morrison",
@@ -396,6 +924,17 @@
     "filed_at": "2026-08-20"
   },
   {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MIDD",
+    "company_name": "MIDD",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-10",
+    "filed_at": "2026-09-01"
+  },
+  {
     "politician_name": "Kevin Hern",
     "party": "Republican",
     "chamber": "House",
@@ -418,6 +957,39 @@
     "filed_at": "2026-08-27"
   },
   {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LH",
+    "company_name": "LH",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-07",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "FWONK",
+    "company_name": "Liberty Formula One Common Stock $50,000",
+    "trade_type": "BUY",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-07",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LTH",
+    "company_name": "DC Life Time Group Holdings, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-07",
+    "filed_at": "2026-09-01"
+  },
+  {
     "politician_name": "Christian D. Menefee",
     "party": "Democrat",
     "chamber": "House",
@@ -429,6 +1001,50 @@
     "filed_at": "2026-08-07"
   },
   {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LH",
+    "company_name": "LH",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-06",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LTH",
+    "company_name": "DC Life Time Group Holdings, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-06",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MIDD",
+    "company_name": "MIDD",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-06",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VIK",
+    "company_name": "VIK",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-06",
+    "filed_at": "2026-09-01"
+  },
+  {
     "politician_name": "Michael Rulli",
     "party": "Republican",
     "chamber": "House",
@@ -438,6 +1054,39 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-06",
     "filed_at": "2026-08-06"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LH",
+    "company_name": "LH",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MIDD",
+    "company_name": "MIDD",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VIK",
+    "company_name": "VIK",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-09-01"
   },
   {
     "politician_name": "Kevin Hern",
@@ -504,6 +1153,116 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-05",
     "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "SCI",
+    "company_name": "SCI",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-04",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MIDD",
+    "company_name": "MIDD",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-04",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VIK",
+    "company_name": "VIK",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-04",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "BWXT",
+    "company_name": "DC BWX Technologies, Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-03",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CHRW",
+    "company_name": "DC C.H. Robinson Worldwide, Inc. -",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-03",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ITT",
+    "company_name": "DC ITT Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-03",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "FWONK",
+    "company_name": "Liberty Formula One Common Stock $50,000",
+    "trade_type": "BUY",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-03",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LTH",
+    "company_name": "DC Life Time Group Holdings, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-03",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MFP",
+    "company_name": "DC Midera Food Processing, Inc. -",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-03",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "April McClain Delaney",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VIK",
+    "company_name": "VIK",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-03",
+    "filed_at": "2026-09-01"
   },
   {
     "politician_name": "April McClain Delaney",
