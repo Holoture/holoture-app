@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-11",
-    "filed_at": "2026-09-11"
+    "traded_at": "2026-09-12",
+    "filed_at": "2026-09-12"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,85 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-11",
-    "filed_at": "2026-09-11"
+    "traded_at": "2026-09-12",
+    "filed_at": "2026-09-12"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "DASH",
+    "company_name": "DASH",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-28",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ETN",
+    "company_name": "Eaton Corporation, PLC Ordinary",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NKE",
+    "company_name": "Nike, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$15,001 - $50,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PWR",
+    "company_name": "Quanta Services, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GDDY",
+    "company_name": "GDDY",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GS",
+    "company_name": "Goldman Sachs Group, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "WPM",
+    "company_name": "Wheaton Precious Metals Corp",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-09-04"
   },
   {
     "politician_name": "David J. Taylor",
@@ -97,6 +174,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-26",
     "filed_at": "2026-09-03"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LAMR",
+    "company_name": "Lamar Advertising Company - Class A",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-25",
+    "filed_at": "2026-09-04"
   },
   {
     "politician_name": "April McClain Delaney",
@@ -385,6 +473,17 @@
     "filed_at": "2026-09-01"
   },
   {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LAMR",
+    "company_name": "LAMR",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-09-04"
+  },
+  {
     "politician_name": "April McClain Delaney",
     "party": "Democrat",
     "chamber": "House",
@@ -517,6 +616,72 @@
     "filed_at": "2026-08-27"
   },
   {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "AGIO",
+    "company_name": "Agios Pharmaceuticals, Inc. -",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "ATRC",
+    "company_name": "AtriCure, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CECO",
+    "company_name": "CECO Environmental Corp. -",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "HMN",
+    "company_name": "Horace Mann Educators Corporation",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "LAMR",
+    "company_name": "LAMR",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "META",
+    "company_name": "META",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-09-04"
+  },
+  {
     "politician_name": "April McClain Delaney",
     "party": "Democrat",
     "chamber": "House",
@@ -537,6 +702,61 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-20",
     "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "KMX",
+    "company_name": "CarMax Inc",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CDW",
+    "company_name": "CDW Corporation - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CSGP",
+    "company_name": "CoStar Group, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "DLTR",
+    "company_name": "Dollar Tree, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GMED",
+    "company_name": "Globus Medical, Inc. Class A Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-19",
+    "filed_at": "2026-09-04"
   },
   {
     "politician_name": "April McClain Delaney",
@@ -625,6 +845,171 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-19",
     "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "APH",
+    "company_name": "Amphenol Corporation Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "APP",
+    "company_name": "APP",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "BSX",
+    "company_name": "Boston Scientific Corporation",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NET",
+    "company_name": "NET",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "COHR",
+    "company_name": "Coherent Corp.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "COIN",
+    "company_name": "Coinbase Global, Inc. - Class A",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CRWD",
+    "company_name": "CRWD",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "CCI",
+    "company_name": "CCI",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PODD",
+    "company_name": "Insulet Corporation - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "Microsoft Corporation - Common",
+    "trade_type": "BUY",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "NVDA",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TTD",
+    "company_name": "The Trade Desk, Inc. - Class A",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TYL",
+    "company_name": "Tyler Technologies, Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "VRSK",
+    "company_name": "VRSK",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "WDAY",
+    "company_name": "Workday, Inc. - Class A Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-18",
+    "filed_at": "2026-09-04"
   },
   {
     "politician_name": "Kevin Hern",
@@ -858,6 +1243,28 @@
     "filed_at": "2026-09-01"
   },
   {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "SHAK",
+    "company_name": "Shake Shack, Inc. Class A Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-11",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "TXRH",
+    "company_name": "TXRH",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-11",
+    "filed_at": "2026-09-04"
+  },
+  {
     "politician_name": "Kelly Louise Morrison",
     "party": "Unknown",
     "chamber": "House",
@@ -955,6 +1362,72 @@
     "amount_range": "$15,001 - $50,000",
     "traded_at": "2026-08-10",
     "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "DCO",
+    "company_name": "DCO",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-07",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "HLI",
+    "company_name": "Houlihan Lokey, Inc. Class A",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-07",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NEO",
+    "company_name": "NeoGenomics, Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-07",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "SKHY",
+    "company_name": "SK hynix Inc. - American Depositary",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-07",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "SNOW",
+    "company_name": "Snowflake Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-07",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "STRL",
+    "company_name": "Sterling Infrastructure, Inc. -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-07",
+    "filed_at": "2026-09-04"
   },
   {
     "politician_name": "April McClain Delaney",
@@ -1056,6 +1529,28 @@
     "filed_at": "2026-08-06"
   },
   {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "EA",
+    "company_name": "Electronic Arts Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "NXPI",
+    "company_name": "NXPI",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-05",
+    "filed_at": "2026-09-04"
+  },
+  {
     "politician_name": "April McClain Delaney",
     "party": "Democrat",
     "chamber": "House",
@@ -1153,6 +1648,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-05",
     "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Gilbert Cisneros",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "APG",
+    "company_name": "APi Group Corporation Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-04",
+    "filed_at": "2026-09-04"
   },
   {
     "politician_name": "April McClain Delaney",
