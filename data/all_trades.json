@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-14",
-    "filed_at": "2026-09-14"
+    "traded_at": "2026-09-15",
+    "filed_at": "2026-09-15"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-14",
-    "filed_at": "2026-09-14"
+    "traded_at": "2026-09-15",
+    "filed_at": "2026-09-15"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -86,6 +86,39 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-27",
     "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOGL",
+    "company_name": "GOOGL",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-09-10"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "JNJ",
+    "company_name": "JNJ",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-09-10"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "MSFT",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-09-10"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -21580,6 +21613,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2025-06-17",
     "filed_at": "2025-08-11"
+  },
+  {
+    "politician_name": "John W. Rose",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOGL",
+    "company_name": "GOOGL",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2025-06-03",
+    "filed_at": "2025-06-04"
   },
   {
     "politician_name": "Julia Letlow",
