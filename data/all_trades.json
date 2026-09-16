@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-15",
-    "filed_at": "2026-09-15"
+    "traded_at": "2026-09-16",
+    "filed_at": "2026-09-16"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-15",
-    "filed_at": "2026-09-15"
+    "traded_at": "2026-09-16",
+    "filed_at": "2026-09-16"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -735,6 +735,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-20",
     "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "August Lee II. Pfluger",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "CHTR",
+    "company_name": "CHTR",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-09-11"
+  },
+  {
+    "politician_name": "August Lee II. Pfluger",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "LBRDK",
+    "company_name": "LBRDK",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-20",
+    "filed_at": "2026-09-11"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -1549,6 +1571,39 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-06",
     "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "AMAT",
+    "company_name": "JT Applied Materials, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-06",
+    "filed_at": "2026-09-14"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "RSG",
+    "company_name": "RSG",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-06",
+    "filed_at": "2026-09-14"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "QSR",
+    "company_name": "JT Restaurant Brands International Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-06",
+    "filed_at": "2026-09-14"
   },
   {
     "politician_name": "Michael Rulli",
