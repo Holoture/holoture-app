@@ -29,8 +29,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-16",
-    "filed_at": "2026-09-16"
+    "traded_at": "2026-09-17",
+    "filed_at": "2026-09-17"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -40,8 +40,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-09-16",
-    "filed_at": "2026-09-16"
+    "traded_at": "2026-09-17",
+    "filed_at": "2026-09-17"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -1318,6 +1318,39 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-11",
     "filed_at": "2026-09-04"
+  },
+  {
+    "politician_name": "Byron Donalds",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HWM",
+    "company_name": "HWM",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-11",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "Byron Donalds",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HWM",
+    "company_name": "HWM",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-11",
+    "filed_at": "2026-09-01"
+  },
+  {
+    "politician_name": "Byron Donalds",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PH",
+    "company_name": "PH",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-11",
+    "filed_at": "2026-09-01"
   },
   {
     "politician_name": "Kelly Louise Morrison",
