@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-02",
-    "filed_at": "2026-10-02"
+    "traded_at": "2026-10-03",
+    "filed_at": "2026-10-03"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,30 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-02",
-    "filed_at": "2026-10-02"
+    "traded_at": "2026-10-03",
+    "filed_at": "2026-10-03"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HD",
+    "company_name": "Home Depot, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-22",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MPC",
+    "company_name": "Marathon Petroleum Corporation",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-22",
+    "filed_at": "2026-10-01"
   },
   {
     "politician_name": "Kevin Hern",
@@ -97,6 +119,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-09-15",
     "filed_at": "2026-09-15"
+  },
+  {
+    "politician_name": "Cleo Fields",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "GOOG",
+    "company_name": "Alphabet Inc. - Class C Capital Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-14",
+    "filed_at": "2026-09-14"
   },
   {
     "politician_name": "Kevin Hern",
@@ -185,6 +218,17 @@
     "amount_range": "Unknown",
     "traded_at": "2026-09-14",
     "filed_at": "2026-09-18"
+  },
+  {
+    "politician_name": "Cleo Fields",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "Microsoft Corporation - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-10",
+    "filed_at": "2026-09-10"
   },
   {
     "politician_name": "Kevin Hern",
