@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-06",
-    "filed_at": "2026-10-06"
+    "traded_at": "2026-10-07",
+    "filed_at": "2026-10-07"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-06",
-    "filed_at": "2026-10-06"
+    "traded_at": "2026-10-07",
+    "filed_at": "2026-10-07"
   },
   {
     "politician_name": "Michael Rulli",
@@ -86,6 +86,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-09-22",
     "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Lloyd Doggett",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "HD",
+    "company_name": "Home Depot, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-17",
+    "filed_at": "2026-10-05"
   },
   {
     "politician_name": "Kevin Hern",
@@ -231,6 +242,17 @@
     "filed_at": "2026-09-18"
   },
   {
+    "politician_name": "Lloyd Doggett",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "PPG",
+    "company_name": "PPG Industries, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-11",
+    "filed_at": "2026-10-05"
+  },
+  {
     "politician_name": "Cleo Fields",
     "party": "Democrat",
     "chamber": "House",
@@ -317,6 +339,17 @@
     "amount_range": "$50,001 - $100,000",
     "traded_at": "2026-09-09",
     "filed_at": "2026-09-15"
+  },
+  {
+    "politician_name": "Lloyd Doggett",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "JNJ",
+    "company_name": "Johnson & Johnson Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-08",
+    "filed_at": "2026-10-05"
   },
   {
     "politician_name": "Kevin Hern",
