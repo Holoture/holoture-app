@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-08",
-    "filed_at": "2026-10-08"
+    "traded_at": "2026-10-09",
+    "filed_at": "2026-10-09"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-08",
-    "filed_at": "2026-10-08"
+    "traded_at": "2026-10-09",
+    "filed_at": "2026-10-09"
   },
   {
     "politician_name": "Michael Rulli",
@@ -64,6 +64,270 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-09-28",
     "filed_at": "2026-09-28"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "MCD",
+    "company_name": "MCD",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-25",
+    "filed_at": "2026-10-06"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "BA",
+    "company_name": "Boeing Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "BEP",
+    "company_name": "Limited Partnership Units",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CSCO",
+    "company_name": "Cisco Systems, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CSCO",
+    "company_name": "CSCO",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GLW",
+    "company_name": "GLW",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DDOG",
+    "company_name": "DDOG",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "FDX",
+    "company_name": "FDX",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GS",
+    "company_name": "Goldman Sachs Group, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HONA",
+    "company_name": "HONA",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRVL",
+    "company_name": "MRVL",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRK",
+    "company_name": "MRK",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "META",
+    "company_name": "META",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "MSFT",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRNA",
+    "company_name": "MRNA",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "OKTA",
+    "company_name": "OKTA",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PTON",
+    "company_name": "PTON",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "RH",
+    "company_name": "RH Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CRM",
+    "company_name": "CRM",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SNOW",
+    "company_name": "SNOW",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SPCX",
+    "company_name": "- Class A Common Stock",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "URI",
+    "company_name": "URI",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "UNH",
+    "company_name": "UNH",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "META",
+    "company_name": "Meta Platforms, Inc. - Class A",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-22",
+    "filed_at": "2026-10-01"
   },
   {
     "politician_name": "David J. Taylor",
@@ -97,6 +361,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-09-17",
     "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Josh Gottheimer",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "AMAT",
+    "company_name": "JT Applied Materials, Inc. - Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-15",
+    "filed_at": "2026-10-06"
   },
   {
     "politician_name": "Kevin Hern",
@@ -374,6 +649,28 @@
     "filed_at": "2026-09-15"
   },
   {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CSCO",
+    "company_name": "CSCO",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-08",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GLW",
+    "company_name": "Corning Incorporated Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-08",
+    "filed_at": "2026-10-01"
+  },
+  {
     "politician_name": "David J. Taylor",
     "party": "Republican",
     "chamber": "House",
@@ -416,6 +713,39 @@
     "amount_range": "Unknown",
     "traded_at": "2026-09-04",
     "filed_at": "2026-09-15"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GLW",
+    "company_name": "GLW",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-04",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "OKTA",
+    "company_name": "Okta, Inc. - Class A Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-04",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SNOW",
+    "company_name": "Snowflake Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-04",
+    "filed_at": "2026-10-01"
   },
   {
     "politician_name": "Kevin Hern",
@@ -614,6 +944,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-09-02",
     "filed_at": "2026-09-15"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CVX",
+    "company_name": "Chevron Corporation Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-02",
+    "filed_at": "2026-10-01"
   },
   {
     "politician_name": "Kevin Hern",
