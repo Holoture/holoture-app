@@ -22,6 +22,17 @@
     "filed_at": "2026-01-21"
   },
   {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AIO",
+    "company_name": "AIO",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-15",
+    "filed_at": "2026-10-15"
+  },
+  {
     "politician_name": "Thomas H. Jr. Kean",
     "party": "Republican",
     "chamber": "House",
@@ -40,8 +51,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-14",
-    "filed_at": "2026-10-14"
+    "traded_at": "2026-10-15",
+    "filed_at": "2026-10-15"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +62,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-14",
-    "filed_at": "2026-10-14"
+    "traded_at": "2026-10-15",
+    "filed_at": "2026-10-15"
   },
   {
     "politician_name": "Rick Larsen",
@@ -97,6 +108,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-08",
     "filed_at": "2026-10-12"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NEE",
+    "company_name": "JT NextEra Energy, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-02"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -616,6 +638,94 @@
     "filed_at": "2026-10-01"
   },
   {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CVX",
+    "company_name": "CVX",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-23",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DVN",
+    "company_name": "JT Devon Energy Corporation Common",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-09-23",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DVN",
+    "company_name": "DVN",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-09-23",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HD",
+    "company_name": "JT Home Depot, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-23",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LMT",
+    "company_name": "LMT",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-09-23",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRSH",
+    "company_name": "JT Marsh Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$50,001 - $100,000",
+    "traded_at": "2026-09-23",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SBUX",
+    "company_name": "JT Starbucks Corporation - Common",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-09-23",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "UNH",
+    "company_name": "JT UnitedHealth Group Incorporated",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-09-23",
+    "filed_at": "2026-10-02"
+  },
+  {
     "politician_name": "Maria Elvira Salazar",
     "party": "Republican",
     "chamber": "House",
@@ -867,6 +977,61 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-09-17",
     "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "EMR",
+    "company_name": "EMR",
+    "trade_type": "BUY",
+    "amount_range": "Unknown",
+    "traded_at": "2026-09-17",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LMT",
+    "company_name": "LMT",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-09-17",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LOW",
+    "company_name": "LOW",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-17",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRSH",
+    "company_name": "JT Marsh Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$50,001 - $100,000",
+    "traded_at": "2026-09-17",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ROK",
+    "company_name": "ROK",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-09-17",
+    "filed_at": "2026-10-02"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -1747,6 +1912,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-31",
     "filed_at": "2026-09-15"
+  },
+  {
+    "politician_name": "Daniel Meuser",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "NVDA",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-31",
+    "filed_at": "2026-09-14"
   },
   {
     "politician_name": "Gilbert Cisneros",
