@@ -29,8 +29,30 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-15",
-    "filed_at": "2026-10-15"
+    "traded_at": "2026-10-16",
+    "filed_at": "2026-10-16"
+  },
+  {
+    "politician_name": "Tim Moore",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "VZ",
+    "company_name": "VZ",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-16",
+    "filed_at": "2026-10-16"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "WHR",
+    "company_name": "WHR",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-16",
+    "filed_at": "2026-10-16"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
@@ -42,28 +64,6 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-15",
     "filed_at": "2026-02-13"
-  },
-  {
-    "politician_name": "Tim Moore",
-    "party": "Republican",
-    "chamber": "House",
-    "ticker": "VZ",
-    "company_name": "VZ",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-10-15",
-    "filed_at": "2026-10-15"
-  },
-  {
-    "politician_name": "Maria Elvira Salazar",
-    "party": "Republican",
-    "chamber": "House",
-    "ticker": "WHR",
-    "company_name": "WHR",
-    "trade_type": "UNKNOWN",
-    "amount_range": "Unknown",
-    "traded_at": "2026-10-15",
-    "filed_at": "2026-10-15"
   },
   {
     "politician_name": "Rick Larsen",
@@ -801,6 +801,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-09-21",
     "filed_at": "2026-10-09"
+  },
+  {
+    "politician_name": "Richard W. Allen",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "COST",
+    "company_name": "SP Costco Wholesale Corporation -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-18",
+    "filed_at": "2026-10-14"
   },
   {
     "politician_name": "Gilbert Cisneros",
