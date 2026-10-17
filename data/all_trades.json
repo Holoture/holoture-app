@@ -29,8 +29,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-16",
-    "filed_at": "2026-10-16"
+    "traded_at": "2026-10-17",
+    "filed_at": "2026-10-17"
   },
   {
     "politician_name": "Tim Moore",
@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-16",
-    "filed_at": "2026-10-16"
+    "traded_at": "2026-10-17",
+    "filed_at": "2026-10-17"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-16",
-    "filed_at": "2026-10-16"
+    "traded_at": "2026-10-17",
+    "filed_at": "2026-10-17"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
@@ -64,6 +64,50 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-15",
     "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PG",
+    "company_name": "Procter & Gamble Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-12",
+    "filed_at": "2026-10-15"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "T",
+    "company_name": "AT&T Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-09",
+    "filed_at": "2026-10-15"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "FITB",
+    "company_name": "Fifth Third Bancorp - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-09",
+    "filed_at": "2026-10-15"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "RPM",
+    "company_name": "RPM International Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-09",
+    "filed_at": "2026-10-15"
   },
   {
     "politician_name": "Rick Larsen",
