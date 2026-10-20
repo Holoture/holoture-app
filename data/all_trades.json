@@ -29,8 +29,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-19",
-    "filed_at": "2026-10-19"
+    "traded_at": "2026-10-20",
+    "filed_at": "2026-10-20"
   },
   {
     "politician_name": "Tim Moore",
@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-19",
-    "filed_at": "2026-10-19"
+    "traded_at": "2026-10-20",
+    "filed_at": "2026-10-20"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-19",
-    "filed_at": "2026-10-19"
+    "traded_at": "2026-10-20",
+    "filed_at": "2026-10-20"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
@@ -2649,6 +2649,28 @@
     "amount_range": "Unknown",
     "traded_at": "2026-08-24",
     "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Laurel Lee",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "BAC",
+    "company_name": "SP Bank of America Corporation",
+    "trade_type": "SELL",
+    "amount_range": "$15,001 - $50,000",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-09-21"
+  },
+  {
+    "politician_name": "Laurel Lee",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NOKBF",
+    "company_name": "SP NOKIA A SHS",
+    "trade_type": "SELL",
+    "amount_range": "$15,001 - $50,000",
+    "traded_at": "2026-08-24",
+    "filed_at": "2026-09-21"
   },
   {
     "politician_name": "Michael Rulli",
