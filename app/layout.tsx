@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { DM_Sans, JetBrains_Mono } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import { SessionGuard } from '@/components/SessionGuard'
 import Footer from '@/components/Footer'
 import './globals.css'
@@ -98,6 +99,7 @@ export default function RootLayout({
         <body className="min-h-full flex flex-col antialiased">
           <SessionGuard>{children}</SessionGuard>
           <Footer />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
