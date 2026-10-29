@@ -29,8 +29,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-28",
-    "filed_at": "2026-10-28"
+    "traded_at": "2026-10-29",
+    "filed_at": "2026-10-29"
   },
   {
     "politician_name": "Tim Moore",
@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-28",
-    "filed_at": "2026-10-28"
+    "traded_at": "2026-10-29",
+    "filed_at": "2026-10-29"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,96 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
+    "traded_at": "2026-10-29",
+    "filed_at": "2026-10-29"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DIS",
+    "company_name": "Walt Disney Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-28",
     "filed_at": "2026-10-28"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AMZN",
+    "company_name": "Amazon.com, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-27",
+    "filed_at": "2026-10-27"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MCD",
+    "company_name": "SP McDonald's Corporation Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-27",
+    "filed_at": "2026-10-27"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LOW",
+    "company_name": "Lowe's Companies, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-22",
+    "filed_at": "2026-10-22"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PEP",
+    "company_name": "Pepsico, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-21",
+    "filed_at": "2026-10-21"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PG",
+    "company_name": "Procter & Gamble Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-21",
+    "filed_at": "2026-10-21"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "REZI",
+    "company_name": "Resideo Technologies, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-21",
+    "filed_at": "2026-10-21"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SOLS",
+    "company_name": "Solstice Advanced Materials Inc. -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-21",
+    "filed_at": "2026-10-21"
   },
   {
     "politician_name": "Michael Rulli",
@@ -86,6 +174,50 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-15",
     "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CVX",
+    "company_name": "Chevron Corporation Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "XOM",
+    "company_name": "ExxonMobil Holdings Corporation",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HD",
+    "company_name": "Home Depot, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "COST",
+    "company_name": "Costco Wholesale Corporation -",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-13",
+    "filed_at": "2026-10-13"
   },
   {
     "politician_name": "David J. Taylor",
@@ -185,6 +317,149 @@
     "amount_range": "Unknown",
     "traded_at": "2026-10-02",
     "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ABT",
+    "company_name": "SP Abbott Laboratories Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOG",
+    "company_name": "SP Alphabet Inc. - Class C Capital Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AMZN",
+    "company_name": "SP Amazon.com, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CMG",
+    "company_name": "SP Chipotle Mexican Grill, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "COST",
+    "company_name": "SP Costco Wholesale Corporation -",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MA",
+    "company_name": "SP Mastercard Incorporated Common",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MCD",
+    "company_name": "SP McDonald's Corporation Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "SP Microsoft Corporation - Common",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "SP NVIDIA Corporation - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SBUX",
+    "company_name": "SP Starbucks Corporation - Common",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "TJX",
+    "company_name": "SP TJX Companies, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$15,001 - $50,000",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "VZ",
+    "company_name": "SP Verizon Communications Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$15,001 - $50,000",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Pete Sessions",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "V",
+    "company_name": "SP Visa Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$15,001 - $50,000",
+    "traded_at": "2026-10-02",
+    "filed_at": "2026-10-05"
   },
   {
     "politician_name": "Gilbert Cisneros",
