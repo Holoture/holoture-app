@@ -29,8 +29,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-29",
-    "filed_at": "2026-10-29"
+    "traded_at": "2026-10-30",
+    "filed_at": "2026-10-30"
   },
   {
     "politician_name": "Tim Moore",
@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-29",
-    "filed_at": "2026-10-29"
+    "traded_at": "2026-10-30",
+    "filed_at": "2026-10-30"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-29",
-    "filed_at": "2026-10-29"
+    "traded_at": "2026-10-30",
+    "filed_at": "2026-10-30"
   },
   {
     "politician_name": "Pete Sessions",
@@ -85,6 +85,28 @@
     "trade_type": "SELL",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-27",
+    "filed_at": "2026-10-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ASML",
+    "company_name": "Registry Shares",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-23",
+    "filed_at": "2026-10-27"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "STX",
+    "company_name": "STX",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-23",
     "filed_at": "2026-10-27"
   },
   {
@@ -174,6 +196,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-15",
     "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "Kevin Hern",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "TXN",
+    "company_name": "TXN",
+    "trade_type": "UNKNOWN",
+    "amount_range": "Unknown",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-27"
   },
   {
     "politician_name": "Pete Sessions",
