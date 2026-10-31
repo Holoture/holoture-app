@@ -29,8 +29,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-30",
-    "filed_at": "2026-10-30"
+    "traded_at": "2026-10-31",
+    "filed_at": "2026-10-31"
   },
   {
     "politician_name": "Tim Moore",
@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-30",
-    "filed_at": "2026-10-30"
+    "traded_at": "2026-10-31",
+    "filed_at": "2026-10-31"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-10-30",
-    "filed_at": "2026-10-30"
+    "traded_at": "2026-10-31",
+    "filed_at": "2026-10-31"
   },
   {
     "politician_name": "Pete Sessions",
@@ -196,6 +196,61 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-15",
     "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "T",
+    "company_name": "AT&T Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-15",
+    "filed_at": "2026-10-29"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LRCX",
+    "company_name": "Lam Research Corporation - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-15",
+    "filed_at": "2026-10-29"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MPC",
+    "company_name": "Marathon Petroleum Corporation",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-15",
+    "filed_at": "2026-10-29"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "RPM",
+    "company_name": "RPM International Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-15",
+    "filed_at": "2026-10-29"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "V",
+    "company_name": "Visa Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-15",
+    "filed_at": "2026-10-29"
   },
   {
     "politician_name": "Kevin Hern",
