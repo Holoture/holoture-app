@@ -29,8 +29,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-01",
-    "filed_at": "2026-11-01"
+    "traded_at": "2026-11-02",
+    "filed_at": "2026-11-02"
   },
   {
     "politician_name": "Tim Moore",
@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-01",
-    "filed_at": "2026-11-01"
+    "traded_at": "2026-11-02",
+    "filed_at": "2026-11-02"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-01",
-    "filed_at": "2026-11-01"
+    "traded_at": "2026-11-02",
+    "filed_at": "2026-11-02"
   },
   {
     "politician_name": "Pete Sessions",
@@ -583,6 +583,39 @@
     "filed_at": "2026-10-01"
   },
   {
+    "politician_name": "John J Mr III. McGuire",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "MU",
+    "company_name": "SP Micron Technology, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-01",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "JNJ",
+    "company_name": "JNJ",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-30",
+    "filed_at": "2026-10-07"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SYK",
+    "company_name": "SYK",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-30",
+    "filed_at": "2026-10-07"
+  },
+  {
     "politician_name": "Lisa McClain",
     "party": "Republican",
     "chamber": "House",
@@ -792,6 +825,28 @@
     "filed_at": "2026-10-09"
   },
   {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ESAB",
+    "company_name": "ESAB Corporation Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-29",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Carol Devine Miller",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "HONA",
+    "company_name": "SP Honeywell Aerospace Inc. - Common",
+    "trade_type": "SELL",
+    "amount_range": "Unknown",
+    "traded_at": "2026-09-29",
+    "filed_at": "2026-10-29"
+  },
+  {
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
@@ -867,6 +922,39 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-09-25",
     "filed_at": "2026-10-06"
+  },
+  {
+    "politician_name": "John J Mr III. McGuire",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "MU",
+    "company_name": "SP Micron Technology, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-25",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "John J Mr III. McGuire",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "AVGO",
+    "company_name": "AVGO",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "John J Mr III. McGuire",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "MU",
+    "company_name": "SP Micron Technology, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-24",
+    "filed_at": "2026-10-02"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -1199,6 +1287,17 @@
     "filed_at": "2026-10-02"
   },
   {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MDLZ",
+    "company_name": "MDLZ",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-23",
+    "filed_at": "2026-10-01"
+  },
+  {
     "politician_name": "Maria Elvira Salazar",
     "party": "Republican",
     "chamber": "House",
@@ -1516,6 +1615,28 @@
     "amount_range": "Unknown",
     "traded_at": "2026-09-17",
     "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ABT",
+    "company_name": "ABT",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-17",
+    "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Thomas H. Jr. Kean",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "TXN",
+    "company_name": "Texas Instruments Incorporated -",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-17",
+    "filed_at": "2026-10-01"
   },
   {
     "politician_name": "Gilbert Cisneros",
