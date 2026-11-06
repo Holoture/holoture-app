@@ -29,8 +29,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-05",
-    "filed_at": "2026-11-05"
+    "traded_at": "2026-11-06",
+    "filed_at": "2026-11-06"
   },
   {
     "politician_name": "Tim Moore",
@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-05",
-    "filed_at": "2026-11-05"
+    "traded_at": "2026-11-06",
+    "filed_at": "2026-11-06"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-05",
-    "filed_at": "2026-11-05"
+    "traded_at": "2026-11-06",
+    "filed_at": "2026-11-06"
   },
   {
     "politician_name": "Pete Sessions",
@@ -108,6 +108,39 @@
     "amount_range": "Unknown",
     "traded_at": "2026-10-23",
     "filed_at": "2026-10-27"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CSCO",
+    "company_name": "Cisco Systems, Inc. - Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-23",
+    "filed_at": "2026-11-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "NVIDIA Corporation - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-23",
+    "filed_at": "2026-11-01"
+  },
+  {
+    "politician_name": "Maria Elvira Salazar",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PG",
+    "company_name": "Procter & Gamble Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-23",
+    "filed_at": "2026-11-01"
   },
   {
     "politician_name": "Pete Sessions",
@@ -944,6 +977,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-09-25",
     "filed_at": "2026-10-02"
+  },
+  {
+    "politician_name": "Daniel Meuser",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "NVDA",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-25",
+    "filed_at": "2026-10-14"
   },
   {
     "politician_name": "John J Mr III. McGuire",
