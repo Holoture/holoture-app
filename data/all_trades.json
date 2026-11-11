@@ -29,8 +29,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-10",
-    "filed_at": "2026-11-10"
+    "traded_at": "2026-11-11",
+    "filed_at": "2026-11-11"
   },
   {
     "politician_name": "Tim Moore",
@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-10",
-    "filed_at": "2026-11-10"
+    "traded_at": "2026-11-11",
+    "filed_at": "2026-11-11"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-10",
-    "filed_at": "2026-11-10"
+    "traded_at": "2026-11-11",
+    "filed_at": "2026-11-11"
   },
   {
     "politician_name": "Pete Sessions",
@@ -481,6 +481,17 @@
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-08",
+    "filed_at": "2026-10-12"
+  },
+  {
+    "politician_name": "David Kustoff",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "WBD",
+    "company_name": "JT Warner Bros. Discovery, Inc. - Series",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-07",
     "filed_at": "2026-10-12"
   },
   {
