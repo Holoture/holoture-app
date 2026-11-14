@@ -29,8 +29,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-13",
-    "filed_at": "2026-11-13"
+    "traded_at": "2026-11-14",
+    "filed_at": "2026-11-14"
   },
   {
     "politician_name": "Tim Moore",
@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-13",
-    "filed_at": "2026-11-13"
+    "traded_at": "2026-11-14",
+    "filed_at": "2026-11-14"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,140 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-13",
-    "filed_at": "2026-11-13"
+    "traded_at": "2026-11-14",
+    "filed_at": "2026-11-14"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AVGO",
+    "company_name": "Broadcom Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-05",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HD",
+    "company_name": "Home Depot, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-05",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LRCX",
+    "company_name": "Lam Research Corporation - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-05",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PG",
+    "company_name": "Procter & Gamble Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-05",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "V",
+    "company_name": "Visa Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-05",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOGL",
+    "company_name": "Alphabet Inc. - Class A Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-03",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "T",
+    "company_name": "AT&T Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-03",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ETN",
+    "company_name": "Eaton Corporation, PLC Ordinary",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-03",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LLY",
+    "company_name": "Eli Lilly and Company Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-03",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "IBP",
+    "company_name": "Installed Building Products, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-03",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "KR",
+    "company_name": "Kroger Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-03",
+    "filed_at": "2026-11-12"
+  },
+  {
+    "politician_name": "David J. Taylor",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "V",
+    "company_name": "Visa Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-03",
+    "filed_at": "2026-11-12"
   },
   {
     "politician_name": "Gilbert Cisneros",
