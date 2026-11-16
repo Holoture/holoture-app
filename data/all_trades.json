@@ -29,8 +29,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-15",
-    "filed_at": "2026-11-15"
+    "traded_at": "2026-11-16",
+    "filed_at": "2026-11-16"
   },
   {
     "politician_name": "Tim Moore",
@@ -40,8 +40,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-15",
-    "filed_at": "2026-11-15"
+    "traded_at": "2026-11-16",
+    "filed_at": "2026-11-16"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -51,8 +51,19 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-15",
-    "filed_at": "2026-11-15"
+    "traded_at": "2026-11-16",
+    "filed_at": "2026-11-16"
+  },
+  {
+    "politician_name": "James French Hill",
+    "party": "Unknown",
+    "chamber": "House",
+    "ticker": "JBGS",
+    "company_name": "JBG SMITH Properties Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-11-09",
+    "filed_at": "2026-11-09"
   },
   {
     "politician_name": "David J. Taylor",
@@ -372,6 +383,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-23",
     "filed_at": "2026-11-01"
+  },
+  {
+    "politician_name": "Jonathan Jackson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "DDOG",
+    "company_name": "Datadog, Inc. - Class A Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-22",
+    "filed_at": "2026-11-02"
   },
   {
     "politician_name": "Pete Sessions",
@@ -1045,6 +1067,17 @@
     "filed_at": "2026-11-04"
   },
   {
+    "politician_name": "Jonathan Jackson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "SPHR",
+    "company_name": "SP Sphere Entertainment Co. Class A",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-12",
+    "filed_at": "2026-11-02"
+  },
+  {
     "politician_name": "David J. Taylor",
     "party": "Republican",
     "chamber": "House",
@@ -1417,6 +1450,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-01",
     "filed_at": "2026-10-01"
+  },
+  {
+    "politician_name": "Jonathan Jackson",
+    "party": "Democrat",
+    "chamber": "House",
+    "ticker": "BP",
+    "company_name": "JT BP p.l.c. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-01",
+    "filed_at": "2026-11-02"
   },
   {
     "politician_name": "John J Mr III. McGuire",
