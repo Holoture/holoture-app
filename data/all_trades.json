@@ -40,8 +40,8 @@
     "company_name": "AIO",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-23",
-    "filed_at": "2026-11-23"
+    "traded_at": "2026-11-24",
+    "filed_at": "2026-11-24"
   },
   {
     "politician_name": "Tim Moore",
@@ -51,8 +51,8 @@
     "company_name": "VZ",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-23",
-    "filed_at": "2026-11-23"
+    "traded_at": "2026-11-24",
+    "filed_at": "2026-11-24"
   },
   {
     "politician_name": "Maria Elvira Salazar",
@@ -62,8 +62,8 @@
     "company_name": "WHR",
     "trade_type": "UNKNOWN",
     "amount_range": "Unknown",
-    "traded_at": "2026-11-23",
-    "filed_at": "2026-11-23"
+    "traded_at": "2026-11-24",
+    "filed_at": "2026-11-24"
   },
   {
     "politician_name": "Jennifer McClellan",
@@ -847,6 +847,17 @@
     "filed_at": "2026-11-09"
   },
   {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NOW",
+    "company_name": "SP ServiceNow, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-20",
+    "filed_at": "2026-10-20"
+  },
+  {
     "politician_name": "Robert E. Latta",
     "party": "Republican",
     "chamber": "House",
@@ -1098,6 +1109,182 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-10-14",
     "filed_at": "2026-11-09"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "APD",
+    "company_name": "SP Air Products and Chemicals, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CSCO",
+    "company_name": "CSCO",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "KO",
+    "company_name": "SP Coca-Cola Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CRWD",
+    "company_name": "SP CrowdStrike Holdings, Inc. - Class A",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CVS",
+    "company_name": "CVS",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LLY",
+    "company_name": "LLY",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "XOM",
+    "company_name": "XOM",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LYB",
+    "company_name": "SP LyondellBasell Industries NV",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRK",
+    "company_name": "MRK",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "MSFT",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "NVDA",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PANW",
+    "company_name": "SP Palo Alto Networks, Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SNOW",
+    "company_name": "SP Snowflake Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "TGT",
+    "company_name": "TGT",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "TXN",
+    "company_name": "TXN",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "UNP",
+    "company_name": "UNP",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-10-14",
+    "filed_at": "2026-10-14"
   },
   {
     "politician_name": "Kevin Hern",
@@ -2728,6 +2915,72 @@
     "filed_at": "2026-10-09"
   },
   {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AZN",
+    "company_name": "AZN",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-16",
+    "filed_at": "2026-09-16"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AVGO",
+    "company_name": "AVGO",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-16",
+    "filed_at": "2026-09-16"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ISRG",
+    "company_name": "SP Intuitive Surgical, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-16",
+    "filed_at": "2026-09-16"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRVL",
+    "company_name": "SP Marvell Technology, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-16",
+    "filed_at": "2026-09-16"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ORCL",
+    "company_name": "ORCL",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-16",
+    "filed_at": "2026-09-16"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SHOP",
+    "company_name": "Voting Shares",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-16",
+    "filed_at": "2026-09-16"
+  },
+  {
     "politician_name": "Josh Gottheimer",
     "party": "Democrat",
     "chamber": "House",
@@ -3056,6 +3309,28 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-09-08",
     "filed_at": "2026-10-05"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ABT",
+    "company_name": "SP Abbott Laboratories Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-08",
+    "filed_at": "2026-09-08"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HONA",
+    "company_name": "HONA",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-09-08",
+    "filed_at": "2026-09-08"
   },
   {
     "politician_name": "Kevin Hern",
@@ -3641,6 +3916,72 @@
     "filed_at": "2026-09-04"
   },
   {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "BAC",
+    "company_name": "BAC",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GIS",
+    "company_name": "SP General Mills, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "JPM",
+    "company_name": "JPM",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRSH",
+    "company_name": "SP Marsh Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MCD",
+    "company_name": "SP McDonald's Corporation Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-08-27"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "VZ",
+    "company_name": "VZ",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-27",
+    "filed_at": "2026-08-27"
+  },
+  {
     "politician_name": "Kevin Hern",
     "party": "Republican",
     "chamber": "House",
@@ -3804,6 +4145,94 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-08-26",
     "filed_at": "2026-09-02"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "BAC",
+    "company_name": "BAC",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-08-26"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GIS",
+    "company_name": "SP General Mills, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-08-26"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "JPM",
+    "company_name": "JPM",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-08-26"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "JPM",
+    "company_name": "JPM",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-08-26"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRSH",
+    "company_name": "SP Marsh Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-08-26"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MCD",
+    "company_name": "SP McDonald's Corporation Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-08-26"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "VZ",
+    "company_name": "VZ",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-08-26"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "VZ",
+    "company_name": "VZ",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-08-26",
+    "filed_at": "2026-08-26"
   },
   {
     "politician_name": "David J. Taylor",
@@ -7832,6 +8261,94 @@
     "filed_at": "2026-08-04"
   },
   {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ABNB",
+    "company_name": "SP Airbnb, Inc. - Class A Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-02",
+    "filed_at": "2026-07-02"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOG",
+    "company_name": "SP Alphabet Inc. - Class C Capital Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-02",
+    "filed_at": "2026-07-02"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AMZN",
+    "company_name": "AMZN",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-02",
+    "filed_at": "2026-07-02"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AVGO",
+    "company_name": "SP Broadcom Inc. - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-02",
+    "filed_at": "2026-07-02"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "FANG",
+    "company_name": "SP Diamondback Energy, Inc. - Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-02",
+    "filed_at": "2026-07-02"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MU",
+    "company_name": "SP Micron Technology, Inc. - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-02",
+    "filed_at": "2026-07-02"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "MSFT",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-02",
+    "filed_at": "2026-07-02"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "UBER",
+    "company_name": "SP Uber Technologies, Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-07-02",
+    "filed_at": "2026-07-02"
+  },
+  {
     "politician_name": "Kevin Hern",
     "party": "Republican",
     "chamber": "House",
@@ -9658,6 +10175,72 @@
     "filed_at": "2026-07-07"
   },
   {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AME",
+    "company_name": "SP AMETEK, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-01",
+    "filed_at": "2026-06-01"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "BA",
+    "company_name": "SP Boeing Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-01",
+    "filed_at": "2026-06-01"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DG",
+    "company_name": "DG",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-01",
+    "filed_at": "2026-06-01"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "EME",
+    "company_name": "SP EMCOR Group, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-01",
+    "filed_at": "2026-06-01"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GNRC",
+    "company_name": "SP Generac Holdlings Inc. Common",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-01",
+    "filed_at": "2026-06-01"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "R",
+    "company_name": "SP Ryder System, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-06-01",
+    "filed_at": "2026-06-01"
+  },
+  {
     "politician_name": "Thomas H. Jr. Kean",
     "party": "Republican",
     "chamber": "House",
@@ -11473,6 +12056,28 @@
     "filed_at": "2026-06-01"
   },
   {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CLX",
+    "company_name": "SP Clorox Company",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-05-06",
+    "filed_at": "2026-05-06"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GIS",
+    "company_name": "SP General Mills, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-05-06",
+    "filed_at": "2026-05-06"
+  },
+  {
     "politician_name": "Sara Jacobs",
     "party": "Democrat",
     "chamber": "House",
@@ -11913,6 +12518,413 @@
     "filed_at": "2026-05-01"
   },
   {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "APD",
+    "company_name": "SP Air Products and Chemicals, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ABNB",
+    "company_name": "SP Airbnb, Inc. - Class A Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GOOGL",
+    "company_name": "GOOGL",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AEP",
+    "company_name": "Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ADI",
+    "company_name": "ADI",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "T",
+    "company_name": "SP AT&T Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "BAC",
+    "company_name": "BAC",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AVGO",
+    "company_name": "AVGO",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CVX",
+    "company_name": "SP Chevron Corporation Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CSCO",
+    "company_name": "CSCO",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CME",
+    "company_name": "CME",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CCI",
+    "company_name": "SP Crown Castle Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CVS",
+    "company_name": "CVS",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DG",
+    "company_name": "DG",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GD",
+    "company_name": "GD",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "GSK",
+    "company_name": "GSK",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "HD",
+    "company_name": "SP Home Depot, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LMT",
+    "company_name": "LMT",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LOW",
+    "company_name": "SP Lowe's Companies, Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "LYB",
+    "company_name": "SP LyondellBasell Industries NV",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MDT",
+    "company_name": "MDT",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MRK",
+    "company_name": "MRK",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "MSFT",
+    "company_name": "SP Microsoft Corporation - Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NKE",
+    "company_name": "SP Nike, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NVDA",
+    "company_name": "SP NVIDIA Corporation - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ORCL",
+    "company_name": "SP Oracle Corporation Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PEP",
+    "company_name": "SP Pepsico, Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PFE",
+    "company_name": "SP Pfizer, Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PNC",
+    "company_name": "PNC",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PG",
+    "company_name": "SP Procter & Gamble Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "QSR",
+    "company_name": "QSR",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SO",
+    "company_name": "SP Southern Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "TGT",
+    "company_name": "SP Target Corporation Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "UNP",
+    "company_name": "SP Union Pacific Corporation Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "UPS",
+    "company_name": "UPS",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "VZ",
+    "company_name": "SP Verizon Communications Inc.",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "V",
+    "company_name": "SP Visa Inc.",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-29",
+    "filed_at": "2026-04-29"
+  },
+  {
     "politician_name": "Thomas H. Jr. Kean",
     "party": "Republican",
     "chamber": "House",
@@ -11999,6 +13011,17 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-27",
     "filed_at": "2026-05-01"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SNOW",
+    "company_name": "SP Snowflake Inc. Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-26",
+    "filed_at": "2026-04-29"
   },
   {
     "politician_name": "Gilbert Cisneros",
@@ -12230,6 +13253,39 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-04-21",
     "filed_at": "2026-04-27"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "BSX",
+    "company_name": "BSX",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-21",
+    "filed_at": "2026-04-21"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "KLAC",
+    "company_name": "SP KLA Corporation - Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-21",
+    "filed_at": "2026-04-21"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NOW",
+    "company_name": "NOW",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-04-21",
+    "filed_at": "2026-04-21"
   },
   {
     "politician_name": "Thomas H. Jr. Kean",
@@ -13781,6 +14837,94 @@
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-03-31",
     "filed_at": "2026-04-01"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AMZN",
+    "company_name": "AMZN",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-31",
+    "filed_at": "2026-03-31"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ASML",
+    "company_name": "Registry Shares",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-31",
+    "filed_at": "2026-03-31"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "AZN",
+    "company_name": "SP AstraZeneca PLC - American",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-31",
+    "filed_at": "2026-03-31"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "KO",
+    "company_name": "SP Coca-Cola Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-31",
+    "filed_at": "2026-03-31"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NKE",
+    "company_name": "SP Nike, Inc. Common Stock",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-31",
+    "filed_at": "2026-03-31"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PLTR",
+    "company_name": "SP Palantir Technologies Inc. - Class A",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-31",
+    "filed_at": "2026-03-31"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "SBUX",
+    "company_name": "SBUX",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-31",
+    "filed_at": "2026-03-31"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "DIS",
+    "company_name": "SP Walt Disney Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-03-31",
+    "filed_at": "2026-03-31"
   },
   {
     "politician_name": "Rick Larsen",
@@ -17017,6 +18161,28 @@
     "filed_at": "2026-03-01"
   },
   {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ABNB",
+    "company_name": "SP Airbnb, Inc. - Class A Common Stock",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-24",
+    "filed_at": "2026-02-24"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "WDAY",
+    "company_name": "WDAY",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-24",
+    "filed_at": "2026-02-24"
+  },
+  {
     "politician_name": "Gilbert Cisneros",
     "party": "Democrat",
     "chamber": "House",
@@ -17347,6 +18513,39 @@
     "filed_at": "2026-03-04"
   },
   {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ACN",
+    "company_name": "ACN",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-17",
+    "filed_at": "2026-02-17"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PG",
+    "company_name": "SP Procter & Gamble Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-17",
+    "filed_at": "2026-02-17"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "WM",
+    "company_name": "SP Waste Management, Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-17",
+    "filed_at": "2026-02-17"
+  },
+  {
     "politician_name": "Jonathan Jackson",
     "party": "Democrat",
     "chamber": "House",
@@ -17440,6 +18639,83 @@
     "chamber": "House",
     "ticker": "ARLP",
     "company_name": "Partnership Interests",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-13",
+    "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ACN",
+    "company_name": "ACN",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-13",
+    "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ACN",
+    "company_name": "SP Accenture plc Class A Ordinary Shares",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-13",
+    "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CVS",
+    "company_name": "CVS",
+    "trade_type": "UNKNOWN",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-13",
+    "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "CVS",
+    "company_name": "CVS",
+    "trade_type": "SELL",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-13",
+    "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "PG",
+    "company_name": "SP Procter & Gamble Company",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-13",
+    "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "UPS",
+    "company_name": "SP United Parcel Service, Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-02-13",
+    "filed_at": "2026-02-13"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "WM",
+    "company_name": "SP Waste Management, Inc. Common",
     "trade_type": "BUY",
     "amount_range": "$1,001 - $15,000",
     "traded_at": "2026-02-13",
@@ -19756,6 +21032,28 @@
     "filed_at": "2026-02-03"
   },
   {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "ACN",
+    "company_name": "SP Accenture plc Class A Ordinary Shares",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-21",
+    "filed_at": "2026-01-21"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "WM",
+    "company_name": "SP Waste Management, Inc. Common",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-21",
+    "filed_at": "2026-01-21"
+  },
+  {
     "politician_name": "John McGuire",
     "party": "Republican",
     "chamber": "House",
@@ -20337,6 +21635,28 @@
     "amount_range": "Unknown",
     "traded_at": "2026-01-14",
     "filed_at": "2026-02-04"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "COST",
+    "company_name": "SP Costco Wholesale Corporation -",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-14",
+    "filed_at": "2026-01-14"
+  },
+  {
+    "politician_name": "Harriet Hageman",
+    "party": "Republican",
+    "chamber": "House",
+    "ticker": "NOW",
+    "company_name": "NOW",
+    "trade_type": "BUY",
+    "amount_range": "$1,001 - $15,000",
+    "traded_at": "2026-01-14",
+    "filed_at": "2026-01-14"
   },
   {
     "politician_name": "Daniel Meuser",
